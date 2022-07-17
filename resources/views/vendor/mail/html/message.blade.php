@@ -5,7 +5,7 @@
             {{ config('app.name') }}
         @endcomponent --}}
     @endslot
-
+ 
     {{-- Body --}}
     {{ $slot }}
 

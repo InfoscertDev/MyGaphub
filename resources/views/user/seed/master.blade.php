@@ -11,7 +11,7 @@
     var labels = ['Savings', 'Education', 'Expenditure', 'Discretionary'];
     var average_chart = {
         values : <?php  echo json_encode($average_detail['seed_web']) ?>,
-    };
+    }; 
     var current_chart = {
         values : <?php  echo json_encode($current_detail['seed_web']) ?>,
     };
@@ -46,7 +46,8 @@
                     <label for="" class="text-center d-block mt-1 mb-3"> 0% </label>
                 @endif
                 <div class="mt-4 mb-2 text-center mx-auto">
-                    <button class="btn btn-pry" data-toggle="modal" data-target="#createBudgetModal" >Create a Budget</button>    
+                    <a href="{{ route('seed.create') }}" class="btn btn-pry" > Create a Budget</a>    
+                    <!-- <button class="btn btn-pry" data-toggle="modal" data-target="#createBudgetModal" >Create a Budget</button>     -->
                 </div>       
             </div>
         </div>
@@ -110,9 +111,9 @@
                 @endforeach
                 <tr>      
                     <td class="bold">Total</td>
-                    <td class="bold">  {{$currency}}{{number_format($average_detail['total'],2)}} </td>
-                    <td class="bold">  {{$currency}}{{number_format($current_detail['total'],2)}} </td>
-                    <td class="bold">  {{$currency}}{{number_format($target_detail['total'],2)}} </td>
+                    <td class="bold"> {{$currency}}{{number_format($average_detail['total'],2)}} </td>
+                    <td class="bold"> {{$currency}}{{number_format($current_detail['total'],2)}} </td>
+                    <td class="bold"> {{$currency}}{{number_format($target_detail['total'],2)}} </td>
                 </tr>
             </table> 
         </div>

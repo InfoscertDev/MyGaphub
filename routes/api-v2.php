@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/allocate/budget', 'API\v2\SeedAPI@listAllocation');
         Route::post('/seed/allocate/budget', 'API\v2\SeedAPI@storeCategoryAllocation');
+        Route::put('/seed/allocate/budget/{id}', 'API\v2\SeedAPI@updateCategoryAllocation');
         // 360 
         Route::get('/360/tiles', 'API\v2\WheelController@tiles');
         Route::get('/360/ilab', 'API\v2\SeedAPI@ilab'); 

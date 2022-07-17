@@ -58,7 +58,10 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/notifications', 'HomeController@notifications')->name('notifications');
         Route::post('/dashboard/tiles', 'HomeController@dashboardTiles')->name('home.dashboard');
         Route::get('/seed', 'Web\SeedController@index')->name('seed');
+        Route::get('/seed/create', 'Web\SeedController@create')->name('seed.create');
         Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');
+        Route::post('/seed/store/budget', 'Web\SeedController@storeSetBudget')->name('seed.store.set_budget');
+        Route::post('/seed/store/allocation', 'Web\SeedController@storeCategoryAllocation')->name('seed.store.allocation');
         // SevenG 
         Route::get('/7g', 'Web\SevenGSnapshotController@index')->name('7g');
         Route::get('/7g/edit', 'Web\SevenGSnapshotController@create')->name('7g.editall');

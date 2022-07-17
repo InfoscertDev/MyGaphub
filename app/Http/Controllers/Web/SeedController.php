@@ -18,7 +18,7 @@ use App\Helper\GapExchangeHelper;
 use App\Helper\IncomeHelper;
 use App\ILab;
 use App\Helper\WheelClass as Wheel;
-
+use App\Models\Asset\SeedBudgetAllocation;
 
 class SeedController extends Controller
 {
@@ -38,13 +38,64 @@ class SeedController extends Controller
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
       $average_detail = CalculatorClass::averageSeedDetail($user);
       // var_dump($current_detail);
-      return inertia('Seed',  compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-      'average_detail', 'current_detail', 'target_detail','average_seed'));
+      // return inertia('Seed',  compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+      // 'average_detail', 'current_detail', 'target_detail','average_seed'));
 
-      // return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-      //     'average_detail', 'current_detail', 'target_detail','average_seed'));
+      return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+          'average_detail', 'current_detail', 'target_detail','average_seed'));
     }
  
+    
+    public function create(){
+      $user = auth()->user();
+      $page_title = "My Current Month";
+      $support = true;
+      $seed_backgrounds = CalculatorClass::accountBackground();
+      $isValid = SevenG::isSevenGVal($user);
+      $calculator = Calculator::where('user_id', $user->id)->first();
+      $currency = explode(" ", $calculator->currency)[0];
+      $current_seed = CalculatorClass::getCurrentSeed($user);
+      $target_seed = CalculatorClass::getTargetSeed($user);
+      $average_seed = CalculatorClass::getAverageSeed($user);
+      // var_dump($average_seed);
+      $current_detail = CalculatorClass::getSeedDetail($current_seed);
+      $target_detail = CalculatorClass::getSeedDetail($target_seed);
+      $average_detail = CalculatorClass::averageSeedDetail($user);
+
+      return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+          'average_detail', 'current_detail', 'target_detail','average_seed'));
+    }
+
+    public function storeSetBudget(Request $request){
+      $user = $request->user();
+
+      $request->validate([
+        'budget' => 'required|numeric'
+      ]);
+
+      $seed = CalculatorClass::getCurrentSeed($user);
+      $seed->budget_amount =  $request->budget;
+      $seed->update(); 
+      return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+    }
+
+    public function storeCategoryAllocation(Request $request){
+      $user = $request->user();
+
+      $this->validate($request, [
+        'category' => 'required|in:savings,education,discretionary',
+        'label' => 'required|between:3,50', 
+        'amount' => 'required|numeric|min:0',
+      ]);
+      
+      if($request->label == "Others") $request['label'] = $request->other_label;
+      $request['seed_category'] = $request->category;
+      $request['user_id'] = $user->id;
+      $request['period'] =  date('Y-m').'-01';
+      $budget_allocation =  SeedBudgetAllocation::create($request->all());
+      return redirect()->back()->with(['success' => 'Allocation has been created']);
+    }
+
     public function storeSeed(Request $request){
       $user = auth()->user();
 

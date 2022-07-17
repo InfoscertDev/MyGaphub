@@ -59,7 +59,8 @@ class SeedAPI extends Controller
       $user = $request->user();
 
       $validator = Validator::make($request->all(),[
-        'session' => 'required'
+        'session' => 'required',
+        'category' => 'required|in:expenditure,discretionary',
       ], [
         'session.required' => 'Token required'
       ]);
@@ -73,24 +74,38 @@ class SeedAPI extends Controller
       }else if($request->session == 'opajoiabnjkabjahvjnbzahjbzapqwgeydhj'){
         $seed = CalculatorClass::getTargetSeed($user);
       } 
-       
-      $seed->investment_fund =  $request->investment_fund;
-      $seed->personal_fund =  $request->personal_fund;
-      $seed->emergency_fund =  $request->emergency_fund;
-      $seed->financial_training =  $request->financial_training;
-      $seed->mental_development =  $request->mental_development;
-      $seed->career_development =  $request->career_development;
-      $seed->accomodation =  $request->accomodation;
-      $seed->mobility =  $request->mobility; 
-      $seed->expenses =  $request->expenses;
-      $seed->utilities =  $request->utilities;
-      $seed->debt_repay =  $request->debt_repay;
-      $seed->charity =  $request->charity;
-      $seed->family_support =  $request->family_support;
-      $seed->personal_commitments =  $request->personal_commitments;
-      $seed->save();
 
-      return response()->json(['status'=>true,'message' => 'Seed Budget has been updated']);
+      if($request->category == 'expenditure'){
+        $validator = Validator::make($request->all(),[
+          'accomodation' => 'required|numeric|min:0',
+          'mobility' => 'required|numeric|min:0',
+          'expenses' => 'required|numeric|min:0',
+          'utilities' => 'required|numeric|min:0',
+          'debt_repay' => 'required|numeric|min:0',
+        ]);
+  
+        if($validator->fails()){
+          return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+        }
+
+        $seed->accomodation =  $request->accomodation;
+        $seed->mobility =  $request->mobility; 
+        $seed->expenses =  $request->expenses;
+        $seed->utilities =  $request->utilities;
+        $seed->debt_repay =  $request->debt_repay;
+        $seed->update();
+        return response()->json(['status'=>true,'message' => 'Expenditure Budget has been updated']);
+      }
+
+      if($request->category == 'discretionary'){
+        $seed->charity =  $request->charity;
+        $seed->family_support =  $request->family_support;
+        $seed->personal_commitments =  $request->personal_commitments;
+        $seed->others =  $request->others;
+        
+        $seed->update();
+        return response()->json(['status'=>true,'message' => 'Discretionary Budget has been updated']);
+      } 
     }
     
     public function storeCategoryAllocation(Request $request){
@@ -115,6 +130,30 @@ class SeedAPI extends Controller
       return response()->json(['status' => true, 'data' => $budget_allocation,'message' => 'Allocation has been created']);
     }
 
+    public function updateCategoryAllocation(Request $request, $id){
+      $user = $request->user();
+
+      $month =  date('Y-m').'-01';
+      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+      if($allocated){
+        $validator = Validator::make($request->all(),[
+          'label' => 'required|between:3,50', 
+          'amount' => 'required|numeric|min:0',
+        ]);
+  
+        if($validator->fails()){
+          return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+        }
+        
+        $allocated->update($request->all());
+       
+        return response()->json(['status' => true, 'data' => $allocated,'message' => 'Seed Allocation has been updated']);
+
+      }else{
+        return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+      }
+    
+    }
     
 
     public function listAllocation(Request $request){
@@ -124,6 +163,8 @@ class SeedAPI extends Controller
       $category = $request->input('category') ?? 'savings'; 
       $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
                                 ->where('period', $month)->get();
+
+      
 
        return response()->json([
           'status' => true, 

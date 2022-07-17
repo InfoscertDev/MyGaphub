@@ -150,25 +150,25 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     
-            // Save  
-            RegisterController::createCalculator($user->id);
-            RegisterController::createQuestion($user->id);
-            GapAccount::initUserChartity($user);
-            IntegrationParties::join_sendinblue_leads($user);
+        // Save  
+        RegisterController::createCalculator($user->id);
+        RegisterController::createQuestion($user->id);
+        GapAccount::initUserChartity($user);
+        IntegrationParties::join_sendinblue_leads($user);
 
-            $profile = new Profile();
-            $profile->save();
-            $user->profile_id  = $profile->id;
-            $user->save(); 
+        $profile = new Profile();
+        $profile->save();
+        $user->profile_id  = $profile->id;
+        $user->save(); 
 
-            $tiles = HelperClass::dashboardTiles();
-            $audit = new Audit();  
-            $audit->user_id = $user->id; 
-            $audit->dashboard = json_encode($tiles);
-            $audit->save(); 
-            GapAccount::initUserChartity($user);
+        $tiles = HelperClass::dashboardTiles();
+        $audit = new Audit();  
+        $audit->user_id = $user->id; 
+        $audit->dashboard = json_encode($tiles);
+        $audit->save(); 
+        GapAccount::initUserChartity($user);
 
-            return $user;
+        return $user;
     }
 
     public  static function createQuestion($user){
