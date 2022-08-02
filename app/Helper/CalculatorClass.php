@@ -383,7 +383,7 @@ class CalculatorClass{
         array_push($discretionary,  $seed->family_support) ;
         array_push($discretionary,  $seed->personal_commitments) ;
         array_push($discretionary,  $seed->others) ;
-
+        
         // Sum each section amount
         $savings = array_sum($savings) ;
         $education = array_sum($education) ;
@@ -407,4 +407,5 @@ class CalculatorClass{
         ];
         return  compact('table', 'seed','seed_web', 'total');
     }
+
 } 

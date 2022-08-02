@@ -202,5 +202,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::post('/emails', 'Admin\SevenGComment@store_emails')->name('store.emails');
     });
 }); 
+
+// 3WP3KiJkng_Po
  
         

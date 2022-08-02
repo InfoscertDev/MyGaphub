@@ -13,6 +13,7 @@ use App\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator; 
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
+use App\Helper\AllocationHelpers;
 use App\Helper\CalculatorClass;
 use App\Helper\GapExchangeHelper;
 use App\Helper\IncomeHelper;
@@ -37,9 +38,7 @@ class SeedController extends Controller
       $current_detail = CalculatorClass::getSeedDetail($current_seed);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
       $average_detail = CalculatorClass::averageSeedDetail($user);
-      // var_dump($current_detail);
-      // return inertia('Seed',  compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-      // 'average_detail', 'current_detail', 'target_detail','average_seed'));
+      
 
       return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
           'average_detail', 'current_detail', 'target_detail','average_seed'));
@@ -49,7 +48,7 @@ class SeedController extends Controller
     public function create(){
       $user = auth()->user();
       $page_title = "My Current Month";
-      $support = true;
+      $support = true; $month =  date('Y-m').'-01';
       $seed_backgrounds = CalculatorClass::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
@@ -57,13 +56,17 @@ class SeedController extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
-      // var_dump($average_seed);
-      $current_detail = CalculatorClass::getSeedDetail($current_seed);
-      $target_detail = CalculatorClass::getSeedDetail($target_seed);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
-
+      
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
+                            ->where('user_id', $user->id)->where('period', $month)->get();
+      $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')
+                            ->where('user_id', $user->id)->where('period', $month)->get();
+    
+      $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-          'average_detail', 'current_detail', 'target_detail','average_seed'));
+         'available_allocation', 'current_detail', 'savings_allocation', 'education_allocation'
+      ));
     }
 
     public function storeSetBudget(Request $request){
@@ -83,15 +86,32 @@ class SeedController extends Controller
       $user = $request->user();
 
       $this->validate($request, [
-        'category' => 'required|in:savings,education,discretionary',
+        'category' => 'required|in:savings,education,expenditure,discretionary',
         'label' => 'required|between:3,50', 
         'amount' => 'required|numeric|min:0',
       ]);
+
+      if($request->category == 'expenditure'){
+        $this->validate($request, [
+          'expenditure' => 'required|in:accommodation,transportation,family,utilities,debt_repayment',
+          // 'recuring' => 'required|integer|between:0,1'
+        ]);
+      }
       
       if($request->label == "Others") $request['label'] = $request->other_label;
+      $current_seed = CalculatorClass::getCurrentSeed($user);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
+
+      if($request->amount > $available_allocation){
+        return redirect()->back()->with('error', 'Amount is greater than Available allocation');
+      }
+
+      $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
       $request['seed_category'] = $request->category;
       $request['user_id'] = $user->id;
       $request['period'] =  date('Y-m').'-01';
+      
       $budget_allocation =  SeedBudgetAllocation::create($request->all());
       return redirect()->back()->with(['success' => 'Allocation has been created']);
     }

@@ -1,11 +1,11 @@
 
-<div class="modal fade" id="savingsAllocationModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="expenditureAllocationModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content wd-c b-rad-20"> 
             <div class="modal-body">
                 <div class="d-block wd-f ">
                     <h2 class="text-center ff-rob">
-                        Savings Allocation
+                        Expenditure Allocation
                         <button type="button" class="btn btn-sm btn-close  text-right" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">X</span>
                         </button>
@@ -15,7 +15,7 @@
                 <form action="{{ route('seed.store.allocation') }}" method="POST">
                     @csrf
                     <input type="hidden" name="jhbxjhbsuhjbhajbghjvajhbsxgb" value="yugvabhjvbavbjhzbjhbhajvbhgvbhvjbjhbazJHbbj">
-                    <input type="hidden" name="category" value="savings">
+                    <input type="hidden" name="category" value="expenditure">
                     <div class="my-4">
                         <!-- <div class="row">
                            <div ><h6 class="bold text-uppercase mx-3">SAVINGS</h6></div> 
@@ -24,15 +24,27 @@
                        
                         <div class="form-group my-3 row">
                             <div class="col-sm-6">
-                               Savings Category:
+                               Expenditure Category:
                             </div>
                             <div class="col-sm-6"> 
-                                <select name="label" class="form-control" oninput="handleChangeCategory(this)" id="savings_category" required>
+                                <select name="expenditure" class="form-control" onchange="handleExpenditureCategory(this)" required>
                                     <option value="">-- Select --</option>
-                                    <option value="Investment Pool Fund">Investment Pool Fund</option>
-                                    <option value="Personal Project Fund">Personal Project Fund</option>
-                                    <option value="Emergency and Holiday Savings">Emergency and Holiday Savings</option>
-                                    <option value="Others">Others</option>
+                                    <option value="accommodation">Accommodation</option>
+                                    <option value="transportation">Transportation</option>
+                                    <option value="family">Home & Family</option>
+                                    <option value="utilities">Utilities</option>
+                                    <option value="debt_repayment">Debt Repayment </option>
+                                </select>
+                            </div> 
+                        </div>
+                        
+                        <div class="form-group my-3 row">
+                            <div class="col-sm-6">
+                               Description Label:
+                            </div>
+                            <div class="col-sm-6"> 
+                                <select name="label" class="form-control" onchange="handleChangeExpenditure(this)" id="expenditure_category" required>
+                                    <option value="">-- Select --</option>
                                 </select>
                                 <br>
                                 <input type="text" id="other_label" name="other_label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8" style="display: none;">
@@ -57,6 +69,16 @@
                                 <textarea name="note" id="note" class="form-control b-rad-10" rows="2"></textarea>
                             </div>
                         </div> 
+                        <div class="form-group my-3 row">
+                            <div class="col-sm-6">
+                                Recuring:
+                            </div>
+                            <div class="col-sm-6"> 
+                                <div class=" switch text-left">
+                                   <input class="" id="switch_cash" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_cash"></label>
+                                </div>
+                            </div>
+                        </div> 
                         
                         <div class="row mt-4 justify-content-center " id="edit_current" >
                             <button type="submiit" class="btn btn-md btn-pry px-4">Submit</button>
@@ -71,65 +93,47 @@
         </div>
 
         <script>
-            // let category = document.getElementById('savings_category');
-            // category.addEventListener('input', handleChangeCategory);
 
-            function handleChangeCategory(e){
-                if(e.value == "Others"){
+            function handleExpenditureCategory(e){
+                let expenditure= e.value.toLowerCase(), 
+                    categories = $("#expenditure_category");
+                    
+                var accommodation = {
+                    "Mortgage": "Mortgage", "Rent": "Rent",
+                    "Mortgage Reduction": "Mortgage Reduction", "Other": "Other"
+                }, transportation = {
+                    "Fuel": "Fuel", "Insurance": "Insurance", "Road Tax": "Road Tax",
+                    "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
+                    "Misc": "Misc", "Other": "Other"
+                },family = {
+                    "Groceries": "Groceries", "Children Allowance": "Children Allowance", "Parent Allowance": "Parent Allowance",
+                    "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
+                    "Misc": "Misc", "Other": "Other"
+                }, utilities = {
+                    "Council / Property Tax": "Council / Property Tax", "Gas": "Gas", "Electric": "Electric",
+                    "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
+                    "Misc": "Misc", "Other": "Other"
+                }, debt_repayment  = {
+                    "Loan": "Loan", "Credit Card": "Credit Card", "Other": "Other"
+                }; 
+                
+                categories.empty(); // remove old options
+                // $('#selectId option:gt(0)').remove() 
+                $.each(eval(expenditure), function(key,value) {
+                categories.append($("<option></option>")
+                    .attr("value", value).text(key));
+                });
+            }
+
+            function handleChangeExpenditure(e){
+                console.log(e.value)
+                if(e.value == "Other"){
                     $('#other_label').fadeIn(600)
                 }else{
                     $('#other_label').fadeOut(600)
                 }
             }
 
-            var editmode = 1 ;
-            function toggleEditCurrent(){
-                // var editilab = document.getElementById('editilab');
-                var investment = document.getElementById('investment'),
-                    personal = document.getElementById('personal'),
-                    emergency = document.getElementById('emergency'),
-                    finicial = document.getElementById('finicial'),
-                    career = document.getElementById('career')
-                    mental = document.getElementById('mental'),
-                    accomodation = document.getElementById('accomodation'),
-                    mobility = document.getElementById('mobility'),
-                    expenses = document.getElementById('expenses'),
-                    utilities = document.getElementById('utilities'),
-                    debt = document.getElementById('debt'),
-
-                    charity = document.getElementById('charity'),
-                    family = document.getElementById('family'),
-                    others = document.getElementById('others'),
-                    commitments = document.getElementById('commitments');
-                    
-                if (this.editmode) { 
-                    investment.disabled = true; personal.disabled = true;
-                    emergency.disabled = true; finicial.disabled = true;
-                    career.disabled = true; mental.disabled = true;
-                    accomodation.disabled = true;  expenses.disabled = true; 
-                    mobility.disabled = true;  utilities.disabled = true; 
-                    debt.disabled = true; 
-                    charity.disabled = true; others.disabled = true;
-                    family.disabled = true; commitments.disabled = true;
-                    
-                    $('#edit_current').hide(); $('#total_current').fadeIn(700); 
-                }else{
-                    investment.disabled = false; personal.disabled = false;
-                    emergency.disabled = false; finicial.disabled = false;
-                    career.disabled = false; mental.disabled = false;
-                    accomodation.disabled = false;  expenses.disabled = false; 
-                    mobility.disabled = false;  utilities.disabled = false; 
-                    debt.disabled = false; 
-                    
-                    charity.disabled = false; others.disabled = false;
-                    family.disabled = false; commitments.disabled = false;
-                   
-                    $('#edit_current').fadeIn(700);  $('#total_current').hide(); 
-                }
-
-                this.editmode = !this.editmode;
-            }
-            // toggleEditCurrent()
         </script>
     </div>
 </div>

@@ -5,15 +5,14 @@ namespace App\Models\Asset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SeedBudgetAllocation extends Model
+class RecordBudgetSpent extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id', 'period',
-        'seed_category', 'label',
+        'allocation_id', 'label',
         'amount', 'note',
-        'expenditure',
-        'recuring'
+        'date' 
     ];
 }

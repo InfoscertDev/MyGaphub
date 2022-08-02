@@ -77,9 +77,10 @@
             </span> 
         </div>
         <div class=" my-3 mx-auto wd-5 sm-wdf"> 
-            @include('user.seed.modals.current_budget')
+            <!-- @include('user.seed.modals.current_budget') -->
             @include('user.seed.modals.nextyear_budget')
             @include('user.seed.modals.average_budget')
+            @include('user.seed.add_record_spent')
             <div class="cell" id="wrapLegend"></div>
         </div>
     </div>
@@ -92,7 +93,7 @@
                 <tr class="table-header">    
                     <th class="bold">SEED </th>  
                     <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#averageBudgetModal" >Average </th> 
-                    <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#createBudgetModal">Current </th> 
+                    <th class="bold text-uppercase text-underline hand" > <a href="{{ route('seed.create') }}" class="text-dark">Current</a>  </th> 
                     <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#nextyearBudgetModal">Target </th>  
                 </tr>
                 @php
@@ -105,7 +106,7 @@
                             $seed = strtolower($seed);
                         @endphp
                         <td>{{$currency}}{{number_format($average_detail['table'][$seed],2)}} </td>
-                        <td>{{$currency}}{{number_format($current_detail['table'][$seed],2)}} </td>
+                        <td> {{$currency}}{{number_format($current_detail['table'][$seed],2)}} </td>
                         <td>{{$currency}}{{number_format($target_detail['table'][$seed],2)}} </td>
                     </tr>
                 @endforeach
@@ -118,7 +119,9 @@
             </table> 
         </div>
         <div class="col-md-2 col-sm-12 col-xs-12 sm-center">
-            <button class="btn btn-pry btn-history" disabled style="">Historic SEED</button>    
+            <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spent</button>    
+            <br><br>
+            <button class="btn btn-pry btn-history" disabled>Historic SEED</button>    
         </div>
     </div>
 

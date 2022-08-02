@@ -9,7 +9,9 @@
         </div>
         <div class="col-md-5 col-sm-12 sm-default">
             <div class="d-flex">
-                <h3 class="bold mr-3">My Budget:  </h3>
+                <h3 class="bold mr-2">
+                    {{ ($current_seed->budget_amount) ? 'My Budget:' : 'Set Budget:'}}
+                </h3>
                 <div id="view_budget_amount" ondblclick="toggleBudgetMode()">
                     <span class="px-2 h3">{{$currency}}{{ number_format($current_seed->budget_amount, 2) }} </span>
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Here is an aggregation of all your cash account used for various purposes"><i class="fa fa-info mx-2 "></i></span>
@@ -31,39 +33,45 @@
         </div>
         <div class="col-md-7 col-sm-12 sm-default">
             <div class="float-right">
-                <h3 class="bold ml-3">Available for Allocation:
-                    <span class="px-2">{{$currency}}{{ number_format(0, 2) }} </span>
-                </h3>
+                <div class="d-flex"> 
+                    <h3 class="bold ml-3">Available for Allocation: </h3>
+                    <span class="px-2 h3">{{$currency}}{{ number_format($available_allocation, 2) }} </span>
+                </div>
+               
             </div>
         </div>
     </div>
     @include('user.seed.modals.savings_allocation')
     @include('user.seed.modals.education_allocation')
     @include('user.seed.modals.discretionary_allocation')
+    @include('user.seed.modals.expenditure_allocation')
+
+    @include('user.seed.modals.savings_summary')
+    @include('user.seed.modals.education_summary')
     <br><br>
     
     <div class="row  mt-5 mb-2">
         <div class="col-md-3">
-            <div class="seed-pane seed-savings tool-pane">
-                <button class="seed-badge br-none"  data-toggle="modal" data-target="#savingsAllocationModal" > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </button>
+            <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsSummaryModal').modal('show')">
+                <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
                 <div class="tool-title"> <h3 class="center">Savings</h3></div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-expenditure tool-pane">
+            <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
                 <div class="seed-badge">{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</div>
                 <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
             </div>
-        </div>
+        </div> 
         <div class="col-md-3">
-            <div class="seed-pane seed-education tool-pane">
-                <button class="seed-badge br-none"  data-toggle="modal" data-target="#educationAllocationModal" >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</button>
+            <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationSummaryModal').modal('show')">
+                <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
                 <div class="tool-title"> <h3 class="center">Education</h3></div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="seed-pane seed-discretionary tool-pane">
-            <button class="seed-badge br-none"  data-toggle="modal" data-target="#discretionaryAllocationModal" >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</button>
+        <div class="col-md-3"> 
+            <div class="seed-pane seed-discretionary tool-pane hand"  onclick="$('#discretionaryAllocationModal').modal('show')">
+                <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
                 <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
             </div>
         </div>

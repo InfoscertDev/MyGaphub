@@ -262,13 +262,9 @@ class GapAccountCalculator
  
     public static function calcProtectionAccount($accounts){
         $values = []; $labels = [];  $premium = [];
-        foreach($accounts as $account){
+        foreach($accounts as $account){  
             array_push($values,  $account->premium_pay);
-        }
-        foreach($accounts as $account){
             array_push($premium,  $account->sum_assured);
-        }
-        foreach($accounts as $account){
             array_push($labels, $account->protection_category);
         }
         $sum = array_sum($premium); $percentages = [];
@@ -278,6 +274,7 @@ class GapAccountCalculator
         }
         return compact('sum', 'labels', 'values', 'percentages' );
     }
+
     public static function calcRoiInvestment($improve){
         $exp = ($improve['monthly_asset'] * 12 ) * 100 ;  
         $shortfall = $improve['monthly_asset'] - $improve['portfolio'];  
@@ -329,6 +326,7 @@ class GapAccountCalculator
         } 
         return $pensions;
     }
+
     public static function calcPensionAccount($accounts){
         $values = []; $labels = []; 
         foreach($accounts as $account){
@@ -377,6 +375,7 @@ class GapAccountCalculator
         // $sum = array_sum($convert_sum);
         return compact('sum', 'labels', 'values', 'percentages' );
     }
+
     public static function calcExpenditure($user,$expenditure){
         $total_seed = CalculatorClass::averageSeedDetail($user)['total_seed'];
         $averageSeed = CalculatorClass::getAverageSeed($user);

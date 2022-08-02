@@ -10,6 +10,7 @@ use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\CalculatorClass;
+use App\Helper\AllocationHelpers;
 use App\Wheel\CashAccount as Cash;
 use App\Helper\HelperClass;
 use App\Helper\GapAccountCalculator as GapAccount; 
@@ -25,11 +26,11 @@ class SeedAPI extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
        
-      $current_detail = CalculatorClass::getSeedDetail($current_seed);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $average_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
       
-      $data = compact('current_seed', 'target_seed','average_detail', 'current_detail', 'target_detail');
+      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed',);
       return response()->json([
         'status' => true,
         'data' => $data,
@@ -106,72 +107,6 @@ class SeedAPI extends Controller
         $seed->update();
         return response()->json(['status'=>true,'message' => 'Discretionary Budget has been updated']);
       } 
-    }
-    
-    public function storeCategoryAllocation(Request $request){
-      $user = $request->user();
-
-      $validator = Validator::make($request->all(),[
-        'category' => 'required|in:savings,education',
-        'label' => 'required|between:3,20', 
-        'amount' => 'required|numeric|min:0',
-      ]);
-
-      if($validator->fails()){
-        return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-      }
-
-      $request['seed_category'] = $request->category;
-      $request['user_id'] = $user->id;
-      $request['period'] =  date('Y-m').'-01';
-      $budget_allocation =  SeedBudgetAllocation::create($request->all());
-     
-     
-      return response()->json(['status' => true, 'data' => $budget_allocation,'message' => 'Allocation has been created']);
-    }
-
-    public function updateCategoryAllocation(Request $request, $id){
-      $user = $request->user();
-
-      $month =  date('Y-m').'-01';
-      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-      if($allocated){
-        $validator = Validator::make($request->all(),[
-          'label' => 'required|between:3,50', 
-          'amount' => 'required|numeric|min:0',
-        ]);
-  
-        if($validator->fails()){
-          return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-        }
-        
-        $allocated->update($request->all());
-       
-        return response()->json(['status' => true, 'data' => $allocated,'message' => 'Seed Allocation has been updated']);
-
-      }else{
-        return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
-      }
-    
-    }
-    
-
-    public function listAllocation(Request $request){
-      $user = $request->user();
-      
-      $month =  date('Y-m').'-01';
-      $category = $request->input('category') ?? 'savings'; 
-      $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
-                                ->where('period', $month)->get();
-
-      
-
-       return response()->json([
-          'status' => true, 
-          'data' => $budget_allocation,
-          'message' => ''
-       ]);                         
-                  
     }
 
     public function expenditure(Request $request){
