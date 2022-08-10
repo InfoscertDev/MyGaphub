@@ -21,7 +21,7 @@ Route::get('/install', function() {
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('route:clear');
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('config:cache');
     return '<h1>Cache facade value cleared</h1>';
-}); 
+});
 
 Route::get('/fincalculator', 'Web\FinicialCalculatorController@index');
 Route::post('/fincalculator', 'Web\FinicialCalculatorController@store')->name('store.calculator');
@@ -34,11 +34,11 @@ Route::get('/fin/improve', 'Web\FinicialCalculatorController@improve');
 
 // Route::get('/register/questions', 'Auth\RegisterController@mainregister' )->name('register.mainregister');
 
-Route::get('/email/resend', 'Auth\VerificationController@resend'); 
-Route::get('/email/verify', 'Auth\VerificationController@verify'); 
-Route::get('/email/reminder', 'Auth\VerificationController@reminder')->name('email.reminder'); 
+Route::get('/email/resend', 'Auth\VerificationController@resend');
+Route::get('/email/verify', 'Auth\VerificationController@verify');
+Route::get('/email/reminder', 'Auth\VerificationController@reminder')->name('email.reminder');
 
-Auth::routes(['verify' => 'true']);  
+Auth::routes(['verify' => 'true']);
 Route::post('/questions', 'HomeController@questions' )->name('register.questions');
 
 
@@ -51,18 +51,22 @@ Route::group(['middleware' => ['auth','verified']], function() {
     Route::get('/acquisition/create/alert', 'Web\ListedAcquisitionController@createAlert')->name('acquisition.create.alert');
     Route::post('/acquisition/invest/reap/{sasset}', 'Web\ListedAcquisitionController@reserveReapInvestment')->name('acqusition.reserve_reap');
     Route::post('/acquisition/invest/ganp/{sasset}', 'Web\ListedAcquisitionController@reserveGanpInvestment')->name('acqusition.reserve_ganp');
-    
+
     Route::group(['prefix' => 'home'], function () {
-        // User Link  
+        // User Link
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/notifications', 'HomeController@notifications')->name('notifications');
         Route::post('/dashboard/tiles', 'HomeController@dashboardTiles')->name('home.dashboard');
         Route::get('/seed', 'Web\SeedController@index')->name('seed');
         Route::get('/seed/create', 'Web\SeedController@create')->name('seed.create');
+        Route::get('/seed/list/allocate', 'Web\SeedController@listAllocation')->name('seed.list.allocation');
+        Route::get('/seed/allocate/{id}', 'Web\SeedController@showAlloction')->name('seed.allocation');
         Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');
+
         Route::post('/seed/store/budget', 'Web\SeedController@storeSetBudget')->name('seed.store.set_budget');
         Route::post('/seed/store/allocation', 'Web\SeedController@storeCategoryAllocation')->name('seed.store.allocation');
-        // SevenG 
+        Route::post('/seed/store/allocation/{id}', 'Web\SeedController@updateCategoryAllocation')->name('seed.update.allocation');
+        // SevenG
         Route::get('/7g', 'Web\SevenGSnapshotController@index')->name('7g');
         Route::get('/7g/edit', 'Web\SevenGSnapshotController@create')->name('7g.editall');
         Route::post('/7g/store', 'Web\SevenGSnapshotController@store')->name('save.seveng');
@@ -78,13 +82,13 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/tools/compliance', 'Web\OtherToolController@compliance')->name('compliance');
         Route::get('/tools/preference', 'Web\OtherToolController@preference')->name('preference');
         Route::get('/tools/exchange', 'Web\OtherToolController@soon')->name('exchange');
-        
+
         Route::post('/tools/preference/exchange', 'Web\OtherToolController@updateExchange')->name('update.exchange');
         Route::post('/tools/picture', 'Web\OtherToolController@picture')->name('picture');
         Route::post('/tools/default/picture', 'Web\OtherToolController@defaultpicture')->name('default.picture');
         Route::post('/tools/editprofile', 'Web\OtherToolController@editprofile')->name('edit.profile');
         Route::post('/tools/security/password', 'Web\OtherToolController@changePassword')->name('change.password');
-        
+
         // 360 Detail
         Route::get('/360', 'Web\WheelController@index')->name('360');
         Route::get('/360/ilab', 'Web\SeedController@ilab')->name('360.ilab');
@@ -93,7 +97,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/360/liabilities', 'Web\LiabilitiesController@liability')->name('360.liabilities');
         Route::get('/360/expenditure', 'Web\SeedController@expenditure')->name('360.expenditure');
         Route::get('/360/protection', 'Web\IndependenceController@protection')->name('360.protection');
-        
+
         Route::get('/360/retirement', 'Web\IndependenceController@retirement')->name('360.retirement');
         Route::get('/360/investment', 'Web\PortfolioController@investment')->name('360.investment');
         Route::get('/360/cash', 'Web\WheelController@cash')->name('360.cash');
@@ -103,7 +107,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/360/list/income', 'Web\IndependenceController@incomeList')->name('360.income.list');
         Route::get('/360/asset', 'Web\WheelController@asset')->name('360.asset');
         Route::get('/360/equity', 'Web\WheelController@equity')->name('360.equity');
-        // 360 Add Account  
+        // 360 Add Account
         Route::post('/360/ilab', 'Web\SeedController@storeILab')->name('360.store.ilab');
         Route::post('/360/net', 'Web\WheelController@storeNet')->name('360.store.net');
         Route::post('/360/cash', 'Web\WheelController@storeCash')->name('360.store.cash');
@@ -115,7 +119,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::post('/360/retirement', 'Web\IndependenceController@storeRetirement')->name('360.store.retirement');
         Route::post('/360/improve/roi', 'Web\IndependenceController@improveRoi')->name('360.store.roi');
         Route::post('/360/philantrophy', 'Web\SeedController@savePhilantrophy')->name('360.store.philantrophy');
-        // 360 Update  
+        // 360 Update
         Route::post('/360/cash/{id}', 'Web\WheelController@updateCash')->name('360.update.cash');
         Route::post('/360/mortgage/{id}', 'Web\LiabilitiesController@updateMortgage')->name('360.update.mortgage');
         Route::post('/360/liability/{id}', 'Web\LiabilitiesController@updateLiability')->name('360.update.liability');
@@ -124,7 +128,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::post('/360/protection/{id}', 'Web\IndependenceController@updateProtection')->name('360.update.protection');
         Route::post('/360/income/{id}', 'Web\IndependenceController@updateIncome')->name('360.update.income');
         Route::post('/360/income/records/{id}', 'Web\IndependenceController@updateIncomeRecord')->name('360.update.income_record');
-        // Portfolio 
+        // Portfolio
         Route::get('/portfolio', 'Web\PortfolioController@index')->name('portfolio');
         Route::post('/portfolio/asset/', 'Web\PortfolioController@addPortfolioAsset')->name('portfolio.new_asset');
         Route::get('/portfolio/asset/{type}', 'Web\PortfolioController@portfolioAssetType')->name('portfolio.asset_type');
@@ -143,9 +147,9 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/feedback', 'Web\OtherToolController@feedback')->name('feedback');
         Route::post('/feedback', 'Web\OtherToolController@sendFeedback')->name('send.feedback');
     });
-}); 
+});
 
-// Acquisition 
+// Acquisition
 Route::get('/home/support', 'Web\OtherToolController@support')->name('support');
 Route::get('/acquisition', 'Web\AcquisitionController@index')->name('user.acquisition');
 Route::get('/acquisition/asset/{asset}', 'Web\AcquisitionController@opportunity')->name('user.opportunity');
@@ -160,17 +164,17 @@ Route::get('/acquisition/asset/{asset}/search', 'Web\AcquisitionController@searc
 Route::get('/acquisition/asset/{asset}/ganp/search', 'Web\AcquisitionController@searchGanpPaginaton')->name('user.ganp-search');
 Route::post('/acquisition/asset/{asset}/reap', 'Web\AcquisitionController@searchReap')->name('user.search-reap');
 Route::post('/acquisition/asset/{asset}/ganp', 'Web\AcquisitionController@searchGANP')->name('user.search-ganp');
-// 
+//
 Route::post('/acquisition/contact/reap/{sasset}', 'Web\ListedAcquisitionController@intrestReapInvestment')->name('acqusition.invest_reap');
 
-Route::group(['prefix' => 'gapadmin'], function () { 
+Route::group(['prefix' => 'gapadmin'], function () {
     //Admin Auth
     Route::get('/', 'AdminAuth\LoginController@showLoginForm')->name('admin.login');
     Route::get('/login', 'AdminAuth\LoginController@showLoginForm');
     Route::get('/register', 'AdminAuth\RegisterController@quickReg');
     Route::post('/login', 'AdminAuth\LoginController@login')->name('admin.siginin');
     Route::post('/logout', 'AdminAuth\LoginController@logout')->name('admin.logout');
-    
+
     Route::group(['middleware' => ['admin']], function() {
 
         Route::get('/dashboard', 'Admin\AdminManagement@dashboard');
@@ -178,22 +182,22 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::get('/admins', 'Admin\AdminManagement@index')->name('admins');
         Route::get('/users', 'Admin\UsersManagement@index')->name('gap.users');
         Route::get('/users/{id}', function(){  return view('admin.coming-soon'); })->name('gap.single_user');
-        
+
         Route::post('/preference/email', 'Admin\AdminManagement@preferenceEmail')->name('preference.email');
         Route::get('/preference/exchange', 'Admin\AdminManagement@exchange')->name('gap.exchange');
         Route::get('/feedbacks', 'Admin\AdminManagement@feedbacks')->name('gap.feedbacks');
-         
+
         Route::get('/products', 'Admin\SevenGComment@products' )->name('gap.products');
         Route::post('/products/{asset}', 'Admin\SevenGComment@storeProducts' )->name('gap.store.products');
         Route::get('/support', function(){  return view('admin.coming-soon'); })->name('gap.support');
         // Route::get('/reap', function(){  return view('admin.coming-soon'); })->name('gap.reap');
         // Route::get('/ganp', function(){  return view('admin.coming-soon'); })->name('gap.ganp');
-        
+
         Route::get('/asset/type', 'Admin\AssetTypeController@index')->name('gap.asset_type');
         Route::post('/asset/type', 'Admin\AssetTypeController@store')->name('store.asset_type');
         Route::get('/asset/type/{id}', 'Admin\AssetTypeController@show')->name('show.asset_type');
         Route::post('/asset/type/{id}', 'Admin\AssetTypeController@update')->name('update.asset_type');
-        
+
         Route::get('/acqusition', 'Admin\SevenGComment@index')->name('gap.acqusition');
         Route::post('/acqusition/{braid}', 'Admin\SevenGComment@storeAcquisitionCms')->name('gap.store.acqusition');
         Route::get('/emails', 'Admin\SevenGComment@emails')->name('gap.emails');
@@ -201,8 +205,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::get('/emails/recommendation', 'Admin\SevenGComment@recommendation')->name('gap.emails.recommendation');
         Route::post('/emails', 'Admin\SevenGComment@store_emails')->name('store.emails');
     });
-}); 
+});
 
 // 3WP3KiJkng_Po
- 
-        
+

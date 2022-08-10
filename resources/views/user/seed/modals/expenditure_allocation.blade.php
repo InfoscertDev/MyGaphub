@@ -100,21 +100,23 @@
                     
                 var accommodation = {
                     "Mortgage": "Mortgage", "Rent": "Rent",
-                    "Mortgage Reduction": "Mortgage Reduction", "Other": "Other"
+                    "Mortgage Reduction": "Mortgage Reduction", "Others": "Others"
                 }, transportation = {
                     "Fuel": "Fuel", "Insurance": "Insurance", "Road Tax": "Road Tax",
                     "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
-                    "Misc": "Misc", "Other": "Other"
+                    "Misc": "Misc", "Others": "Others"
                 },family = {
                     "Groceries": "Groceries", "Children Allowance": "Children Allowance", "Parent Allowance": "Parent Allowance",
-                    "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
-                    "Misc": "Misc", "Other": "Other"
+                    "Personal Allowance": "Personal Allowance", "Clothings": "Clothings", "Eating Out": "Eating Out",
+                    "Entertainment": "Entertainment", "Life Insurance": "Life Insurance", "Childcare": "Childcare", 
+                    "Home & Emergency Insurance": "Home & Emergency Insurance", "Extra-Curricula": "Extra-Curricula", 
+                    "Others": "Others"
                 }, utilities = {
                     "Council / Property Tax": "Council / Property Tax", "Gas": "Gas", "Electric": "Electric",
-                    "MOT": "MOT","Trains & Taxis": "Trains & Taxis",
-                    "Misc": "Misc", "Other": "Other"
+                    "Water & Sewage": "Water & Sewage", "TV & Cable Subscriptions": "TV & Cable Subscriptions",
+                    "Internet / Broadband": "Internet / Broadband", "Mobile Phone": "Mobile Phone", "Others": "Others"
                 }, debt_repayment  = {
-                    "Loan": "Loan", "Credit Card": "Credit Card", "Other": "Other"
+                    "Loan": "Loan", "Credit Card": "Credit Card", "Others": "Others"
                 }; 
                 
                 categories.empty(); // remove old options

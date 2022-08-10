@@ -76,11 +76,11 @@
       var href = window.location.href+'/'+id;
       console.log(id, href); 
       $.ajax({ 
-        typr: 'GET',
+        type: 'GET',
         url: href,
         success: function(data, status){
           var asset = data.asset_type;
-          console.log(asset.description);
+          // console.log(asset.description);
           if(asset){
             $('#editTypeModal').modal('show');
             $('#acqusition').val(asset.acqusition);

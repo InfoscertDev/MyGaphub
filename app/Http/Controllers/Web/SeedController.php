@@ -10,7 +10,7 @@ use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\AnalyticsClass as SevenG;
 
 use App\Wheel\CashAccount as Cash;
-use App\FinicialCalculator as Calculator; 
+use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\AllocationHelpers;
@@ -20,6 +20,7 @@ use App\Helper\IncomeHelper;
 use App\ILab;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
+use App\Models\Asset\RecordBudgetSpent;
 
 class SeedController extends Controller
 {
@@ -35,16 +36,16 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       // var_dump($average_seed);
-      $current_detail = CalculatorClass::getSeedDetail($current_seed);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
-      
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
+
 
       return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
           'average_detail', 'current_detail', 'target_detail','average_seed'));
     }
- 
-    
+
+
     public function create(){
       $user = auth()->user();
       $page_title = "My Current Month";
@@ -56,13 +57,21 @@ class SeedController extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
-      
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+
+      $month =  date('Y-m').'-01';
+    //   $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
       $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
                             ->where('user_id', $user->id)->where('period', $month)->get();
+        foreach($savings_allocation as $allocation){
+            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+            $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
+            $allocation->summary = compact('record_spents', 'summary');
+        }
+
       $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')
                             ->where('user_id', $user->id)->where('period', $month)->get();
-    
+
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail', 'savings_allocation', 'education_allocation'
@@ -78,8 +87,46 @@ class SeedController extends Controller
 
       $seed = CalculatorClass::getCurrentSeed($user);
       $seed->budget_amount =  $request->budget;
-      $seed->update(); 
+      $seed->update();
       return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+    }
+
+    public function showAlloction(Request $request, $id){
+      $user = $request->user();
+
+      $month =  date('Y-m').'-01';
+      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+      if($allocated){
+          return response()->json([
+            'status' => true,
+            'data' => $allocated,
+            'message' => 'Alllocation Summary'
+          ], 200);
+      }else{
+        return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+      }
+    }
+
+    public function listAllocation(Request $request){
+        $user = $request->user();
+
+        $month =  date('Y-m').'-01';
+        $category = $request->input('category') ?? 'savings';
+        $expenditure = $request->input('expenditure');
+        $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
+                                    ->when($expenditure, function ($query, $expenditure) {
+                                        return $query->where('expenditure', $expenditure);
+                                    })
+                                  ->where('user_id', $user->id)->where('period', $month)->get();
+
+
+
+         return response()->json([
+            'status' => true,
+            'data' => $budget_allocation,
+            'message' => ''
+         ]);
+
     }
 
     public function storeCategoryAllocation(Request $request){
@@ -87,7 +134,7 @@ class SeedController extends Controller
 
       $this->validate($request, [
         'category' => 'required|in:savings,education,expenditure,discretionary',
-        'label' => 'required|between:3,50', 
+        'label' => 'required|between:3,50',
         'amount' => 'required|numeric|min:0',
       ]);
 
@@ -97,7 +144,7 @@ class SeedController extends Controller
           // 'recuring' => 'required|integer|between:0,1'
         ]);
       }
-      
+
       if($request->label == "Others") $request['label'] = $request->other_label;
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
@@ -111,9 +158,41 @@ class SeedController extends Controller
       $request['seed_category'] = $request->category;
       $request['user_id'] = $user->id;
       $request['period'] =  date('Y-m').'-01';
-      
+
       $budget_allocation =  SeedBudgetAllocation::create($request->all());
       return redirect()->back()->with(['success' => 'Allocation has been created']);
+    }
+
+    public function updateCategoryAllocation(Request $request, $id){
+        $user = $request->user();
+
+        $month =  date('Y-m').'-01';
+        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        if($allocated){
+            $this->validate($request,[
+              'label' => 'required|between:3,50',
+              'amount' => 'required|numeric|min:0',
+            ]);
+
+            // if($validator->fails()){
+            //   return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+            // }
+
+            $current_seed = CalculatorClass::getCurrentSeed($user);
+            $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+            $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
+
+            if($request->amount > $available_allocation){
+              return redirect()->back()->with('error', 'Amount is greater than Available allocation');
+            }
+
+          $allocated->update($request->all());
+
+          return  redirect()->back()->with('success','Seed Allocation has been updated');
+
+        }else{
+          return redirect()->back()->with('error', 'Allocation not found', 404);
+        }
     }
 
     public function storeSeed(Request $request){
@@ -124,15 +203,15 @@ class SeedController extends Controller
       ], [
         'jhbxjhbsuhjbhajbghjvajhbsxgb.required' => 'Token required'
       ]);
- 
+
       if($request->jhbxjhbsuhjbhajbghjvajhbsxgb == 'yugvabhjvbavbjhzbjhbhajvbhgvbhvjbjhbazJHbbj'){
         $seed = CalculatorClass::getCurrentSeed($user);
       }else if($request->jhbxjhbsuhjbhajbghjvajhbsxgb == 'opajoiabnjkabjahvjnbzahjbzapqwgeydhj'){
         $seed = CalculatorClass::getTargetSeed($user);
       }else{
-        return redirect()->back()->with(['error' => 'Seed Budget not found']); 
+        return redirect()->back()->with(['error' => 'Seed Budget not found']);
       }
-      
+
       $seed->investment_fund =  $request->investment_fund;
       $seed->personal_fund =  $request->personal_fund;
       $seed->emergency_fund =  $request->emergency_fund;
@@ -140,7 +219,7 @@ class SeedController extends Controller
       $seed->mental_development =  $request->mental_development;
       $seed->career_development =  $request->career_development;
       $seed->accomodation =  $request->accomodation;
-      $seed->mobility =  $request->mobility; 
+      $seed->mobility =  $request->mobility;
       $seed->expenses =  $request->expenses;
       $seed->utilities =  $request->utilities;
       $seed->debt_repay =  $request->debt_repay;
@@ -155,7 +234,7 @@ class SeedController extends Controller
 
     public function expenditure(){
         $user = auth()->user();
-        $isValid = SevenG::isSevenGVal($user); 
+        $isValid = SevenG::isSevenGVal($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
         $currencies = HelperClass::popularCurrenciens();
@@ -168,7 +247,7 @@ class SeedController extends Controller
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
         return view('user.360.expenditure', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'backgrounds' ,'expenditure','expenditure_detail'));
-    } 
+    }
 
     public function philantrophy(){
         $user = auth()->user();
@@ -179,7 +258,7 @@ class SeedController extends Controller
         $equity_info = GapExchangeHelper::availabeleMortgages($user);
         $fin = CalculatorClass::finicial($user);
         $income_detail = IncomeHelper::analyseIncome($user,  $fin['portfolio']);
-          
+
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
         $grand = Grand::where('user_id', $user->id)->first();
@@ -189,10 +268,10 @@ class SeedController extends Controller
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         }
         $philantrophy_detail = GapAccount::calcPhilantrophy($user);
-        
+
         return view('user.360.philantrophy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
-    } 
-    
+    }
+
     public function savePhilantrophy(Request $request){
         $user = auth()->user();
 
@@ -201,10 +280,10 @@ class SeedController extends Controller
           'charity' => 'required|numeric|min:0',
           'family_support' => 'required|numeric|min:0',
           'personal' => 'required|numeric|min:0',
-          'others' => 'required|numeric|min:0' 
+          'others' => 'required|numeric|min:0'
         ]);
         $giving =  array_sum([$request->charity, $request->family_support,$request->personal,  $request->others]);
-       
+
         if($giving == $grand->current){
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
           $philantrophy->charity = $request->charity;
@@ -213,12 +292,12 @@ class SeedController extends Controller
           $philantrophy->others = $request->others;
           $philantrophy->allocated = 1;
           $philantrophy->save();
-          Wheel::updateGivingTile($user); 
+          Wheel::updateGivingTile($user);
           return redirect()->back()->with(['success' => 'Giving has been updated']);
        }else{
         return redirect()->back()->with(['error' => 'Your Giving must be equal to your grand']);
        }
-    } 
+    }
 
     public function ilab(){
         $user = auth()->user();
@@ -231,7 +310,7 @@ class SeedController extends Controller
           $ilab->user_id = $user->id;
           $ilab->other = $year;
           $ilab->save();
-        } 
+        }
         $cash = Cash::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $current_ilab = GapAccount::currentILab($user, $cash)['current_ilab'];
         $current_info = GapAccount::currentILab($user, $cash)['ilabs'];

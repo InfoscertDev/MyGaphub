@@ -72,7 +72,7 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/api.php'));
     }
 
-    
+
     /**
      * Define the "api" routes for the application.
      *
@@ -82,6 +82,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiV2Routes()
     {
+        // echo(base_path('routes/api-v2.php'));
         Route::prefix('api/v2')
              ->middleware('api')
              ->namespace($this->namespace)

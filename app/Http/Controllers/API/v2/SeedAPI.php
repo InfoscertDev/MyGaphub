@@ -6,30 +6,30 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-use App\FinicialCalculator as Calculator; 
+use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\CalculatorClass;
 use App\Helper\AllocationHelpers;
 use App\Wheel\CashAccount as Cash;
 use App\Helper\HelperClass;
-use App\Helper\GapAccountCalculator as GapAccount; 
+use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\WheelClass as Wheel;
 use App\ILab;
 use App\Models\Asset\SeedBudgetAllocation;
 
 class SeedAPI extends Controller
-{ 
+{
     // MyGaphub@Stag!ng
     public function index(Request $request){
       $user = $request->user();
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
-       
+
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $average_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
-      
+
       $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed',);
       return response()->json([
         'status' => true,
@@ -53,7 +53,7 @@ class SeedAPI extends Controller
       $seed->budget_amount =  $request->budget;
       $seed->update();
       return response()->json(['status' => true,'message' => 'Seed Budget Amount has been set']);
-      
+
     }
 
     public function storeSeed(Request $request){
@@ -74,7 +74,7 @@ class SeedAPI extends Controller
         $seed = CalculatorClass::getCurrentSeed($user);
       }else if($request->session == 'opajoiabnjkabjahvjnbzahjbzapqwgeydhj'){
         $seed = CalculatorClass::getTargetSeed($user);
-      } 
+      }
 
       if($request->category == 'expenditure'){
         $validator = Validator::make($request->all(),[
@@ -84,13 +84,13 @@ class SeedAPI extends Controller
           'utilities' => 'required|numeric|min:0',
           'debt_repay' => 'required|numeric|min:0',
         ]);
-  
+
         if($validator->fails()){
           return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
         }
 
         $seed->accomodation =  $request->accomodation;
-        $seed->mobility =  $request->mobility; 
+        $seed->mobility =  $request->mobility;
         $seed->expenses =  $request->expenses;
         $seed->utilities =  $request->utilities;
         $seed->debt_repay =  $request->debt_repay;
@@ -103,21 +103,21 @@ class SeedAPI extends Controller
         $seed->family_support =  $request->family_support;
         $seed->personal_commitments =  $request->personal_commitments;
         $seed->others =  $request->others;
-        
+
         $seed->update();
         return response()->json(['status'=>true,'message' => 'Discretionary Budget has been updated']);
-      } 
+      }
     }
 
     public function expenditure(Request $request){
         $user = $request->user();
 
-        $fin = CalculatorClass::finicial($user); 
+        $fin = CalculatorClass::finicial($user);
         $expenditure =  $fin['calculator'];
         $expenditure_detail = GapAccount::calcExpenditure($user,$expenditure);
-         
+
         return response()->json(compact('expenditure','expenditure_detail'));
-    } 
+    }
 
     public function philantrophy(Request $request){
         $user = $request->user();
@@ -127,12 +127,12 @@ class SeedAPI extends Controller
         if (!$philantrophy) {
           $philantrophy = GapAccount::initUserChartity($user);
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
-        }  
+        }
         $philantrophy_detail = GapAccount::calcPhilantrophy($user);
-         
+
         $philantrophy->sum =  array_sum([$philantrophy->charity, $philantrophy->family_support,$philantrophy->personal_commitments,  $philantrophy->others]);
         return response()->json( compact( 'philantrophy', 'grand','philantrophy_detail'));
-    } 
+    }
 
     public function savePhilantrophy(Request $request){
         $user = $request->user();
@@ -144,31 +144,31 @@ class SeedAPI extends Controller
           'personal' => 'required|integer|min:0',
           'others' => 'required|integer|min:0'
         ]);
- 
+
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
         }
 
         $giving =  array_sum([$request->charity, $request->family_support,$request->personal,  $request->others]);
-       
+
         if($giving == $grand->current){
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
           if (!$philantrophy) {
             $philantrophy = GapAccount::initUserChartity($user);
-          } 
+          }
           $philantrophy->charity = $request->charity;
           $philantrophy->family_support = $request->family_support;
           $philantrophy->personal_commitments = $request->personal;
           $philantrophy->others = $request->others;
           $philantrophy->allocated = 1;
-          $philantrophy->save(); 
+          $philantrophy->save();
           Wheel::updateGivingTile($user);
           return  response()->json( compact('philantrophy') );
        }else{
         return  response()->json(['error' => 'Your Giving must be equal to your grand']);
        }
     }
-    
+
     public function ilab(Request $request){
       $user = $request->user();
       $calculator = Calculator::where('user_id', $user->id)->first();
@@ -223,6 +223,5 @@ class SeedAPI extends Controller
       $ilab->save();
 
       return response()->json(['success' => 'ILab target has been set']);
-    } 
+    }
 }
- 
