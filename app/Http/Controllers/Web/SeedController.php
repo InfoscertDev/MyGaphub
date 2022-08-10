@@ -195,6 +195,24 @@ class SeedController extends Controller
         }
     }
 
+    public function storeRecordSpent(Request $request){
+        $user = $request->user();
+
+        $this->validate($request, [
+            'allocation' => 'required|exists:seed_budget_allocations,id',
+            'label' => 'required|between:3,50',
+            'amount' => 'required|numeric|min:0'
+          //   'date' => 'required|date'
+        ]);
+
+        $request['allocation_id'] = $request->allocation;
+        $request['user_id'] = $user->id;
+        $request['period'] =  date('Y-m').'-01';
+        $record_spent =  RecordBudgetSpent::create($request->all());
+
+        return redirect()->back()->with(['success' =>  'Record spent has been recorded' ]);
+    }
+
     public function storeSeed(Request $request){
       $user = auth()->user();
 
