@@ -4,7 +4,7 @@
 @section('content')
     <div class="row justify-content-center">
         <div class="col-12 my-4">
-            <div class="d-flex">  
+            <div class="d-flex">
                 <span class="mr-3 pb-2" id="goback">
                     <a href="#" class="text-dark" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
@@ -21,7 +21,7 @@
                 <div class="summary-card-body">
                     <div class="list-group">
                         @foreach($allocations as $allocation)
-                            <div class="list-group-item">
+                            <div class="list-group-item" data-allocation="{{$allocation->id}}" onclick="handleAllocationView(this)">
                                 <div class="d-flex mt-2 mb-1">
                                     <span class="box-identify box-{{$seed}}"></span>
                                     <h5>{{ $allocation->label }}</h5>
@@ -36,20 +36,23 @@
                     @if($seed == 'education')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#educationAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
                     @if($seed == 'discretionary')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#discretionaryAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
                 </div>
-                
+
 
             @include('user.seed.modals.savings_allocation')
             @include('user.seed.modals.education_allocation')
             @include('user.seed.modals.discretionary_allocation')
             @include('user.seed.modals.expenditure_allocation')
+
+            @include('user.seed.modals.edit_allocation')
+            @include('user.seed.modals.view_allocation')
             </div>
         </div>
     </div>
 
     <script>
-          function handleAllocationEdit(e){
-            console.log(e);
-            let id = e.value;
+          function handleAllocationView(e){
+            console.log(e.dataset.allocation);
+            let id = e.dataset.allocation;
 
             var url = `{{ route('seed.store.allocation')  }}`
             console.log( url+'/'+id)

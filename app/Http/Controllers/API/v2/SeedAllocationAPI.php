@@ -71,11 +71,11 @@ class SeedAllocationAPI extends Controller
 
       public function deleteAllocation(Request $request, $id){
         $user = $request->user();
-        info(['Delete', $id]);
+        $month =  date('Y-m').'-01';
         $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-            if(count($record_spents)){
+            if(count($record_spents) == 0){
                 $allocation->delete();
                 return response()->json([
                     'status' => true,
