@@ -46,12 +46,14 @@
                     <label for="" class="text-center d-block mt-1 mb-3"> 0% </label>
                 @endif
                 <div class="mt-4 mb-2 text-center mx-auto">
-                    <a href="{{ route('seed.create') }}" class="btn btn-pry" > Create a Budget</a>
+                    <a href="{{ route('seed.create') }}" class="btn btn-pry" >
+                    {{  ($current_detail['total']) ? $currency : '' }} {{  ($current_detail['total']) ? number_format($current_detail['total'],2) : "Create a Budget" }}
+                    </a>
                     <!-- <button class="btn btn-pry" data-toggle="modal" data-target="#createBudgetModal" >Create a Budget</button>     -->
                 </div>
             </div>
         </div>
-
+ 
         <div class="col-md-4 px-2">
             <div class="mt-2">
                 <h6 class="text-underline text-uppercase bold my-2 text-center">Target Seed </h6>
@@ -103,9 +105,9 @@
                             $seed = strtolower($seed);
                         @endphp
                         <td>{{$currency}}{{number_format($average_detail['table'][$seed],2)}} </td>
-                        <td> <a href="{{ route('seed.create') }}" class="text-dark">{{$currency}}{{number_format($current_detail['table'][$seed],2)}}</a> </td>
+                        <td> <a href="{{ route('seed.summary', $seed) }}" class="text-dark">{{$currency}}{{number_format($current_detail['table'][$seed],2)}}</a> </td>
                         <td>{{$currency}}{{number_format($target_detail['table'][$seed],2)}} </td>
-                    </tr>
+                    </tr> 
                 @endforeach
                 <tr>
                     <td class="bold">Total</td>

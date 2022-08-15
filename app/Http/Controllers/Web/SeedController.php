@@ -59,9 +59,9 @@ class SeedController extends Controller
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
-      $month =  date('Y-m').'-01';
-    //   $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-      $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
+        $month =  date('Y-m').'-01';
+        //   $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
                             ->where('user_id', $user->id)->where('period', $month)->get();
         foreach($savings_allocation as $allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
@@ -71,146 +71,11 @@ class SeedController extends Controller
 
       $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')
                             ->where('user_id', $user->id)->where('period', $month)->get();
-
+ 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail', 'savings_allocation', 'education_allocation'
       ));
-    }
-
-    public function storeSetBudget(Request $request){
-      $user = $request->user();
-
-      $request->validate([
-        'budget' => 'required|numeric'
-      ]);
-
-      $seed = CalculatorClass::getCurrentSeed($user);
-      $seed->budget_amount =  $request->budget;
-      $seed->update();
-      return redirect()->back()->with(['success' => 'Seed Budget has been set']);
-    }
-
-    public function showAlloction(Request $request, $id){
-      $user = $request->user();
-
-      $month =  date('Y-m').'-01';
-      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-      if($allocated){
-          return response()->json([
-            'status' => true,
-            'data' => $allocated,
-            'message' => 'Alllocation Summary'
-          ], 200);
-      }else{
-        return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
-      }
-    }
-
-    public function listAllocation(Request $request){
-        $user = $request->user();
-
-        $month =  date('Y-m').'-01';
-        $category = $request->input('category') ?? 'savings';
-        $expenditure = $request->input('expenditure');
-        $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
-                                    ->when($expenditure, function ($query, $expenditure) {
-                                        return $query->where('expenditure', $expenditure);
-                                    })
-                                  ->where('user_id', $user->id)->where('period', $month)->get();
-
-
-
-         return response()->json([
-            'status' => true,
-            'data' => $budget_allocation,
-            'message' => ''
-         ]);
-
-    }
-
-    public function storeCategoryAllocation(Request $request){
-      $user = $request->user();
-
-      $this->validate($request, [
-        'category' => 'required|in:savings,education,expenditure,discretionary',
-        'label' => 'required|between:3,50',
-        'amount' => 'required|numeric|min:0',
-      ]);
-
-      if($request->category == 'expenditure'){
-        $this->validate($request, [
-          'expenditure' => 'required|in:accommodation,transportation,family,utilities,debt_repayment',
-          // 'recuring' => 'required|integer|between:0,1'
-        ]);
-      }
-
-      if($request->label == "Others") $request['label'] = $request->other_label;
-      $current_seed = CalculatorClass::getCurrentSeed($user);
-      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
-
-      if($request->amount > $available_allocation){
-        return redirect()->back()->with('error', 'Amount is greater than Available allocation');
-      }
-
-      $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
-      $request['seed_category'] = $request->category;
-      $request['user_id'] = $user->id;
-      $request['period'] =  date('Y-m').'-01';
-
-      $budget_allocation =  SeedBudgetAllocation::create($request->all());
-      return redirect()->back()->with(['success' => 'Allocation has been created']);
-    }
-
-    public function updateCategoryAllocation(Request $request, $id){
-        $user = $request->user();
-
-        $month =  date('Y-m').'-01';
-        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-        if($allocated){
-            $this->validate($request,[
-              'label' => 'required|between:3,50',
-              'amount' => 'required|numeric|min:0',
-            ]);
-
-            // if($validator->fails()){
-            //   return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-            // }
-
-            $current_seed = CalculatorClass::getCurrentSeed($user);
-            $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-            $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
-
-            if($request->amount > $available_allocation){
-              return redirect()->back()->with('error', 'Amount is greater than Available allocation');
-            }
-
-          $allocated->update($request->all());
-
-          return  redirect()->back()->with('success','Seed Allocation has been updated');
-
-        }else{
-          return redirect()->back()->with('error', 'Allocation not found', 404);
-        }
-    }
-
-    public function storeRecordSpent(Request $request){
-        $user = $request->user();
-
-        $this->validate($request, [
-            'allocation' => 'required|exists:seed_budget_allocations,id',
-            'label' => 'required|between:3,50',
-            'amount' => 'required|numeric|min:0'
-          //   'date' => 'required|date'
-        ]);
-
-        $request['allocation_id'] = $request->allocation;
-        $request['user_id'] = $user->id;
-        $request['period'] =  date('Y-m').'-01';
-        $record_spent =  RecordBudgetSpent::create($request->all());
-
-        return redirect()->back()->with(['success' =>  'Record spent has been recorded' ]);
     }
 
     public function storeSeed(Request $request){

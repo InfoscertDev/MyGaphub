@@ -67,9 +67,28 @@ class SeedAllocationAPI extends Controller
         }else{
           return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
         }
-
       }
 
+      public function deleteAllocation(Request $request, $id){
+        $user = $request->user();
+        info(['Delete', $id]);
+        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        if($allocation){
+            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+            if(count($record_spents)){
+                $allocation->delete();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Allocation has been deleted'
+                ], 201);
+            }else{
+                return response()->json([ 'status' => false, 'message' => 'Allocation can not be deleted' ], 400);
+            }
+
+        }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+        }
+      }
 
 
     public function listAllocation(Request $request){
@@ -101,7 +120,7 @@ class SeedAllocationAPI extends Controller
           'allocation' => 'required|exists:seed_budget_allocations,id',
           'label' => 'required|between:3,50',
           'amount' => 'required|numeric|min:0',
-        //   'date' => 'required|date'
+            // 'date' => 'required|date'
         ]);
 
 

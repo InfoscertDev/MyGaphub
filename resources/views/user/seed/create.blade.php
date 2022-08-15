@@ -49,7 +49,7 @@
     @include('user.seed.summary.savings_summary')
     @include('user.seed.summary.education_summary')
 
-    @include('user.seed.edit_allocation')
+
     <br><br>
 
     <div class="row  mt-5 mb-2">
@@ -107,31 +107,5 @@
             $('#edit_budget_amount').show()
         }
 
-        function handleAllocationEdit(e){
-            console.log(e);
-            let id = e.value;
-
-            var url = `{{ route('seed.store.allocation')  }}`
-            console.log( url+'/'+id)
-            $.ajax({
-                type: 'GET',
-                url: '/home/seed/allocate/'+id,
-                success: function(data, status){
-                    let allocation = data.data;
-                    if(allocation){
-                        $('#edit_allocation').attr('action', url+'/'+id)
-                        $('span.seed_category').html(allocation.seed_category);
-                        $('#edit_label').val(allocation.label)
-                        $('#edit_amount').val(allocation.amount)
-                        $('#edit_note').val(allocation.note)
-                        $('#editAssetAllocationModal').modal('show');
-                    }
-                },
-                error: function (request, status, error) {
-                    // console.log(status, error)
-                    // alert(request.responseText);
-                }
-            });
-        }
     </script>
 @endsection
