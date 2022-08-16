@@ -43,8 +43,8 @@
             @include('user.seed.modals.discretionary_allocation')
             @include('user.seed.modals.expenditure_allocation')
 
-            @include('user.seed.modals.edit_allocation')
             @include('user.seed.modals.view_allocation')
+            @include('user.seed.modals.edit_allocation')
             </div>
         </div>
     </div>
@@ -62,12 +62,13 @@
                 success: function(data, status){
                     let allocation = data.data;
                     if(allocation){
+                        console.log(allocation);
                         $('#edit_allocation').attr('action', url+'/'+id)
-                        $('span.seed_category').html(allocation.seed_category);
+                        $('div.seed_category').html(allocation.label);
                         $('#edit_label').val(allocation.label)
                         $('#edit_amount').val(allocation.amount)
                         $('#edit_note').val(allocation.note)
-                        $('#editAssetAllocationModal').modal('show');
+                        $('#viewAllocationModal').modal('show');
                     }
                 },
                 error: function (request, status, error) {
