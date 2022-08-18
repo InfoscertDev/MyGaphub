@@ -36,7 +36,7 @@
                                     <option value="Others">Others</option>
                                 </select>
                                 <br>
-                                <input type="text" id="other_label" name="other_label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8" style="display: none;">
+                                <input type="text" id="discretionary_label" name="other_label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8" style="display: none;">
                             </div> 
                         </div>
                         <div class="form-group my-3 row">
@@ -77,60 +77,11 @@
 
             function handleChangeCategory(e){
                 if(e.value == "Others"){
-                    $('#other_label').fadeIn(600)
+                    $('#discretionary_label').fadeIn(600)
                 }else{
-                    $('#other_label').fadeOut(600)
+                    $('#discretionary_label').fadeOut(600)
                 }
             }
-
-            var editmode = 1 ;
-            function toggleEditCurrent(){
-                // var editilab = document.getElementById('editilab');
-                var investment = document.getElementById('investment'),
-                    personal = document.getElementById('personal'),
-                    emergency = document.getElementById('emergency'),
-                    finicial = document.getElementById('finicial'),
-                    career = document.getElementById('career')
-                    mental = document.getElementById('mental'),
-                    accomodation = document.getElementById('accomodation'),
-                    mobility = document.getElementById('mobility'),
-                    expenses = document.getElementById('expenses'),
-                    utilities = document.getElementById('utilities'),
-                    debt = document.getElementById('debt'),
-
-                    charity = document.getElementById('charity'),
-                    family = document.getElementById('family'),
-                    others = document.getElementById('others'),
-                    commitments = document.getElementById('commitments');
-                    
-                if (this.editmode) { 
-                    investment.disabled = true; personal.disabled = true;
-                    emergency.disabled = true; finicial.disabled = true;
-                    career.disabled = true; mental.disabled = true;
-                    accomodation.disabled = true;  expenses.disabled = true; 
-                    mobility.disabled = true;  utilities.disabled = true; 
-                    debt.disabled = true; 
-                    charity.disabled = true; others.disabled = true;
-                    family.disabled = true; commitments.disabled = true;
-                    
-                    $('#edit_current').hide(); $('#total_current').fadeIn(700); 
-                }else{
-                    investment.disabled = false; personal.disabled = false;
-                    emergency.disabled = false; finicial.disabled = false;
-                    career.disabled = false; mental.disabled = false;
-                    accomodation.disabled = false;  expenses.disabled = false; 
-                    mobility.disabled = false;  utilities.disabled = false; 
-                    debt.disabled = false; 
-                    
-                    charity.disabled = false; others.disabled = false;
-                    family.disabled = false; commitments.disabled = false;
-                   
-                    $('#edit_current').fadeIn(700);  $('#total_current').hide(); 
-                }
-
-                this.editmode = !this.editmode;
-            }
-            // toggleEditCurrent()
         </script>
     </div>
 </div>

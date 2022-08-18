@@ -50,24 +50,25 @@
     </div>
 
     <script>
-          function handleAllocationView(e){
+        var seed, id;
+        var url = `{{ route('seed.store.allocation')  }}`;
+       
+        function handleAllocationView(e){
             console.log(e.dataset.allocation);
-            let id = e.dataset.allocation;
-
-            var url = `{{ route('seed.store.allocation')  }}`
-            console.log( url+'/'+id)
+            id = e.dataset.allocation;
+            $('#deleteForm').attr('action', url+'/'+id)
             $.ajax({
                 type: 'GET',
                 url: '/home/seed/allocate/'+id,
                 success: function(data, status){
-                    let allocation = data.data;
-                    if(allocation){
-                        console.log(allocation);
-                        $('#edit_allocation').attr('action', url+'/'+id)
-                        $('div.seed_category').html(allocation.label);
-                        $('#edit_label').val(allocation.label)
-                        $('#edit_amount').val(allocation.amount)
-                        $('#edit_note').val(allocation.note)
+                    seed = data.data;
+                    if(seed){
+                        $('#allocation_label').html(seed.allocated.label);
+                        $('#allocation_note').html(seed.allocated.note)
+                        $('.allocation_budget').html(seed.allocated.amount)
+                        $('.allocation_balance').html(seed.summary.total_left)
+                        $('.left_percentage').html(seed.summary.left_percentage);
+                        // $('.progress-bar').css({'width': seed.summary.left_percentage});
                         $('#viewAllocationModal').modal('show');
                     }
                 },
@@ -76,6 +77,24 @@
                     // alert(request.responseText);
                 }
             });
+        }
+
+        function handleAllocationEdit(){
+            if(seed){
+                $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
+                
+                $('.seed_category').html(seed.allocated.seed_category);
+                $('#edit_label').val(seed.allocated.label);
+                $('#edit_amount').val(seed.allocated.amount);
+                $('#edit_note').val(seed.allocated.note);
+
+                // $('#edit_allocation').attr('action', url+'/'+id)
+                // $('div.seed_category').html(allocation.label);
+                // $('#edit_label').val(allocation.label)
+                // $('#edit_amount').val(allocation.amount)
+                // $('#edit_note').val(allocation.note)
+                $('#editAssetAllocationModal').modal('show');
+            }
         }
     </script>
 

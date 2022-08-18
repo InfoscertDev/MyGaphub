@@ -43,11 +43,15 @@ class SeedAllocationController extends Controller
       $month =  date('Y-m').'-01';
       $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
       if($allocated){
-          return response()->json([
-            'status' => true,
-            'data' => $allocated,
-            'message' => 'Alllocation Summary'
-          ], 200);
+            $record_spents = RecordBudgetSpent::whereAllocationId($id)->get();
+            $summary = AllocationHelpers::allocationSummay($allocated, $record_spents);
+            $data = compact('allocated', 'record_spents', 'summary');
+
+            return response()->json([
+                'status' => true,
+                'data' => $data,
+                'message' => 'Alllocation Summary'
+            ], 200);
       }else{
         return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
       }
@@ -63,7 +67,7 @@ class SeedAllocationController extends Controller
 
         if(in_array($seed, $seeds)){
             $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
-                        ->where('user_id', $user->id)->where('period', $month)->get();
+                        ->where('user_id', $user->id)->where('period', $month)->latest()->get();
             foreach($allocations as $allocation){
                 $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
                 $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
@@ -87,7 +91,6 @@ class SeedAllocationController extends Controller
                                         return $query->where('expenditure', $expenditure);
                                     })
                                   ->where('user_id', $user->id)->where('period', $month)->get();
-
 
 
          return response()->json([
@@ -129,7 +132,7 @@ class SeedAllocationController extends Controller
       $request['period'] =  date('Y-m').'-01';
 
       $budget_allocation =  SeedBudgetAllocation::create($request->all());
-      return redirect()->back()->with(['success' => 'Allocation has been created']);
+      return redirect()->route('seed.summary', $request->category)->with(['success' => 'Allocation has been created']);
     }
 
     public function updateCategoryAllocation(Request $request, $id){
@@ -163,6 +166,24 @@ class SeedAllocationController extends Controller
           return redirect()->back()->with('error', 'Allocation not found', 404);
         }
     }
+
+    public function deleteAllocation(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        if($allocation){
+            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+            if(count($record_spents) == 0){
+                $allocation->delete();
+                return redirect()->back()->with('success','Allocation has been deleted');
+            }else{
+                return redirect()->back()->with('error', 'Allocation can not be deleted');
+            }
+
+        }else{
+            return redirect()->back()->with('error', 'Allocation not found', 404);
+        }
+      }
 
     public function storeRecordSpent(Request $request){
         $user = $request->user();

@@ -60,15 +60,15 @@ Route::group(['middleware' => ['auth','verified']], function() {
         // Seed
         Route::get('/seed', 'Web\SeedController@index')->name('seed');
         Route::get('/seed/create', 'Web\SeedController@create')->name('seed.create');
-        Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');
+        // Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');
+        Route::post('/seed/store/budget', 'Web\SeedController@storeSetBudget')->name('seed.store.set_budget');
         Route::get('/seed/summary/{seed}', 'Web\SeedAllocationController@seedSummaryPage')->name('seed.summary');
-
         Route::get('/seed/list/allocate', 'Web\SeedAllocationController@listAllocation')->name('seed.list.allocation');
-        Route::post('/seed/store/budget', 'Web\SeedAllocationController@storeSetBudget')->name('seed.store.set_budget');
         Route::get('/seed/allocate/{id}', 'Web\SeedAllocationController@showAlloction')->name('seed.allocation');
 
         Route::post('/seed/store/allocation', 'Web\SeedAllocationController@storeCategoryAllocation')->name('seed.store.allocation');
         Route::post('/seed/store/allocation/{id}', 'Web\SeedAllocationController@updateCategoryAllocation')->name('seed.update.allocation');
+        Route::delete('/seed/store/allocation/{id}', 'Web\SeedAllocationController@deleteAllocation')->name('seed.delete.allocation');
         Route::post('/seed/record/spent', 'Web\SeedAllocationController@storeRecordSpent')->name('seed.add.record_spent');
         // SevenG
         Route::get('/7g', 'Web\SevenGSnapshotController@index')->name('7g');

@@ -17,10 +17,6 @@
                     <input type="hidden" name="jhbxjhbsuhjbhajbghjvajhbsxgb" value="yugvabhjvbavbjhzbjhbhajvbhgvbhvjbjhbazJHbbj">
                     <input type="hidden" name="category" value="expenditure">
                     <div class="my-4">
-                        <!-- <div class="row">
-                           <div ><h6 class="bold text-uppercase mx-3">SAVINGS</h6></div> 
-                           <div ><h6 class="text-underline">{{ $currency }}{{number_format($current_detail['table']['savings'],2)}} </h6></div> 
-                        </div> -->
                        
                         <div class="form-group my-3 row">
                             <div class="col-sm-6">
@@ -47,7 +43,7 @@
                                     <option value="">-- Select --</option>
                                 </select>
                                 <br>
-                                <input type="text" id="other_label" name="other_label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8" style="display: none;">
+                                <input type="text" id="expenditure_label" name="other_label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8" style="display: none;">
                             </div> 
                         </div>
                         <div class="form-group my-3 row">
@@ -130,9 +126,9 @@
             function handleChangeExpenditure(e){
                 console.log(e.value)
                 if(e.value == "Other"){
-                    $('#other_label').fadeIn(600)
+                    $('#expenditure_label').fadeIn(600)
                 }else{
-                    $('#other_label').fadeOut(600)
+                    $('#expenditure_label').fadeOut(600)
                 }
             }
 

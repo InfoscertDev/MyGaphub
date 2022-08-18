@@ -46,15 +46,13 @@
     @include('user.seed.modals.discretionary_allocation')
     @include('user.seed.modals.expenditure_allocation')
 
-    @include('user.seed.summary.savings_summary')
-    @include('user.seed.summary.education_summary')
 
 
     <br><br>
 
     <div class="row  mt-5 mb-2">
         <div class="col-md-3">
-            <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsSummaryModal').modal('show')">
+            <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
                 <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
                 <div class="tool-title"> <h3 class="center">Savings</h3></div>
             </div>
@@ -66,7 +64,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationSummaryModal').modal('show')">
+            <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
                 <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
                 <div class="tool-title"> <h3 class="center">Education</h3></div>
             </div>

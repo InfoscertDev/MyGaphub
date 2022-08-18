@@ -27,7 +27,27 @@
 
 
 @section('content')
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
+    @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0)
+
+        <div class="modal show" id="monthlyPriviewedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered" role="document">
+                <div class="modal-content modal-content-centre b-rad-20">
+                    <div class="modal-body">
+                        <div class="py-5">
+                            <h5 class="py-1 text-center">Budget from last month has been rolled over</h5>
+                            <h5 class="py-1 text-center"><a href="{{ route('7g')}}" class="text-dark text-underline card-link"> Navigate to Analytics page now </a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // $(function() {  $('#monthlyPriviewedMode').modal('show'); })
+        </script>
+    @endif
+
     <div class="row mt-2 mb-4 px-0 sm-default mx-auto">
         <div class="col-md-4 px-2">
             <div class="">
@@ -53,7 +73,7 @@
                 </div>
             </div>
         </div>
- 
+
         <div class="col-md-4 px-2">
             <div class="mt-2">
                 <h6 class="text-underline text-uppercase bold my-2 text-center">Target Seed </h6>
@@ -107,7 +127,7 @@
                         <td>{{$currency}}{{number_format($average_detail['table'][$seed],2)}} </td>
                         <td> <a href="{{ route('seed.summary', $seed) }}" class="text-dark">{{$currency}}{{number_format($current_detail['table'][$seed],2)}}</a> </td>
                         <td>{{$currency}}{{number_format($target_detail['table'][$seed],2)}} </td>
-                    </tr> 
+                    </tr>
                 @endforeach
                 <tr>
                     <td class="bold">Total</td>

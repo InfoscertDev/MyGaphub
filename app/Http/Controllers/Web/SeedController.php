@@ -46,6 +46,19 @@ class SeedController extends Controller
     }
 
 
+    public function storeSetBudget(Request $request){
+        $user = $request->user();
+
+        $request->validate([
+          'budget' => 'required|numeric'
+        ]);
+
+        $seed = CalculatorClass::getCurrentSeed($user);
+        $seed->budget_amount =  $request->budget;
+        $seed->update();
+        return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+    }
+
     public function create(){
       $user = auth()->user();
       $page_title = "My Current Month";
@@ -58,23 +71,12 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+    $seed = 'savings';
+    $month =  date('Y-m').'-01';
 
-        $month =  date('Y-m').'-01';
-        //   $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-        $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
-                            ->where('user_id', $user->id)->where('period', $month)->get();
-        foreach($savings_allocation as $allocation){
-            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-            $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
-            $allocation->summary = compact('record_spents', 'summary');
-        }
-
-      $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')
-                            ->where('user_id', $user->id)->where('period', $month)->get();
- 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail', 'savings_allocation', 'education_allocation'
+         'available_allocation', 'current_detail'
       ));
     }
 
