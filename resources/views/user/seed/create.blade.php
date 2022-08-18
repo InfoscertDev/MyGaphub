@@ -19,7 +19,7 @@
                 </div>
                 <div id="edit_budget_amount" style="display: none;">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post">
-                        @csrf
+                        @csrf 
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"> {{$currency}}</div>

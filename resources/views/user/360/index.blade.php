@@ -59,7 +59,7 @@
             @include('user.360.wheel') 
         </div>
     </div>
-@endsection
+@endsection 
 
 
 {{-- <div class="col-md-6 col-sm-12 mx-auto">

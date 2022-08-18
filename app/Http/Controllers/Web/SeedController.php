@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Helper\HelperClass;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\AnalyticsClass as SevenG;
+use App\Asset\SeedBudget as Budget;
 
 use App\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator;
@@ -16,7 +17,7 @@ use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\AllocationHelpers;
 use App\Helper\CalculatorClass;
 use App\Helper\GapExchangeHelper;
-use App\Helper\IncomeHelper;
+use App\Helper\IncomeHelper; 
 use App\ILab;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
@@ -24,10 +25,17 @@ use App\Models\Asset\RecordBudgetSpent;
 
 class SeedController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
       $user = auth()->user();
       $page_title = "Manage Your Money the SEED Way";
       $support = true;
+      $preview = $request->input('preview');
+      if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
+        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        $current_seed->priviewed = 1 ;
+        $current_seed->save();
+      }
+
       $seed_backgrounds = CalculatorClass::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
@@ -35,7 +43,7 @@ class SeedController extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
-      // var_dump($average_seed);
+
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
       $average_detail = AllocationHelpers::averageSeedDetail($user);
@@ -63,6 +71,12 @@ class SeedController extends Controller
       $user = auth()->user();
       $page_title = "My Current Month";
       $support = true; $month =  date('Y-m').'-01';
+      $preview = $request->input('preview');
+      if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
+        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        $current_seed->priviewed = 1 ;
+        $current_seed->save();
+      }
       $seed_backgrounds = CalculatorClass::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
@@ -71,8 +85,7 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-    $seed = 'savings';
-    $month =  date('Y-m').'-01';
+     
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
