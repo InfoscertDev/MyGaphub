@@ -52,7 +52,7 @@
     <script>
         var seed, id;
         var url = `{{ route('seed.store.allocation')  }}`;
-       
+
         function handleAllocationView(e){
             console.log(e.dataset.allocation);
             id = e.dataset.allocation;
@@ -67,8 +67,8 @@
                         $('#allocation_note').html(seed.allocated.note)
                         $('.allocation_budget').html(seed.allocated.amount)
                         $('.allocation_balance').html(seed.summary.total_left)
-                        $('.left_percentage').html(seed.summary.left_percentage);
-                        // $('.progress-bar').css({'width': seed.summary.left_percentage});
+                        $('.left_percentage').html(seed.summary.spent_percentage);
+                        $('.progress-bar').css({'width': seed.summary.spent_percentage+'%'});
                         $('#viewAllocationModal').modal('show');
                     }
                 },
@@ -82,7 +82,7 @@
         function handleAllocationEdit(){
             if(seed){
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
-                
+
                 $('.seed_category').html(seed.allocated.seed_category);
                 $('#edit_label').val(seed.allocated.label);
                 $('#edit_amount').val(seed.allocated.amount);

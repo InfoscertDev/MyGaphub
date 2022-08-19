@@ -140,11 +140,11 @@ class AllocationHelpers{
         foreach($records as $account){
             array_push($sum, $account->amount);
         }
-
         $total_spent = array_sum($sum);
+
         $total_left = $allocated->amount - $total_spent;
-        $spent_percentage = round(($allocated->amount / ($total_spent ? $total_spent : 1)) * 100);
-        $left_percentage = 100 - $spent_percentage;
+        $left_percentage = ($total_spent) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
+        $spent_percentage = 100 - $left_percentage;
         return compact('total_spent', 'total_left', 'spent_percentage', 'left_percentage');
     }
 

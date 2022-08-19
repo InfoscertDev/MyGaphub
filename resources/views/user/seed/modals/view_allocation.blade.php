@@ -13,12 +13,12 @@
             <div class="my-5">
                     <div class="row mx-4 mb-5">
                         <div class="col-12 d-flex">
-                            <h6 class=""><span class="left_percentage"></span> % left</h6>
-                            <h6 class="flex-end"> {{ $currency }}<span class="allocation_balance"></span> / {{ $currency }} <span class="allocation_budget"></span></h6>
+                            <h6 class=""><span class="left_percentage"></span>% left</h6>
+                            <h6 class="flex-end"> {{ $currency }}<span class="allocation_balance"></span> / {{ $currency }}<span class="allocation_budget"></span></h6>
                         </div>
                         <div class="col-12">
                             <div class="progress">
-                                <div class="progress-bar " role="progressbar" style="width: 70%" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar seed-{{$seed}}" role="progressbar" style="width: 70%" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
