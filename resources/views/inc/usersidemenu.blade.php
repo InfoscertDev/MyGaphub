@@ -8,7 +8,7 @@
         <div class="seperate"></div>
         <h6 class="list-group-head">Planning</h6> 
         <li class="list-item {{str_contains(Request::url(),'home/seed') ? 'active' : '' }}">
-            <a href="{{ Route('seed') }}" class="{{str_contains(Request::url(),'home/seed') ? 'txt-primary' : '' }}"> 
+            <a href="{{ Route('seed', ['preview' => 'sdwdcfuhghdsedxijdn'] ) }}" class="{{str_contains(Request::url(),'home/seed') ? 'txt-primary' : '' }}"> 
                 {{-- <i class="fa fa-md fa-home mr-2"></i>  --}}
                 <img src="{{str_contains(Request::url(),'home/seed') ? asset('/assets/icon/Seed_red.png') : asset('/assets/icon/Seed.png') }}" class="icon" alt="" style="width: 32px;height: 30px;margin-right: 4px;">
                 <span class="bold" >SEED</span> <br>

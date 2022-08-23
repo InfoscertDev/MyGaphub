@@ -61,12 +61,3 @@
     </div>
 @endsection 
 
-
-{{-- <div class="col-md-6 col-sm-12 mx-auto">
-    <div class="card b-rad-20 elevation-3">
-        <div class="card-body">
-        <h5 class="py-1 text-center">Kindly validate all your 7G assumption in order to view your 360<sup>o</sup> .</h5> 
-        <h5 class="py-1 text-center"><a href="{{ route('7g')}}" class="text-dark text-underline card-link"> Navigate to Analytics page now </a></h5>
-        </div>
-    </div>  
-</div> --}}

@@ -69,8 +69,13 @@ class SeedAllocationController extends Controller
             $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                         ->where('user_id', $user->id)->where('period', $month)->latest()->get();
             foreach($allocations as $allocation){
-                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-                $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
+                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)
+                        ->get()->groupBy(function($item) {
+                            return $item->date;
+                       });
+
+                $summary = ['total_spent' => 0, 'total_left' => 0 ,
+                            'spent_percentage' => 0, 'left_percentage' => 0];//AllocationHelpers::allocationSummay($allocation, $record_spents);
                 $allocation->summary = compact('record_spents', 'summary');
             }
 

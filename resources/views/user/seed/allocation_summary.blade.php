@@ -43,6 +43,7 @@
             @include('user.seed.modals.discretionary_allocation')
             @include('user.seed.modals.expenditure_allocation')
 
+            @include('user.seed.modals.view_transactions')
             @include('user.seed.modals.view_allocation')
             @include('user.seed.modals.edit_allocation')
             </div>

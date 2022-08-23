@@ -30,7 +30,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 
     @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0)
-
         <div class="modal show" id="monthlyPriviewedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
             <div class="modal-dialog  modal-dialog-centered" role="document">
                 <div class="modal-content modal-content-centre b-rad-20">
@@ -49,6 +48,29 @@
         <script>
             $(function() {  $('#monthlyPriviewedMode').modal('show'); })
         </script>
+    @elseif(request()->input('record'))
+        <script>
+            $(function() {  $('#createRecordSpentModal').modal('show'); })
+        </script>
+    @elseif(request()->input('preview'))
+        <div class="modal show" id="chooseSeedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered" role="document">
+                <div class="modal-content modal-content-centre b-rad-20">
+                    <div class="modal-body">
+                        <div class="py-4">
+                            <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
+                                <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Record Spend</a> </li>
+                                <li class="btn list-group-item my-2 text-center"><a href="{{ route('seed') }}" class="card-link text-white">View Budget</a> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function() {  $('#chooseSeedMode').modal('show'); })
+        </script>
+
     @endif
 
     <div class="row mt-2 mb-4 px-0 sm-default mx-auto">
@@ -141,7 +163,7 @@
             </table>
         </div>
         <div class="col-md-2 col-sm-12 col-xs-12 sm-center">
-            <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spent</button>
+            <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
             <br><br>
             <button class="btn btn-pry btn-history" disabled>Historic SEED</button>
         </div>

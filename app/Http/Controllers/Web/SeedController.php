@@ -67,7 +67,7 @@ class SeedController extends Controller
         return redirect()->back()->with(['success' => 'Seed Budget has been set']);
     }
 
-    public function create(){
+    public function create(Request $request){
       $user = auth()->user();
       $page_title = "My Current Month";
       $support = true; $month =  date('Y-m').'-01';

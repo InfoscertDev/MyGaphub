@@ -5,7 +5,7 @@
             <div class="modal-body">
                 <div class="d-block wd-f ">
                     <h2 class="text-center ff-rob">
-                       Record Spent
+                       Record Spend
                         <button type="button" class="btn btn-sm btn-close  text-right" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">X</span>
                         </button>
@@ -46,7 +46,7 @@
 
                         <div class="form-group my-3 row">
                             <div class="col-sm-5">
-                              Choose SEED Category:
+                                SEED Category:
                             </div>
                             <div class="col-sm-7">
                                 <select name="seed" id="seed" class="form-control" onchange="handleSeedCategory(this)" required>
@@ -61,7 +61,7 @@
 
                         <div class="form-group my-3 row" id="expenditure_lane" style="display: none;">
                             <div class="col-sm-5">
-                              Expenditure:
+                                 Expenditure
                             </div>
                             <div class="col-sm-7">
                                 <select name="expenditure" class="form-control" onchange="handleChangeExpenditure(this)" id="expenditure">
@@ -71,29 +71,31 @@
                         </div>
 
 
-                        <div class="form-group my-3 row">
+                        <div class="form-group my-3 row" id="allocation_lane" style="display: none;">
                             <div class="col-sm-5">
-                               Allocation :
+                               <span id="selected_seed" class="text-capitalize"></span>
                             </div>
                             <div class="col-sm-7">
                                 <select name="allocation" class="form-control" id="allocation" required>
                                     <option value="">-- Select --</option>
                                 </select>
+                                <div class="small mt-2">Available Balance: $300.00</div>
+                                <div class="small text-muted">Available After Spent: $300.00</div>
                             </div>
                         </div>
 
 
-                        <div class="form-group my-3 row">
+                        <div class="form-group my-3 row record_details" style="display: none;">
                             <div class="col-sm-5">
-                               Payee Name:
+                               Payee/Merchant:
                             </div>
                             <div class="col-sm-7">
                                 <input type="text" id="label" name="label" placeholder="Payee Name"  class="bs-none form-control b-rad-10 wd-8" >
                             </div>
                         </div>
-                        <div class="form-group my-3 row">
+                        <div class="form-group my-3 row record_details" style="display: none;">
                             <div class="col-sm-5">
-                                Description / Note:
+                                Note / Description:
                             </div>
                             <div class="col-sm-7">
                                 <textarea name="note" id="note" class="form-control b-rad-10" rows="2"></textarea>
@@ -116,24 +118,30 @@
 
             function handleSeedCategory(e){
                 let category= e.value.toLowerCase();
-                console.log(category);
                 if(category == 'expenditure'){
-                    $('#expenditure_lane').fadeIn(600)
+                    $('#expenditure_lane').fadeIn(600);
+                    $('#allocation_lane').fadeOut(600)
                 }else{
                     $('#expenditure_lane').fadeOut(600);
+                    $('#selected_seed').text(category)
+                    $('#allocation_lane').fadeIn(600)
                 }
                 listAllocation(category)
             }
 
+
             function handleChangeExpenditure(e){
                 let expenditure = e.value,
                     category = $('#seed').val();
+                $('#allocation_lane').fadeIn(600);
+                $('#selected_seed').text(expenditure)
                 listAllocation(category,expenditure);
             }
 
             function listAllocation(category, expenditure = ''){
                 let  list_allocation = $("#allocation"),
                      list_expenditure =  $('#expenditure');
+
                 $.ajax({
                     type: 'GET',
                     url: `/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
@@ -151,6 +159,7 @@
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }else {
+                                    $('.record_details').fadeIn()
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }

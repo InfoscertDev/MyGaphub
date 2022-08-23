@@ -19,7 +19,7 @@
                         <a href="{{ Route('home') }}" class="nav-link {{ Request::is('home') ? 'txt-primary' : '' }} "> Dashboard </a> 
                     </li>
                     <li class="nav-item menu-nav">
-                        <a href="{{ Route('seed') }}" class="nav-link {{ Request::is('home/seed') ? 'txt-primary' : '' }}">SEED</a>
+                        <a href="{{ Route('seed', ['preview' => 'sdwdcfuhghdsedxijdn'] ) }}" class="nav-link {{ Request::is('home/seed') ? 'txt-primary' : '' }}">SEED</a>
                     </li>
                     <li class="nav-item menu-nav">
                         <a href="{{ Route('user.actionplan') }}" class="nav-link {{ Request::is('home/actionplan') ? 'txt-primary' : '' }}">Action Plan</a>
