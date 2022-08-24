@@ -158,9 +158,10 @@ class SeedAllocationAPI extends Controller
                        });
             foreach ($record_spents as $key => $spend) {
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
+                // $spend[$key]
                 $spend['total_amount'] = $amount;
             }
-            
+
             $data = compact('allocated', 'record_spents', 'summary');
 
             return response()->json([
