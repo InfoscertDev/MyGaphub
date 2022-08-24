@@ -97,6 +97,10 @@ class SeedAllocationController extends Controller
                                     })
                                   ->where('user_id', $user->id)->where('period', $month)->get();
 
+        foreach($budget_allocation as $allocation){
+           $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+           $allocation->summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
+        }
 
          return response()->json([
             'status' => true,

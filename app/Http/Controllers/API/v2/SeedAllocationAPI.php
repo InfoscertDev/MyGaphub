@@ -101,9 +101,13 @@ class SeedAllocationAPI extends Controller
                                     ->when($expenditure, function ($query, $expenditure) {
                                         return $query->where('expenditure', $expenditure);
                                     })
-                                  ->where('user_id', $user->id)->where('period', $month)->get();
+                                ->where('user_id', $user->id)->where('period', $month)->get();
 
 
+         foreach($budget_allocation as $allocation){
+                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+                $allocation->summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
+         }
 
          return response()->json([
             'status' => true,
@@ -145,8 +149,18 @@ class SeedAllocationAPI extends Controller
         $month =  date('Y-m').'-01';
         $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocated){
-            $record_spents = RecordBudgetSpent::whereAllocationId($id)->get();
-            $summary = AllocationHelpers::allocationSummay($allocated, $record_spents);
+            $spents = RecordBudgetSpent::whereAllocationId($id)->get();
+            $summary = AllocationHelpers::allocationSummay($allocated, $spents);
+            $groups =  array();
+            $record_spents = RecordBudgetSpent::whereAllocationId($id)
+                        ->get()->groupBy(function($item) {
+                            return $item->date;
+                       });
+            foreach ($record_spents as $key => $spend) {
+                $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
+                $spend[$key] = $amount;
+            }
+
             $data = compact('allocated', 'record_spents', 'summary');
 
             return response()->json([

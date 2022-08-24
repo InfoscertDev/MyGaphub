@@ -65,7 +65,6 @@
                             </div>
                             <div class="col-sm-7">
                                 <select name="expenditure" class="form-control" onchange="handleChangeExpenditure(this)" id="expenditure">
-                                    <option value="">-- Select --</option>
                                 </select>
                             </div>
                         </div>
@@ -76,18 +75,20 @@
                                <span id="selected_seed" class="text-capitalize"></span>
                             </div>
                             <div class="col-sm-7">
-                                <select name="allocation" class="form-control" id="allocation" required>
+                                <select name="allocation" class="form-control" id="allocation" onchange="handleChangeAllocation(this)" required>
                                     <option value="">-- Select --</option>
                                 </select>
-                                <div class="small mt-2">Available Balance: $300.00</div>
-                                <div class="small text-muted">Available After Spent: $300.00</div>
+                                <div class="mt-2 record_details" style="display: none">
+                                    <div class="small">Available Balance: {{$currency}} <span id="summary_balance">300.00</span></div>
+                                    <div class="small text-muted">Available After Spent: {{$currency}}<span id="summary_spent">300.00</span></div>
+                                </div>
                             </div>
                         </div>
 
 
                         <div class="form-group my-3 row record_details" style="display: none;">
                             <div class="col-sm-5">
-                               Payee/Merchant:
+                               Payee / Merchant:
                             </div>
                             <div class="col-sm-7">
                                 <input type="text" id="label" name="label" placeholder="Payee Name"  class="bs-none form-control b-rad-10 wd-8" >
@@ -115,6 +116,7 @@
         </div>
 
         <script>
+            var allocations = [];
 
             function handleSeedCategory(e){
                 let category= e.value.toLowerCase();
@@ -129,13 +131,21 @@
                 listAllocation(category)
             }
 
+            function handleChangeAllocation(e){
+                if(e.value) $('.record_details').fadeIn();
+                let allocation = allocations.find((al) => {return al.id == e.value});
+                if(allocation.summary){
+                    $('#summary_balance').text(allocation.summary.total_left);
+                    $('#summary_spent').text(+allocation.summary.total_left - $('#amount').val());
+                }
+            }
 
             function handleChangeExpenditure(e){
                 let expenditure = e.value,
                     category = $('#seed').val();
                 $('#allocation_lane').fadeIn(600);
                 $('#selected_seed').text(expenditure)
-                listAllocation(category,expenditure);
+                listAllocation(category, expenditure);
             }
 
             function listAllocation(category, expenditure = ''){
@@ -146,12 +156,11 @@
                     type: 'GET',
                     url: `/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
                     success: function(data, status){
-                        let allocations = data.data;
+                        allocations = data.data;
                         if (allocations) {
-                            list_allocation.empty(); // remove old options
-                            // $('#selectId option:gt(0)').remove()
+                            // list_allocation.empty(); // remove old options
+                            $('#allocation option:gt(0)').remove();
                             $.each(allocations, function(key,allocation) {
-                                console.log(allocation)
                                 if(category == 'expenditure'){
                                     list_expenditure.append($("<option></option>")
                                     .attr("value", allocation.expenditure).text((allocation.expenditure).toUpperCase()));
@@ -159,7 +168,6 @@
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }else {
-                                    $('.record_details').fadeIn()
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }
@@ -168,15 +176,6 @@
                     },
                 })
 
-            }
-
-            function handleChangeAllocation(e){
-                console.log(e.value)
-                if(e.value == "Other"){
-                    $('#other_label').fadeIn(600)
-                }else{
-                    $('#other_label').fadeOut(600)
-                }
             }
 
         </script>
