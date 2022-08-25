@@ -97,21 +97,39 @@ class SeedAllocationAPI extends Controller
         $month =  date('Y-m').'-01';
         $category = $request->input('category') ?? 'savings';
         $expenditure = $request->input('expenditure');
-        $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
+        $budget_allocations =  SeedBudgetAllocation::where('seed_category', $category)
                                     ->when($expenditure, function ($query, $expenditure) {
                                         return $query->where('expenditure', $expenditure);
                                     })
                                 ->where('user_id', $user->id)->where('period', $month)->get();
 
 
-         foreach($budget_allocation as $allocation){
+         foreach($budget_allocations as $allocation){
                 $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
                 $allocation->summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
          }
 
+        $groups = array();
+        $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
+                        ->where('user_id', $user->id)->where('period', $month)->get();
+
+        foreach ($allocations->toArray() as $allocation) {
+            $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
+        }
+
+        foreach($groups as $group){
+            $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)
+                                                                ->where('expenditure',$group['label']) ->sum('amount') ?? 0;
+        }
+
+        $budget_expenditures = array_values($groups) ;
+
+
+        $data = compact('budget_allocations', 'budget_expenditures');
+
          return response()->json([
             'status' => true,
-            'data' => $budget_allocation,
+            'data' =>  $data,
             'message' => ''
          ]);
 
@@ -155,8 +173,10 @@ class SeedAllocationAPI extends Controller
                         ->get()->groupBy(function($item) {
                             return $item->date;
                        });
+
             foreach ($record_spents as $key => $spend) {
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
+                $spend['list'] = array_values($spend->toArray());
                 $spend['total_amount'] = $amount;
             }
 

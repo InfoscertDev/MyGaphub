@@ -104,19 +104,29 @@
         }
 
         function handleAllocationTransaction(){
-            $('#viewAllocationModal').modal('hide');
-            $('#viewTransactionsModal').modal('show');
             let record_spents = seed.record_spents,
                 spent_list = $('#spent_list');
+            spent_list.empty()
+            console.log(seed);
+            $('#viewAllocationModal').modal('hide');
+            $('#viewTransactionsModal').modal('show');
 
             $.each(record_spents, function(key1, records){
-                console.log(record);
-                // spent_list.append($("<div></div>").text(spent.label));
-                $.each(spent, function(key2, spent){ 
-                    console.log(spent.label);
-                    // spent_list.append($("<div></div>").text(spent.label));
+                console.log(key1, records)
+                spent_list.append($(`<div class="ml-3 mt-3"></div>`).text(key1));
+                $.each(records, function(key2, spent){
+                    spent_list.append($(`<div  style="height:50px"
+                    class="list-group-item mb-2 bg-gray d-flex" onclick="handleRecordView(this)"></div>`)
+                    .attr("value", spent.id).text(spent.label));
                 });
             });
+        }
+
+        function handleRecordView(id){
+            $('#viewTransactionsModal').modal('hide');
+            $('#viewRecordDetailModal').modal('show');
+
+            
         }
 
     </script>
