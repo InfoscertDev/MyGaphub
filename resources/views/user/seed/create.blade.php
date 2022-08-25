@@ -52,28 +52,56 @@
 
     <div class="row  mt-5 mb-2">
         <div class="col-md-3">
-            <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
-                <div class="tool-title"> <h3 class="center">Savings</h3></div>
-            </div>
+            @if($current_detail['table']['savings'] == 0)
+                <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
+                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
+                    <div class="tool-title"> <h3 class="center">Savings</h3></div>
+                </div>
+            @else
+                <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary', 'savings') }}">
+                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
+                    <div class="tool-title"> <h3 class="center">Savings</h3></div>
+                </a>
+            @endif
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
-                <div class="seed-badge">{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</div>
-                <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
-            </div>
+            @if($current_detail['table']['expenditure'] == 0)
+                <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
+                    <div class="seed-badge">{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
+                </div>
+            @else
+                <a class="seed-pane seed-expenditure tool-pane hand" href="{{ route('seed.summary', 'expenditure') }}">
+                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }} </div>
+                    <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
+                </a>
+            @endif
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
-                <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
-                <div class="tool-title"> <h3 class="center">Education</h3></div>
-            </div>
+            @if($current_detail['table']['education'] == 0)
+                <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
+                    <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Education</h3></div>
+                </div>
+            @else
+                <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', 'education') }}">
+                    <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Education</h3></div>
+                </a>
+            @endif
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-discretionary tool-pane hand"  onclick="$('#discretionaryAllocationModal').modal('show')">
-                <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
-                <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
-            </div>
+            @if($current_detail['table']['discretionary'] == 0)
+                <div class="seed-pane seed-discretionary tool-pane hand"  onclick="$('#discretionaryAllocationModal').modal('show')">
+                    <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
+                </div>
+            @else
+                <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary', 'discretionary') }}">
+                    <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
+                </a>
+            @endif
         </div>
     </div>
 

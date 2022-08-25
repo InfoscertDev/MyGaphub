@@ -57,9 +57,7 @@
                     </div>
 
                     <div class="row mt-4 justify-content-center " id="edit_current" >
-                        <button type="button" class="btn btn-sm btn-pry px-4" onclick="
-                            $('#viewAllocationModal').modal('hide');  $('#viewTransactionsModal').modal('show')
-                        " >View Transactions</button>
+                        <button type="button" class="btn btn-sm btn-pry px-4" onclick="handleAllocationTransaction()" >View Transactions</button>
                     </div>
 
                 </div>

@@ -15,7 +15,11 @@
             <div class="summary-card">
                 <div class="summary-header bg-gray">
                     <div class="summary-card-header seed-{{$seed}}">
-                        <h4 class="summary-card-title">{{$seed}} Allocation Summary</h4>
+                        @if(isset($category))
+                            <h4 class="summary-card-title">{{$category}}</h4>
+                        @else
+                            <h4 class="summary-card-title">{{$seed}} Allocation Summary</h4>
+                        @endif
                     </div>
                 </div>
                 <div class="summary-card-body">
@@ -24,7 +28,7 @@
                             <div class="list-group-item" data-allocation="{{$allocation->id}}" onclick="handleAllocationView(this)">
                                 <div class="d-flex mt-2 mb-1">
                                     <span class="box-identify box-{{$seed}}"></span>
-                                    <h5>{{ $allocation->label }}</h5>
+                                    <h5> {{$allocation->label}}</h5>
                                     <h5 class="flex-end">{{$currency}}{{ number_format($allocation->amount, 2) }}</h5>
                                 </div>
                                 <div class="small mb-1 ff-rob" style="margin-left: 36px;">{{$currency}}{{ number_format($allocation->summary['summary']['total_left'],2) }} Balance</div>
@@ -51,7 +55,7 @@
     </div>
 
     <script>
-        var seed, id;
+        var seed = {}, id;
         var url = `{{ route('seed.store.allocation')  }}`;
 
         function handleAllocationView(e){
@@ -82,6 +86,7 @@
 
         function handleAllocationEdit(){
             if(seed){
+
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
 
                 $('.seed_category').html(seed.allocated.seed_category);
@@ -97,6 +102,23 @@
                 $('#editAssetAllocationModal').modal('show');
             }
         }
+
+        function handleAllocationTransaction(){
+            $('#viewAllocationModal').modal('hide');
+            $('#viewTransactionsModal').modal('show');
+            let record_spents = seed.record_spents,
+                spent_list = $('#spent_list');
+
+            $.each(record_spents, function(key1, records){
+                console.log(record);
+                // spent_list.append($("<div></div>").text(spent.label));
+                $.each(spent, function(key2, spent){ 
+                    console.log(spent.label);
+                    // spent_list.append($("<div></div>").text(spent.label));
+                });
+            });
+        }
+
     </script>
 
 @endsection

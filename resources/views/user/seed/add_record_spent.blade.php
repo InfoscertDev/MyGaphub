@@ -65,6 +65,7 @@
                             </div>
                             <div class="col-sm-7">
                                 <select name="expenditure" class="form-control" onchange="handleChangeExpenditure(this)" id="expenditure">
+                                    <option value="">-- Select --</option>
                                 </select>
                             </div>
                         </div>

@@ -8,7 +8,7 @@ use App\Models\Asset\RecordBudgetSpent;
 
 class AllocationHelpers{
 
-    protected function monthlyRecurssionChecker(){
+    protected static function monthlyRecurssionChecker(){
         $month = date('m')-1;
         $current_period = date('Y-m').'-01';
         $last_period =  date('Y-').$month.'-01';

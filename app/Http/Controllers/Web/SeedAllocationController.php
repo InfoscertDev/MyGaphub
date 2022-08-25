@@ -42,9 +42,20 @@ class SeedAllocationController extends Controller
 
       $month =  date('Y-m').'-01';
       $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+
       if($allocated){
-            $record_spents = RecordBudgetSpent::whereAllocationId($id)->get();
-            $summary = AllocationHelpers::allocationSummay($allocated, $record_spents);
+            $spents = RecordBudgetSpent::whereAllocationId($id)->get();
+            $summary = AllocationHelpers::allocationSummay($allocated, $spents);
+            $record_spents = RecordBudgetSpent::whereAllocationId($id)
+                        ->get()->groupBy(function($item) {
+                            return $item->date;
+                        });
+
+            foreach ($record_spents as $key => $spend) {
+                $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
+                $record_spent[$key]['total_amount'] = $amount;
+            }
+
             $data = compact('allocated', 'record_spents', 'summary');
 
             return response()->json([
@@ -62,24 +73,43 @@ class SeedAllocationController extends Controller
         $month =  date('Y-m').'-01';
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
+        $category = $request->input('category');
         $seeds = ['savings', 'expenditure','education', 'discretionary'];
+        $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
+        $category = (in_array($category, $categories)) ? $category: null;
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
-        if(in_array($seed, $seeds)){
+        if ($seed == 'expenditure' && !$category){
+            $groups = array();
             $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
-                        ->where('user_id', $user->id)->where('period', $month)->latest()->get();
+                            ->where('user_id', $user->id)->where('period', $month)->get();
+
+            foreach ($allocations->toArray() as $allocation) {
+                $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
+             }
+
+             foreach($groups as $group){
+                $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)
+                                                                        ->where('expenditure',$group['label']) ->sum('amount') ?? 0;
+             }
+             $allocations = array_values($groups) ;
+             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
+        } else if(in_array($seed, $seeds)){
+            $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+                        ->where('user_id', $user->id)->where('period', $month)
+                        ->when($category, function ($query, $category) {
+                            return $query->where('expenditure', $category);
+                        })->latest()->get();
+
             foreach($allocations as $allocation){
                 $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)
-                        ->get()->groupBy(function($item) {
-                            return $item->date;
-                       });
+                        ->get();
 
-                $summary = ['total_spent' => 0, 'total_left' => 0 ,
-                            'spent_percentage' => 0, 'left_percentage' => 0];//AllocationHelpers::allocationSummay($allocation, $record_spents);
+                $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
                 $allocation->summary = compact('record_spents', 'summary');
             }
 
-            return view('user.seed.allocation_summary', compact('currency','current_detail','allocations', 'seed'));
+            return view('user.seed.allocation_summary', compact('currency','current_detail','allocations', 'seed','category'));
         }else{
             return  redirect('404');
         }

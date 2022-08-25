@@ -151,14 +151,12 @@ class SeedAllocationAPI extends Controller
         if($allocated){
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
             $summary = AllocationHelpers::allocationSummay($allocated, $spents);
-            $groups =  array();
             $record_spents = RecordBudgetSpent::whereAllocationId($id)
                         ->get()->groupBy(function($item) {
                             return $item->date;
                        });
             foreach ($record_spents as $key => $spend) {
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
-                // $spend[$key]
                 $spend['total_amount'] = $amount;
             }
 

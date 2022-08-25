@@ -12,13 +12,14 @@
                     </h2>
                 </div>
                 <div class="my-3">
-                    @foreach($allocations as $allocation)
+                    <div id="spent_list"></div>
+                    <!-- @foreach($allocations as $allocation)
                         <div style="height:50px" class="list-group-item mb-2 bg-gray d-flex" data-allocation="{{$allocation->id}}" onclick="handleAllocationView(this)">
                             <span class="box-badge">D</span>
                             <p>{{ $allocation->label }}</p>
                             <p class="flex-end">{{$currency}}{{ number_format($allocation->amount, 2) }}</p>
                         </div>
-                    @endforeach
+                    @endforeach -->
                 </div>
             </div>
         </div>
