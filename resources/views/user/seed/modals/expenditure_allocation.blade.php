@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-sm-6"> 
                                 <div class=" switch text-left">
-                                   <input class="" id="switch_cash" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_cash"></label>
+                                   <input class="" id="switch_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_recurring"></label>
                                 </div>
                             </div>
                         </div> 
@@ -125,7 +125,7 @@
 
             function handleChangeExpenditure(e){
                 console.log(e.value)
-                if(e.value == "Other"){
+                if(e.value == "Others"){
                     $('#expenditure_label').fadeIn(600)
                 }else{
                     $('#expenditure_label').fadeOut(600)

@@ -30,10 +30,12 @@
                             </div>
                         @endforeach
                     </div>
-                    @if($seed == 'savings')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#savingsAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
-                    @if($seed == 'expenditure')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#expenditureAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
-                    @if($seed == 'education')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#educationAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
-                    @if($seed == 'discretionary')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#discretionaryAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
+                    @if(count($allocations) < 4)
+                        @if($seed == 'savings')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#savingsAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
+                        @if($seed == 'expenditure')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#expenditureAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
+                        @if($seed == 'education')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#educationAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
+                        @if($seed == 'discretionary')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#discretionaryAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
+                    @endif
                 </div>
 
 

@@ -28,7 +28,7 @@
                                Education Category:
                             </div>
                             <div class="col-sm-6"> 
-                                <select name="label" class="form-control" oninput="handleChangeCategory(this)" id="savings_category" required>
+                                <select name="label" class="form-control" oninput="handleChangeEducatCategory(this)" id="savings_category" required>
                                     <option value="">-- Select --</option>
                                     <option value="Financial Intelligence Training">Financial Intelligence Training</option>
                                     <option value="Career & Professional Development">Career & Professional Development</option>
@@ -73,9 +73,9 @@
 
         <script>
             // let category = document.getElementById('savings_category');
-            // category.addEventListener('input', handleChangeCategory);
+            // category.addEventListener('input', handleChangeEducatCategory);
 
-            function handleChangeCategory(e){
+            function handleChangeEducatCategory(e){
                 if(e.value == "Others"){
                     $('#education_label').fadeIn(600)
                 }else{

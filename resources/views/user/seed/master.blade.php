@@ -164,7 +164,9 @@
             </table>
         </div>
         <div class="col-md-2 col-sm-12 col-xs-12 sm-center">
-            <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
+            @if($current_detail['total'])
+                <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
+            @endif
             <br><br>
             <button class="btn btn-pry btn-history" disabled>Historic SEED</button>
         </div>

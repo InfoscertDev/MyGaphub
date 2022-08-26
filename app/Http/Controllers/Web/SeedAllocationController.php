@@ -46,18 +46,22 @@ class SeedAllocationController extends Controller
       if($allocated){
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
             $summary = AllocationHelpers::allocationSummay($allocated, $spents);
-            $record_spents = RecordBudgetSpent::whereAllocationId($id)
+            $spents = RecordBudgetSpent::whereAllocationId($id)
                         ->get()->groupBy(function($item) {
                             return $item->date;
                         });
+           
+            $record_spents = array();
 
-            foreach ($record_spents as $key => $spend) {
+            foreach ($spents as $key => $spend) {
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
-                $spend['total_amount'] = $amount;
-                // $record_spents[$key]['total_amount'] = $amount;
+                $record = array();
+                // array_push($record, $key);
+                $record[$key]['total_amount'] = $amount;
+                $record[$key]['list'] = $spend;
+                array_push($record_spents, $record);
             }
 
-            // info($record_spents);
             $data = compact('allocated', 'record_spents', 'summary');
 
             return response()->json([
@@ -158,7 +162,13 @@ class SeedAllocationController extends Controller
         ]);
       }
 
-      if($request->label == "Others") $request['label'] = $request->other_label;
+      if($request->label == "Others") {
+        $this->validate($request, [
+            'other_label' => 'required|between:3,50',
+        ]);
+
+        $request['label'] = $request->other_label;
+      }
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
@@ -235,7 +245,7 @@ class SeedAllocationController extends Controller
             'amount' => 'required|numeric|min:0'
           //   'date' => 'required|date'
         ]);
-
+        $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
         $request['allocation_id'] = $request->allocation;
         $request['user_id'] = $user->id;
         $request['period'] =  date('Y-m').'-01';

@@ -103,6 +103,17 @@
                                 <textarea name="note" id="note" class="form-control b-rad-10" rows="2"></textarea>
                             </div>
                         </div>
+                        <div class="form-group my-3 row record_details" style="display: none;">
+                            <div class="col-sm-5">
+                               Recurring:
+                            </div>
+                            <div class="col-sm-7">
+                                <div class=" switch text-left">
+                                   <input class="" id="switch_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_recurring"></label>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="row mt-4 justify-content-center " id="edit_current" >
                             <button type="submiit" class="btn btn-md btn-pry px-4">Submit</button>
