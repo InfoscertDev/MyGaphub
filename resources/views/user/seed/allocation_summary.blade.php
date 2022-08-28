@@ -55,11 +55,10 @@
     </div>
 
     <script>
-        var seed = {}, id;
+        var seed = {}, record = {},id;
         var url = `{{ route('seed.store.allocation')  }}`;
 
         function handleAllocationView(e){
-            console.log(e.dataset.allocation);
             id = e.dataset.allocation;
             $('#deleteForm').attr('action', url+'/'+id)
             $.ajax({
@@ -105,30 +104,57 @@
 
         function handleAllocationTransaction(){
             let record_spents = seed.record_spents,
+                currency = "<?php echo $currency ?>"
                 spent_list = $('#spent_list');
             spent_list.empty()
-            console.log(seed);
+
             $('#viewAllocationModal').modal('hide');
             $('#viewTransactionsModal').modal('show');
 
             $.each(record_spents, function(key1, records){
-                console.log(key1, records)
-                spent_list.append($(`<div class="ml-3 mt-3"></div>`).text(key1));
-                $.each(records, function(key2, spent){
-                    spent_list.append($(`<div  style="height:50px"
-                    class="list-group-item mb-2 bg-gray d-flex" onclick="handleRecordView(this)"></div>`)
-                    .attr("value", spent.id).text(spent.label));
+                let header =  $(`<div class="ml-3 mt-3"> ${(Object.keys(records)[0])}
+                        <span class="float-right mr-3"> ${currency}${(Object.values(records)[key1]) ? (Object.values(records)[key1].total_amount).toFixed(2) : 0.00 } </span>
+                    </div>`);
+                // console.log(Object.values(records)[key1], header);
+
+                spent_list.append(header)
+                        //   .append(`<span class="float-right"> </span>`).text('2022');
+                $.each(records[Object.keys(records)].list, function(key2, spent){
+                    let row =   $(`<div  style="height:50px" data-record="${spent.id}"
+                    class="list-group-item mb-2 bg-gray d-flex" onclick="handleRecordView(this)">
+                        <span class="box-badge">${spent.label.charAt(0)}</span>
+                        <p>  ${spent.label}  </p>
+                        <p class="flex-end"> ${currency}${spent.amount}  </p>
+                    </div>`)
+
+                    spent_list.append(row);
                 });
             });
         }
 
-        function handleRecordView(id){
+        function handleRecordView(e){
+            let id = e.dataset.record;
             $('#viewTransactionsModal').modal('hide');
             $('#viewRecordDetailModal').modal('show');
+            console.log(e.dataset.record);
 
-            
+            $.ajax({
+                type: 'GET',
+                url: '/home/seed/record/'+id,
+                success: function(data, status){
+                    record = data.data;
+                    $('.ico').text(record.label.charAt(0))
+                    $('#record_label').text(record.label)
+                    $('#record_amount').text((record.amount).toFixed(2))
+                    $('#record_date').text(record.date)
+                    $('#record_note').text(record.note)
+                },
+                error: function (request, status, error) {
+                    // console.log(status, error)
+                    // alert(request.responseText);
+                }
+            });
         }
-
     </script>
 
 @endsection

@@ -50,7 +50,7 @@ class SeedAllocationController extends Controller
                         ->get()->groupBy(function($item) {
                             return $item->date;
                         });
-           
+
             $record_spents = array();
 
             foreach ($spents as $key => $spend) {
@@ -72,6 +72,20 @@ class SeedAllocationController extends Controller
       }else{
         return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
       }
+    }
+
+    public function showRecordSpend(Request $request, $id){
+        $user = $request->user();  $month =  date('Y-m').'-01';
+        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($record){
+            return response()->json([
+                'status' => true,
+                'data' => $record,
+                'message' => 'Alllocation Record'
+              ]);
+        }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+        }
     }
 
     public function seedSummaryPage(Request $request, $seed){
@@ -251,7 +265,8 @@ class SeedAllocationController extends Controller
         $request['period'] =  date('Y-m').'-01';
         $record_spent =  RecordBudgetSpent::create($request->all());
 
-        return redirect()->back()->with(['success' =>  'Record spent has been recorded' ]);
+        return redirect()->route('seed', ['spend' => 'w67tsedgfthudbyhbj','dygvhsbjyfctguysbhdd' => $record_spent->id])
+                            ->with(['spend' => $record_spent->id ,'success' =>  'Record spent has been recorded' ]);
     }
 
 

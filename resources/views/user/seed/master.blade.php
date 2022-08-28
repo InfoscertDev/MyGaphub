@@ -27,7 +27,8 @@
 
 
 @section('content')
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+        @include('user.seed.modals.view_transactions')
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
         <!-- Check if it a new user -->
         @if($current_detail['total'] > 0)
             @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0)
@@ -73,6 +74,36 @@
                 </script>
 
             @endif
+        @endif
+
+        @if(request()->input('spend'))
+
+            <script>
+
+                $(function() {    handleRecordView(); })
+
+                function handleRecordView(){
+                    let id = "<?php  echo request()->input('dygvhsbjyfctguysbhdd')?>";
+                    $('#viewRecordDetailModal').modal('show');
+                    console.log(id);
+                    $.ajax({
+                        type: 'GET',
+                        url: '/home/seed/record/'+id,
+                        success: function(data, status){
+                            record = data.data;
+                            $('.ico').text(record.label.charAt(0))
+                            $('#record_label').text(record.label)
+                            $('#record_amount').text((record.amount).toFixed(2))
+                            $('#record_date').text(record.date)
+                            $('#record_note').text(record.note)
+                        },
+                        error: function (request, status, error) {
+                            // console.log(status, error)
+                            // alert(request.responseText);
+                        }
+                    });
+                }
+            </script>
         @endif
     <div class="row mt-2 mb-4 px-0 sm-default mx-auto">
         <div class="col-md-4 px-2">

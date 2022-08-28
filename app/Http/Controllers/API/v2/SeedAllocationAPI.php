@@ -195,4 +195,20 @@ class SeedAllocationAPI extends Controller
           return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
         }
     }
+
+
+    public function showRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $record = RecordSpend::whereId($id)->where('period', $month)->first();
+        if($record){
+            return response()->json([
+                'status' => true,
+                'data' => $record,
+                'message' => 'Alllocation Record'
+              ]);
+        }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+        }
+    }
+
 }

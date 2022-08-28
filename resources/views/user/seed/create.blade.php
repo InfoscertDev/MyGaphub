@@ -13,18 +13,18 @@
                 <h3 class="bold mr-2">
                     {{ ($current_seed->budget_amount == 0) ? 'Set Budget:' : 'My Budget:'}}
                 </h3>
-                <div id="view_budget_amount" ondblclick="toggleBudgetMode()">
+                <div id="view_budget_amount"  style="display: none;" >
                     <span class="px-2 h3">{{$currency}}{{ number_format($current_seed->budget_amount, 2) }} </span>
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Double click to edit"><i class="fa fa-info mx-2 "></i></span>
                 </div>
-                <div id="edit_budget_amount" style="display: none;">
+                <div id="edit_budget_amount">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post">
                         @csrf 
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"> {{$currency}}</div>
                             </div>
-                            <input type="number" name="budget" min="0" value="{{$current_seed->budget_amount}}" class="form-control">
+                            <input type="number" oninput="handleBudgetChange(this)" name="budget" min="0" value="{{$current_seed->budget_amount}}" class="form-control">
                         </div>
                         <!-- <input type="submit" value=""> -->
                     </form>
@@ -36,7 +36,7 @@
             <div class="float-right">
                 <div class="d-flex">
                     <h3 class="bold ml-3">Available for Allocation: </h3>
-                    <span class="px-2 h3">{{$currency}}{{ number_format($available_allocation, 2) }} </span>
+                    <span class="px-2 h3">{{$currency}}<span id="allocation_available">{{ number_format($available_allocation, 2) }}</span>  </span>
                 </div>
             </div>
         </div>
@@ -133,5 +133,10 @@
             $('#edit_budget_amount').show()
         }
 
+        function handleBudgetChange(e){
+            let allocation = document.querySelector('#allocation_available');
+            let allocated = "<?php echo $current_detail['total']; ?>";
+            allocation.innerText = (+e.value -  +allocated).toFixed(2);
+        }
     </script>
 @endsection

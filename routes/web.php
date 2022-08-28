@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/seed/summary/{seed}', 'Web\SeedAllocationController@seedSummaryPage')->name('seed.summary');
         Route::get('/seed/list/allocate', 'Web\SeedAllocationController@listAllocation')->name('seed.list.allocation');
         Route::get('/seed/allocate/{id}', 'Web\SeedAllocationController@showAlloction')->name('seed.allocation');
+        Route::get('/seed/record/{id}', 'Web\SeedAllocationController@showRecordSpend')->name('seed.record');
 
         Route::post('/seed/store/allocation', 'Web\SeedAllocationController@storeCategoryAllocation')->name('seed.store.allocation');
         Route::post('/seed/store/allocation/{id}', 'Web\SeedAllocationController@updateCategoryAllocation')->name('seed.update.allocation');
