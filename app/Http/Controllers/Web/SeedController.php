@@ -63,6 +63,7 @@ class SeedController extends Controller
 
         $seed = CalculatorClass::getCurrentSeed($user);
         $seed->budget_amount =  $request->budget;
+        $seed->priviewed = 1 ;
         $seed->update();
         return redirect()->back()->with(['success' => 'Seed Budget has been set']);
     }
