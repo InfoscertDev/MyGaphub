@@ -16,4 +16,16 @@ class SeedBudgetAllocation extends Model
         'expenditure',
         'recuring'
     ];
+
+
+    // public function getExpenditureAttribute($value){
+    //     if($value == 'family'){
+    //         $value = 'Home & Family';
+    //     }else if ($value == 'debt_repayment') {
+    //         $value = 'Debt Repayment';
+    //     }else if($value){
+    //        $value = ucfirst($value);
+    //     }
+    //     return $value;
+    // }
 }

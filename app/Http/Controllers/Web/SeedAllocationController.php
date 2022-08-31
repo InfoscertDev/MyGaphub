@@ -101,19 +101,21 @@ class SeedAllocationController extends Controller
 
         if ($seed == 'expenditure' && !$category){
             $groups = array();
-            $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+            $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
                             ->where('user_id', $user->id)->where('period', $month)->get();
 
             foreach ($allocations->toArray() as $allocation) {
                 $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
-             }
+            }
 
-             foreach($groups as $group){
-                $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)
-                                                                        ->where('expenditure',$group['label']) ->sum('amount') ?? 0;
-             }
-             $allocations = array_values($groups) ;
-             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
+
+            foreach($groups as $key => $group){
+                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)
+                                                                    ->where('expenditure',$group['label']) ->sum('amount');
+            }
+
+            $allocations = array_values($groups) ;
+            return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
         } else if(in_array($seed, $seeds)){
             $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                         ->where('user_id', $user->id)->where('period', $month)
@@ -122,9 +124,7 @@ class SeedAllocationController extends Controller
                         })->latest()->get();
 
             foreach($allocations as $allocation){
-                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)
-                        ->get();
-
+                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
                 $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
                 $allocation->summary = compact('record_spents', 'summary');
             }
@@ -242,7 +242,7 @@ class SeedAllocationController extends Controller
                 $allocation->delete();
                 return redirect()->back()->with('success','Allocation has been deleted');
             }else{
-                return redirect()->back()->with('error', 'Allocation can not be deleted');
+                return redirect()->back()->with('error', 'Allocation cannot be deleted');
             }
 
         }else{

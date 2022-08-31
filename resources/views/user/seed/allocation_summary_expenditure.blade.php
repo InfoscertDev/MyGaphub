@@ -2,6 +2,18 @@
 @extends('layouts.user')
 
 @section('content')
+@php
+ function filterExpenditure($value){
+    if($value == 'family'){
+        $value = 'Home & Family';
+    }else if ($value == 'debt_repayment') {
+        $value = 'Debt Repayment';
+    }else if($value){
+       $value = ucfirst($value);
+    }
+    return $value;
+ }
+@endphp
     <div class="row justify-content-center">
         <div class="col-12 my-4">
             <div class="d-flex">
@@ -24,7 +36,7 @@
                             <div class="list-group-item" >
                                 <a class="d-flex mt-2 mb-1 card-link" style="color: inherit;" href="{{ route('seed.summary',     [ 'expenditure','category' => $allocation['label'] ]) }}">
                                     <span class="box-identify box-expenditure"></span>
-                                    <h5 class="text-capitalize"> {{$allocation['label']}}</h5>
+                                    <h5 class="text-capitalize"> {{ filterExpenditure($allocation['label']) }} </h5>
                                     <h5 class="flex-end">{{$currency}}{{ (isset($allocation['amount'])) ? number_format(($allocation['amount']), 2) : 0 }}</h5>
                                 </a>
                             </div>
