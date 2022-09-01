@@ -39,7 +39,7 @@
                           <h5 class="pb-1" id="record_label"></h5>
                           <p>
                             {{$currency}}<span id="record_amount"></span>
-                            <span class="ml-2"><i class="fa fa-rotate"></i></span>
+                            <span class="ml-2"><i class="fa fa-repeat" id="record_recursion" style="display: none;"></i></span>
                           </p>
                     </div>
                     <ul class="list-group">
@@ -59,7 +59,7 @@
                         </li>
                         <li class="list-group-item">
                             <h6 class="text-muted">Spent last mouth
-                                 <span class="float-right"><i class="fa fa-timer"></i></span>
+                                 <span class="float-right"><i class="fa fa-calendar"></i></span>
                             </h6>
                             <h6 class="">
                                 {{$currency}}<span id="spent_last_month"></span>
@@ -67,7 +67,7 @@
                         </li>
                         <li class="list-group-item">
                             <h6 class="text-muted">Note
-                                <span class="float-right"><i class="fa fa-note"></i></span>
+                                <span class="float-right"><i class="fa  fa-sticky-note"></i></span>
                             </h6>
                             <p id="record_note"> </p>
                         </li>
