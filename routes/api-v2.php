@@ -82,8 +82,9 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@storeCategoryAllocation');
         Route::put('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@updateCategoryAllocation');
         Route::delete('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@deleteAllocation');
-        Route::get('/seed/allocate/{id}', 'API\v2\SeedAllocationAPI@showAlloction'); 
+        Route::get('/seed/allocate/{id}', 'API\v2\SeedAllocationAPI@showAlloction');
         Route::post('/seed/record/spent', 'API\v2\SeedAllocationAPI@storeRecordSpent');
+        Route::put('/seed/record/spent/{id}', 'API\v2\SeedAllocationAPI@updateRecordSpend');
         // 360
         Route::get('/360/tiles', 'API\v2\WheelController@tiles');
         Route::get('/360/ilab', 'API\v2\SeedAPI@ilab');

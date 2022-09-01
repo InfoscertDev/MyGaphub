@@ -17,13 +17,13 @@
                     <input type="hidden" name="category" value="savings">
                     <div class="my-4">
                         <!-- <div class="row">
-                           <div ><h6 class="bold text-uppercase mx-3">SAVINGS</h6></div>
-                           <div ><h6 class="text-underline">{{ $currency }}{{number_format($current_detail['table']['savings'],2)}} </h6></div>
+                            <div ><h6 class="bold text-uppercase mx-3">SAVINGS</h6></div>
+                            <div ><h6 class="text-underline">{{ $currency }}{{number_format($current_detail['table']['savings'],2)}} </h6></div>
                         </div> -->
 
                         <div class="form-group my-3 row">
                             <div class="col-sm-6">
-                            <span class="seed_category text-capitalize "> </span>  Category:
+                                <span class="seed_category text-capitalize "> </span>  Category:
                             </div>
                             <div class="col-sm-6">
                                 <input type="text" id="edit_label" name="label" placeholder="Label Name"  class="bs-none form-control b-rad-10 wd-8">
@@ -61,4 +61,4 @@
             </div>
         </div>
     </div>
-  </div>
+</div>

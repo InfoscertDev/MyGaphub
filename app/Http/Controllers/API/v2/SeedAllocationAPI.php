@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
 use Illuminate\Support\Facades\Validator;
+use App\Helper\GapAccountCalculator as GapAccount;
 
 class SeedAllocationAPI extends Controller
 {
@@ -140,6 +141,7 @@ class SeedAllocationAPI extends Controller
         $month =  date('Y-m').'-01';
         $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocated){
+            $backgrounds = array_reverse(GapAccount::accountBackground());
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
             $summary = AllocationHelpers::allocationSummay($allocated, $spents);
             $spents = RecordBudgetSpent::whereAllocationId($id)
@@ -157,7 +159,7 @@ class SeedAllocationAPI extends Controller
                 array_push($record_spents, $record);
             }
 
-            $data = compact('allocated', 'record_spents', 'summary');
+            $data = compact('allocated', 'record_spents', 'summary','backgrounds');
 
             return response()->json([
               'status' => true,
@@ -169,6 +171,7 @@ class SeedAllocationAPI extends Controller
         }
     }
 
+    // 
 
     public function showRecordSpend(Request $request, $id){
         $user = $request->user();
@@ -220,14 +223,14 @@ class SeedAllocationAPI extends Controller
             $validator = Validator::make($request->all(),[
                 'label' => 'required|between:3,50',
                 'amount' => 'required|numeric|min:0'
-              ]);
-
+            ]);
+ 
 
             if($validator->fails()){
-            return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+                return response()->json([ 'status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
 
-            $record->update($requet->all());
+            $record->update($request->all());
 
             return response()->json([
                 'status' => true,

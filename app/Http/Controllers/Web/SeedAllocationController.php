@@ -73,6 +73,7 @@ class SeedAllocationController extends Controller
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
         $category = (in_array($category, $categories)) ? $category: null;
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+        $backgrounds = array_reverse(GapAccount::accountBackground());
 
         if ($seed == 'expenditure' && !$category){
             $groups = array();
@@ -104,7 +105,7 @@ class SeedAllocationController extends Controller
                 $allocation->summary = compact('record_spents', 'summary');
             }
 
-            return view('user.seed.allocation_summary', compact('currency','current_detail','allocations', 'seed','category'));
+            return view('user.seed.allocation_summary', compact('currency','current_detail','allocations', 'seed','category','backgrounds'));
         }else{
             return  redirect('404');
         }
@@ -274,7 +275,7 @@ class SeedAllocationController extends Controller
               //   'date' => 'required|date'
             ]);
 
-            $record->update($requet->all());
+            $record->update($request->all());
 
             return redirect()->back()->with('success','Alllocation Record has been updated');
         }else{

@@ -30,14 +30,16 @@ class SeedController extends Controller
       $page_title = "Manage Your Money the SEED Way";
       $support = true;
       $preview = $request->input('preview');
+
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
+        AllocationHelpers::monthlyRecurssionChecker($user); 
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
-        $current_seed->save();
+        $current_seed->save();   
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();
-      $isValid = SevenG::isSevenGVal($user);
+      $isValid = SevenG::isSevenGVal($user); 
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
       $current_seed = CalculatorClass::getCurrentSeed($user);
@@ -63,7 +65,7 @@ class SeedController extends Controller
 
         $seed = CalculatorClass::getCurrentSeed($user);
         $seed->budget_amount =  $request->budget;
-        $seed->priviewed = 1 ;
+        $seed->priviewed = 1 ; 
         $seed->update();
         return redirect()->back()->with(['success' => 'Seed Budget has been set']);
     }
@@ -84,9 +86,9 @@ class SeedController extends Controller
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
      
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        $current_seed->priviewed = 1 ;
-        $current_seed->save();
+        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        // $current_seed->priviewed = 1 ;
+        // $current_seed->save();
       }
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];

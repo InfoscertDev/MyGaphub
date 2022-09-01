@@ -2,18 +2,17 @@
 @extends('layouts.user')
 
 @section('content')
-
     @php
-    function filterExpenditure($value){
-        if($value == 'family'){
-            $value = 'Home & Family';
-        }else if ($value == 'debt_repayment') {
-            $value = 'Debt Repayment';
-        }else if($value){
-        $value = ucfirst($value);
+        function filterExpenditure($value){
+            if($value == 'family'){
+                $value = 'Home & Family';
+            }else if ($value == 'debt_repayment') {
+                $value = 'Debt Repayment';
+            }else if($value){
+            $value = ucfirst($value);
+            }
+            return $value;
         }
-        return $value;
-    }
     @endphp
     <div class="row justify-content-center">
         <div class="col-12 my-4">
@@ -55,14 +54,14 @@
                 </div>
 
 
-            @include('user.seed.modals.savings_allocation')
-            @include('user.seed.modals.education_allocation')
-            @include('user.seed.modals.discretionary_allocation')
-            @include('user.seed.modals.expenditure_allocation')
+                @include('user.seed.modals.savings_allocation')
+                @include('user.seed.modals.education_allocation')
+                @include('user.seed.modals.discretionary_allocation')
+                @include('user.seed.modals.expenditure_allocation')
 
-            @include('user.seed.modals.view_transactions')
-            @include('user.seed.modals.view_allocation')
-            @include('user.seed.modals.edit_allocation')
+                @include('user.seed.modals.view_transactions')
+                @include('user.seed.modals.view_allocation')
+                @include('user.seed.modals.edit_allocation')
             </div>
         </div>
     </div>
@@ -70,6 +69,7 @@
     <script>
         var seed = {}, record = {},id;
         var url = `{{ route('seed.store.allocation')  }}`;
+        var record_url = `{{ route('seed.add.record_spent')  }}`;
 
         function handleAllocationView(e){
             id = e.dataset.allocation;
@@ -159,16 +159,28 @@
                     $('.ico').text(record.label.charAt(0))
                     $('#record_label').text(record.label)
                     $('#record_amount').text((record.amount).toFixed(2))
-                    $('#spent_current_month').text(record.spent_current_month).toFixed(2);
-                    $('#spent_last_month').text(record.spent_last_month).toFixed(2);
                     $('#record_date').text(record.date)
                     $('#record_note').text(record.note)
+                    $('#spent_current_month').text(record.spent_current_month);
+                    $('#spent_last_month').text(record.spent_last_month);
                 },
                 error: function (request, status, error) {
                     // console.log(status, error)
                     // alert(request.responseText);
                 }
             });
+        }
+
+        function handleUpdateRecord(){
+            if(record){
+                $('#edit_record_allocation').attr('action', record_url+'/'+record.id)
+
+                $('#edit_record_label').val(record.label);
+                $('#edit_record_amount').val(record.amount);
+                $('#edit_record_note').val(record.note);
+                $('#editRecordDetailModal').modal('show');
+                $('#viewRecordDetailModal').modal('hide');
+            }
         }
     </script>
 
