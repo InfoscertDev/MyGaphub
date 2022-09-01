@@ -66,11 +66,12 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/seed/list/allocate', 'Web\SeedAllocationController@listAllocation')->name('seed.list.allocation');
         Route::get('/seed/allocate/{id}', 'Web\SeedAllocationController@showAlloction')->name('seed.allocation');
         Route::get('/seed/record/{id}', 'Web\SeedAllocationController@showRecordSpend')->name('seed.record');
-
+            
         Route::post('/seed/store/allocation', 'Web\SeedAllocationController@storeCategoryAllocation')->name('seed.store.allocation');
         Route::post('/seed/store/allocation/{id}', 'Web\SeedAllocationController@updateCategoryAllocation')->name('seed.update.allocation');
         Route::delete('/seed/store/allocation/{id}', 'Web\SeedAllocationController@deleteAllocation')->name('seed.delete.allocation');
         Route::post('/seed/record/spent', 'Web\SeedAllocationController@storeRecordSpent')->name('seed.add.record_spent');
+        Route::post('/seed/record/spent/{id}', 'Web\SeedAllocationController@updateRecordSpent')->name('seed.update.record_spent');
         // SevenG
         Route::get('/7g', 'Web\SevenGSnapshotController@index')->name('7g');
         Route::get('/7g/edit', 'Web\SevenGSnapshotController@create')->name('7g.editall');

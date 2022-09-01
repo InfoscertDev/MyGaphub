@@ -24,18 +24,6 @@ use App\Models\Asset\RecordBudgetSpent;
 
 class SeedAllocationController extends Controller
 {
-    public function storeSetBudget(Request $request){
-      $user = $request->user();
-
-      $request->validate([
-        'budget' => 'required|numeric'
-      ]);
-
-      $seed = CalculatorClass::getCurrentSeed($user);
-      $seed->budget_amount =  $request->budget;
-      $seed->update();
-      return redirect()->back()->with(['success' => 'Seed Budget has been set']);
-    }
 
     public function showAlloction(Request $request, $id){
       $user = $request->user();
@@ -74,19 +62,6 @@ class SeedAllocationController extends Controller
       }
     }
 
-    public function showRecordSpend(Request $request, $id){
-        $user = $request->user();  $month =  date('Y-m').'-01';
-        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
-        if($record){
-            return response()->json([
-                'status' => true,
-                'data' => $record,
-                'message' => 'Alllocation Record'
-              ]);
-        }else{
-            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
-        }
-    }
 
     public function seedSummaryPage(Request $request, $seed){
         $user = $request->user();
@@ -110,7 +85,7 @@ class SeedAllocationController extends Controller
 
 
             foreach($groups as $key => $group){
-                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)
+                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                                                     ->where('expenditure',$group['label']) ->sum('amount');
             }
 
@@ -250,6 +225,25 @@ class SeedAllocationController extends Controller
         }
       }
 
+    public function showRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01'; $cp = date('m')-1;
+        $last_period =  date('Y-'). $cp .'-01';
+        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($record){
+            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
+            $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
+
+            return response()->json([
+                'status' => true,
+                'data' => $record,
+                'message' => 'Alllocation Record'
+              ]);
+        }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+        }
+    }
+
     public function storeRecordSpent(Request $request){
         $user = $request->user();
 
@@ -269,5 +263,22 @@ class SeedAllocationController extends Controller
                             ->with(['spend' => $record_spent->id ,'success' =>  'Record spent has been recorded' ]);
     }
 
+    public function updateRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($record){
+            $this->validate($request, [
+                'label' => 'required|between:3,50',
+                'amount' => 'required|numeric|min:0'
+              //   'date' => 'required|date'
+            ]);
 
+            $record->update($requet->all());
+
+            return redirect()->back()->with('success','Alllocation Record has been updated');
+        }else{
+            return  redirect()->back()->with('error', 'Allocation not found');
+        }
+    }
 }

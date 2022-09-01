@@ -118,7 +118,7 @@ class SeedAllocationAPI extends Controller
         }
 
         foreach($groups as $group){
-            $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)
+            $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                                                 ->where('expenditure',$group['label']) ->sum('amount') ?? 0;
         }
 
@@ -134,33 +134,6 @@ class SeedAllocationAPI extends Controller
          ]);
 
     }
-
-    public function storeRecordSpent(Request $request){
-        $user = $request->user();
-
-        $validator = Validator::make($request->all(),[
-          'allocation' => 'required|exists:seed_budget_allocations,id',
-          'label' => 'required|between:3,50',
-          'amount' => 'required|numeric|min:0',
-            // 'date' => 'required|date'
-        ]);
-
-
-        if($validator->fails()){
-          return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-        }
-
-        $request['allocation_id'] = $request->allocation;
-        $request['user_id'] = $user->id;
-        $request['period'] =  date('Y-m').'-01';
-        $record_spent =  RecordBudgetSpent::create($request->all());
-
-        return response()->json([
-          'status' => true, 'data' => $record_spent,
-          'message' => 'Record spent has been recorded'
-        ]);
-    }
-
     public function showAlloction(Request $request, $id){
         $user = $request->user();
 
@@ -201,6 +174,8 @@ class SeedAllocationAPI extends Controller
         $user = $request->user();
         $record = RecordSpend::whereId($id)->where('period', $month)->first();
         if($record){
+            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
+            $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
             return response()->json([
                 'status' => true,
                 'data' => $record,
@@ -211,4 +186,56 @@ class SeedAllocationAPI extends Controller
         }
     }
 
+    public function storeRecordSpent(Request $request){
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(),[
+          'allocation' => 'required|exists:seed_budget_allocations,id',
+          'label' => 'required|between:3,50',
+          'amount' => 'required|numeric|min:0',
+            // 'date' => 'required|date'
+        ]);
+
+
+        if($validator->fails()){
+          return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+        }
+
+        $request['allocation_id'] = $request->allocation;
+        $request['user_id'] = $user->id;
+        $request['period'] =  date('Y-m').'-01';
+        $record_spent =  RecordBudgetSpent::create($request->all());
+
+        return response()->json([
+          'status' => true, 'data' => $record_spent,
+          'message' => 'Record spent has been recorded'
+        ]);
+    }
+
+    public function updateRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($record){
+            $validator = Validator::make($request->all(),[
+                'label' => 'required|between:3,50',
+                'amount' => 'required|numeric|min:0'
+              ]);
+
+
+            if($validator->fails()){
+            return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+            }
+
+            $record->update($requet->all());
+
+            return response()->json([
+                'status' => true,
+                'data' => $record,
+                'message' => 'Alllocation Record has been updated'
+              ]);
+        }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+        }
+    }
 }

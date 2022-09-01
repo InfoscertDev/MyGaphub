@@ -5,20 +5,35 @@ use App\FinicialCalculator as Calculator;
 
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
+use App\Asset\SeedBudget as Budget;
 
 class AllocationHelpers{
 
-    protected static function monthlyRecurssionChecker(){
+    protected static function monthlyRecurssionChecker($user){
         $month = date('m')-1;
         $current_period = date('Y-m').'-01';
         $last_period =  date('Y-').$month.'-01';
+
+        $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
+        // info($seed);
+        if(!$seed){
+            $seed = new Budget();
+            $seed->user_id = $user->id;
+            $seed->period = $current_period;
+            $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
+            $seed->budget_amount =  $last_seed->budget;
+            $seed->priviewed= 0;
+            $seed->save();
+        }
         // Budget Allocations
-        $allocations = SeedBudgetAllocation::where('period', $current_period)->where('status',1)
-        ->where('recuring',1)->get()->toArray();
+        $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
+                ->where('status',1)->where('recuring',1)->get()->toArray();
+
+
 
         if(!count($allocations)){
-            $allocations = SeedBudgetAllocation::where('period', $last_period)->where('status',1)
-            ->where('recuring',1)->get()->toArray();
+            $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
+                ->where('status',1)->where('recuring',1)->get()->toArray();
             foreach ($allocations as $allocation) {
                 $newallocation = (array) $allocation;
                 $newallocation['period'] = $current_period;
@@ -30,7 +45,7 @@ class AllocationHelpers{
     public static function getAllocatedSeedDetail($user){
         $current_period = date('Y-m').'-01';
 
-        AllocationHelpers::monthlyRecurssionChecker();
+        AllocationHelpers::monthlyRecurssionChecker($user);
 
         $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
                 ->where('user_id', $user->id)->where('period', $current_period)->get();

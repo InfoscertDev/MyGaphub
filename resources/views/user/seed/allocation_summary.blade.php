@@ -2,6 +2,19 @@
 @extends('layouts.user')
 
 @section('content')
+
+    @php
+    function filterExpenditure($value){
+        if($value == 'family'){
+            $value = 'Home & Family';
+        }else if ($value == 'debt_repayment') {
+            $value = 'Debt Repayment';
+        }else if($value){
+        $value = ucfirst($value);
+        }
+        return $value;
+    }
+    @endphp
     <div class="row justify-content-center">
         <div class="col-12 my-4">
             <div class="d-flex">
@@ -16,7 +29,7 @@
                 <div class="summary-header bg-gray">
                     <div class="summary-card-header seed-{{$seed}}">
                         @if(isset($category))
-                            <h4 class="summary-card-title">{{$category}}</h4>
+                            <h4 class="summary-card-title">{{filterExpenditure($category)}}</h4>
                         @else
                             <h4 class="summary-card-title">{{$seed}} Allocation Summary</h4>
                         @endif
@@ -146,6 +159,8 @@
                     $('.ico').text(record.label.charAt(0))
                     $('#record_label').text(record.label)
                     $('#record_amount').text((record.amount).toFixed(2))
+                    $('#spent_current_month').text(record.spent_current_month).toFixed(2);
+                    $('#spent_last_month').text(record.spent_last_month).toFixed(2);
                     $('#record_date').text(record.date)
                     $('#record_note').text(record.note)
                 },

@@ -53,13 +53,17 @@
                             <h6 class="text-muted">Spent so far this month
                                 <span class="float-right"><i class="fa fa-money"></i></span>
                             </h6>
-                            <h6 class=""></h6>
+                            <h6 class="">
+                                {{$currency}}<span id="spent_current_month"></span>
+                            </h6>
                         </li>
                         <li class="list-group-item">
                             <h6 class="text-muted">Spent last mouth
                                  <span class="float-right"><i class="fa fa-timer"></i></span>
                             </h6>
-                            <h6 class=""></h6>
+                            <h6 class="">
+                                {{$currency}}<span id="spent_last_month"></span>
+                            </h6>
                         </li>
                         <li class="list-group-item">
                             <h6 class="text-muted">Note

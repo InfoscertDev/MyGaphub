@@ -93,6 +93,8 @@
                             record = data.data;
                             $('.ico').text(record.label.charAt(0))
                             $('#record_label').text(record.label)
+                            $('#spent_current_month').text(record.spent_current_month).toFixed(2);
+                            $('#spent_last_month').text(record.spent_last_month).toFixed(2);
                             $('#record_amount').text((record.amount).toFixed(2))
                             $('#record_date').text(record.date)
                             $('#record_note').text(record.note)
@@ -122,7 +124,7 @@
                 @else
                     <label for="" class="text-center d-block mt-1 mb-3"> 0% </label>
                 @endif
-                <div class="mt-4 mb-2 text-center mx-auto">
+                <div class="mt-4 mb-2 text-center mx-auto" style="width: 115%;">
                     <a href="{{ route('seed.create') }}" class="btn btn-pry" >
                     {{  ($current_detail['total']) ? $currency : '' }} {{  ($current_detail['total']) ? number_format($current_detail['total'],2) : "Create a Budget" }}
                     </a>
