@@ -10,6 +10,7 @@ use App\Models\Asset\RecordBudgetSpent;
 use Illuminate\Support\Facades\Validator;
 use App\Helper\GapAccountCalculator as GapAccount;
 
+
 class SeedAllocationAPI extends Controller
 {
     public function storeCategoryAllocation(Request $request){
@@ -151,6 +152,8 @@ class SeedAllocationAPI extends Controller
             $record_spents = array();
 
             foreach ($spents as $key => $spend) {
+                $spend->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
+                $spend->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
                 $record = array();
                 // array_push($record, $key);
@@ -171,7 +174,7 @@ class SeedAllocationAPI extends Controller
         }
     }
 
-    // 
+    //
 
     public function showRecordSpend(Request $request, $id){
         $user = $request->user();
@@ -224,7 +227,7 @@ class SeedAllocationAPI extends Controller
                 'label' => 'required|between:3,50',
                 'amount' => 'required|numeric|min:0'
             ]);
- 
+
 
             if($validator->fails()){
                 return response()->json([ 'status' => false, 'errors' => $validator->errors()->toJson()], 400);

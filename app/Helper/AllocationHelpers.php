@@ -9,7 +9,7 @@ use App\Asset\SeedBudget as Budget;
 
 class AllocationHelpers{
 
-    protected static function monthlyRecurssionChecker($user){
+    public static function monthlyRecurssionChecker($user){
         $month = date('m')-1;
         $current_period = date('Y-m').'-01';
         $last_period =  date('Y-').$month.'-01';
@@ -22,7 +22,7 @@ class AllocationHelpers{
             $seed->period = $current_period;
             $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
             $seed->budget_amount =  $last_seed->budget;
-            $seed->priviewed= 0;
+            $seed->priviewed= 1;
             $seed->save();
         }
         // Budget Allocations

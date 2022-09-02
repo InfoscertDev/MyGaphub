@@ -180,6 +180,7 @@
                 $('#edit_record_note').val(record.note);
                 $('#editRecordDetailModal').modal('show');
                 $('#viewRecordDetailModal').modal('hide');
+                // if(record.reccurs)record_recursion
             }
         }
     </script>

@@ -17,7 +17,7 @@ use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\AllocationHelpers;
 use App\Helper\CalculatorClass;
 use App\Helper\GapExchangeHelper;
-use App\Helper\IncomeHelper; 
+use App\Helper\IncomeHelper;
 use App\ILab;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
@@ -32,27 +32,27 @@ class SeedController extends Controller
       $preview = $request->input('preview');
 
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        AllocationHelpers::monthlyRecurssionChecker($user); 
+        AllocationHelpers::monthlyRecurssionChecker($user);
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
-        $current_seed->save();   
+        $current_seed->save();
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();
-      $isValid = SevenG::isSevenGVal($user); 
+      $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
 
+      $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
       $average_detail = AllocationHelpers::averageSeedDetail($user);
 
-
       return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-          'average_detail', 'current_detail', 'target_detail','average_seed'));
+          'average_detail', 'current_detail', 'target_detail','average_seed', 'previous_budgets'));
     }
 
 
@@ -65,7 +65,7 @@ class SeedController extends Controller
 
         $seed = CalculatorClass::getCurrentSeed($user);
         $seed->budget_amount =  $request->budget;
-        $seed->priviewed = 1 ; 
+        $seed->priviewed = 1 ;
         $seed->update();
         return redirect()->back()->with(['success' => 'Seed Budget has been set']);
     }
@@ -84,11 +84,11 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-     
+
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        // $current_seed->priviewed = 1 ;
-        // $current_seed->save();
+        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        $current_seed->priviewed = 1 ;
+        $current_seed->save();
       }
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
