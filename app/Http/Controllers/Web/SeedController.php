@@ -32,10 +32,13 @@ class SeedController extends Controller
       $preview = $request->input('preview');
 
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        AllocationHelpers::monthlyRecurssionChecker($user);
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        $current_seed->priviewed = 1 ;
-        $current_seed->save();
+        if(isset($current_seed->priviewed) || $current_seed->priviewed == 0){
+            AllocationHelpers::monthlyRecurssionChecker($user);
+            $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+            $current_seed->priviewed = 1 ;
+            $current_seed->save();
+        }
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();
@@ -63,11 +66,19 @@ class SeedController extends Controller
           'budget' => 'required|numeric'
         ]);
 
-        $seed = CalculatorClass::getCurrentSeed($user);
-        $seed->budget_amount =  $request->budget;
-        $seed->priviewed = 1 ;
-        $seed->update();
-        return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+        $available_allocation = $request->budget - $current_detail['total'];
+
+        info([$available_allocation,$request->seed, $request->budget]);
+        if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknj'){
+            $seed = CalculatorClass::getCurrentSeed($user);
+            $seed->budget_amount =  $request->budget;
+            $seed->priviewed = 1 ;
+            $seed->update();
+            return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+        }else{
+            return redirect()->back()->with(['alert' => 'Your set amount is lower than the sum of your allocated SEED,'])->withInput();
+        }
     }
 
     public function create(Request $request){

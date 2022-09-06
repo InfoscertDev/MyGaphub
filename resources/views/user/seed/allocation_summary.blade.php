@@ -84,8 +84,8 @@
                         $('#allocation_note').html(seed.allocated.note)
                         $('.allocation_budget').html(seed.allocated.amount)
                         $('.allocation_balance').html(seed.summary.total_left)
-                        $('.left_percentage').html(seed.summary.spent_percentage);
-                        $('.progress-bar').css({'width': seed.summary.spent_percentage+'%'});
+                        $('.left_percentage').html(seed.summary.left_percentage);
+                        $('.progress-bar').css({'width': seed.summary.left_percentage+'%'});
                         $('#viewAllocationModal').modal('show');
                     }
                 },
@@ -149,7 +149,7 @@
             let id = e.dataset.record;
             $('#viewTransactionsModal').modal('hide');
             $('#viewRecordDetailModal').modal('show');
-            console.log(e.dataset.record);
+            // console.log(e.dataset.record);
 
             $.ajax({
                 type: 'GET',
@@ -173,8 +173,7 @@
 
         function handleUpdateRecord(){
             if(record){
-                $('#edit_record_allocation').attr('action', record_url+'/'+record.id)
-
+                $('#edit_record_allocation').attr('action', record_url+'/'+record.id);
                 $('#edit_record_label').val(record.label);
                 $('#edit_record_amount').val(record.amount);
                 $('#edit_record_note').val(record.note);

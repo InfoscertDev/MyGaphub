@@ -119,9 +119,10 @@ class SeedAllocationAPI extends Controller
             $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
         }
 
-        foreach($groups as $group){
-            $groups[$allocation['expenditure']]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
-                                                                ->where('expenditure',$group['label']) ->sum('amount') ?? 0;
+
+        foreach($groups as $key => $group){
+            $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                                                                ->where('expenditure',$group['label']) ->sum('amount');
         }
 
         $budget_expenditures = array_values($groups) ;
@@ -139,7 +140,8 @@ class SeedAllocationAPI extends Controller
     public function showAlloction(Request $request, $id){
         $user = $request->user();
 
-        $month =  date('Y-m').'-01';
+        $month =  date('Y-m').'-01'; $cp = date('m')-1;
+        $last_period =  date('Y-'). $cp .'-01';
         $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocated){
             $backgrounds = array_reverse(GapAccount::accountBackground());
@@ -152,13 +154,15 @@ class SeedAllocationAPI extends Controller
             $record_spents = array();
 
             foreach ($spents as $key => $spend) {
-                $spend->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
-                $spend->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
+                $spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
+                $spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
+
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
                 $record = array();
                 // array_push($record, $key);
                 $record[$key]['total_amount'] = $amount;
                 $record[$key]['list'] = $spend;
+                $record[$key]['spent'] = compact('spent_current_month', 'spent_last_month');
                 array_push($record_spents, $record);
             }
 
@@ -171,24 +175,6 @@ class SeedAllocationAPI extends Controller
             ]);
         }else{
           return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
-        }
-    }
-
-    //
-
-    public function showRecordSpend(Request $request, $id){
-        $user = $request->user();
-        $record = RecordSpend::whereId($id)->where('period', $month)->first();
-        if($record){
-            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
-            $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
-            return response()->json([
-                'status' => true,
-                'data' => $record,
-                'message' => 'Alllocation Record'
-              ]);
-        }else{
-            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
         }
     }
 

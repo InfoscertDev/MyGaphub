@@ -34,8 +34,8 @@ class SeedAllocationController extends Controller
       if($allocated){
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
             $summary = AllocationHelpers::allocationSummay($allocated, $spents);
-            $spents = RecordBudgetSpent::whereAllocationId($id)
-                        ->get()->groupBy(function($item) {
+            $spents = RecordBudgetSpent::whereAllocationId($id)->get()
+                        ->groupBy(function($item) {
                             return $item->date;
                         });
 
@@ -84,11 +84,10 @@ class SeedAllocationController extends Controller
                 $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
             }
 
-
             foreach($groups as $key => $group){
                 $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                                                     ->where('expenditure',$group['label']) ->sum('amount');
-            }
+            } 
 
             $allocations = array_values($groups) ;
             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));

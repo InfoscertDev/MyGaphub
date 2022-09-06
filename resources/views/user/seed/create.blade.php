@@ -18,18 +18,52 @@
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Double click to edit"><i class="fa fa-info mx-2 "></i></span>
                 </div>
                 <div id="edit_budget_amount">
-                    <form action="{{ route('seed.store.set_budget')  }}" method="post">
-                        @csrf 
+                    <form action="{{ route('seed.store.set_budget')  }}" method="post" id="budgetForm">
+                        @csrf
+                        @if(session('alert')) <input type="hidden" name="seed" value="ediucfhjbndcfjnkdcknj" />  @endif
+ 
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"> {{$currency}}</div>
                             </div>
-                            <input type="number" oninput="handleBudgetChange(this)" name="budget" min="0" value="{{$current_seed->budget_amount}}" class="form-control">
+                            <input type="number" oninput="handleBudgetChange(this)" name="budget" min="0" value="{{ old('budget',$current_seed->budget_amount) }}" class="form-control">
                         </div>
-                        <!-- <input type="submit" value=""> -->
                     </form>
                 </div>
 
+            @if(session('alert'))
+                <div class="modal show" id="budgetAlertMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered" role="document">
+                        <!-- <div class="modal-content modal-content-centre b-rad-20">
+                            <div class="modal-body">
+                                <div class="py-4">
+                                    <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
+                                        <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Yes</a> </li>
+                                        <li class="btn list-group-item my-2 text-center"><a href="{{ route('seed') }}" class="card-link text-white">No</a> </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="modal-content">
+                            <div class="modal-body mt-3">
+                                <h5 class="text-center">Your set amount is lower than the sum of your allocated SEED, would you like to proceed with the new budget amount? </h5>
+                            </div>
+
+                            <div class="modal-footer mx-auto mb-3 mt-2">
+                                <div class="text-left">
+                                    <button type="submit" onclick="$('#budgetForm').submit()"  class="btn btn-pry px-3 mr-3">Yes</button>
+                                </div>
+                                <div class="text-right">
+                                    <button type="button" onclick="$('#confirmRemoveAccount').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    $(function() {  $('#budgetAlertMode').modal('show'); })
+                </script>
+            @endif
             </div>
         </div>
         <div class="col-md-7 col-sm-12 sm-default">
@@ -41,12 +75,11 @@
             </div>
         </div>
     </div>
+
     @include('user.seed.modals.savings_allocation')
     @include('user.seed.modals.education_allocation')
     @include('user.seed.modals.discretionary_allocation')
     @include('user.seed.modals.expenditure_allocation')
-
-
 
     <br><br>
 
@@ -129,8 +162,8 @@
 
     <script>
         function toggleBudgetMode(){
-            $('#view_budget_amount').hide()
-            $('#edit_budget_amount').show()
+            $('#view_budget_amount').hide();
+            $('#edit_budget_amount').show();
         }
 
         function handleBudgetChange(e){
@@ -138,5 +171,16 @@
             let allocated = "<?php echo $current_detail['total']; ?>";
             allocation.innerText = (+e.value -  +allocated).toFixed(2);
         }
+
+        let budgetForm = document.querySelector('#budgetForm');
+        console.log(budgetForm);
+        budgetForm.addEventListener("submit", handleBudgetSubmit);
+
+        function handleBudgetSubmit(e){
+            console.log(e);
+            e.preventDefault();
+            return false;
+        }
+
     </script>
 @endsection

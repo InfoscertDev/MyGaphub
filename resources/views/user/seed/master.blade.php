@@ -85,7 +85,7 @@
                 function handleRecordView(){
                     let id = "<?php  echo request()->input('dygvhsbjyfctguysbhdd')?>";
                     $('#viewRecordDetailModal').modal('show');
-                    console.log(id);
+                    // console.log(id);
                     $.ajax({
                         type: 'GET',
                         url: '/home/seed/record/'+id,
@@ -93,11 +93,11 @@
                             record = data.data;
                             $('.ico').text(record.label.charAt(0))
                             $('#record_label').text(record.label)
-                            $('#spent_current_month').text(record.spent_current_month).toFixed(2);
-                            $('#spent_last_month').text(record.spent_last_month).toFixed(2);
                             $('#record_amount').text((record.amount).toFixed(2))
                             $('#record_date').text(record.date)
                             $('#record_note').text(record.note)
+                            $('#spent_current_month').text(record.spent_current_month);
+                            $('#spent_last_month').text(record.spent_last_month);
                         },
                         error: function (request, status, error) {
                             // console.log(status, error)
@@ -162,7 +162,6 @@
             <div class="cell" id="wrapLegend"></div>
         </div>
     </div>
-
     <hr>
     <div class="row">
         <div class="col-md-8 col-sm-12 mx-auto">
@@ -171,7 +170,9 @@
                 <tr class="table-header">
                     <th class="bold">SEED </th>
                     <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#averageBudgetModal" >Average </th>
-                    <th class="bold text-uppercase text-underline hand" > <a href="{{ route('seed.create') }}" class="text-dark">Current</a>  </th>
+                    <th class="bold text-uppercase text-underline hand" >
+                        <a href="{{ route('seed.create') }}" class="text-dark">Current</a>
+                    </th>
                     <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#nextyearBudgetModal">Target </th>
                 </tr>
                 @php

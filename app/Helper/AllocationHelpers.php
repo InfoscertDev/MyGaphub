@@ -15,14 +15,14 @@ class AllocationHelpers{
         $last_period =  date('Y-').$month.'-01';
 
         $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
-        // info($seed);
+
         if(!$seed){
             $seed = new Budget();
             $seed->user_id = $user->id;
             $seed->period = $current_period;
             $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
-            $seed->budget_amount =  $last_seed->budget;
-            $seed->priviewed= 1;
+            $seed->budget_amount = ($last_seed) ? $last_seed->budget : 0;
+            $seed->priviewed= 0;
             $seed->save();
         }
         // Budget Allocations
