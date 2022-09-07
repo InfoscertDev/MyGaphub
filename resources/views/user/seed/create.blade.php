@@ -54,7 +54,7 @@
                                     <button type="submit" onclick="$('#budgetForm').submit()"  class="btn btn-pry px-3 mr-3">Yes</button>
                                 </div>
                                 <div class="text-right">
-                                    <button type="button" onclick="$('#confirmRemoveAccount').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
+                                    <button type="button" onclick="window.location.reload()" class="btn btn-default px-3 mr-3">No</button>
                                 </div>
                             </div>
                         </div>

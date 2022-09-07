@@ -29,52 +29,53 @@
 @section('content')
         @include('user.seed.modals.view_transactions')
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-        <!-- Check if it a new user -->
-        @if($previous_budgets > 1)
-            @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0)
-                <div class="modal show" id="monthlyPriviewedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog  modal-dialog-centered" role="document">
-                        <div class="modal-content modal-content-centre b-rad-20">
-                            <div class="modal-body">
-                                <div class="py-5">
-                                    <h5 class="py-1 text-center">Budget from last month has been rolled over</h5>
-                                    <div class="py-2 h5 text-center">
-                                        <a href="{{ route('seed.create', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link mr-3">Make Changes </a> or
-                                        <a href="{{ route('seed', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link">Keep </a>
-                                    </div>
+        <!-- Check for a new user -->
+        <!-- @if($previous_budgets > 2)  @endif -->
+        @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0
+                && $previous_budgets > 2)
+            <div class="modal show" id="monthlyPriviewedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered" role="document">
+                    <div class="modal-content modal-content-centre b-rad-20">
+                        <div class="modal-body">
+                            <div class="py-5">
+                                <h5 class="py-1 text-center">Budget from last month has been rolled over {{$previous_budgets}}</h5>
+                                <div class="py-2 h5 text-center">
+                                    <a href="{{ route('seed.create', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link mr-3">Make Changes </a> or
+                                    <a href="{{ route('seed', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link">Keep </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <script>
-                    $(function() {  $('#monthlyPriviewedMode').modal('show'); })
-                </script>
-            @elseif(request()->input('record'))
-                <script>
-                    $(function() {  $('#createRecordSpentModal').modal('show'); })
-                </script>
-            @elseif(request()->input('preview'))
-                <div class="modal show" id="chooseSeedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog  modal-dialog-centered" role="document">
-                        <div class="modal-content modal-content-centre b-rad-20">
-                            <div class="modal-body">
-                                <div class="py-4">
-                                    <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
-                                        <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Record Spend</a> </li>
-                                        <li class="btn list-group-item my-2 text-center"><a href="{{ route('seed') }}" class="card-link text-white">View Budget</a> </li>
-                                    </ul>
-                                </div>
+            </div>
+            <script>
+                $(function() {  $('#monthlyPriviewedMode').modal('show'); })
+            </script>
+        @elseif(request()->input('record'))
+            <script>
+                $(function() {  $('#createRecordSpentModal').modal('show'); })
+            </script>
+        @elseif(request()->input('preview')  && $previous_budgets > 2)
+            <div class="modal show" id="chooseSeedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered" role="document">
+                    <div class="modal-content modal-content-centre b-rad-20">
+                        <div class="modal-body">
+                            <div class="py-4">
+                                <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
+                                    <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Record Spend</a> </li>
+                                    <li class="btn list-group-item my-2 text-center"><a href="{{ route('seed') }}" class="card-link text-white">View Budget</a> </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <script>
-                    $(function() {  $('#chooseSeedMode').modal('show'); })
-                </script>
+            </div>
+            <script>
+                $(function() {  $('#chooseSeedMode').modal('show'); })
+            </script>
 
-            @endif
         @endif
+
 
         @if(request()->input('spend'))
 

@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Http;
 use App\Rules\GoogleRecaptcha;
 
 class RegisterController extends Controller
-{ 
+{
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -66,7 +66,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
-    {   
+    {
         return Validator::make($data, [
             'firstname' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
@@ -74,15 +74,15 @@ class RegisterController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'g-recaptcha-response' => ['required', new GoogleRecaptcha]
         ],[ 'g-recaptcha-response.required' => 'The recaptcha field is required.']);
-       
-    } 
-  
+
+    }
+
     // public function register(Request $request)
     // {
     //     $this->validator($request->all())->validate();
 
     //     $captha = $this->captcha($request->all());
-        
+
     //     if(!$captha){
     //         return redirect()->back()->withErrors(['captcha' => 'Invalid ReCaptcha']);
     //     }
@@ -97,7 +97,7 @@ class RegisterController extends Controller
 
     //     return redirect($this->redirectPath());
     // }
-    
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -122,13 +122,13 @@ class RegisterController extends Controller
         ];
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
-        $resultJson = json_decode($result); 
+        $resultJson = json_decode($result);
         // info([$resultJson->success, $resultJson]);
 
         if ($resultJson->success != true) {
             return false;
             // return redirect()->back()->withErrors(['captcha' => 'ReCaptcha Error']);
-        } 
+        }
 
         if ($resultJson->score >= 0.3) {
                 //Validation was successful, add your form submission logic here
@@ -142,15 +142,15 @@ class RegisterController extends Controller
 
     protected function create(array $data){
         // info('Validation was successful, add your form submission logic here');
-            
+
         $user = User::create([
             'firstname' => $data['firstname'],
             'surname' => $data['surname'],
-            'email' => $data['email'], 
+            'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-    
-        // Save  
+
+        // Save
         RegisterController::createCalculator($user->id);
         RegisterController::createQuestion($user->id);
         GapAccount::initUserChartity($user);
@@ -159,13 +159,13 @@ class RegisterController extends Controller
         $profile = new Profile();
         $profile->save();
         $user->profile_id  = $profile->id;
-        $user->save(); 
+        $user->save();
 
         $tiles = HelperClass::dashboardTiles();
-        $audit = new Audit();  
-        $audit->user_id = $user->id; 
+        $audit = new Audit();
+        $audit->user_id = $user->id;
         $audit->dashboard = json_encode($tiles);
-        $audit->save(); 
+        $audit->save();
         GapAccount::initUserChartity($user);
 
         return $user;
@@ -182,29 +182,29 @@ class RegisterController extends Controller
         $question->step6 =   Session::get('step6') || '';
         $question->step7 =   Session::get('step7') || '';
         $question->save();
-    } 
+    }
 
     public  static function createCalculator($user){
-        
+
         $calulator =  new Calculator();
-        $calulator->user_id = $user;  
+        $calulator->user_id = $user;
         $calulator->currency =   Session::get('currency');
         $calulator->mortgage =   (Session::get('mortgage')) ? Session::get('mortgage') : 0;
         $calulator->periodic_savings =   (Session::get('periodic_savings')) ? Session::get('periodic_savings') : 0;
         $calulator->education =   (Session::get('education')) ? Session::get('education') : 0;
-        $calulator->expenses =  (Session::get('expenses')) ? Session::get('expenses') : 0; 
+        $calulator->expenses =  (Session::get('expenses')) ? Session::get('expenses') : 0;
         $calulator->utility =   (Session::get('utility')) ? Session::get('utility') : 0;  ;
         $calulator->mobility =   (Session::get('mobility')) ? Session::get('mobility')  : 0;  ;
-        $calulator->dept_repay =   (Session::get('dept_pay')) ? Session::get('dept_pay') : 0; 
+        $calulator->dept_repay =   (Session::get('dept_pay')) ? Session::get('dept_pay') : 0;
         $calulator->charity =   (Session::get('charity')) ? Session::get('charity') : 0;
-        $calulator->other_income =  (Session::get('income')) ? Session::get('income')  : 0; 
-        $calulator->extra_save =   (Session::get('extra')) ? Session::get('extra')  : 0; 
-        $calulator->roce =   (Session::get('roce')) ? Session::get('roce') : 0; 
-        $calulator->investment =   (Session::get('investment')) ? Session::get('investment') : 0; 
+        $calulator->other_income =  (Session::get('income')) ? Session::get('income')  : 0;
+        $calulator->extra_save =   (Session::get('extra')) ? Session::get('extra')  : 0;
+        $calulator->roce =   (Session::get('roce')) ? Session::get('roce') : 0;
+        $calulator->investment =   (Session::get('investment')) ? Session::get('investment') : 0;
         // $calulator->cost =   Session::get('cost');
         // $calulator->saving =   Session::get('saving');
         $calulator->save();
-    } 
+    }
 }
 
 

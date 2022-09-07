@@ -49,6 +49,7 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
 
+    //   info($user->id);
       $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
@@ -69,12 +70,12 @@ class SeedController extends Controller
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
         $available_allocation = $request->budget - $current_detail['total'];
 
-        info([$available_allocation,$request->seed, $request->budget]);
+        // info([$available_allocation,$request->seed, $request->budget]);
         if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknj'){
             $seed = CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1 ;
-            $seed->update();
+            $seed->update(); 
             return redirect()->back()->with(['success' => 'Seed Budget has been set']);
         }else{
             return redirect()->back()->with(['alert' => 'Your set amount is lower than the sum of your allocated SEED,'])->withInput();

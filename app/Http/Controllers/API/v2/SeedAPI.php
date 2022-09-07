@@ -49,11 +49,21 @@ class SeedAPI extends Controller
         return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
       }
 
-      $seed = CalculatorClass::getCurrentSeed($user);
-      $seed->budget_amount =  $request->budget;
-      $seed->update();
-      return response()->json(['status' => true,'message' => 'Seed Budget Amount has been set']);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $available_allocation = $request->budget - $current_detail['total'];
 
+        if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknjeusydgfbhbswd'){
+            $seed = CalculatorClass::getCurrentSeed($user);
+            $seed->budget_amount =  $request->budget;
+            $seed->priviewed = 1;
+            $seed->update();
+            return response()->json(['status' => true,'message' => 'Seed Budget Amount has been set']);
+        }else{
+            return response()->json([
+                'status' => false,
+                'malse' => 'Your set amount is lower than the sum of your allocated SEED,'
+            ], 400);
+        }
     }
 
     public function storeSeed(Request $request){
