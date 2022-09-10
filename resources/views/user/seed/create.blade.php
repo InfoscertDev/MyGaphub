@@ -13,20 +13,21 @@
                 <h3 class="bold mr-2">
                     {{ ($current_seed->budget_amount == 0) ? 'Set Budget:' : 'My Budget:'}}
                 </h3>
-                <div id="view_budget_amount"  style="display: none;" >
-                    <span class="px-2 h3">{{$currency}}{{ number_format($current_seed->budget_amount, 2) }} </span>
+                <div id="view_budget_amount"   onclick="toggleBudgetMode()">
+                    <span class="px-2 h3">{{$currency}}<span id="budget_amount">{{ number_format($current_seed->budget_amount, 2) }}</span>  </span>
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Double click to edit"><i class="fa fa-info mx-2 "></i></span>
                 </div>
-                <div id="edit_budget_amount">
+                <div id="edit_budget_amount" style="display: none;">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post" id="budgetForm">
                         @csrf
                         @if(session('alert')) <input type="hidden" name="seed" value="ediucfhjbndcfjnkdcknj" />  @endif
- 
+
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"> {{$currency}}</div>
                             </div>
-                            <input type="number" oninput="handleBudgetChange(this)" name="budget" min="0" value="{{ old('budget',$current_seed->budget_amount) }}" class="form-control">
+                            <input type="number" onmouseleave="handleSeedBudget(this)" oninput="handleBudgetChange(this)" name="budget" min="0"
+                                step=".01" value="{{ old('budget',$current_seed->budget_amount) }}" class="form-control">
                         </div>
                     </form>
                 </div>
@@ -87,52 +88,88 @@
         <div class="col-md-3">
             @if($current_detail['table']['savings'] == 0)
                 <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
-                    <div class="tool-title"> <h3 class="center">Savings</h3></div>
+                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3  class="bold">Savings</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
+                        </div>
+                    </div>
                 </div>
             @else
                 <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary', 'savings') }}">
-                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div>
-                    <div class="tool-title"> <h3 class="center">Savings</h3></div>
+                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3  class="bold">Savings</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
+                        </div>
+                    </div>
                 </a>
             @endif
         </div>
         <div class="col-md-3">
             @if($current_detail['table']['expenditure'] == 0)
                 <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
-                    <div class="seed-badge">{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3  class="bold">Expenditure</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</p>
+                        </div>
+                    </div>
                 </div>
             @else
                 <a class="seed-pane seed-expenditure tool-pane hand" href="{{ route('seed.summary', 'expenditure') }}">
-                    <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }} </div>
-                    <div class="tool-title"> <h3 class="center">Expenditure</h3></div>
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3  class="bold">Expenditure</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</p>
+                        </div>
+                    </div>
                 </a>
             @endif
         </div>
         <div class="col-md-3">
             @if($current_detail['table']['education'] == 0)
                 <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
-                    <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Education</h3></div>
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3 class="bold">Education</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</p>
+                        </div>
+                    </div>
                 </div>
             @else
                 <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', 'education') }}">
-                    <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Education</h3></div>
+                    <!-- <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
+                    <div class="tool-title"> <h3 class="center">Education</h3></div> -->
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3 class="bold">Education</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</p>
+                        </div>
+                    </div>
                 </a>
             @endif
         </div>
         <div class="col-md-3">
             @if($current_detail['table']['discretionary'] == 0)
                 <div class="seed-pane seed-discretionary tool-pane hand"  onclick="$('#discretionaryAllocationModal').modal('show')">
-                    <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3 class="bold">Discretionary</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</p>
+                        </div>
+                    </div>
                 </div>
             @else
                 <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary', 'discretionary') }}">
-                    <div class="seed-badge br-none"   >{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Discretionary</h3></div>
+                    <div class="tool-title">
+                        <div class="center">
+                            <h3 class="bold">Discretionary</h3>
+                            <p>{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</p>
+                        </div>
+                    </div>
                 </a>
             @endif
         </div>
@@ -161,15 +198,46 @@
 
 
     <script>
+        let viewmode = false;
         function toggleBudgetMode(){
-            $('#view_budget_amount').hide();
-            $('#edit_budget_amount').show();
+            if(viewmode){
+                $('#view_budget_amount').show();
+                $('#edit_budget_amount').hide();
+            }else{
+                $('#view_budget_amount').hide();
+                $('#edit_budget_amount').show();
+            }
+            viewmode = !viewmode
+        }
+
+        function handleSeedBudget(e){
+            var actionUrl = $('#budgetForm').attr('action');
+            var fd = new FormData($('#budgetForm')[0]);
+            // console.log(actionUrl, fd);
+
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: fd,
+                processData: false,
+                contentType: false,
+                // contentType: "application/json",
+                success: function(data, status){
+                    $('#budget_amount').text(new Number(e.value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    if(data.status) toggleBudgetMode()
+                },
+                error: function (request, status, error) {
+                    toggleBudgetMode()
+                    // console.log(status, error)
+                    // alert(request.responseText);
+                }
+            });
         }
 
         function handleBudgetChange(e){
             let allocation = document.querySelector('#allocation_available');
             let allocated = "<?php echo $current_detail['total']; ?>";
-            allocation.innerText = (+e.value -  +allocated).toFixed(2);
+            allocation.innerText = (+e.value -  +allocated).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
 
         let budgetForm = document.querySelector('#budgetForm');

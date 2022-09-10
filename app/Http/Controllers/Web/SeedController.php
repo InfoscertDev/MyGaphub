@@ -62,6 +62,8 @@ class SeedController extends Controller
 
     public function storeSetBudget(Request $request){
         $user = $request->user();
+        $content = $request->headers->get("Content-type");
+
 
         $request->validate([
           'budget' => 'required|numeric'
@@ -69,15 +71,18 @@ class SeedController extends Controller
 
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
         $available_allocation = $request->budget - $current_detail['total'];
-
+        // info($content);
         // info([$available_allocation,$request->seed, $request->budget]);
         if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknj'){
             $seed = CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1 ;
-            $seed->update(); 
+            $seed->update();
+            if(str_contains($content, 'multipart/form-data')) return response()->json([ 'status' => true ]);
             return redirect()->back()->with(['success' => 'Seed Budget has been set']);
+
         }else{
+            if(str_contains($content, 'multipart/form-data')) return response()->json([ 'status' => true ]);
             return redirect()->back()->with(['alert' => 'Your set amount is lower than the sum of your allocated SEED,'])->withInput();
         }
     }

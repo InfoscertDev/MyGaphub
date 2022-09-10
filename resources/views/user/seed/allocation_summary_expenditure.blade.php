@@ -18,7 +18,7 @@
         <div class="col-12 my-4">
             <div class="d-flex">
                 <span class="mr-3 pb-2" id="goback">
-                    <a href="#" class="text-dark" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
+                    <a href="{{ route('seed.create') }}" class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
                 <span class="mx-auto text-center">
                     {{ date('F')}} {{ date('Y')}}
