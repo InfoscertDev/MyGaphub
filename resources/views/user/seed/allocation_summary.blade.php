@@ -18,7 +18,8 @@
         <div class="col-12 my-4">
             <div class="d-flex">
                 <span class="mr-3 pb-2" id="goback">
-                    <a href="{{ route('seed.create') }}" class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.summary', 'expenditure') : route('seed.create') }}" 
+                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
                 <span class="mx-auto text-center">
                     {{ date('F')}} {{ date('Y')}}
@@ -84,8 +85,8 @@
                         $('#allocation_note').html(seed.allocated.note)
                         $('.allocation_budget').html(seed.allocated.amount)
                         $('.allocation_balance').html(seed.summary.total_left)
-                        $('.left_percentage').html(seed.summary.left_percentage);
-                        $('.progress-bar').css({'width': seed.summary.left_percentage+'%'});
+                        $('.left_percentage').html(seed.summary.spent_percentage);
+                        $('.progress-bar').css({'width': seed.summary.spent_percentage+'%'});
                         $('#viewAllocationModal').modal('show');
                     }
                 },

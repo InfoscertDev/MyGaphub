@@ -34,7 +34,6 @@ class SeedController extends Controller
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         if(isset($current_seed->priviewed) || $current_seed->priviewed == 0){
-            AllocationHelpers::monthlyRecurssionChecker($user);
             $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
             $current_seed->priviewed = 1 ;
             $current_seed->save();
@@ -48,7 +47,7 @@ class SeedController extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
-
+      AllocationHelpers::monthlyRecurssionChecker($user);
     //   info($user->id);
       $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);

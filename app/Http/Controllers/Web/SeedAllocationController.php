@@ -87,7 +87,7 @@ class SeedAllocationController extends Controller
             foreach($groups as $key => $group){
                 $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                                                     ->where('expenditure',$group['label']) ->sum('amount');
-            } 
+            }
 
             $allocations = array_values($groups) ;
             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
@@ -194,8 +194,8 @@ class SeedAllocationController extends Controller
             $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
             $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
 
-            if($request->amount > $available_allocation){
-              return redirect()->back()->with('error', 'Amount is greater than Available allocation');
+            if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
+                return redirect()->back()->with('error', 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction');
             }
 
           $allocated->update($request->all());

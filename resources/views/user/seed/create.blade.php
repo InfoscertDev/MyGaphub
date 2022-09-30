@@ -7,7 +7,7 @@
                 <h3>{{ date('F')}} {{ date('Y')}}</h3>
             </div>
         </div>
-        <br> <br>
+        <br>
         <div class="col-md-5 col-sm-12 sm-default">
             <div class="d-flex">
                 <h3 class="bold mr-2">
@@ -15,7 +15,10 @@
                 </h3>
                 <div id="view_budget_amount"   onclick="toggleBudgetMode()">
                     <span class="px-2 h3">{{$currency}}<span id="budget_amount">{{ number_format($current_seed->budget_amount, 2) }}</span>  </span>
-                    <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Double click to edit"><i class="fa fa-info mx-2 "></i></span>
+                    <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Click to edit"><i class="fa fa-info mx-2 "></i></span>
+
+                    <img class="img img-responsive" id="warning-icon" style="display: none; position: relative; top: -10px; width: 25px;" src="{{ asset('/assets/icon/warning.svg')}}" alt="">
+                    
                 </div>
                 <div id="edit_budget_amount" style="display: none;">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post" id="budgetForm">
@@ -31,11 +34,14 @@
                         </div>
                     </form>
                 </div>
-
+            </div>
+            <p id="warning-error" class="text-center small" style="display: none;"></p>
             @if(session('alert'))
-                <div class="modal show" id="budgetAlertMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+                <p class="text-center small">Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction</p>
+
+                <!-- <div class="modal" id="budgetAlertMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
                     <div class="modal-dialog  modal-dialog-centered" role="document">
-                        <!-- <div class="modal-content modal-content-centre b-rad-20">
+                        <div class="modal-content modal-content-centre b-rad-20">
                             <div class="modal-body">
                                 <div class="py-4">
                                     <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
@@ -44,7 +50,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="modal-content">
                             <div class="modal-body mt-3">
                                 <h5 class="text-center">Your set amount is lower than the sum of your allocated SEED, would you like to proceed with the new budget amount? </h5>
@@ -60,12 +66,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>  $(function() {  $('#budgetAlertMode').modal('show'); })-->
                 <script>
-                    $(function() {  $('#budgetAlertMode').modal('show'); })
+                    $('#warning-icon').show();
                 </script>
             @endif
-            </div>
         </div>
         <div class="col-md-7 col-sm-12 sm-default">
             <div class="float-right">
@@ -237,7 +242,18 @@
         function handleBudgetChange(e){
             let allocation = document.querySelector('#allocation_available');
             let allocated = "<?php echo $current_detail['total']; ?>";
-            allocation.innerText = (+e.value -  +allocated).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            let balance = (+e.value -  +allocated)
+            allocation.innerText = balance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+          
+            if(+balance >= 0){
+                $('#warning-icon').hide();
+                $('#warning-error').hide();
+            }else{
+                $('#warning-icon').show();
+                $('#warning-error').text('Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction');
+                $('#warning-error').show();
+
+            }
         }
 
         let budgetForm = document.querySelector('#budgetForm');
@@ -245,7 +261,6 @@
         budgetForm.addEventListener("submit", handleBudgetSubmit);
 
         function handleBudgetSubmit(e){
-            console.log(e);
             e.preventDefault();
             return false;
         }

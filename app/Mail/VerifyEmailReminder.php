@@ -31,7 +31,6 @@ class VerifyEmailReminder extends Mailable
     public function build()
     {
         $subject = "REMINDER: Please Verify Your Email ". $this->user->email;
-        info($subject); 
         return $this->subject($subject)  
                     ->view('email.validate_email_reminder')
                     ->with([  

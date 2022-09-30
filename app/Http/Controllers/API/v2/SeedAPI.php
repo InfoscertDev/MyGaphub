@@ -25,10 +25,12 @@ class SeedAPI extends Controller
       $user = $request->user();
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
-
+    
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $average_detail = AllocationHelpers::averageSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
+      AllocationHelpers::monthlyRecurssionChecker($user);
+
 
       $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed',);
       return response()->json([

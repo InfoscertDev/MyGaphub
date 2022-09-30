@@ -8,8 +8,8 @@
                 <h3 class="mt-2 bold mx-2"><b>Registration</b></h3>
                 <span class="line-step" style="width: 25%"></span>
                 {{-- <span class="line-step2"></span> --}}
-            </div>  
-            <div class="gap-bosy"> 
+            </div>
+            <div class="gap-bosy">
                 <div class="card-body">
                     <form class="form-reg" id="registration_form" method="POST" action="{{ route('register') }}">
                         @csrf
@@ -25,9 +25,9 @@
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
-                            </div>  
+                            </div>
                         </div>
- 
+
                         <div class="form-group ">
                             {{-- <label for="email_confirmation" class="col-md-4 col-form-label text-md-right">Confirm Email_confirmation</label> --}}
 
@@ -49,7 +49,7 @@
                                 @endif
                             </div>
                         </div>
-                    
+
                         <div class="form-group ">
                             {{-- <label for="surname" class="col-md-4 col-form-label text-md-right">SurName</label> --}}
 
@@ -63,8 +63,8 @@
                                 @endif
                             </div>
                         </div>
-                        
-                        
+
+
 
                         <div class="form-group ">
                             {{-- <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label> --}}
@@ -83,7 +83,7 @@
 
                         <div class="form-group ">
                             {{-- <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Retype Password</label> --}}
-                             
+
                             <div class="">
                                 <input id="password-confirm" placeholder="Retype Password:" type="password" class="form-control" name="password_confirmation" required>
                                 <div class="ml-2 pr-4 text-danger" id="confirm_error"></div>
@@ -100,14 +100,14 @@
                                 @endif
                             </div>
                         </div>
-                        
+
                         <div class="form-group my-3 text-center bold">
-                            <label for=""> 
+                            <label for="">
                                 <input type="checkbox" name="policy" required id="" class="mr-3 bs-none form-check-input check-register" >
-                                <span class="mr-2">I accept the <a href="http://www.mygaphub.com/index.php/terms-conditions/" target="_blank" class="txt-primary">Terms & Conditions </a> and <a href="http://www.mygaphub.com/index.php/privacy-policy/" target="_blank" class="txt-primary">Privacy Policy</a></span> 
+                                <span class="mr-2">I accept the <a href="http://www.mygaphub.com/index.php/terms-conditions/" target="_blank" class="txt-primary">Terms & Conditions </a> and <a href="http://www.mygaphub.com/index.php/privacy-policy/" target="_blank" class="txt-primary">Privacy Policy</a></span>
                             </label>
                         </div>
-                        <div class="form-group  mb-0"> 
+                        <div class="form-group  mb-0">
                             <div class=" text-right mt-1">
                                 <button type="submit" class="btn px-2 btn-pry "> Create Account </button>
                                 <span class="ml-2 bold">
@@ -143,16 +143,16 @@
 
 
             let valide = document.getElementsByClassName('passwordStrength')[0];
-           
+
             if(passwordVal.value.length == 0 || !passwordVal.value){
                 valide.innerHTML = 'Your password should have a mixture of numbers, letters (uppercase and lowercase) with a special character.';
             }else if(!lowerPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One lowercase letter is required';
             }else if(!upperPattern.test(passwordVal.value)){
-                valide.innerHTML = 'One uppercase letter is required'; 
+                valide.innerHTML = 'One uppercase letter is required';
             }else if(!numPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One number is required';
-            }else if(!nonCharPattern.test(passwordVal.value)){ 
+            }else if(!nonCharPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One special character is required';
             }else if(passwordVal.value.length < 8){
                 valide.innerHTML = 'Minimum of 8 characters is required';
@@ -165,8 +165,8 @@
 
         passwordVal.addEventListener('input',  ()=>{ valPassword() } );
 
-        confirmPass.addEventListener('input',  () => { 
-            if(password.value == confirmPass.value){ 
+        confirmPass.addEventListener('input',  () => {
+            if(password.value == confirmPass.value){
                 this.validForm = true;
                 confirm_error.innerHTML = '';
             }else{
@@ -182,8 +182,35 @@
             }
             return this.validForm;
         });
-        
+
     });
 
 </script>
+
+
+<script>
+console.log('Reach')
+var hasExtension = false;
+const requiredVersion = '0.7.3';
+function clishaExtension(){
+    const EID = 'hchmeojdknmlfngphlmnjncmcfaglhdn';
+    // { message: "version" }
+    chrome.runtime.sendMessage(EID, 'version',function (response) {
+        console.log(response);
+        if (response) {
+            if (response.version) {
+                if (response.version >= requiredVersion) {
+                    hasExtension = true;
+                }
+            }
+        }
+        else {
+            hasExtension = false;
+        }
+    
+        console.log('Extension AVailable ' +hasExtension)
+    });
+}
+</script>
 @endsection
+ 
