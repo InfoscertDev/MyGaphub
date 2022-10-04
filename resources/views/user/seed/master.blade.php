@@ -38,7 +38,7 @@
                     <div class="modal-content modal-content-centre b-rad-20">
                         <div class="modal-body">
                             <div class="py-5">
-                                <h5 class="py-1 text-center">Budget from last month has been rolled over {{$previous_budgets}}</h5>
+                                <h5 class="py-1 text-center">Budget from last month has been rolled over</h5>
                                 <div class="py-2 h5 text-center">
                                     <a href="{{ route('seed.create', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link mr-3">Make Changes </a> or
                                     <a href="{{ route('seed', ['preview' =>'7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb' ]) }}" class="text-dark text-underline font-italic card-link">Keep </a>

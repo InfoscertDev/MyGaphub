@@ -8,31 +8,32 @@ use App\Models\Asset\RecordBudgetSpent;
 use App\Asset\SeedBudget as Budget;
 
 class AllocationHelpers{
-
+    // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
     public static function monthlyRecurssionChecker($user){
         $month = date('m')-1;
         $current_period = date('Y-m').'-01';
         $last_period =  date('Y-').$month.'-01';
 
         $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
+        $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
 
-        if(!$seed){
-            $seed = new Budget();
-            $seed->user_id = $user->id;
-            $seed->period = $current_period;
-            $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
-            $seed->budget_amount = ($last_seed) ? $last_seed->budget : 0;
-            $seed->priviewed= 0;
+        if(!$seed || ( $seed->budget_amount == 0 && $last_seed)){
+            $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
+            // $seed->user_id = $user->id;
+            // $seed->period = $current_period;
+            $seed->budget_amount = ($last_seed) ? $last_seed->budget_amount : 0;
+            $seed->priviewed = 0;
             $seed->save();
         }
         // Budget Allocations
         $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 
-        if(!count($allocations)){
-            $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
+        if(count($allocations) == 0){
+            $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
                 ->where('status',1)->where('recuring',1)->get()->toArray();
-            foreach ($allocations as $allocation) {
+
+            foreach ($current_allocations as $allocation) {
                 $newallocation = (array) $allocation;
                 $newallocation['period'] = $current_period;
                 SeedBudgetAllocation::create($newallocation);
