@@ -231,8 +231,9 @@ class SeedAllocationController extends Controller
         $last_period =  date('Y-'). $cp .'-01';
         $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
         if($record){
-            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
-            $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
+
+            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->where('label',$record->label)->sum('amount');
+            $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->where('label',$record->label)->sum('amount');
 
             return response()->json([
                 'status' => true,

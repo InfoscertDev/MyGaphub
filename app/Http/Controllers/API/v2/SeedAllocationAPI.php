@@ -158,12 +158,16 @@ class SeedAllocationAPI extends Controller
             $record_spents = array();
 
             foreach ($spents as $key => $spend) {
-                $spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
-                $spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
+                $spent_current_month = 0;//RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->sum('amount');
+                $spent_last_month = 0;//RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->sum('amount');
 
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
                 $record = array();
-                // array_push($record, $key);
+                
+                foreach ($spend as $sp) {
+                    $sp->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->where('label',$sp->label)->sum('amount');
+                    $sp->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->where('label',$sp->label)->sum('amount');
+                } 
                 $record[$key]['total_amount'] = $amount;
                 $record[$key]['list'] = $spend;
                 $record[$key]['spent'] = compact('spent_current_month', 'spent_last_month');

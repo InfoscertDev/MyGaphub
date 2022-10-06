@@ -10,8 +10,8 @@ use App\Asset\SeedBudget as Budget;
 class AllocationHelpers{
     // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
     public static function monthlyRecurssionChecker($user){
-        $month = date('m')-1;
         $current_period = date('Y-m').'-01';
+        $month = date('m')-1;
         $last_period =  date('Y-').$month.'-01';
 
         $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
@@ -30,7 +30,7 @@ class AllocationHelpers{
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 
         if(count($allocations) == 0){
-            $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
+            $current_allocations = SeedBudgetAllocation::where('user_d', $user->id)->where('period', $last_period)
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 
             foreach ($current_allocations as $allocation) {
