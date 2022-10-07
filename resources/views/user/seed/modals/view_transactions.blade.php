@@ -118,19 +118,19 @@
                         </div>
                         <div class="form-group my-3 row">
                             <div class="col-sm-6">
-                                Note:
+                                Note: 
                             </div>
                             <div class="col-sm-6">
                                 <textarea name="note" id="edit_record_note" class="form-control b-rad-10" rows="2"></textarea>
                             </div>
                         </div>
                         
-                        <div class="form-group my-3 row record_details" style="display: none;">
+                        <div class="form-group my-3 row record_details" >
                             <div class="col-sm-5">
                                Recurring:
                             </div>
                             <div class="col-sm-7">
-                                <div class=" switch text-left">
+                                <div class="switch text-left">
                                    <input class="" id="switch_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_recurring"></label>
                                 </div>
                             </div>
