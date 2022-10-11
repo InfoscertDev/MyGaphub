@@ -30,7 +30,7 @@ class AllocationHelpers{
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 
         if(count($allocations) == 0){
-            $current_allocations = SeedBudgetAllocation::where('user_d', $user->id)->where('period', $last_period)
+            $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 
             foreach ($current_allocations as $allocation) {
@@ -153,10 +153,10 @@ class AllocationHelpers{
             array_push($sum, $account->amount);
         }
         $total_spent = array_sum($sum);
-
         $total_left = $allocated->amount - $total_spent;
-        $left_percentage = ($total_spent) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
-        $spent_percentage = 100 - $left_percentage;
+        $left_percentage = ($total_spent > 0) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
+        // info([$total_spent > 0, $left_percentage]);
+        $spent_percentage = ($left_percentage != 100) ? 100 - $left_percentage : $left_percentage;
         return compact('total_spent', 'total_left', 'spent_percentage', 'left_percentage');
     }
 

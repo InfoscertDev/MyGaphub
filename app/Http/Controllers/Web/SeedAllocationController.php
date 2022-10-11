@@ -44,6 +44,7 @@ class SeedAllocationController extends Controller
             foreach ($spents as $key => $spend) {
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
                 $record = array();
+                $key = date('D, F j, Y', strtotime($key));
                 // array_push($record, $key);
                 $record[$key]['total_amount'] = $amount;
                 $record[$key]['list'] = $spend;
@@ -197,7 +198,7 @@ class SeedAllocationController extends Controller
             if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
                 return redirect()->back()->with('error', 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction');
             }
-
+          if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
           $allocated->update($request->all());
 
           return  redirect()->back()->with('success','Seed Allocation has been updated');
@@ -274,6 +275,7 @@ class SeedAllocationController extends Controller
                 'amount' => 'required|numeric|min:0'
               //   'date' => 'required|date'
             ]);
+            if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
 
             $record->update($request->all());
 

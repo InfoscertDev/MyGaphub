@@ -109,7 +109,7 @@
                             </div>
                             <div class="col-sm-7">
                                 <div class=" switch text-left">
-                                   <input class="" id="switch_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_recurring"></label>
+                                   <input class="" id="update_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_recurring"></label>
                                 </div>
                             </div>
                         </div>

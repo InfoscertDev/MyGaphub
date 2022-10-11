@@ -18,7 +18,7 @@
         <div class="col-12 my-4">
             <div class="d-flex">
                 <span class="mr-3 pb-2" id="goback">
-                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.summary', 'expenditure') : route('seed.create') }}" 
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.summary', 'expenditure') : route('seed.create') }}"
                                 class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
                 <span class="mx-auto text-center">
@@ -99,14 +99,14 @@
 
         function handleAllocationEdit(){
             if(seed){
-
+                
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
 
                 $('.seed_category').html(seed.allocated.seed_category);
                 $('#edit_label').val(seed.allocated.label);
                 $('#edit_amount').val(seed.allocated.amount);
                 $('#edit_note').val(seed.allocated.note);
-
+                $('#allocation_recurring').attr('checked', seed.allocated.recuring);
                 // $('#edit_allocation').attr('action', url+'/'+id)
                 // $('div.seed_category').html(allocation.label);
                 // $('#edit_label').val(allocation.label)
@@ -178,6 +178,7 @@
                 $('#edit_record_label').val(record.label);
                 $('#edit_record_amount').val(record.amount);
                 $('#edit_record_note').val(record.note);
+                $('#update_record_recurring').attr('checked', record.recuring);
                 $('#editRecordDetailModal').modal('show');
                 $('#viewRecordDetailModal').modal('hide');
                 // if(record.reccurs)record_recursion
