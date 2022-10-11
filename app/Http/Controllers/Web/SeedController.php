@@ -30,21 +30,19 @@ class SeedController extends Controller
       $page_title = "Manage Your Money the SEED Way";
       $support = true;
       $preview = $request->input('preview');
+      $current_seed = CalculatorClass::getCurrentSeed($user);
 
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        if(isset($current_seed->priviewed) || $current_seed->priviewed == 0){
-            $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-            $current_seed->priviewed = 1 ;
-            $current_seed->save();
-        }
+        $current_seed->priviewed = 1 ;
+        $current_seed->save();
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
-      $current_seed = CalculatorClass::getCurrentSeed($user);
+    
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       AllocationHelpers::monthlyRecurssionChecker($user);

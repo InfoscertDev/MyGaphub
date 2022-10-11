@@ -25,7 +25,15 @@ class SeedAPI extends Controller
       $user = $request->user();
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
-    
+
+      $preview = $request->input('preview');
+      if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
+        if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
+            $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+            $current_seed->priviewed = 1 ;
+            $current_seed->save();
+        }
+      }
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $average_detail = AllocationHelpers::averageSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);

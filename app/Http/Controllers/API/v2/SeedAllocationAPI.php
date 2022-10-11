@@ -19,7 +19,7 @@ class SeedAllocationAPI extends Controller
         $validator = Validator::make($request->all(),[
           'category' => 'required|in:savings,education,expenditure,discretionary',
           'label' => 'required|between:3,50',
-          'amount' => 'required|numeric|min:0',
+          'amount' => 'required|numeric|min:10',
         ]);
 
         if($request->category == 'expenditure'){
@@ -55,7 +55,7 @@ class SeedAllocationAPI extends Controller
         if($allocated){
           $validator = Validator::make($request->all(),[
             'label' => 'required|between:3,50',
-            'amount' => 'required|numeric|min:0',
+            'amount' => 'required|numeric|min:10',
           ]);
 
             if($validator->fails()){
@@ -192,7 +192,7 @@ class SeedAllocationAPI extends Controller
         $validator = Validator::make($request->all(),[
           'allocation' => 'required|exists:seed_budget_allocations,id',
           'label' => 'required|between:3,50',
-          'amount' => 'required|numeric|min:0',
+          'amount' => 'required|numeric|min:10',
             // 'date' => 'required|date'
         ]);
 

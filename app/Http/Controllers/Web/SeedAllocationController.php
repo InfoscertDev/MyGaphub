@@ -142,7 +142,7 @@ class SeedAllocationController extends Controller
       $this->validate($request, [
         'category' => 'required|in:savings,education,expenditure,discretionary',
         'label' => 'required|between:3,50',
-        'amount' => 'required|numeric|min:0',
+        'amount' => 'required|numeric|min:10',
       ]);
 
       if($request->category == 'expenditure'){
@@ -184,7 +184,7 @@ class SeedAllocationController extends Controller
         if($allocated){
             $this->validate($request,[
               'label' => 'required|between:3,50',
-              'amount' => 'required|numeric|min:0',
+              'amount' => 'required|numeric|min:10',
             ]);
 
             // if($validator->fails()){
@@ -252,7 +252,7 @@ class SeedAllocationController extends Controller
         $this->validate($request, [
             'allocation' => 'required|exists:seed_budget_allocations,id',
             'label' => 'required|between:3,50',
-            'amount' => 'required|numeric|min:0'
+            'amount' => 'required|numeric|min:10',
           //   'date' => 'required|date'
         ]);
         $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
@@ -272,7 +272,7 @@ class SeedAllocationController extends Controller
         if($record){
             $this->validate($request, [
                 'label' => 'required|between:3,50',
-                'amount' => 'required|numeric|min:0'
+                'amount' => 'required|numeric|min:10',
               //   'date' => 'required|date'
             ]);
             if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
