@@ -32,21 +32,22 @@ class SeedController extends Controller
       $preview = $request->input('preview');
       $current_seed = CalculatorClass::getCurrentSeed($user);
 
+
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        $current_seed->priviewed = 1 ;
+        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        $current_seed->priviewed = 1;
         $current_seed->save();
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
-      $currency = explode(" ", $calculator->currency)[0];
-    
+      $currency = explode(" ",$calculator->currency)[0];
+
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
       AllocationHelpers::monthlyRecurssionChecker($user);
-    //   info($user->id);
+
       $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
@@ -70,7 +71,7 @@ class SeedController extends Controller
         $available_allocation = $request->budget - $current_detail['total'];
         // info($content);
         // info([$available_allocation,$request->seed, $request->budget]);
-        if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknj'){
+        if($available_allocation >= 0){
             $seed = CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1 ;
@@ -100,7 +101,7 @@ class SeedController extends Controller
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
+        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
         $current_seed->save();
       }

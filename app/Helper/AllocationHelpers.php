@@ -16,8 +16,8 @@ class AllocationHelpers{
 
         $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
         $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
-
-        if(!$seed || ( $seed->budget_amount == 0 && $last_seed)){
+        // || ($seed->budget_amount == 0 && $last_seed)
+        if(!$seed ){
             $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
             // $seed->user_id = $user->id;
             // $seed->period = $current_period;
