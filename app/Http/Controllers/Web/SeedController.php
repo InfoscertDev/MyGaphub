@@ -37,6 +37,7 @@ class SeedController extends Controller
         // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1;
         $current_seed->save();
+        return redirect()->route('seed');
       }
 
       $seed_backgrounds = CalculatorClass::accountBackground();

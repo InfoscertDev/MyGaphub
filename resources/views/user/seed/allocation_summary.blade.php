@@ -99,7 +99,7 @@
 
         function handleAllocationEdit(){
             if(seed){
-                
+
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
 
                 $('.seed_category').html(seed.allocated.seed_category);
@@ -126,9 +126,11 @@
             $('#viewTransactionsModal').modal('show');
 
             $.each(record_spents, function(key1, records){
-                let header =  $(`<div class="ml-3 mt-3"> ${(Object.keys(records)[0])}
-                        <span class="float-right mr-3"> ${currency}${(Object.values(records)[key1]) ? (Object.values(records)[key1].total_amount).toFixed(2) : 0.00 } </span>
+                let header =  $(`<div class="ml-3 mt-3"> 
+                    ${(Object.keys(records)[0])}
+                        
                     </div>`);
+                    // <span class="float-right mr-3"> ${currency}${(Object.values(records)[key1]) ? (Object.values(records)[key1].total_amount).toFixed(2) : 0.00 } </span>
                 // console.log(Object.values(records)[key1], header);
 
                 spent_list.append(header)
@@ -157,13 +159,16 @@
                 url: '/home/seed/record/'+id,
                 success: function(data, status){
                     record = data.data;
+                    console.log(record)
                     $('.ico').text(record.label.charAt(0))
                     $('#record_label').text(record.label)
                     $('#record_amount').text((record.amount).toFixed(2))
                     $('#record_date').text(record.date)
                     $('#record_note').text(record.note)
-                    $('#spent_current_month').text(record.spent_current_month);
-                    $('#spent_last_month').text(record.spent_last_month);
+                    $('#spent_current_month').text((+record.spent_current_month).toFixed(2));
+                    $('#spent_last_month').text((+record.spent_last_month).toFixed(2));
+                    if(record.recuring){ $('#record_recursion').show();}
+                     else{ $('#record_recursion').hide(); }
                 },
                 error: function (request, status, error) {
                     // console.log(status, error)
@@ -181,7 +186,7 @@
                 $('#update_record_recurring').attr('checked', record.recuring);
                 $('#editRecordDetailModal').modal('show');
                 $('#viewRecordDetailModal').modal('hide');
-                // if(record.reccurs)record_recursion
+               
             }
         }
     </script>
