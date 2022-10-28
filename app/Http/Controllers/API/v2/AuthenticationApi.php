@@ -6,7 +6,7 @@ use App\Helper\GapAccountCalculator;
 use App\Helper\IntegrationParties;
 use App\Helper\AuthHelper;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -22,14 +22,14 @@ use App\UserAudit as Audit;
 // use \Validator;
 
 class AuthenticationApi extends Controller
-{ 
+{
     public function __construct()
     {
         // $this->middleware(['auth','verified'], ['except' => ['login', 'registeration']]);
-    } 
+    }
 
     use RegistersUsers;
- 
+
     public function registeration(Request $request)
     {
         // Validate Input
@@ -53,28 +53,28 @@ class AuthenticationApi extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
-        
-        // Initialize 
+
+        // Initialize
         AuthHelper::createCalculator($user->id);
         AuthHelper::createQuestion($user->id);
         GapAccountCalculator::initUserChartity($user);
         IntegrationParties::join_sendinblue_leads($user);
         // GapExchangeHelper::gapCurrencies($user);
-  
+
         $profile = new Profile();
         $profile->save();
         $user->profile_id  = $profile->id;
-        $user->save(); 
+        $user->save();
 
         $tiles = HelperClass::dashboardTiles();
-        $audit = new Audit();  
-        $audit->user_id = $user->id; 
+        $audit = new Audit();
+        $audit->user_id = $user->id;
         $audit->dashboard = json_encode($tiles);
         $audit->save();
 
         $user->sendEmailVerificationNotification();
 
-        $token = JWTAuth::fromUser($user); 
+        $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user','token'),201);
     }
@@ -106,11 +106,11 @@ class AuthenticationApi extends Controller
 
     protected function respondWithToken($token)
     {
-        return response()->json([ 
+        return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60 * 60 * 24
-        ]); 
+        ]);
     }
 
     /**
@@ -125,16 +125,16 @@ class AuthenticationApi extends Controller
 
     /**
      * Logout
-     * 
+     *
      * Log user out and make token invalid
      * @response {
      *  "success": true,
      *  'message' : 'You have successfully logged out',
-     * } 
-     */ 
+     * }
+     */
     public function logout(Request $request) {
         $this->validate($request, ['token' => 'required']);
-         
+
         try {
             JWTAuth::invalidate($request->input('token'));
             return response()->json(['success' => true, 'message'=> "You have successfully logged out."]);
@@ -143,12 +143,12 @@ class AuthenticationApi extends Controller
             return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
         }
     }
- 
+
      /**
      * Refresh a token.
      *
      * @return \Illuminate\Http\JsonResponse
-     */  
+     */
     public function refresh()
     {
         return $this->respondWithToken($this->guard()->refresh());

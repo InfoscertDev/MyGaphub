@@ -188,29 +188,4 @@
 </script>
 
 
-<script>
-console.log('Reach')
-var hasExtension = false;
-const requiredVersion = '0.7.3';
-function clishaExtension(){
-    const EID = 'hchmeojdknmlfngphlmnjncmcfaglhdn';
-    // { message: "version" }
-    chrome.runtime.sendMessage(EID, 'version',function (response) {
-        console.log(response);
-        if (response) {
-            if (response.version) {
-                if (response.version >= requiredVersion) {
-                    hasExtension = true;
-                }
-            }
-        }
-        else {
-            hasExtension = false;
-        }
-    
-        console.log('Extension AVailable ' +hasExtension)
-    });
-}
-</script>
 @endsection
- 
