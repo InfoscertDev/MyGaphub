@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,17 +16,17 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 // use \Validator;
 
 class GapAutAPI extends Controller
-{ 
+{
     public function __construct()
     {
         // $this->middleware(['auth','verified'], ['except' => ['login', 'registeration']]);
-    } 
+    }
 
     use AuthenticatesUsers;
-    
+
     /**
      * Gaphub Login
-     *  
+     *
      * Login for  Gaphub
      * @bodyParam email string requied The user unique email. Example: john@yahoo.com
      * @bodyParam password sting required User valid password
@@ -43,38 +43,37 @@ class GapAutAPI extends Controller
      *    "mobile": null
      *   }
      *  'message'=> 'Succefully Loggedin'
-     * } 
-     */  
+     * }
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
         ]);
-        if($validator->fails()){ 
+        if($validator->fails()){
             return response()->json( [ 'status' => false,"errors" => $validator->errors()->toJson()], 400);
         }
-  
+
         $credentials = $request->only('email', 'password');
-       
+
         try {
-            $token = JWTAuth::attempt($credentials); 
-            if (!$token) { 
+            $token = JWTAuth::attempt($credentials);
+            if (!$token) {
                 return response()->json([ 'status' => false,'message' => 'Invalid login credentials'], 400);
-            } 
+            }
         } catch (JWTException $e) {
-            info($e);
             return response()->json([ 'status' => false,'message' => 'Could not create token'], 500);
         }
-        $user = Auth::user(); 
+        $user = Auth::user();
         if($user->email_verified_at !== NULL){
             return $this->respondWithToken($token);
         }else{
             return response()->json([ 'status' => false,'message' => 'Account has not been verified'], 400);
         }
     }
- 
-  
+
+
     public function getAuthenticatedUser()
     {
             try {
@@ -102,15 +101,15 @@ class GapAutAPI extends Controller
 
     protected function respondWithToken($token)
     {
-        return response()->json([  
+        return response()->json([
             'status' => true,
             'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth('api')->factory()->getTTL() * 1000 * 60 * 60  * 24 * 60
             ]
-        ]); 
-    } 
+        ]);
+    }
 
     /**
      * Get the guard to be used during authentication.
@@ -124,7 +123,7 @@ class GapAutAPI extends Controller
 
     public function logout(Request $request) {
         $this->validate($request, ['token' => 'required']);
-         
+
         try {
             JWTAuth::invalidate($request->input('token'));
             return response()->json(['success' => true, 'message'=> "You have successfully logged out."]);
@@ -133,12 +132,12 @@ class GapAutAPI extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to logout, please try again.'], 500);
         }
     }
- 
+
      /**
      * Refresh a token.
      *
      * @return \Illuminate\Http\JsonResponse
-     */  
+     */
     public function refresh()
     {
         return $this->respondWithToken($this->guard()->refresh());

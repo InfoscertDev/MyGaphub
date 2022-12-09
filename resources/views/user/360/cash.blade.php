@@ -110,7 +110,9 @@
                     @if(!$archive)
                         <div class="chart mt-3">
                             <h5 class="text-underline bold my-2">Cash Distribution</h5>
-                            <canvas id="cashDetailBar" width="500" style="width: 120%; margin: 0;"></canvas>
+                            <div>
+                                <canvas id="cashDetailBar" width="500" style="width: 100%; margin: 0;"></canvas>
+                            </div>
                             <div class="cell" id="wrapLegend"></div>
                         </div>
                     @endif

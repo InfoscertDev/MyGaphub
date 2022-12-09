@@ -5,22 +5,24 @@
         var chart_values =   account_chart.values;
         var chart_labels =   account_chart.labels;
         var backgrounds =   <?php echo json_encode($backgrounds) ?>;
-        if(chart){ 
+        if(chart){
             chart.getContext('2d');
             var myequityChart = new Chart(chart, {
-                type: 'pie', 
-                data: {    
-                    labels: chart_labels, 
+                type: 'pie',
+                data: {
+                    labels: chart_labels,
                     datasets: [{
                         data: chart_values,
-                        backgroundColor: backgrounds,   
-                        borderColor: backgrounds,   
+                        backgroundColor: backgrounds,
+                        borderColor: backgrounds,
                         datalabels: {
                             color: '#fff'
-                        } 
+                        }
                     }]
                 },
                 options: {
+                    // responsive: true,
+                    // maintainAspectRatio: false,
                     legend: {
                         display: grid,
                         position: 'bottom'
@@ -30,7 +32,7 @@
                     },
                     onHover: graphHoverEvent ,
                     onClick: graphClickEvent ,
-                    plugins: {  
+                    plugins: {
                         datalabels: {
                             formatter: function(value, context) {
                                 // if(grid){
@@ -39,12 +41,12 @@
                                 // }
                                 return parseInt(value).toLocaleString() +'%';
                             }
-                        } 
-                    }, 
-                    // scales: { 
+                        }
+                    },
+                    // scales: {
                     //     yAxes:[{
                     //         display: true,
-                    //         ticks: { 
+                    //         ticks: {
                     //             beginAtZero: true,
                     //             callback: function(value, index, values) {
                     //                 return user_currency + parseInt(value).toLocaleString();
@@ -52,12 +54,12 @@
                     //         },
                     //     }]
                     // }
-                } 
+                }
             });
         }
-        
+
         let act_segment;
-        function graphHoverEvent (evt, elements) {          
+        function graphHoverEvent (evt, elements) {
             if (elements && elements.length) {
                 act_segment = elements[0];
                 this.chart.update();

@@ -1,28 +1,29 @@
 <script>
 window.onload = function(){
-    var stage ='/mygaphub/releaseb';
-    var stage ='/app'; 
+    // var stage ='/mygaphub/releaseb';
+    var stage ='/';
     var canvas = document.getElementById('world-map'),
         context = canvas.getContext('2d');
     mapSprite = new Image();
     mapSprite.src = window.location.origin+stage+'/assets/images/worldmap.jpeg';
 
+    console.log(window.location.origin+stage+'/assets/images/worldmap.jpeg');
     generateMap(); 
-    function generateMap(){ 
+    function generateMap(){
         mapSprite.onload = function(){
             context.drawImage(mapSprite, 0,0, 300, 150);
         }
-    } 
+    }
     // Create a basic class which will be used to create a marker
     var Marker = function (XPos = 0, YPos = 0, percentage  = 0, text = '') {
-        this.Sprite = new Image(); 
+        this.Sprite = new Image();
         this.Sprite.src = window.location.origin+stage+'/assets/icon/marker.png';
         this.Width = 12;
         this.Height = 20;
         this.XPos = XPos;
         this.YPos = YPos;
         this.text = text,
-        this.percentage = percentage 
+        this.percentage = percentage
     }
 
     // Array of markers
@@ -36,25 +37,25 @@ window.onload = function(){
     var europe = new Marker(150, 20, global.europe,'Europe');
     var asia = new Marker(190, 36, global.asia,'Asia');
     var africa = new Marker(140, 60, global.africa,'Africa');
-    var australia = new Marker(250, 90, global.australia,'Australia'); 
-   
+    var australia = new Marker(250, 90, global.australia,'Australia');
+
    function drawMarker(tempMarker){
-       tempMarker.Sprite.onload = function(){ 
+       tempMarker.Sprite.onload = function(){
             setTimeout(()=> {
                 context.drawImage(tempMarker.Sprite, tempMarker.XPos, tempMarker.YPos, tempMarker.Width, tempMarker.Height);
                 // Calculate position text
                 var markerText = `${tempMarker.percentage}% ${tempMarker.text}`;
                 // Draw a simple box so you can see the position
                 var textMeasurements = context.measureText(markerText);
-                context.fillStyle = "#fefefe"; 
+                context.fillStyle = "#fefefe";
                 context.globalAlpha = .9;
                 context.fillRect(tempMarker.XPos - 12 ,tempMarker.YPos - 12,textMeasurements.width + 8, 16);
                 // context.fillRect(tempMarker.XPos - (textMeasurements.width / 2), tempMarker.YPos - 20, textMeasurements.width, 20);
-                context.globalAlpha = 1;  
+                context.globalAlpha = 1;
                 context.fillStyle = "#ED3237";
                 context.fillText(markerText, tempMarker.XPos - 8 , tempMarker.YPos);
             }, 1000);
-        } 
+        }
    }
    drawMarker(north_america); drawMarker(south_america);
    drawMarker(europe); drawMarker(asia);
@@ -87,7 +88,7 @@ window.onload = function(){
 //                 },
 //                 values: [20, 9, 0],
 //             }]
-//         }, 
+//         },
 //         markers: braid.map(function(h){ return {name: h.name, latLng: h.coords} }),
 //         labels: {
 //             markers: {
@@ -123,7 +124,7 @@ window.onload = function(){
 //                 // }
 //             }]
 //         }
-//     }); 
+//     });
 //     var mapMarkers = [];
 //     var mapMarkersValues = [];
 

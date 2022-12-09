@@ -4,32 +4,35 @@
         ctx.getContext('2d');
         var myExpenditureChart = new Chart(ctx, {
             type: 'bar',
-            data: {    
-                labels: labels,  
+            data: {
+                labels: labels,
                 datasets: [{
                     data: values,
-                    backgroundColor: backgrounds,   
-                    borderColor: backgrounds,   
+                    backgroundColor: backgrounds,
+                    borderColor: backgrounds,
                     datalabels: {
                         color: '#fff'
-                    }  
+                    }
                 }]
-            }, 
+            },
             options: {
+                // responsive: true,
+                // maintainAspectRatio: false,
+
                 legend: {
                     display: false,
                     position: 'bottom'
-                }, 
+                },
 
                 scales: {
-                    xAxes:[{ 
+                    xAxes:[{
                         display: true,
                         barThickness: 60,  // number (pixels) or 'flex'
                         maxBarThickness: 70 // number (pixels)
                     }],
                     yAxes:[{
-                        display: true, 
-                        ticks: { 
+                        display: true,
+                        ticks: {
                             beginAtZero: true,
                             max:  values[0] * 1.3,
                             callback: function(value, index, values) {
@@ -38,7 +41,7 @@
                         },
                     }]
                 },
-                plugins: { 
+                plugins: {
                     datalabels: {
                         formatter: function(value, context) {
                             return user_currency + parseInt(value).toLocaleString();
@@ -46,10 +49,10 @@
                     }
                 },
                 onClick: graphClickEvent,
-                
+
             }
         });
-    } 
+    }
     function graphClickEvent(event, elements) {
         if(elements[0]){
         //   console.log(index);
@@ -58,7 +61,7 @@
           if (index == 1) window.location = "<?php echo route('360.liability') ?>"
           if (index == 2) window.location = "<?php echo route('360.equity') ?>"
         }
-    } 
+    }
     function updateNetWorth(){
         var equity = document.getElementById('switch_equity'),
             net = document.getElementById('total_net');
