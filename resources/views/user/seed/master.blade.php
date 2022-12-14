@@ -2,27 +2,27 @@
 
 
 @section('script')
-@include('user.seed.partials.seedpie_options')
-<script>
-    var averageChart = document.getElementById('averageSeedChart');
-    var currentSeed = document.getElementById('currentSeedChart');
-    var targetChart = document.getElementById('targetSeedChart');
+    @include('user.seed.partials.seedpie_options')
+    <script>
+        var averageChart = document.getElementById('averageSeedChart');
+        var currentSeed = document.getElementById('currentSeedChart');
+        var targetChart = document.getElementById('targetSeedChart');
 
-    var labels = ['Savings', 'Education', 'Expenditure', 'Discretionary'];
-    var average_chart = {
-        values : <?php  echo json_encode($average_detail['seed_web']) ?>,
-    };
-    var current_chart = {
-        values : <?php  echo json_encode($current_detail['seed_web']) ?>,
-    };
-    var target_chart = {
-        values : <?php  echo json_encode($target_detail['seed_web']) ?>,
-    };
-    // console.log(account_chart);
-    refreshSeedChart(average_chart, averageChart)
-    refreshSeedChart(current_chart, currentSeed)
-    refreshSeedChart(target_chart, targetChart)
-</script>
+        var labels = ['Savings', 'Education', 'Expenditure', 'Discretionary'];
+        var average_chart = {
+            values : <?php  echo json_encode($average_detail['seed_web']) ?>,
+        };
+        var current_chart = {
+            values : <?php  echo json_encode($current_detail['seed_web']) ?>,
+        };
+        var target_chart = {
+            values : <?php  echo json_encode($target_detail['seed_web']) ?>,
+        };
+        // console.log(account_chart);
+        refreshSeedChart(average_chart, averageChart)
+        refreshSeedChart(current_chart, currentSeed)
+        refreshSeedChart(target_chart, targetChart)
+    </script>
 @endsection
 
 
@@ -77,9 +77,7 @@
 
 
         @if(request()->input('spend'))
-
             <script>
-
                 $(function() {    handleRecordView(); })
 
                 function handleRecordView(){
@@ -202,7 +200,7 @@
                 <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
             @endif
             <br><br>
-            <button class="btn btn-pry btn-history" disabled>Historic SEED</button>
+            <a class="btn btn-pry btn-history" href="{{ route('seed.history') }}">Historic SEED</a>
         </div>
     </div>
 

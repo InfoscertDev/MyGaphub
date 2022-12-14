@@ -1,29 +1,29 @@
 <script>
      if(braidValue){
         braidValue.getContext('2d');
-        var myExpenditureChart = new Chart(braidValue, {
+        var myBraidChart = new Chart(braidValue, {
             type: 'bar',
-            data: {    
-                labels: labels, 
+            data: {
+                labels: labels,
                 datasets: [{
                         label: 'Existing',
                         data: existing_values,
-                        backgroundColor: '#E6C069',    
-                        borderColor: '#E6C069', 
+                        backgroundColor: '#E6C069',
+                        borderColor: '#E6C069',
                         datalabels: {
                             color: '#fff',
                             position: 'top'
-                        }  
+                        }
                     },{
                         label: 'Desired',
-                        data: desired_values, 
-                       
-                        backgroundColor: '#ED3237',   
-                        borderColor: '#ED3237', 
+                        data: desired_values,
+
+                        backgroundColor: '#ED3237',
+                        borderColor: '#ED3237',
                         datalabels: {
                             color: '#fff',
                             position: 'top'
-                        }  
+                        }
                     }
                 ]
             },
@@ -32,14 +32,14 @@
                     display: true,
                     position: 'bottom',
                     onClick: (e) => e.stopPropagation(),
-                    abels: { 
+                    abels: {
                         boxHeight: 1, boxWidth: 10
                     }
                 },
-                scales: { 
+                scales: {
                     yAxes:[{
                         display: true,
-                        ticks: { 
+                        ticks: {
                             beginAtZero: true,
                             callback: function(value, index, values) {
                                 return  parseInt(value).toLocaleString();
@@ -51,5 +51,5 @@
                 // onHover: graphClickEvent ,
             }
         });
-    } 
+    }
 </script>

@@ -53,6 +53,7 @@
             }
         });
     }
+
     function graphClickEvent(event, elements) {
         if(elements[0]){
         //   console.log(index);
@@ -62,6 +63,7 @@
           if (index == 2) window.location = "<?php echo route('360.equity') ?>"
         }
     }
+
     function updateNetWorth(){
         var equity = document.getElementById('switch_equity'),
             net = document.getElementById('total_net');

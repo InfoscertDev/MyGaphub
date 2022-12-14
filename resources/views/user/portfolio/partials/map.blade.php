@@ -1,14 +1,14 @@
 <script>
 window.onload = function(){
     // var stage ='/mygaphub/releaseb';
-    var stage ='/';
+    var stage ='';
     var canvas = document.getElementById('world-map'),
         context = canvas.getContext('2d');
     mapSprite = new Image();
     mapSprite.src = window.location.origin+stage+'/assets/images/worldmap.jpeg';
 
-    console.log(window.location.origin+stage+'/assets/images/worldmap.jpeg');
-    generateMap(); 
+    console.log(window.location.origin+`stage`+'/assets/images/worldmap.jpeg');
+    generateMap();
     function generateMap(){
         mapSprite.onload = function(){
             context.drawImage(mapSprite, 0,0, 300, 150);

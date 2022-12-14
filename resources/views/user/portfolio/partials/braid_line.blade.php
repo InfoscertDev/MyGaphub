@@ -5,7 +5,7 @@
            type: 'line',
            data: {    
                labels: labels, 
-               fill:false,
+               fill:false, 
                datasets: [{
                         label: 'Existing',
                         data: existing_incomes,

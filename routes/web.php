@@ -28,7 +28,7 @@ Route::get('/install', function() {
         $newallocation = (array) $allocation;
         $newallocation['period'] = $current_period;
         SeedBudgetAllocation::create($newallocation);
-    } 
+    }
 
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('route:clear');
@@ -70,9 +70,11 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/notifications', 'HomeController@notifications')->name('notifications');
         Route::post('/dashboard/tiles', 'HomeController@dashboardTiles')->name('home.dashboard');
-        // Seed
+        // Seed 
         Route::get('/seed', 'Web\SeedController@index')->name('seed');
         Route::get('/seed/create', 'Web\SeedController@create')->name('seed.create');
+        Route::get('/seed/history', 'Web\SeedController@history')->name('seed.history');
+        Route::get('/seed/history/{period}', 'Web\SeedController@historyPeriod')->name('seed.history_period');
         // Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');
         Route::post('/seed/store/budget', 'Web\SeedController@storeSetBudget')->name('seed.store.set_budget');
         Route::get('/seed/summary/{seed}', 'Web\SeedAllocationController@seedSummaryPage')->name('seed.summary');
