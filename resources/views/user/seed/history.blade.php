@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="text-center bolder">
-                <h4>{{ date('F')}} {{ date('Y')}}</h4>
+                <h4>{{ date('M', strtotime("-6 months"))}} {{ date('Y',strtotime("-6 months"))}} -  {{ date('M')}} {{ date('Y')}}</h4>
             </div>
         </div>
         <br> <br>
@@ -25,11 +25,10 @@
     <div class="row  mt-2 mb-2">
         <div class="col-md-3">
             <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Savings</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($average_detail['table']['savings'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -39,7 +38,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Expenditure</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($average_detail['table']['expenditure'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -49,7 +48,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Education</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($average_detail['table']['education'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -59,7 +58,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Discretionary</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($average_detail['table']['discretionary'], 2) }}</p>
                     </div>
                 </div>
             </div>

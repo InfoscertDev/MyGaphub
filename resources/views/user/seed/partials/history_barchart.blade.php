@@ -12,7 +12,7 @@
                 type: 'bar',
                 // fill:false,
                 data: {
-                    labels: ['Savings', 'Education', 'Expenditure','Discretionary'],
+                    labels: labels,
                     datasets: [{
                         label: 'Savings',
                         //  fill:false,
@@ -97,7 +97,7 @@
                 type: 'line',
                 ill:false,
                 data: {
-                    labels: ['Savings', 'Education', 'Expenditure','Discretionary'],
+                    labels: labels,
                     datasets: [{
                         label: 'Savings',
                         fill:false,

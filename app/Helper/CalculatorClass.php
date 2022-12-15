@@ -10,7 +10,7 @@ use App\Helper\IncomeHelper;
 use stdClass;
 
 
-// 
+//
 class CalculatorClass{
 
     public static function finicial($user){
@@ -22,47 +22,47 @@ class CalculatorClass{
         $isBudgetable = ($seed['total_seed'] > 1) ? true : false;
         // Use Seed if Average Income is available
         if($seed['total_seed'] > 1){
-            $cost = $seed['total']; 
+            $cost = $seed['total'];
             $calculator->periodic_savings = $seed['table']['savings'];
-            $expenditure = $seed['table']['expenditure']; 
+            $expenditure = $seed['table']['expenditure'];
             $calculator->charity = $seed['table']['discretionary'];
             $calculator->education =  $seed['table']['education'];
             $calculator->mortgage = $averageSeed->accomodation;
             $calculator->mobility = $averageSeed->mobility;
-            $calculator->utility = $averageSeed->utilities; 
+            $calculator->utility = $averageSeed->utilities;
             $calculator->expenses = $averageSeed->expenses;
-            $calculator->dept_repay = $averageSeed->debt_repay; 
-        }else{ 
+            $calculator->dept_repay = $averageSeed->debt_repay;
+        }else{
             // Primary Cost of Living
-            $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility + 
+            $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility +
                      $calculator->expenses + $calculator->dept_repay;
             $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
         }
         // Portfolio and Asset
         $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
         $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-        $funds = PortfolioHelper::investmentFunds($user); 
-       
+        $funds = PortfolioHelper::investmentFunds($user);
+
         if(!$income_audit){
             $tiles = HelperClass::dashboardTiles();
-            $audit = new Audit();  
-            $audit->user_id = $user->id; 
+            $audit = new Audit();
+            $audit->user_id = $user->id;
             $audit->dashboard = json_encode($tiles);
-            $audit->save(); 
+            $audit->save();
             $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-        } 
-        $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income; 
+        }
+        $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
         $non_portfolio  = $portfolios['income_non_portfolio'];
         $calculator->other_income = $portfolio;
-        
+
         $investment = $funds['investment'];
-        $saving = $calculator->extra_save; 
+        $saving = $calculator->extra_save;
         // $investment = $calculator->investment;
-        $roce = $calculator->roce;   
-        return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce', 
+        $roce = $calculator->roce;
+        return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce',
                             'expenditure','investment', 'calculator', 'isBudgetable');
     }
- 
+
     public static function snapshot($calculator, $cost){
         // info([$calculator->other_income, $calculator->extra_save, $cost]);
         if($cost){
@@ -71,10 +71,10 @@ class CalculatorClass{
         }else{
             $currenttime = 0;  $currentper = 0;
         }
-        
+
         $timecolor = HelperClass::daysPercentageColor($currenttime);
         $percolor = HelperClass::numPercentageColor($currentper);
-         
+
         $data = [
             'timeper' => round(($currenttime / 360 )* 100),
             'currenttime' => round($currenttime),
@@ -120,11 +120,11 @@ class CalculatorClass{
                     $current_seed->family_support =  $last_seed->family_support;
                     $current_seed->personal_commitments =  $last_seed->personal_commitments;
                     $current_seed->save();
-                }  
+                }
                 $current_seed->save();
                 $current_seed = Budget::where('user_id', $user->id)
                                     ->where('period', date('Y-m').'-01')
-                                    ->orderBy('period', 'DESC')->first(); 
+                                    ->orderBy('period', 'DESC')->first();
         }else{
             $total = [ $current_seed->investment_fund, $current_seed->personal_fund,$current_seed->emergency_fund,$current_seed->financial_training,
                         $current_seed->career_development,$current_seed->mental_development, $current_seed->accomodation, $current_seed->mobility,
@@ -147,14 +147,14 @@ class CalculatorClass{
                 $current_seed->family_support =  $last_seed->family_support;
                 $current_seed->personal_commitments =  $last_seed->personal_commitments;
                 $current_seed->save();
-            } 
+            }
         }
         return  $current_seed;
     }
 
     public static function getTargetSeed($user){
-        $year = (int)date('Y') + 1;  
-        $target = $year.'-01-01'; 
+        $year = (int)date('Y') + 1;
+        $target = $year.'-01-01';
         $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
                              ->orderBy('period', 'DESC')->first();
 
@@ -168,11 +168,11 @@ class CalculatorClass{
         }
         return  $target_seed;
     }
- 
+
     public static function averageSeedDetail($user){
         $calculator = Calculator::where('user_id', $user->id)->first();
-        $year = (int)date('Y') + 1;  
-        $target = $year.'-01-01';  
+        $year = (int)date('Y') + 1;
+        $target = $year.'-01-01';
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         // Make sure Philantrophy Information is available
         if(!$philantrophy) {
@@ -183,15 +183,16 @@ class CalculatorClass{
         $seeds =  Budget::where('user_id', $user->id)->where('period', '!=', $target)
                             ->where('period', '!=', date('Y-m').'-01')
                             ->latest()->limit(6)->get();
-    
+
+        info((array_column($seeds->toArray(), 'period')));
         $savings = [];
         $education = [];
         $expenditure = [];
         $discretionary = [];
         foreach($seeds as $seed){
-            array_push($savings,  $seed->investment_fund) ;
-            array_push($savings,  $seed->personal_fund) ;
-            array_push($savings,  $seed->emergency_fund) ;
+            array_push($savings,  $seed->investment_fund);
+            array_push($savings,  $seed->personal_fund);
+            array_push($savings,  $seed->emergency_fund);
             array_push($education,  $seed->financial_training) ;
             array_push($education,  $seed->career_development) ;
             array_push($education,  $seed->mental_development) ;
@@ -205,13 +206,13 @@ class CalculatorClass{
             array_push($discretionary,  $seed->personal_commitments) ;
             array_push($discretionary,  $seed->others) ;
         }
- 
-        // info(['Calculator >>>'.$calculator]); 
+
+        // info(['Calculator >>>'.$calculator]);
         $mortgage = isset($calculator->mortgage) ? $calculator->mortgage : 0;
-        $calc_expenditure =  $mortgage + $calculator->mobility + $calculator->utility + 
+        $calc_expenditure =  $mortgage + $calculator->mobility + $calculator->utility +
                         $calculator->expenses + $calculator->dept_repay;
 
-        $isSeed = (count($seeds->toArray()) > 1) ? 0 : 1; 
+        $isSeed = (count($seeds->toArray()) > 1) ? 0 : 1;
         $total_seed =  count($seeds->toArray());
         $avg_savings = ( array_sum($savings) > 0) ? count($seeds->toArray()) + $isSeed : 1;
         $avg_education = ( array_sum($education) > 0) ? count($seeds->toArray()) + $isSeed : 1;
@@ -224,7 +225,7 @@ class CalculatorClass{
             $education = round(array_sum($education) / $avg_education, 2);
             $expenditure = round(array_sum($expenditure)  / $avg_expenditure,2);
             $discretionary = round(array_sum($discretionary) / $avg_discretionary, 2);
-        }else{ 
+        }else{
             // Before 2 months of  use
             $savings = (array_sum($savings) + $calculator->periodic_savings) / $avg_savings;
             $education = (array_sum($education) + $calculator->education) / $avg_education;
@@ -256,8 +257,8 @@ class CalculatorClass{
     public static function getAverageSeed($user){
         $calculator = Calculator::where('user_id', $user->id)->first();
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
-        $year = (int)date('Y') + 1;  
-        $target = $year.'-01-01';  
+        $year = (int)date('Y') + 1;
+        $target = $year.'-01-01';
         // Make sure Philantrophy Information is available
         if(!$philantrophy) {
             GapAccountCalculator::initUserChartity($user);
@@ -277,13 +278,13 @@ class CalculatorClass{
         $debt_repay = []; $charity = [];
         $family_support = []; $personal_commitments = [];
         $others = [];
-       
+
         $total_seed = (count($seeds->toArray())) ? count($seeds->toArray()) : 1;
-        $isSeed = (count($seeds->toArray()) == 1) ? 1 : 0;  
-        // $isSeed = 0;  
-        
+        $isSeed = (count($seeds->toArray()) == 1) ? 1 : 0;
+        // $isSeed = 0;
+
         // Add Calculator Values if User is not upto 2 months on the system
-        if($total_seed <= 1){ 
+        if($total_seed <= 1){
             // Expenditure
             array_push($accomodation,$calculator->mortgage ?? 0);
             array_push($mobility,$calculator->mobility ?? 0);
@@ -291,14 +292,14 @@ class CalculatorClass{
             array_push($expenses, $calculator->expenses  ?? 0);
             array_push($debt_repay,$calculator->dept_repay  ?? 0);
             // Discretionary
-            array_push( $charity, $philantrophy->charity ?? 0); 
+            array_push( $charity, $philantrophy->charity ?? 0);
             array_push( $family_support, $philantrophy->family_support ?? 0);
             array_push( $personal_commitments, $philantrophy->personal_commitments ?? 0);
             array_push( $others, $philantrophy->others ?? 0);
         }
-        
+
         // Group Data to respective Unit
-        foreach($seeds as $seed){ 
+        foreach($seeds as $seed){
             array_push($investment_fund,  $seed->investment_fund) ;
             array_push($personal_fund,  $seed->personal_fund) ;
             array_push($emergency_fund,  $seed->emergency_fund) ;
@@ -314,41 +315,41 @@ class CalculatorClass{
             array_push($family_support,  $seed->family_support) ;
             array_push($personal_commitments,  $seed->personal_commitments) ;
             array_push($others,  $seed->others) ;
-        } 
+        }
         // Get Total average Unit
         // Savings
-        $investment_fund = round(array_sum($investment_fund) / $total_seed,2); 
+        $investment_fund = round(array_sum($investment_fund) / $total_seed,2);
         $personal_fund = round(array_sum($personal_fund) / $total_seed, 2);
         $emergency_fund = round(array_sum($emergency_fund) / $total_seed, 2);
-        // Education  
+        // Education
         $financial_training = round(array_sum($financial_training) / $total_seed, 2);
-        $career_development = round(array_sum($career_development) / $total_seed, 2); 
+        $career_development = round(array_sum($career_development) / $total_seed, 2);
         $mental_development = round(array_sum($mental_development) / $total_seed, 2);
         // Expenditure
-        $accomodation = round(array_sum($accomodation) / ($total_seed + $isSeed), 2); 
+        $accomodation = round(array_sum($accomodation) / ($total_seed + $isSeed), 2);
         $mobility = round(array_sum($mobility) / ($total_seed + $isSeed), 2);
-        $expenses = round(array_sum($expenses) / ($total_seed + $isSeed), 2); 
+        $expenses = round(array_sum($expenses) / ($total_seed + $isSeed), 2);
         $utilities = round(array_sum($utilities) / ($total_seed + $isSeed), 2);
         $repay = round((array_sum($debt_repay))/ ($total_seed + $isSeed), 2);
-        // Discretionary 
+        // Discretionary
         $charity = round(array_sum($charity) /  ($total_seed + $isSeed), 2);
-        $family_support = round(array_sum($family_support) /  ($total_seed + $isSeed), 2); 
+        $family_support = round(array_sum($family_support) /  ($total_seed + $isSeed), 2);
         $personal_commitments = round(array_sum($personal_commitments) /  ($total_seed + $isSeed), 2);
         $others = round(array_sum($others) /  ($total_seed + $isSeed), 2);
-         
+
         //Load Seed information into new Average Seed Object
-        $averageSeed = new stdClass(); 
-        $averageSeed->investment_fund = $investment_fund;  
+        $averageSeed = new stdClass();
+        $averageSeed->investment_fund = $investment_fund;
         $averageSeed->personal_fund = $personal_fund;
         $averageSeed->emergency_fund = $emergency_fund;
 
         $averageSeed->financial_training = $financial_training;
         $averageSeed->career_development = $career_development;
         $averageSeed->mental_development = $mental_development;
-        
+
         $averageSeed->accomodation = $accomodation;
         $averageSeed->mobility = $mobility;
-        $averageSeed->expenses = $expenses; 
+        $averageSeed->expenses = $expenses;
         $averageSeed->utilities = $utilities;
         $averageSeed->debt_repay = $repay;
 
@@ -359,7 +360,7 @@ class CalculatorClass{
 
         return $averageSeed;
     }
-    
+
     public static function getSeedDetail($seed){
         // List of Seed Section
         $savings = [];
@@ -383,7 +384,7 @@ class CalculatorClass{
         array_push($discretionary,  $seed->family_support) ;
         array_push($discretionary,  $seed->personal_commitments) ;
         array_push($discretionary,  $seed->others) ;
-        
+
         // Sum each section amount
         $savings = array_sum($savings) ;
         $education = array_sum($education) ;
@@ -408,4 +409,4 @@ class CalculatorClass{
         return  compact('table', 'seed','seed_web', 'total');
     }
 
-} 
+}
