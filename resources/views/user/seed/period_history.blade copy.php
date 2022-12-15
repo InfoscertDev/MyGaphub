@@ -68,7 +68,7 @@
 
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
-            <p class="text-center text-muted font-italic">Click any of the tiles to view details or click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a>  </p>
+            <p class="text-center text-muted font-italic">Click any of the tiles to view details or click here to view <a href="{{ route('seed.chart_history') }}"> charts</a>  </p>
         </div>
     </div>
 

@@ -167,7 +167,9 @@
             <table class="table  table-striped table-bordered">
                 <tr class="table-header">
                     <th class="bold">SEED </th>
-                    <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#averageBudgetModal" >Average </th>
+                    <th class="bold text-uppercase text-underline hand"  >
+                        <a href="{{ route('seed.history') }}" class="text-dark"> Average  </a>
+                    </th>
                     <th class="bold text-uppercase text-underline hand" >
                         <a href="{{ route('seed.create') }}" class="text-dark">Current</a>
                     </th>

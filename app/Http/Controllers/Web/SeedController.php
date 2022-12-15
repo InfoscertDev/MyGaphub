@@ -129,19 +129,36 @@ class SeedController extends Controller
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
-      if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        $current_seed->priviewed = 1 ;
-        $current_seed->save();
-      }
-
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail'
       ));
     }
 
-    public function historyPeriod(Request $request, $period){
+    public function periodHistory(Request $request, $period){
+      $user = auth()->user();
+      $page_title = "My Historic Seed";
+      $support = true; $month =  date('Y-m').'-01';
+      $preview = $request->input('preview');
+
+      $seed_backgrounds = CalculatorClass::accountBackground();
+      $isValid = SevenG::isSevenGVal($user);
+      $calculator = Calculator::where('user_id', $user->id)->first();
+      $currency = explode(" ", $calculator->currency)[0];
+      $current_seed = CalculatorClass::getCurrentSeed($user);
+      $target_seed = CalculatorClass::getTargetSeed($user);
+      $average_seed = CalculatorClass::getAverageSeed($user);
+      $average_detail = CalculatorClass::averageSeedDetail($user);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      info([$average_seed, $average_detail]);
+
+      $available_allocation = $current_seed->budget_amount - $current_detail['total'];
+      return view('user.seed.period_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+         'available_allocation', 'current_detail'
+      ));
+    }
+
+    public function chartHistory(Request $request){
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true; $month =  date('Y-m').'-01';
@@ -156,14 +173,8 @@ class SeedController extends Controller
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
-      if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
-        $current_seed->priviewed = 1 ;
-        $current_seed->save();
-      }
-
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
-      return view('user.seed.history_period', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+      return view('user.seed.chart_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail'
       ));
     }
