@@ -179,16 +179,19 @@ class CalculatorClass{
             GapAccountCalculator::initUserChartity($user);
             $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         }
+
         // Load the last 6 months without current month and next year
         $seeds =  Budget::where('user_id', $user->id)->where('period', '!=', $target)
                             ->where('period', '!=', date('Y-m').'-01')
                             ->latest()->limit(6)->get();
+        $periods = array_column($seeds->toArray(), 'period');
+        // info($periods);
 
-        info((array_column($seeds->toArray(), 'period')));
         $savings = [];
         $education = [];
         $expenditure = [];
         $discretionary = [];
+
         foreach($seeds as $seed){
             array_push($savings,  $seed->investment_fund);
             array_push($savings,  $seed->personal_fund);
@@ -249,7 +252,7 @@ class CalculatorClass{
             ($discretionary) ? round(($discretionary / $total) * 100) : 0
         ];
 
-        return  compact('table', 'seed','seed_web', 'total','total_seed');
+        return  compact('table', 'seed','seed_web', 'total','total_seed', 'periods');
 
     }
 

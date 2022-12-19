@@ -1,4 +1,4 @@
-<span class="mt-2 mr-3 sm-mr-1"> 
+<span class="mt-2 mr-3 sm-mr-1">
     {{-- <button class="{{ (!$sort) ? '': 'd-none' }} bg-none br-none" id="toggle_sort">
         <img src="{{ asset('/assets/icon/sort_icon.png') }}" class="sm-img-tiny profile-sm profile img img-responsive" alt="">
     </button> --}}
@@ -13,15 +13,14 @@
                 @foreach ($sort_var as $key => $st )
                     @if ($key == $sort)
                         <option value="{{$key}}" selected>{{$st}}</option>
-                    @else 
+                    @else
                         <option value="{{$key}}">{{$st}}</option>
                     @endif
                 @endforeach
-               
             </select>
         </div>
     </div>
-</span> 
+</span>
 <span class="mr-2 d-sm-none">|</span>
 <span class="mt-3 mr-4 sm-mr-1" style="position: relative; top: 2px">
     <button class="btn bg-none bs-none"   type="button" id="dropdownAlert" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -36,14 +35,14 @@
             <div class="card-body">
                 <div class="py-0">
                     <p class="bold sm-text-left text-capitalize">All {{urldecode($prop)}}{{urldecode($reap_search['keyword'])}} Listings</p>
-                    <div class="text-center mt-2"> 
+                    <div class="text-center mt-2">
                         <button class="btn btn-default btn-pry px-2" onclick="createAlertNow('reap')">Create Alert</button>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="alertCreated" tabindex="-1" role="dialog" aria-labelledby="alertCreated" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -67,16 +66,16 @@
 <script>
     var prop = "<?php echo $prop ?>";
 var reap_search = "<?php echo isset($reap_search['keyword']) ?>";
-function createAlertNow(acquision = null){ 
+function createAlertNow(acquision = null){
     var alert = (prop) ? prop : ($reap_search) ? $reap_search : null;
-    // console.log(alert); 
-    if(alert){  
+    // console.log(alert);
+    if(alert){
         var header = "cakjsnodidjnjksnjbnxdjdbndjcbdbncfjn";
         var access = "soilkamziajmiojamsioajsmisnmisjoisjxoiasjiasojksijdksnjswidjsdijkns";
         var acquisition = acquision;
         var alert = alert;
         $.ajax({
-            type: 'GET', 
+            type: 'GET',
             url: "<?php echo route('acquisition.create.alert') ?>"+`?header=${header}&alert=${alert}&access=${access}&acquisition=${acquisition}`,
             success: function(data, status){
                 if(status == 'success' && data.status){

@@ -4,19 +4,22 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="text-center bolder">
-                <h4>{{ date('M', strtotime("-6 months"))}} {{ date('Y',strtotime("-6 months"))}} -  {{ date('M')}} {{ date('Y')}}</h4>
+            <div class="disclaim text-center">
+                <select onchange="window.location.assign('{{ url()->current() .'/' }}' + this.value)"
+                    name="opportunities" class="select-opportunity mt-2 text-center p-2" id="" class="mt-2">
+                    <option value="" selected>{{ date('M Y', strtotime( end($average_detail['periods'])  ))}} -  </option>
+                    @foreach($average_detail['periods'] as $key => $period)
+                        <option value="{{$key}}" >  {{ date('M Y', strtotime($period))  }}  </option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <br> <br>
         <div class="col-md-5 col-sm-12 sm-default mt-3">
             <div class="d-flex">
                 <h3 class="bold mr-2">
-                    Budget
+                    Total: {{$currency}}{{ number_format($average_detail['total'], 2) }}
                 </h3>
-                <div id="view_budget_amount"   onclick="toggleBudgetMode()">
-                    <span class="px-2 h3">{{$currency}}<span id="budget_amount">{{ number_format($current_seed->budget_amount, 2) }}</span>  </span>
-                </div>
             </div>
         </div>
     </div>

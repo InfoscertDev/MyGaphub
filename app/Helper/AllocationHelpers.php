@@ -88,9 +88,13 @@ class AllocationHelpers{
         $year = (int)date('Y') + 1;
         $target = $year.'-01-01';
         // Load the last 6 months without current month and next year
-        $seeds =  SeedBudgetAllocation::where('user_id', $user->id)->where('period', '!=', $target)
+        $seeds =  SeedBudgetAllocation::where('user_id', $user->id)
+                        ->where('period', '!=', $target)
                         ->where('period', '!=', date('Y-m').'-01')
-                        ->latest()->limit(6)->get();
+                        ->latest()->get();
+
+        $periods = array_column($seeds->toArray(), 'period','period');
+        
         $savings = [];
         $education = [];
         $expenditure = [];
@@ -113,8 +117,8 @@ class AllocationHelpers{
         $avg_education = ( count($education) > 1) ? count($education)  : 1;
         $avg_expenditure = ( count($expenditure) > 1) ? count($expenditure)  : 1;
         $avg_discretionary = ( count($discretionary) > 1) ? count($discretionary)  : 1;
-
-        if(count($savings) > 1){
+        //  > 1 && $period == false
+        if(count($seeds)){
             // After 2 months
             $savings =  round(array_sum($savings) / $avg_savings, 2);
             $education = round(array_sum($education) / $avg_education, 2);
@@ -127,9 +131,10 @@ class AllocationHelpers{
             $expenditure = (array_sum($expenditure) + $calc_expenditure) / $avg_expenditure;
             $discretionary = (array_sum($discretionary) + ($calculator->charity)) / $avg_discretionary;
         }
-
         $table = compact('savings', 'education', 'expenditure', 'discretionary');
+
         $total = array_sum($table);
+
         $seed = [
             'savings' => ($savings) ? round(($savings / $total) * 100) : 0,
             'education' => ($education) ? round(($education / $total) * 100) : 0,
@@ -143,7 +148,35 @@ class AllocationHelpers{
             ($discretionary) ? round(($discretionary / $total) * 100) : 0
         ];
 
-        return  compact('table', 'seed','seed_web', 'total');
+        return  compact('table', 'seed','seed_web', 'total', 'periods');
+    }
+
+    public static function monthlySeedDetail($user, $period){
+        $seeds =  SeedBudgetAllocation::where('user_id', $user->id)
+                                ->where('period', $period)
+                                ->latest()->get();
+        $savings = [];
+        $education = [];
+        $expenditure = [];
+        $discretionary = [];
+
+        foreach ($seeds as $seed ) {
+            if($seed->seed_category == 'savings') array_push($savings, $seed);
+            if($seed->seed_category == 'education') array_push($education, $seed);
+            if($seed->seed_category == 'expenditure') array_push($expenditure, $seed);
+            if($seed->seed_category == 'discretionary') array_push($discretionary, $seed);
+        }
+
+        $seed = [
+            'savings' => array_sum(array_column($savings, 'amount')),
+            'education' => array_sum(array_column($education, 'amount')),
+            'expenditure' => array_sum(array_column($expenditure, 'amount')),
+            'discretionary' => array_sum(array_column($discretionary, 'amount'))
+        ];
+
+        $total = array_sum($seed);
+
+        return compact('seed', 'total');
     }
 
     public static function allocationSummay($allocated, $records){

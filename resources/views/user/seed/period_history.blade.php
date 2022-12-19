@@ -4,19 +4,25 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="text-center bolder">
-                <h4>{{ date('F')}} {{ date('Y')}}</h4>
+            <div class="disclaim text-center">
+                <select onchange="window.location.assign('{{ route('seed.history') .'/' }}' + this.value)" 
+                    name="opportunities" class="select-opportunity mt-2 text-center p-2" id="" class="mt-2">  
+                    @foreach($average_detail['periods'] as $key => $month)
+                        @if($period == $month)
+                            <option value="{{$key}}" selected >  {{ date('M Y', strtotime($month))  }}  </option>
+                        @else
+                            <option value="{{$key}}" >  {{ date('M Y', strtotime($month))  }}  </option>
+                        @endif
+                    @endforeach
+                </select>
             </div>
         </div>
         <br> <br>
         <div class="col-md-5 col-sm-12 sm-default mt-3">
             <div class="d-flex">
                 <h3 class="bold mr-2">
-                    Budget
+                Total: {{$currency}}{{ number_format($monthly_seed['total'], 2) }}
                 </h3>
-                <div id="view_budget_amount"   onclick="toggleBudgetMode()">
-                    <span class="px-2 h3">{{$currency}}<span id="budget_amount">{{ number_format($current_seed->budget_amount, 2) }}</span>  </span>
-                </div>
             </div>
         </div>
     </div>
@@ -25,11 +31,11 @@
     <div class="row  mt-2 mb-2">
         <div class="col-md-3">
             <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
+                <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($average_detail['table']['savings'], 2) }} </div> -->
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Savings</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($monthly_seed['seed']['savings'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -39,7 +45,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Expenditure</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['expenditure'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($monthly_seed['seed']['expenditure'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -49,7 +55,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Education</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($monthly_seed['seed']['education'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -59,7 +65,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Discretionary</h3>
-                        <p>{{$currency}}{{ number_format($current_detail['table']['discretionary'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format($monthly_seed['seed']['discretionary'], 2) }}</p>
                     </div>
                 </div>
             </div>

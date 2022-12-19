@@ -128,7 +128,7 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::averageSeedDetail($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
@@ -148,13 +148,13 @@ class SeedController extends Controller
       $currency = explode(" ", $calculator->currency)[0];
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
-      $average_seed = CalculatorClass::averageSeedDetail($user);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
+      $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.period_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail','average_detail'
+         'available_allocation', 'current_detail','average_detail', 'monthly_seed', 'period'
       ));
     }
 
@@ -170,7 +170,7 @@ class SeedController extends Controller
       $currency = explode(" ", $calculator->currency)[0];
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
-      $average_detail = CalculatorClass::averageSeedDetail($user);
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
