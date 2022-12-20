@@ -1,12 +1,14 @@
 
+
 <script>
     var chart = document.getElementById('historicSeedBar');
     var lineChart = document.getElementById('historicSeedLine');
     var currency = "<?php echo $currency ?>";
     var seed_backgrounds =   <?php echo json_encode($seed_backgrounds) ?>;
+    var data =  <?php  echo json_encode($historic_seed) ?>;
+    console.log(data);
     if (chart) {
         chart.getContext('2d');
-        console.log(labels);
 
         var historicSeed = new  Chart(chart, {
                 type: 'bar',

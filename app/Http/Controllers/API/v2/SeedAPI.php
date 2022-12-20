@@ -34,18 +34,37 @@ class SeedAPI extends Controller
             $current_seed->save();
         }
       }
+
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $average_detail = AllocationHelpers::averageSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
+      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+      $historic_seed =AllocationHelpers::averageSeedDetail($user)['historic_seed'];
+      $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
       AllocationHelpers::monthlyRecurssionChecker($user);
 
 
-      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed',);
+      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed', 'periods','historic_seed' );
       return response()->json([
         'status' => true,
         'data' => $data,
         'message' => ''
       ], 200);
+    }
+
+    public function periodHistory(Request $request, $period){
+        $user = $request->user();
+        $current_seed = CalculatorClass::getCurrentSeed($user);
+        $target_seed = CalculatorClass::getTargetSeed($user);
+
+        $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+
+        $data = compact('current_seed', 'target_seed', 'monthly_seed');
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => ''
+          ], 200);
     }
 
     public function storeSetBudget(Request $request){

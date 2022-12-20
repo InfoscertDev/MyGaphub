@@ -87,38 +87,57 @@ class AllocationHelpers{
         $calculator = Calculator::where('user_id', $user->id)->first();
         $year = (int)date('Y') + 1;
         $target = $year.'-01-01';
+        $current_period = strtotime(date('Y-m').'-01');
+        $from = date('Y-m-d' , strtotime("-7 months",  $current_period));
+        $to = date('Y-m-d' , strtotime("-1 months",  $current_period));
         // Load the last 6 months without current month and next year
         $seeds =  SeedBudgetAllocation::where('user_id', $user->id)
-                        ->where('period', '!=', $target)
-                        ->where('period', '!=', date('Y-m').'-01')
+                        ->whereBetween('period', [$from, $to])
                         ->latest()->get();
 
+        $periodic_seeds = $seeds->groupBy('period');
+
         $periods = array_column($seeds->toArray(), 'period','period');
-        
+        $historic_seed = [];
+
+        foreach($periodic_seeds as $period => $p_seeds) {
+            $historic_seed[$period] = AllocationHelpers::getSeedAverage($calculator,$p_seeds);
+        }
+
+        $average_seed = AllocationHelpers::getSeedAverage($calculator,$seeds);
+
+        return compact('average_seed', 'historic_seed', 'periods');
+    }
+
+    private static function getSeedAverage($calculator,$seeds){
         $savings = [];
         $education = [];
         $expenditure = [];
         $discretionary = [];
 
         foreach ($seeds as $seed ) {
-            if($seed->seed_category == 'savings') array_push($savings, $seed);
+            // info($seed->seed_category);
+            if($seed->seed_category == 'savings') array_push(($savings), $seed);
             if($seed->seed_category == 'education') array_push($education, $seed);
-            if($seed->seed_category == 'expenditure') array_push($expenditure, $seed);
+            if($seed->seed_category == 'expenditure') array_push($expenditure, ($seed));
             if($seed->seed_category == 'discretionary') array_push($discretionary, $seed);
         }
 
-        // info(compact('savings', 'education', 'expenditure', 'discretionary'));
         $mortgage = isset($calculator->mortgage) ? $calculator->mortgage : 0;
         $calc_expenditure =  $mortgage + $calculator->mobility + $calculator->utility +
                         $calculator->expenses + $calculator->dept_repay;
-
 
         $avg_savings = ( count($savings) > 1) ? count($savings)  : 1;
         $avg_education = ( count($education) > 1) ? count($education)  : 1;
         $avg_expenditure = ( count($expenditure) > 1) ? count($expenditure)  : 1;
         $avg_discretionary = ( count($discretionary) > 1) ? count($discretionary)  : 1;
-        //  > 1 && $period == false
-        if(count($seeds)){
+
+        $savings = array_column($savings, 'amount');
+        $education = array_column($education, 'amount');
+        $expenditure = array_column($expenditure, 'amount');
+        $discretionary = array_column($discretionary, 'amount');
+        //  && $period == false
+        if(count($seeds) > 1){
             // After 2 months
             $savings =  round(array_sum($savings) / $avg_savings, 2);
             $education = round(array_sum($education) / $avg_education, 2);
@@ -131,6 +150,7 @@ class AllocationHelpers{
             $expenditure = (array_sum($expenditure) + $calc_expenditure) / $avg_expenditure;
             $discretionary = (array_sum($discretionary) + ($calculator->charity)) / $avg_discretionary;
         }
+        // info( compact('savings', 'education', 'expenditure', 'discretionary') );
         $table = compact('savings', 'education', 'expenditure', 'discretionary');
 
         $total = array_sum($table);
@@ -148,7 +168,7 @@ class AllocationHelpers{
             ($discretionary) ? round(($discretionary / $total) * 100) : 0
         ];
 
-        return  compact('table', 'seed','seed_web', 'total', 'periods');
+        return  compact('table', 'seed','seed_web', 'total');
     }
 
     public static function monthlySeedDetail($user, $period){

@@ -7,7 +7,7 @@
             <div class="disclaim text-center">
                 <select onchange="window.location.assign('{{ route('seed.history') .'/' }}' + this.value)" 
                     name="opportunities" class="select-opportunity mt-2 text-center p-2" id="" class="mt-2">  
-                    @foreach($average_detail['periods'] as $key => $month)
+                    @foreach($periods as $key => $month)
                         @if($period == $month)
                             <option value="{{$key}}" selected >  {{ date('M Y', strtotime($month))  }}  </option>
                         @else

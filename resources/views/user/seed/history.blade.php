@@ -7,8 +7,8 @@
             <div class="disclaim text-center">
                 <select onchange="window.location.assign('{{ url()->current() .'/' }}' + this.value)"
                     name="opportunities" class="select-opportunity mt-2 text-center p-2" id="" class="mt-2">
-                    <option value="" selected>{{ date('M Y', strtotime( end($average_detail['periods'])  ))}} -  </option>
-                    @foreach($average_detail['periods'] as $key => $period)
+                    <option value="" selected>{{ date('M Y', strtotime( end($periods)  ))}} - {{ date('M Y', strtotime( reset($periods)  ))}}  </option>
+                    @foreach($periods as $key => $period)
                         <option value="{{$key}}" >  {{ date('M Y', strtotime($period))  }}  </option>
                     @endforeach
                 </select>
