@@ -7,7 +7,7 @@
         var currentSeed = document.getElementById('currentSeedChart');
         var targetChart = document.getElementById('targetSeedChart');
 
-        var labels = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+        // var labels = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
         // historicSeedBar
 
 

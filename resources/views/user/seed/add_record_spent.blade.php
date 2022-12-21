@@ -168,14 +168,19 @@
                     type: 'GET',
                     url: `/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
                     success: function(data, status){
-                        allocations = data.data;
+                        let listings = data.data;
+                        allocations = listings.budget_allocation
+                        expenditure_labels = listings.expenditure_labels
+                        if(category == 'expenditure' && !expenditure) allocations = expenditure_labels
+                        // console.log(allocations, expenditure_labels)
+
                         if (allocations) {
-                            // list_allocation.empty(); // remove old options
+                            list_allocation.empty(); // remove old options
                             $('#allocation option:gt(0)').remove();
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
                                     list_expenditure.append($("<option></option>")
-                                    .attr("value", allocation.expenditure).text((allocation.expenditure).toUpperCase()));
+                                    .attr("value", allocation).text(allocation));
                                 } else if(category == 'expenditure' && expenditure){
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));

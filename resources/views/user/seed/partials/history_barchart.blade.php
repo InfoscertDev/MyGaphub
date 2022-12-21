@@ -6,19 +6,36 @@
     var currency = "<?php echo $currency ?>";
     var seed_backgrounds =   <?php echo json_encode($seed_backgrounds) ?>;
     var data =  <?php  echo json_encode($historic_seed) ?>;
-    console.log(data);
+    let labels = [];
+    let savings = [];
+    let education= [];
+    let expenditure = [];
+    let discretionary = [];
+
+    for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+            const element = data[key];
+            let period = new Date(key).toLocaleString('en-us', { month: 'short' });
+            labels.push(period) ;
+            savings.push(element.table.savings);
+            education.push(element.table.education);
+            expenditure.push(element.table.expenditure);
+            discretionary.push(element.table.discretionary);
+        }
+    }
+
+    console.log();
     if (chart) {
         chart.getContext('2d');
 
         var historicSeed = new  Chart(chart, {
                 type: 'bar',
-                // fill:false,
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Savings',
                         //  fill:false,
-                        data: [90, 50, 40, 50, 20],
+                        data: savings,
                         backgroundColor: seed_backgrounds[0],
                         borderColor: seed_backgrounds[0],
                         datalabels: {
@@ -28,7 +45,7 @@
                     {
                         label: 'Education',
                         //  fill:false,
-                        data: [70, 20, 37, 45, 30],
+                        data: education,
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
@@ -37,7 +54,7 @@
                     },{
                         label: 'Expenditure',
                         //  fill:false,
-                        data: [22,40, 80, 50,60],
+                        data: expenditure,
                         backgroundColor: seed_backgrounds[2],
                         borderColor: seed_backgrounds[2],
                         datalabels: {
@@ -47,7 +64,7 @@
                     {
                         label: 'Discretionary',
                         //  fill:false,
-                        data: [20, 50, 10, 40, 55],
+                        data: discretionary,
                         backgroundColor: seed_backgrounds[3],
                         borderColor: seed_backgrounds[3],
                         datalabels: {
@@ -75,7 +92,7 @@
                         yAxes:[{
                             display: true,
                             ticks: {
-                                beginAtZero: true,  min: 0, max: 120
+                                beginAtZero: true,  min: 0
                                 // callback: function(value, index, values) {
                                 //     return currency + parseInt(value).toLocaleString();
                                 // }
@@ -103,7 +120,7 @@
                     datasets: [{
                         label: 'Savings',
                         fill:false,
-                        data: [90, 50, 40, 50, 20],
+                        data: savings,
                         backgroundColor: seed_backgrounds[0],
                         borderColor: seed_backgrounds[0],
                         datalabels: {
@@ -113,7 +130,7 @@
                     {
                         label: 'Education',
                         fill:false,
-                        data: [70, 20, 37, 45, 30],
+                        data: education,
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
@@ -122,7 +139,7 @@
                     },{
                         label: 'Expenditure',
                         fill:false,
-                        data: [22,40, 80, 50,60],
+                        data: expenditure,
                         backgroundColor: seed_backgrounds[2],
                         borderColor: seed_backgrounds[2],
                         datalabels: {
@@ -132,7 +149,7 @@
                     {
                         label: 'Discretionary',
                         fill:false,
-                        data: [20, 50, 10, 40, 55],
+                        data: discretionary,
                         backgroundColor: seed_backgrounds[3],
                         borderColor: seed_backgrounds[3],
                         datalabels: {
@@ -160,7 +177,7 @@
                         yAxes:[{
                             display: true,
                             ticks: {
-                                beginAtZero: true,  min: 0, max: 120
+                                beginAtZero: true,  min: 0
                                 // callback: function(value, index, values) {
                                 //     return currency + parseInt(value).toLocaleString();
                                 // }
