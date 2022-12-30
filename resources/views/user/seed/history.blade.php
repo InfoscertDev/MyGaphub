@@ -3,17 +3,19 @@
 @section('content')
 
     <div class="row">
-        <div class="col-sm-12">
-            <div class="disclaim text-center">
-                <select onchange="window.location.assign('{{ url()->current() .'/' }}' + this.value)"
-                    name="opportunities" class="select-opportunity mt-2 text-center p-2" id="" class="mt-2">
-                    <option value="" selected>{{ date('M Y', strtotime( end($periods)  ))}} - {{ date('M Y', strtotime( reset($periods)  ))}}  </option>
-                    @foreach($periods as $key => $period)
-                        <option value="{{$key}}" >  {{ date('M Y', strtotime($period))  }}  </option>
-                    @endforeach
-                </select>
+        @if(count($periods))
+            <div class="col-sm-12">
+                <div class="disclaim text-center">
+                    <select onchange="window.location.assign('{{ url()->current() .'/' }}' + this.value)"
+                        name="opportunities" class="select-opportunity date-history mt-2 text-center p-2" id="" class="mt-2">
+                        <option value="" selected>{{ date('M Y', strtotime( end($periods)  ))}} - {{ date('M Y', strtotime( reset($periods)  ))}}  </option>
+                        @foreach($periods as $key => $period)
+                            <option value="{{$key}}" >  {{ date('M Y', strtotime($period))  }}  </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
+        @endif
         <br> <br>
         <div class="col-md-5 col-sm-12 sm-default mt-3">
             <div class="d-flex">
@@ -70,7 +72,9 @@
 
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
-            <p class="text-center text-muted font-italic">Click any of the tiles to view details or click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a>  </p>
+            <p class="text-center text-muted font-italic">Click any of the tiles to view details 
+                @if(count($periods)) or click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a> @endif
+             </p>
         </div>
     </div>
 

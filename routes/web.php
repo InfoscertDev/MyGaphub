@@ -15,24 +15,11 @@ use App\Models\Asset\SeedBudgetAllocation;
 
 Route::get('/', function () { return  redirect('/login');  });
 
-Route::get('/install', function() {
-    // $exitCode2 emmanuel.oluotanmi@infoscert.com= \Illuminate\Support\Facades\Artisan::call('key:generate');
-    // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
-    $month = date('m')-1;
-    $current_period = date('Y-m').'-01';
-    $last_period =  date('Y-').$month.'-01';
-    $current_allocations = SeedBudgetAllocation::where('period', $last_period)
-    ->where('status',1)->where('recuring',1)->get()->toArray();
+Route::get('/fxt', function() {
 
-    foreach ($current_allocations as $allocation) {
-        $newallocation = (array) $allocation;
-        $newallocation['period'] = $current_period;
-        SeedBudgetAllocation::create($newallocation);
-    }
+    // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
+    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
 
-    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
-    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('route:clear');
-    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('config:cache');
     return '<h1>Cache facade value cleared</h1>';
 });
 

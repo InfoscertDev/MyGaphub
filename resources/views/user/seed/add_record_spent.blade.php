@@ -64,7 +64,7 @@
                                  Expenditure
                             </div>
                             <div class="col-sm-7">
-                                <select name="expenditure" class="form-control" onchange="handleChangeExpenditure(this)" id="expenditure">
+                                <select name="expenditure" class="form-control text-capitalize" onchange="handleChangeExpenditure(this)" id="expenditure">
                                     <option value="">-- Select --</option>
                                 </select>
                             </div>
@@ -175,12 +175,18 @@
                         // console.log(allocations, expenditure_labels)
 
                         if (allocations) {
-                            list_allocation.empty(); // remove old options
+                            list_allocation.not(':first').remove();; // remove old options
                             $('#allocation option:gt(0)').remove();
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
-                                    list_expenditure.append($("<option></option>")
-                                    .attr("value", allocation).text(allocation));
+                                    if(list_expenditure.length <= 1){
+                                        allocation = allocation.toLowerCase();
+                                        console
+                                        let label = (allocation == 'family') ? allocation = 'Home & Family' :
+                                                (allocation == 'debt_repayment') ?  allocation = 'Debt Repayment' : allocation;
+                                        list_expenditure.append($("<option></option>")
+                                        .attr("value", allocation).text(label));
+                                    }
                                 } else if(category == 'expenditure' && expenditure){
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));

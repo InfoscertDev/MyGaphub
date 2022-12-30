@@ -72,7 +72,7 @@ class MobileAuth extends Controller
         }
 
         if($request->security == "agvabnvdnbsnvdbnvsjnbnffv"){
-            $validator = Validator::make($request->all(), [ 'passcode' => 'required' ]);
+            $validator = Validator::make($request->all(), [ 'passcode' => 'required|integer|digits:4' ]);
             if($validator->fails()){
                 return response()->json($validator->errors()->toJson(), 400);
             }
