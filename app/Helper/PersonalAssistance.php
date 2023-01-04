@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Helper;
 
 use App\Reminder;
@@ -23,27 +23,27 @@ class PersonalAssistance {
     // GANP
     private $ganp_token = 'xnbbnxbcbvjhnbkgvnmbbnfmohbvjcfgjmcbjmhnomcfjnomnpamqasxmbcvbvnfvbcfhfbvhjjjkfjknfvbiolckojinkjondodnglhdn';
     private $ganp_link = 'http://www.gapassethub.com/api';
-    
-    
+
+
     public function __construct($user)
     {
         $this->user = $user;
-    }  
+    }
 
     public function priority(){
         $reminder = Reminder::where('user_id', $this->user->id)
                     ->where('complete', 0)->whereDate('date', '>=', date('Y-m-d'))
-                    ->orderBy('date', 'ASC') 
+                    ->orderBy('date', 'ASC')
                     ->orderBy('name', 'ASC')
                     ->first();
 
         if($reminder){
             $alert = new DateTime(date('Y-m-d'));
             $reminder->dueday = $alert->diff(new DateTime($reminder->date)) ;
-            $reminder->dueday = $reminder->dueday->days; 
+            $reminder->dueday = $reminder->dueday->days;
         }
-        return $reminder; 
-    } 
+        return $reminder;
+    }
 
     public function acqusition(){
         $audit = UserAudit::where('user_id', $this->user->id)->first();
@@ -57,7 +57,7 @@ class PersonalAssistance {
         $random_ganp = rand(0, $total_ganp - 1);
         $asset = null;
         $type = $this->acqusition_choice($total_reap, $total_ganp);
-   
+
         if($type == "reap"){
             if(isset($reaps[$random_reap])){
                 $status = Http::get($this->link."/assets/$reaps[$random_reap]?token=".$this->token) ;
@@ -72,11 +72,11 @@ class PersonalAssistance {
                 $asset = $ganp;
             }
         }
-        return compact('type', 'asset'); 
+        return compact('type', 'asset');
     }
 
     public function acqusition_choice($total_reap, $total_ganp){
-        $choice = null; 
+        $choice = null;
         if($total_ganp && $total_reap){
             $average = ($total_reap / $total_ganp);
             if($average > 3){
@@ -86,7 +86,7 @@ class PersonalAssistance {
             }
         }else if($total_reap) $choice = "reap";
         else if($total_ganp) $choice = "ganp";
-        return $choice; 
+        return $choice;
     }
 
     public function personal(){
@@ -99,7 +99,7 @@ class PersonalAssistance {
         $education = Education::where('user_id', $this->user->id)->first();
         $freedom = Freedom::where('user_id', $this->user->id)->first();
         $grand = Grand::where('user_id', $this->user->id)->first();
-        
+
         // Analytics
         if(!$alpha->main){ $type = "7g"; $setup = "Validate your Alpha 7G assumption";}
         else if(!$beta->main) {  $type = "7g"; $setup = "Validate your Beta 7G assumption";}
@@ -115,7 +115,7 @@ class PersonalAssistance {
         else if($profile && !$profile->country){$type = "profile"; $setup = "Complete your profile: Input your country of residence"; }
 
         return compact('type', 'setup');
-    }  
+    }
 
     public function payments(){
         $reminders = Reminder::where('user_id', $this->user->id)
@@ -126,18 +126,18 @@ class PersonalAssistance {
         foreach($reminders as $reminder){
             $alert = new DateTime(date('Y-m-d'));
             $reminder->dueday = $alert->diff(new DateTime($reminder->date)) ;
-            $reminder->dueday = $reminder->dueday->days; 
+            $reminder->dueday = $reminder->dueday->days;
         }
-        return compact('reminders'); 
+        return compact('reminders');
     }
- 
-    public function assistance(){  
-        // var_dump($this->payments()['reminders'][0]); 
+
+    public function assistance(){
+        // var_dump($this->payments()['reminders'][0]);
         return [
             'priority' => $this->priority(),
             'acquisition' => $this->acqusition(),
             'personal' => $this->personal(),
             'payments' => $this->payments()
         ];
-    }  
-} 
+    }
+}
