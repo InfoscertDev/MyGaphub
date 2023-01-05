@@ -137,7 +137,7 @@ class AllocationHelpers{
         $expenditure = array_column($expenditure, 'amount');
         $discretionary = array_column($discretionary, 'amount');
         //  && $period == false
-        if(count($seeds) > 1){
+        if(count($seeds) > 1){ 
             // After 2 months
             $savings =  round(array_sum($savings) / $avg_savings, 2);
             $education = round(array_sum($education) / $avg_education, 2);
@@ -151,6 +151,7 @@ class AllocationHelpers{
             $discretionary = (array_sum($discretionary) + ($calculator->charity)) / $avg_discretionary;
         }
         // info( compact('savings', 'education', 'expenditure', 'discretionary') );
+
         $table = compact('savings', 'education', 'expenditure', 'discretionary');
 
         $total = array_sum($table);
@@ -158,14 +159,15 @@ class AllocationHelpers{
         $seed = [
             'savings' => ($savings) ? round(($savings / $total) * 100) : 0,
             'education' => ($education) ? round(($education / $total) * 100) : 0,
-            'expenditure' => ($expenditure) ? ($expenditure / $total) * 100 : 0,
-            'discretionary' => ($discretionary) ? ($discretionary / $total) * 100 : 0
+            'expenditure' => ($expenditure) ? round($expenditure / $total) * 100 : 0,
+            'discretionary' => ($discretionary) ? round($discretionary / $total) * 100 : 0
         ];
+
         $seed_web = [
-            ($savings) ? floatval(($savings / $total) * 100) : 0,
-            ($education) ? floatval(($education / $total) * 100) : 0,
-            ($expenditure) ? floatval(($expenditure / $total) * 100): 0,
-            ($discretionary) ? floatval(($discretionary / $total) * 100) : 0
+            ($savings) ? round(($savings / $total) * 100) : 0,
+            ($education) ? round(($education / $total) * 100) : 0,
+            ($expenditure) ? round(($expenditure / $total) * 100): 0,
+            ($discretionary) ? round(($discretionary / $total) * 100) : 0
         ];
 
         return  compact('table', 'seed','seed_web', 'total');
