@@ -162,10 +162,10 @@ class AllocationHelpers{
             'discretionary' => ($discretionary) ? ($discretionary / $total) * 100 : 0
         ];
         $seed_web = [
-            ($savings) ? round(($savings / $total) * 100) : 0,
-            ($education) ? round(($education / $total) * 100) : 0,
-            ($expenditure) ? round(($expenditure / $total) * 100): 0,
-            ($discretionary) ? round(($discretionary / $total) * 100) : 0
+            ($savings) ? floatval(($savings / $total) * 100) : 0,
+            ($education) ? floatval(($education / $total) * 100) : 0,
+            ($expenditure) ? floatval(($expenditure / $total) * 100): 0,
+            ($discretionary) ? floatval(($discretionary / $total) * 100) : 0
         ];
 
         return  compact('table', 'seed','seed_web', 'total');
