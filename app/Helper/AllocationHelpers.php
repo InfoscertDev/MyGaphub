@@ -137,7 +137,7 @@ class AllocationHelpers{
         $expenditure = array_column($expenditure, 'amount');
         $discretionary = array_column($discretionary, 'amount');
         //  && $period == false
-        if(count($seeds) > 1){ 
+        if(count($seeds) > 1){
             // After 2 months
             $savings =  round(array_sum($savings) / $avg_savings, 2);
             $education = round(array_sum($education) / $avg_education, 2);
@@ -151,8 +151,8 @@ class AllocationHelpers{
             $discretionary = (array_sum($discretionary) + ($calculator->charity)) / $avg_discretionary;
         }
         // info( compact('savings', 'education', 'expenditure', 'discretionary') );
-
-        $table = compact('savings', 'education', 'expenditure', 'discretionary');
+        
+        $table = array('savings' => number_format($savings, 2), 'education' => number_format($education, 2), 'expenditure' => number_format($expenditure) , 'discretionary' => number_format($discretionary));
 
         $total = array_sum($table);
 
