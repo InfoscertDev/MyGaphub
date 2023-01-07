@@ -184,7 +184,7 @@
                         @php
                             $seed = strtolower($seed);
                         @endphp
-                        <td>{{$currency}}{{number_format($average_detail['table'][$seed],2)}} </td>
+                        <td>{{$currency}}{{number_format((float)$average_detail['table'][$seed],2)}} </td>
                         <td> <a href="{{ route('seed.summary', $seed) }}" class="text-dark">{{$currency}}{{number_format($current_detail['table'][$seed],2)}}</a> </td>
                         <td>{{$currency}}{{number_format($target_detail['table'][$seed],2)}} </td>
                     </tr>
