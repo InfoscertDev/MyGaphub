@@ -20,7 +20,7 @@
         <div class="col-md-5 col-sm-12 sm-default mt-3">
             <div class="d-flex">
                 <h3 class="bold mr-2">
-                    Total: {{$currency}}{{ number_format($average_detail['total'], 2) }}
+                    Total: {{$currency}}{{ number_format((float)$average_detail['total'], 2) }}
                 </h3>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Savings</h3>
-                        <p>{{$currency}}{{ number_format($average_detail['table']['savings'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format((float)$average_detail['table']['savings'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Expenditure</h3>
-                        <p>{{$currency}}{{ number_format($average_detail['table']['expenditure'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format((float)$average_detail['table']['expenditure'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Education</h3>
-                        <p>{{$currency}}{{ number_format($average_detail['table']['education'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format((float)$average_detail['table']['education'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Discretionary</h3>
-                        <p>{{$currency}}{{ number_format($average_detail['table']['discretionary'], 2) }}</p>
+                        <p>{{$currency}}{{ number_format((float)$average_detail['table']['discretionary'], 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
 
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
-            <p class="text-center text-muted font-italic">Click any of the tiles to view details 
+            <p class="text-center text-muted font-italic">Click any of the tiles to view details
                 @if(count($periods)) or click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a> @endif
              </p>
         </div>
