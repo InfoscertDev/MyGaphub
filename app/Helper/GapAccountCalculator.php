@@ -26,9 +26,9 @@ class GapAccountCalculator
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
         $education = Education::where('user_id', $user->id)->first();
-        
+
         $seveng = [$alpha, $beta, $education];
-        $labels = ['Alpha', 'Beta', 'Education']; 
+        $labels = ['Alpha', 'Beta', 'Education'];
 
         $values = []; $sum = [];
         if ($archive) {
@@ -38,35 +38,35 @@ class GapAccountCalculator
         } else {
             $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 0)->latest()->limit(7)->get();
         }
-        
+
         // SevenG  and Bespoke
         foreach($seveng as $money){
             array_push($values,  $money->current);
             array_push($sum,  $money->current);
         }
         foreach($bespokes as $bespoke){
-            if($bespoke->bespoke_type == 'saveup'){  
+            if($bespoke->bespoke_type == 'saveup'){
                 array_push($labels,  $bespoke->kpi_name);
                 array_push($values,  $bespoke->current);
                 array_push($sum,  $bespoke->current);
             }
         }
-        
+
         foreach($cash as $money){
             if($convert){}
             $current = GapExchangeHelper::convert_currency($user, $money->account_currency,$money->current, $money->automated);
             array_push($values,$current);
             // array_push($sum,$current);
-        } 
+        }
         $sum = array_sum($values); $percentages = [];
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
-        } 
+        }
         // foreach($seveng as $money){
         //     array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
         // }
         // foreach($bespokes as $money){
-        //     if($money->bespoke_type == 'saveup'){  
+        //     if($money->bespoke_type == 'saveup'){
         //         array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
         //     }
         // }
@@ -84,18 +84,18 @@ class GapAccountCalculator
 
     public static function initCashAccount($cash){
         foreach($cash as $money){
-            return $money->currency = explode($money->account_currency, ' ')[0]; 
-        } 
+            return $money->currency = explode($money->account_currency, ' ')[0];
+        }
         return $cash;
     }
 
     public static function calcAssetAccount($user,$cash, $equity){
-        $percentages = []; $labels = ['Investments', 'Cash', 'Home Equity']; 
-        $funds = PortfolioHelper::investmentFunds($user); 
+        $percentages = []; $labels = ['Investments', 'Cash', 'Home Equity'];
+        $funds = PortfolioHelper::investmentFunds($user);
         $cash_detail = GapAccountCalculator::calcCashAccount($cash, $user);
         $equ_detail = GapAccountCalculator::calcEquityAccount($equity);
         $values = [ $funds['investment'], $cash_detail['sum'],  $equ_detail['sum'] ];
- 
+
         $sum = array_sum($values);
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
@@ -104,16 +104,16 @@ class GapAccountCalculator
     }
 
     public static function calcMortgagesAccount($accounts, $user, $archive = false, $convert = true){
-        $values = []; $labels = [];  
+        $values = []; $labels = [];
         $seveng = [];
         $debt = Dept::where('user_id', $user->id)->where('isArchive', 0)->first();
         if($debt){
-            array_push($labels, 'Debt'); 
+            array_push($labels, 'Debt');
             array_push($seveng, $debt);
         }
         if ($archive) {
             $bespokes = []; $labels = [];
-            $seveng = []; 
+            $seveng = [];
         }
         foreach($seveng as $money){
             array_push($values,  $money->current);
@@ -121,22 +121,22 @@ class GapAccountCalculator
         foreach($accounts as $account){
             if($convert){ }
             array_push($values, $account->current_balance);
-        } 
+        }
         $sum = array_sum($values);$percentages = [];
-        foreach($seveng as $money){ 
+        foreach($seveng as $money){
             array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
         }
         foreach($accounts as $account){
             array_push($percentages,round(($account->current_balance / ($sum ? $sum : 1)) * 100));
-        } 
+        }
         // Add Mortgage Labels
         foreach($accounts as $account){
             array_push($labels, $account->creditor_name);
         }
-       
+
         return compact('sum', 'labels', 'values', 'percentages' );
     }
-    
+
     public static function calcLiabilitiesAccount($accounts, $user, $archive = false, $seveng = []){
         $values = []; $labels = [];
         $sum  = [];
@@ -144,7 +144,7 @@ class GapAccountCalculator
         $user_current = [];
         if ($archive) {
            $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 1)->latest()->limit(7)->get();
-        } else { 
+        } else {
            $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 0)->latest()->limit(7)->get();
         }
         // var_dump( 'CK <br/>'. count($seveng) ) ;
@@ -154,15 +154,15 @@ class GapAccountCalculator
             array_push($values,  $current);
             $baseline = GapExchangeHelper::convert_currency($user, $money->account_currency,$money->baseline, $money->automated);
             array_push($user_current, $current);
-            array_push($user_baseline, $baseline); 
+            array_push($user_baseline, $baseline);
         }
         foreach($bespokes as $bespoke){
-            if($bespoke->bespoke_type == 'dept'){  
+            if($bespoke->bespoke_type == 'dept'){
                 array_push($labels,  $bespoke->kpi_name);
                 array_push($values,  $bespoke->current);
                 array_push($sum,$bespoke->current);
             }
-        } 
+        }
         foreach($accounts as $account){
             $current = GapExchangeHelper::convert_currency($user, $account->account_currency,$account->current, $account->automated);
             array_push($values, $current);
@@ -175,9 +175,9 @@ class GapAccountCalculator
         foreach($accounts as $account){
             array_push($labels, $account->creditor_name);
         }
-        $user_current = array_sum($user_current); 
+        $user_current = array_sum($user_current);
         $user_baseline = array_sum($user_baseline);
-        
+
         return compact('sum', 'labels', 'values', 'percentages', 'user_current', 'user_baseline' );
     }
 
@@ -193,38 +193,38 @@ class GapAccountCalculator
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
 
         $asset = $cash_act['sum'];
-        return [ 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'], 'equity' => $equ_act['sum'], 
+        return [ 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'], 'equity' => $equ_act['sum'],
                     'home' => $equ_act['home'], 'asset' => $asset ];
     }
 
     public static function oldCalcNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
         $liability = (int)$networth['liability'] + (int)$networth['mortgage'];
-        $asset = 0 +  (int)$networth['home']; 
+        $asset = 0 +  (int)$networth['home'];
         $sum = ($asset)  - ($liability);
         $labels = ['Assets', 'Liabilities', 'Home Equity'];
-        $values = [$asset, $liability, $networth['equity']]; 
+        $values = [$asset, $liability, $networth['equity']];
         $equity = (int)$networth['equity'];
         return compact('sum', 'labels', 'values', 'equity', 'liability', 'asset');
     }
 
     public static function calcNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
-        $funds = PortfolioHelper::investmentFunds($user); 
+        $funds = PortfolioHelper::investmentFunds($user);
         $liability = (int)$networth['liability'];
         $mortgage = (int)$networth['mortgage'];
-        $home = (int)$networth['home']; 
+        $home = (int)$networth['home'];
         $investment = $funds['investment'];
 
         $asset =  (int)$networth['asset'] + $investment;
-        $equity = $home - $mortgage; 
-        $sum = ($asset)  - ($liability); 
-        // var_dump($equity); 
-        $labels = ['Assets', 'Liabilities', 'Home Equity']; 
-        $values = [$asset, $liability, $equity]; 
+        $equity = $home - $mortgage;
+        $sum = ($asset)  - ($liability);
+        // var_dump($equity);
+        $labels = ['Assets', 'Liabilities', 'Home Equity'];
+        $values = [$asset, $liability, $equity];
         return compact('sum', 'labels', 'values', 'equity', 'liability', 'asset');
     }
- 
+
     public static function homeNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
         $liability = (int)$networth['liability'];
@@ -232,9 +232,9 @@ class GapAccountCalculator
 
         $asset =  (int)$networth['asset'] + $funds['investment'];
         $sum = ($asset)  - ($liability);
-        // var_dump($equity);  
+        // var_dump($equity);
         $labels = ['Assets', 'Liabilities'];
-        $values = [$asset, $liability]; 
+        $values = [$asset, $liability];
         return compact('sum','labels', 'values');
     }
     public static function calcEquityAccount($accounts){
@@ -242,7 +242,7 @@ class GapAccountCalculator
         foreach($accounts as $account){
             array_push($values, $account->market_value - ($account->mortgage ? $account->mortgage->current_balance : 0));
             // array_push($values, 0);
-        } 
+        }
         foreach($accounts as $account){
             array_push($homes, $account->market_value);
         }
@@ -259,10 +259,10 @@ class GapAccountCalculator
         $home = array_sum($homes);
         return compact('sum', 'labels', 'values', 'percentages', 'home' );
     }
- 
+
     public static function calcProtectionAccount($accounts){
         $values = []; $labels = [];  $premium = [];
-        foreach($accounts as $account){  
+        foreach($accounts as $account){
             array_push($values,  $account->premium_pay);
             array_push($premium,  $account->sum_assured);
             array_push($labels, $account->protection_category);
@@ -276,12 +276,12 @@ class GapAccountCalculator
     }
 
     public static function calcRoiInvestment($improve){
-        $exp = ($improve['monthly_asset'] * 12 ) * 100 ;  
-        $shortfall = $improve['monthly_asset'] - $improve['portfolio'];  
-        $asset_require = (($shortfall * 12) * 100) / ($improve['roce'] ? $improve['roce'] : 1) ;  
-        $time_finiancial = ($asset_require / ($improve['investment'] ? $improve['investment'] : 1) ) / 12 ;  
+        $exp = ($improve['monthly_asset'] * 12 ) * 100 ;
+        $shortfall = $improve['monthly_asset'] - $improve['portfolio'];
+        $asset_require = (($shortfall * 12) * 100) / ($improve['roce'] ? $improve['roce'] : 1) ;
+        $time_finiancial = ($asset_require / ($improve['investment'] ? $improve['investment'] : 1) ) / 12 ;
         // $time_finiancial = number_format((int)$time_finiancial, 0);
-        $invest = $exp / ($improve['roce'] ? $improve['roce'] : 1); 
+        $invest = $exp / ($improve['roce'] ? $improve['roce'] : 1);
 
         return compact('shortfall', 'asset_require', 'time_finiancial', 'invest');
     }
@@ -290,45 +290,46 @@ class GapAccountCalculator
              // Year of Birth
         $yob  = date('Y', strtotime($dob));
         $current_year = date('Y');
-        foreach ($pensions as $pension) { 
+        foreach ($pensions as $pension) {
             $start_month = Carbon::create($pension->created_at)->startOfMonth();
             $end_month   = Carbon::now()->startOfMonth();
             $total_month =  $start_month->diffInMonths($end_month);
-            // 'Accrued Monthly Income' under 'Retirement Year' Formular is 
+            // 'Accrued Monthly Income' under 'Retirement Year' Formular is
             // {Balance (Retirement Year) x Accrued Monthly Income (Current Year)} / Balance (Current Year);
             if($total_month <= 1){
                 $current_year_bal =  $pension->current;
             }else{
                 $current_year_bal =  $pension->current + ($pension->monthly_contribution * ((int)$total_month - 1));
             }
-            
+
             $current_year_accured =  $pension->assured_income;
-            $assured_intrest = ($current_year_accured * 12 ) / ($pension->current + $pension->monthly_contribution);  
+            $assured_intrest = ($current_year_accured * 12 ) / ($pension->current + $pension->monthly_contribution);
             $year_retirement = ($yob + $pension->retirement_age) ;
             $year_to_retirement = $year_retirement - $current_year;
             $retire_balance = (($pension->monthly_contribution * 12) * ($year_to_retirement) ) + ($current_year_bal);
-            
+
             if($total_month <= 1){
                 $accured_current_income = $current_year_accured;
             }else{
                 $accured_current_income = ($current_year_bal * $assured_intrest) / 12;
             }
             $accured_retire_income = ($retire_balance * $current_year_accured) / $current_year_bal;
-            $percentage_cos = ($accured_current_income / $average_seed) * 100;
-            // info(['Accured', $assured_intrest, $accured_current_income]); 
-             
+            $seed = $average_seed ? $average_seed : 1;
+            $percentage_cos = ($accured_current_income / $seed) * 100;
+            // info(['Accured', $assured_intrest, $accured_current_income]);
+
             $pension->year_retirement = $year_to_retirement;
-            $pension->current_year_bal = $current_year_bal; 
-            $pension->accured_current_income  = number_format($accured_current_income, 2); 
-            $pension->retire_balance  = number_format($retire_balance, 2); 
-            $pension->retire_income  = number_format($accured_retire_income, 2); 
-            $pension->percentage_cos  = number_format($percentage_cos,2); 
-        } 
+            $pension->current_year_bal = $current_year_bal;
+            $pension->accured_current_income  = number_format($accured_current_income, 2);
+            $pension->retire_balance  = number_format($retire_balance, 2);
+            $pension->retire_income  = number_format($accured_retire_income, 2);
+            $pension->percentage_cos  = number_format($percentage_cos,2);
+        }
         return $pensions;
     }
 
     public static function calcPensionAccount($accounts){
-        $values = []; $labels = []; 
+        $values = []; $labels = [];
         foreach($accounts as $account){
             array_push($values, $account->current);
         }
@@ -343,7 +344,7 @@ class GapAccountCalculator
     }
 
     public static function incomeAccount($accounts){
-        
+
         foreach($accounts as $account){
             if($account->income_type == 'portfolio'){
                 // var_dump($account->income_name, $account->amount);
@@ -355,7 +356,7 @@ class GapAccountCalculator
         }
      }
     public static function calcIncomeAccount($user, $accounts){
-        $values = []; $labels = []; 
+        $values = []; $labels = [];
         $sum = [];
         foreach($accounts as $account){
             $amount = GapExchangeHelper::convert_currency($user, $account->income_currency,$account->amount, $account->automated);
@@ -368,10 +369,10 @@ class GapAccountCalculator
         $sum = array_sum($values); $percentages = [];
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
-        }  
-        // foreach($accounts as $account){ 
+        }
+        // foreach($accounts as $account){
         //     array_push($percentages, round(($account->amount / ($sum ? $sum : 1)) * 100));
-        // }    
+        // }
         // $sum = array_sum($convert_sum);
         return compact('sum', 'labels', 'values', 'percentages' );
     }
@@ -380,15 +381,15 @@ class GapAccountCalculator
         $total_seed = CalculatorClass::averageSeedDetail($user)['total_seed'];
         $averageSeed = CalculatorClass::getAverageSeed($user);
         $values = []; $labels = [];
-        if($total_seed){   
+        if($total_seed){
             $expenditure->mortgage = $averageSeed->accomodation;
             $expenditure->mobility = $averageSeed->mobility;
             $expenditure->expenses = $averageSeed->expenses;
             $expenditure->utility = $averageSeed->utilities;
             $expenditure->dept_repay = $averageSeed->debt_repay;
         }
- 
-        $values = [$expenditure->mortgage, $expenditure->mobility, $expenditure->expenses,$expenditure->utility, 
+
+        $values = [$expenditure->mortgage, $expenditure->mobility, $expenditure->expenses,$expenditure->utility,
                          $expenditure->dept_repay];
         $labels = ['Accommodation', 'Mobility', 'General Expenses', 'Utility', 'Debt Services'];
         $sum = array_sum($values);
@@ -398,20 +399,20 @@ class GapAccountCalculator
     public static function calcPhilantrophy($user){
         $averageSeed = CalculatorClass::getAverageSeed($user);
         // $total_seed = CalculatorClass::averageSeedDetail($user)['total_seed'];
-        $values = []; $labels = []; 
+        $values = []; $labels = [];
         $values = [$averageSeed->charity, $averageSeed->family_support, $averageSeed->personal_commitments, $averageSeed->others ];
-            
+
         $labels = ['Charitable Giving', 'Extended Family Support', 'Personal Commitments', 'Others'];
-        $sum = array_sum($values); 
-        return compact('sum', 'labels', 'values'); 
+        $sum = array_sum($values);
+        return compact('sum', 'labels', 'values');
     }
 
     public static function cashDetailChart($cash){
         $date = Carbon::parse($cash->created_at);
         $monthName1 = $date->format('M');
         $label1 = $cash->current;
-        $labels = [$monthName1]; 
-        $values = [$label1]; 
+        $labels = [$monthName1];
+        $values = [$label1];
         $target = $cash->target;
         return compact('labels', 'values', 'target');
     }
@@ -420,8 +421,8 @@ class GapAccountCalculator
         $date = Carbon::parse($account->created_at);
         $monthName1 = $date->format('M');
         $label1 = $account->current;
-        $labels = [$monthName1]; 
-        $values = [$label1]; 
+        $labels = [$monthName1];
+        $values = [$label1];
         $target = $account->baseline;
         return compact('labels', 'values', 'target');
     }
@@ -430,18 +431,18 @@ class GapAccountCalculator
         $date = Carbon::parse($account->created_at);
         $monthName1 = $date->format('M');
         $label1 = $account->current_balance;
-        $labels = [$monthName1]; 
-        $values = [$label1]; 
+        $labels = [$monthName1];
+        $values = [$label1];
         $target = $account->open_balance;
         return compact('labels', 'values', 'target');
     }
 
     public static function incomeDetailChart($account){
         $date = Carbon::parse($account->created_at);
-        $monthName1 = $date->format('M'); 
+        $monthName1 = $date->format('M');
         $label1 = $account->amount;
-        $labels = [$monthName1]; 
-        $values = [$label1]; 
+        $labels = [$monthName1];
+        $values = [$label1];
         $target = $account->amount * 1.25;
         return compact('labels', 'values', 'target');
     }
@@ -461,12 +462,12 @@ class GapAccountCalculator
         $periodic_saving = round($fin['calculator']->periodic_savings, 2);
         $discretionary = round($fin['calculator']->charity,2);
         $asset = array_sum([$investment , $equity , $savings]);
-        $liabilities = $credit + $mortgage;  
-        $income = $non_portfolio + $portfolio; 
+        $liabilities = $credit + $mortgage;
+        $income = $non_portfolio + $portfolio;
         $budget = round(($periodic_saving + $education + $expenditure + $discretionary), 2);
-        $current_ilab = collect(compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio', 
+        $current_ilab = collect(compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio',
                                     'portfolio', 'periodic_saving', 'education', 'expenditure', 'discretionary'));
-            
+
         $ilabs = collect( compact('asset', 'liabilities', 'income', 'budget'));
 
         return  compact('ilabs', 'current_ilab');
@@ -480,7 +481,7 @@ class GapAccountCalculator
 
         $asset = array_sum($asset);
         $liabilities = array_sum($liabilities);
-        $income = array_sum($income); 
+        $income = array_sum($income);
         $budget = round(array_sum($budget), 2);
 
         $investment = $ilab->investment; $equity = $ilab->equity;
@@ -491,7 +492,7 @@ class GapAccountCalculator
         $discretionary = $ilab->discretionary;
 
         $ilabs = compact('asset', 'liabilities', 'income', 'budget');
-        $target_ilab = compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio', 
+        $target_ilab = compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio',
             'portfolio', 'periodic_savings', 'education', 'expenditure', 'discretionary');
 
         return compact('ilabs', 'target_ilab');
@@ -514,10 +515,10 @@ class GapAccountCalculator
             $audit = new Audit();
             $audit->user_id = $user->id;
             $audit->save();
-        }  
+        }
         $wheel = [];
         $tile =  [
-            'account_name' => $accountname, 
+            'account_name' => $accountname,
             'account_type' => ($total > 1) ? 'Multiple Accounts': 'Single Account',
             'sum' => $sum,
             'updated_at' => date('Y-m-d H:i:s'),
@@ -535,28 +536,28 @@ class GapAccountCalculator
             }
             if(count($wheel) >= 8){
                 array_pop($wheel);
-            } 
+            }
             array_unshift($wheel, $tile);
             $audit->wheel_point_at =  ($wheel);
-            $audit->save(); 
-        }else{  
+            $audit->save();
+        }else{
             array_push($wheel, $tile);
             $audit->wheel_point_at =  ($wheel);
             $audit->save();
-        } 
+        }
         return collect($audit->wheel_point_at);
-    } 
+    }
 
     public static function creditAllocated($user){
         $liabilities = Liability::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $credit = Credit::where('user_id', $user->id)->first();
         $current = [];
-        $baseline = []; 
+        $baseline = [];
         foreach($liabilities as $creditor){
             if($creditor->credit_id == 1){
                 array_push($current,$creditor->current);
                 array_push($baseline,$creditor->baseline);
-            } 
+            }
         }
         $allocate = array_sum($current);
         $baseline = array_sum($baseline);
@@ -577,7 +578,7 @@ class GapAccountCalculator
             "#7D6608",
             "#17202A",
             "#F9EBEA",
-            "#ED3237", 
+            "#ED3237",
             "#494949",
             "#000000"
        ];
