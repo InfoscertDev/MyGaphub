@@ -17,14 +17,18 @@
             const element = data[key];
             let period = new Date(key).toLocaleString('en-us', { month: 'short' });
             labels.push(period) ;
-            savings.push(element.table.savings);
-            education.push(element.table.education);
-            expenditure.push(element.table.expenditure);
-            discretionary.push(element.table.discretionary);
+            console.log(element);
+
+            savings.push( element.table.savings);
+            education.push(+element.table.education);
+            expenditure.push(+element.table.expenditure);
+            discretionary.push(+element.table.discretionary);
         }
     }
 
-    console.log();
+
+    console.log(savings, education, expenditure);
+
     if (chart) {
         chart.getContext('2d');
 

@@ -72,9 +72,10 @@
 
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
-            <p class="text-center text-muted font-italic">Click any of the tiles to view details
-                @if(count($periods)) or click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a> @endif
+            <p class="text-center text-muted font-italic">
+                @if(count($periods))  Click here to view <a href="{{ route('seed.chart_history') }}" class="text-muted text-underline"> charts</a> @endif
              </p>
+             <!-- Click any of the tiles to view details or-->
         </div>
     </div>
 
