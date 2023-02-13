@@ -105,6 +105,7 @@ class AllocationHelpers{
         }
 
         $average_seed = AllocationHelpers::getSeedAverage($calculator,$seeds);
+        // info($average_seed);
 
         return compact('average_seed', 'historic_seed', 'periods');
     }
@@ -150,9 +151,8 @@ class AllocationHelpers{
             $expenditure = (array_sum($expenditure) + $calc_expenditure) / $avg_expenditure;
             $discretionary = (array_sum($discretionary) + ($calculator->charity)) / $avg_discretionary;
         }
-        // info( compact('savings', 'education', 'expenditure', 'discretionary') );
-        
-        $table = array('savings' => number_format($savings, 2), 'education' => number_format($education, 2), 'expenditure' => number_format($expenditure) , 'discretionary' => number_format($discretionary));
+        $table =  compact('savings', 'education', 'expenditure', 'discretionary') ;
+        //array('savings' => number_format($savings, 2), 'education' => number_format($education, 2), 'expenditure' => number_format($expenditure) , 'discretionary' => number_format($discretionary));
 
         $total = array_sum($table);
 

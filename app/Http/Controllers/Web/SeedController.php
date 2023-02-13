@@ -226,6 +226,7 @@ class SeedController extends Controller
 
     public function expenditure(){
         $user = auth()->user();
+        $month =  date('Y-m').'-01';
         $isValid = SevenG::isSevenGVal($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
@@ -234,15 +235,27 @@ class SeedController extends Controller
         $fin = CalculatorClass::finicial($user);
         $income_detail = IncomeHelper::analyseIncome($user,  $fin['portfolio']);
         $expenditure =  $fin['calculator'];
-        $expenditure_detail = GapAccount::calcExpenditure($user,$expenditure);
         $backgrounds = GapAccount::accountBackground();
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
+
+        $values = array();
+        $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
+
+        foreach($labels as $label){
+            $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                                            ->where('expenditure',$label) ->sum('amount');
+            array_push($values, $amount);
+        }
+
+        $expenditure_detail = compact('labels','values') ;
+        // info($expenditure_detail);
         return view('user.360.expenditure', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'backgrounds' ,'expenditure','expenditure_detail'));
     }
 
     public function philantrophy(){
         $user = auth()->user();
+        $month =  date('Y-m').'-01';
         $isValid = SevenG::isSevenGVal($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
@@ -259,7 +272,20 @@ class SeedController extends Controller
           $philantrophy = GapAccount::initUserChartity($user);
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         }
-        $philantrophy_detail = GapAccount::calcPhilantrophy($user);
+
+        $values = array();
+        $labels = array('Charitable Giving', 'Extended Family Support', 'Personal Conviction Commitments', 'Others');
+         
+        foreach($labels as $label){
+            $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                                ->where('label',$label) ->sum('amount');
+            array_push($values, $amount);
+        }
+        
+        // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
+        $philantrophy_detail = compact('labels','values') ;
+        info($philantrophy_detail);
+
 
         return view('user.360.philantrophy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
     }

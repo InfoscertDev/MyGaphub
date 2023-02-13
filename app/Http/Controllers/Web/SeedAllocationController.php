@@ -91,7 +91,6 @@ class SeedAllocationController extends Controller
                 $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                                                     ->where('expenditure',$group['label']) ->sum('amount');
             }
-
             $allocations = array_values($groups) ;
 
             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
@@ -131,8 +130,8 @@ class SeedAllocationController extends Controller
             foreach($budget_allocation as $allocation){
                 info($allocation);
                if($allocation->seed_category == 'expenditure'){
-                    // if($allocation->expenditure == 'family'){ 
-                    //     $label  = 'Home & Family'; 
+                    // if($allocation->expenditure == 'family'){
+                    //     $label  = 'Home & Family';
                     // } elseif ($allocation->expenditure == 'debt_repayment') {
                     //     $label =  'Debt Repayment' ;
                     // }else{
@@ -144,7 +143,7 @@ class SeedAllocationController extends Controller
         }
 
         $expenditure_labels  =  array_unique($labels);
-        
+
         foreach($budget_allocation as $allocation){
            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
            $allocation->summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
@@ -152,7 +151,7 @@ class SeedAllocationController extends Controller
 
 
         return response()->json([
-            'status' => true, 
+            'status' => true,
             'data' => compact('budget_allocation','expenditure_labels'),
             'message' => ''
          ]);
