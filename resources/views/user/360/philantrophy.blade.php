@@ -8,21 +8,21 @@
         var values =   <?php echo json_encode($philantrophy_detail['values']) ?>;
         var labels =   <?php echo json_encode($philantrophy_detail['labels']) ?>;
         var backgrounds =   ['#aaa', '#aaa', '#aaa','#aaa', '#aaa'];
-        
+
         if(ctx){
             ctx.getContext('2d');
             var myGivingChart = new Chart(ctx, {
                 type: 'bar',
-                data: {    
-                    labels: labels, 
+                data: {
+                    labels: labels,
                     datasets: [{
                         data: values,
-                        backgroundColor: backgrounds,   
-                        borderColor: backgrounds,  
+                        backgroundColor: backgrounds,
+                        borderColor: backgrounds,
                         datalabels: {
                             color: '#fff',
                             position: 'top'
-                        }  
+                        }
                     }]
                 },
                 options: {
@@ -30,10 +30,10 @@
                         display: false,
                         position: 'bottom'
                     },
-                    scales: { 
+                    scales: {
                         yAxes:[{
                             display: true,
-                            ticks: { 
+                            ticks: {
                                 beginAtZero: true,
                                 callback: function(value, index, values) {
                                     return user_currency + parseInt(value).toLocaleString();
@@ -41,7 +41,7 @@
                             },
                         }]
                     },
-                    plugins: { 
+                    plugins: {
                         datalabels: {
                             formatter: function(value, context) {
                                 return user_currency + parseInt(value).toLocaleString();
@@ -50,7 +50,7 @@
                     }
                 }
             });
-        } 
+        }
     </script>
 @endsection
 
@@ -59,46 +59,46 @@
     <div class="row">
         <div class="col-md-5 col-sm-12">
             <div class="">
-                <h2 class=" bold">Giving {{$currency}}{{ number_format(array_sum($philantrophy_detail['values']) , 2) }}       
+                <h2 class=" bold">Giving {{$currency}}{{ number_format(array_sum($philantrophy_detail['values']) , 2) }}
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="This is the average of what you give to various causes on a monthly basis."><i class="fa fa-info mx-2 "></i></span>
                 </h2>
-            {{-- <p class="wd-7 border text-center">This is the average of what you give to various causes on a monthly basis. </p>--}}      
+            {{-- <p class="wd-7 border text-center">This is the average of what you give to various causes on a monthly basis. </p>--}}
             </div>
             <div class="bar_chart mt-4">
-            
+
                     <h5 class="text-underline  bold">Your Philanthropy Profile</h5>
                     <ul class="list-group list-group-flush cash-tiles">
-                        @foreach ($philantrophy_detail['labels'] as $key => $equ) 
-                            <li class="list-group-item my-1">  
-                                <span class="mr-2 bold">  {{$equ }}:</span> <span class="mr-2">{{$currency}} {{ number_format($philantrophy_detail['values'][$key], 2) }} </span> 
-                            </li> 
-                        @endforeach 
-                    </ul>  
+                        @foreach ($philantrophy_detail['labels'] as $key => $equ)
+                            <li class="list-group-item my-1">
+                                <span class="mr-2 bold">  {{$equ }}:</span> <span class="mr-2">{{$currency}}{{ number_format($philantrophy_detail['values'][$key], 2) }} </span>
+                            </li>
+                        @endforeach
+                    </ul>
                     <div class="mb-3 mt-2">
                         <a href="{{route('seed')}}" class="card-link ">
                             {{--  <img src="{{asset('/assets/icon/Seed_red.png')}}" class="icon" alt="" style=""> --}}
-                            <button class="btn btn-pry px-4 text-center">  
-                            <i class="fa fa-pen  mr-3"></i>  Set Budget in SEED
+                            <button class="btn btn-pry px-4 text-center">
+                                <i class="fa fa-pen  mr-3"></i>  Set Budget in SEED
                             </button>
                         </a>
-                    </div> 
+                    </div>
                 <div class="chart my-3">
                     <h5 class="text-underline bold my-2">Philanthropy Distribution</h5>
                     <canvas id="givingDetailBar" width="500px" style="width: 120%; margin:  0;"></canvas>
                 </div>
-            </div>  
-        </div> 
+            </div>
+        </div>
         <div class="col-md-7 col-sm-12 px-0">
             @include('user.360.wheel')
         </div>
     </div>
-   
+
     <!-- <div class="row">
         <div class="col-md-9 col-sm-12  mx-auto">
             <div class="card">
                 <div class="card-body">
                     <h4 class="mt-2 text-center bold">Philantrophy</h4>
-                    <p class="wd-7 mx-auto text-center">(Allocate your Giving)</p>                  
+                    <p class="wd-7 mx-auto text-center">(Allocate your Giving)</p>
                     {{-- @include('user.360.modals.networth_form') --}}
 
                     <div class="my-4 form-sheet sheet-modal">
@@ -112,7 +112,7 @@
                                 <div class="col-6">
                                     <div class="price-wrap d-flex">
                                         <label for="" class="price-symbol">{{ $currency }}</label>
-                                        <input type="number" value="0" oninput="newAllocation()" name="charity" class="form-control wd-f" id="charity" required> 
+                                        <input type="number" value="0" oninput="newAllocation()" name="charity" class="form-control wd-f" id="charity" required>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                                 <div class="col-6">
                                     <div class="price-wrap d-flex">
                                         <label for="" class="price-symbol">{{ $currency }}</label>
-                                        <input type="number" value="0" oninput="newAllocation()" name="family_support" class="form-control wd-f" id="family_support" required> 
+                                        <input type="number" value="0" oninput="newAllocation()" name="family_support" class="form-control wd-f" id="family_support" required>
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                 <div class="col-6">
                                     <div class="price-wrap d-flex">
                                         <label for="" class="price-symbol">{{ $currency }}</label>
-                                        <input type="number" value="0" oninput="newAllocation()" name="personal" class="form-control wd-f" id="personal" required> 
+                                        <input type="number" value="0" oninput="newAllocation()" name="personal" class="form-control wd-f" id="personal" required>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
                                 <div class="col-6">
                                     <div class="price-wrap d-flex">
                                         <label for="" class="price-symbol">{{ $currency }}</label>
-                                        <input type="number" value="0" oninput="newAllocation()" name="others" class="form-control wd-f" id="others" required> 
+                                        <input type="number" value="0" oninput="newAllocation()" name="others" class="form-control wd-f" id="others" required>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
             </div>
         </div>
     </div> -->
-    <script> 
+    <script>
         var giving =  parseInt(<?php echo $grand->current ?>);
         function initPage(){
             let ch = parseInt(<?php echo $philantrophy->charity ?>),
@@ -174,13 +174,13 @@
             family_support.setAttribute('value', +sp);
             personal.setAttribute('value', +ps);
             others.setAttribute('value', +ot);
-            
+
             var sum = +ch + +sp + +ps + +ot;
-            
+
             allocate.textContent = (+giving - sum).toLocaleString() ;
         }
         initPage();
-        
+
         function newAllocation(){
             var charity = document.getElementById('charity').value;
             var family_support = document.getElementById('family_support').value;
@@ -188,8 +188,8 @@
             var others =  document.getElementById('others').value;
             var allocate =  document.getElementById('allocate');
             var update_giving =  document.getElementById('update_giving');
-        
-            
+
+
 
             var sum = +charity + +family_support + +personal + +others;
             allocate.textContent = +giving - sum ;
@@ -200,5 +200,5 @@
             }
         }
     </script>
-   
+
 @endsection
