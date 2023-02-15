@@ -21,7 +21,7 @@
             <div class="gap-lists ml-0">
                 <div class="asset-list asset-opt">
                     <div class="list-img img-right img-opt">
-                        <img src="{{ isset($acquisition[0]) && isset($acquisition[0]->photo)  ? $acquisition[0]->photo : asset('/assets/images/photomix-coyarsgz76866any101808.png') }}" alt=" " class="img img-responsive">
+                        <img src="{{ isset($acquisition[0]) && $acquisition[0]->photo  ? $acquisition[0]->photo : asset('/assets/images/photomix-coyarsgz76866any101808.png') }}" alt=" " class="img img-responsive">
                     </div>
                     <div class="list-body">
                         <h5 class="list-subtitle bold">Category:</h5>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="asset-list asset-opt">
                     <div class="list-img img-right img-opt">
-                        <img src="{{ isset($acquisition[1]) && isset($acquisition[1]->photo) ? $acquisition[1]->photo : asset('/assets/images/piawsgxshsgsxszazxabay163752.png') }}" alt=" " class="img img-responsive">
+                        <img src="{{ isset($acquisition[1]) && $acquisition[1]->photo ? $acquisition[1]->photo : asset('/assets/images/piawsgxshsgsxszazxabay163752.png') }}" alt=" " class="img img-responsive">
                     </div>
                     <div class="list-body">
                         <h5 class="list-subtitle bold">Category:</h5>
