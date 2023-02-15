@@ -9,7 +9,7 @@
                         <div class="reap-asset">
                             <div class="list-img">
                                 <a href="{{ route('user.ganp-opportunity',[$asset,'country' => $country->id]) }}" class="card-link text-white">
-                                    <img src="{{ url('https://www.gapassethub.com/public/'. str_replace('public', 'storage', $country->image)) }}" alt=" " class="img img-responsive">
+                                    <img src="{{ url('https://gapassethub.com/public/'. str_replace('public', 'storage', $country->image)) }}" alt=" " class="img img-responsive">
                                 </a>
                             </div>
                             <div class="list-body">
