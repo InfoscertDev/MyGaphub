@@ -126,7 +126,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         // Portfolio
         Route::get('/portfolio', 'API\v2\PortfolioApi@index');
         Route::get('/portfolio/information', 'API\v2\PortfolioApi@information');
-        Route::post('/portfolio/asset/', 'API\v2\PortfolioApi@store');
+        Route::post('/portfolio/asset', 'API\v2\PortfolioApi@store');
         Route::get('/portfolio/{braid}', 'API\v2\PortfolioApi@braid');
         Route::get('/portfolio/{braid}/{id}', 'API\v2\PortfolioApi@braidInformation');
 
