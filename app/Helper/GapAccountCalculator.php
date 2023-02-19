@@ -510,6 +510,7 @@ class GapAccountCalculator
     public static function saveUpdatedTiles($user, $accountname, $total, $sum){
     //    if($accountname =='liability')  $accountname = 'liabilities';
        if($accountname =='liabilities')  $accountname = 'liability';
+       if($accountname =='liabilities')  $accountname = 'philantrophy';
        $audit = UserAudit::where('user_id', $user->id)->first();
        if(!$audit){
             $audit = new Audit();

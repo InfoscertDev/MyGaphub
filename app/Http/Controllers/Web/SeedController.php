@@ -275,17 +275,22 @@ class SeedController extends Controller
 
         $values = array();
         $labels = array('Charitable Giving', 'Extended Family Support', 'Personal Conviction Commitments', 'Others');
-         
+
         foreach($labels as $label){
-            $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
-                                ->where('label',$label) ->sum('amount');
+            if($label == "Others"){
+                $list =  array('Charitable Giving', 'Extended Family Support', 'Personal Conviction Commitments');
+                info(['Available',$list]);
+                $amount = SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                             ->where('seed_category', 'discretionary')->whereNotIn('label',$list) ->sum('amount');
+            }else{
+                $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                                    ->where('label',$label) ->sum('amount');
+            }
             array_push($values, $amount);
         }
-        
+
         // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
         $philantrophy_detail = compact('labels','values') ;
-        info($philantrophy_detail);
-
 
         return view('user.360.philantrophy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
     }

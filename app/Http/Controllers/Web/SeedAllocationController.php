@@ -186,7 +186,7 @@ class SeedAllocationController extends Controller
       $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
 
       if($request->amount > $available_allocation){
-        return redirect()->back()->with('error', 'Amount is greater than Available allocation');
+        return redirect()->back()->with('error', 'Amount is greater than available allocation');
       }
 
       $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
