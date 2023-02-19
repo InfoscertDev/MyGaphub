@@ -11,25 +11,28 @@ class AllocationHelpers{
     // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
     public static function monthlyRecurssionChecker($user){
         $current_period = date('Y-m').'-01';
-        $month = date('m')-1;
-        $last_period =  date('Y-').$month.'-01';
+        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+        // $last_period = date($current_period, strtotime("-1 Month"));
 
-        $seed= Budget::where('user_id', $user->id)->where('period', $current_period)->first();
-        $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')->first();
+        $current_seed = Budget::where('user_id', $user->id)->where('period', $current_period)->first();
+        $last_seed = Budget::where('user_id', $user->id)->where('period', $last_period)->first();
+
+        // info([$current_seed, $last_seed]);
+
         // || ($seed->budget_amount == 0 && $last_seed)
-        if(!$seed ){
+        if(!$current_seed ){
             $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
             // $seed->user_id = $user->id;
             // $seed->period = $current_period;
-            $seed->budget_amount = ($last_seed) ? $last_seed->budget_amount : 0;
+            $seed->budget_amount = isset($last_seed) ? $last_seed->budget_amount : 0;
             $seed->priviewed = 0;
             $seed->save();
-        }
-        // Budget Allocations
-        $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
-                ->where('status',1)->where('recuring',1)->get()->toArray();
 
-        if(count($allocations) == 0){
+            // Budget Allocations
+            $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
+                    ->where('status',1)->where('recuring',1)->get()->toArray();
+
+
             $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
                 ->where('status',1)->where('recuring',1)->get()->toArray();
 

@@ -100,55 +100,55 @@ class CalculatorClass{
         $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')
             ->orderBy('period', 'DESC')->first();
         // var_dump($last_seed);
-        if(!$current_seed){
-                $current_seed = new Budget();
-                $current_seed->user_id = $user->id;
-                $current_seed->period = date('Y-m').'-01';
-                if($last_seed){
-                    $current_seed->investment_fund =  $last_seed->investment_fund;
-                    $current_seed->personal_fund =  $last_seed->personal_fund;
-                    $current_seed->emergency_fund =  $last_seed->emergency_fund;
-                    $current_seed->financial_training =  $last_seed->financial_training;
-                    $current_seed->career_development =  $last_seed->career_development;
-                    $current_seed->mental_development =  $last_seed->mental_development;
-                    $current_seed->accomodation  = $last_seed->accomodation;
-                    $current_seed->mobility  = $last_seed->mobility;
-                    $current_seed->expenses  = $last_seed->expenses;
-                    $current_seed->utilities  = $last_seed->utilities;
-                    $current_seed->debt_repay  = $last_seed->debt_repay;
-                    $current_seed->charity =  $last_seed->charity;
-                    $current_seed->family_support =  $last_seed->family_support;
-                    $current_seed->personal_commitments =  $last_seed->personal_commitments;
-                    $current_seed->save();
-                }
-                $current_seed->save();
-                $current_seed = Budget::where('user_id', $user->id)
-                                    ->where('period', date('Y-m').'-01')
-                                    ->orderBy('period', 'DESC')->first();
-        }else{
-            $total = [ $current_seed->investment_fund, $current_seed->personal_fund,$current_seed->emergency_fund,$current_seed->financial_training,
-                        $current_seed->career_development,$current_seed->mental_development, $current_seed->accomodation, $current_seed->mobility,
-                        $current_seed->expenses,$current_seed->utilities,$current_seed->debt_repay, $current_seed->charity,
-                        $current_seed->family_support, $current_seed->personal_commitments ];
-            $total = array_sum($total);
-            if($last_seed && $total == 0){
-                $current_seed->investment_fund =  $last_seed->investment_fund;
-                $current_seed->personal_fund =  $last_seed->personal_fund;
-                $current_seed->emergency_fund =  $last_seed->emergency_fund;
-                $current_seed->financial_training =  $last_seed->financial_training;
-                $current_seed->career_development =  $last_seed->career_development;
-                $current_seed->mental_development =  $last_seed->mental_development;
-                $current_seed->accomodation  = $last_seed->accomodation;
-                $current_seed->mobility  = $last_seed->mobility;
-                $current_seed->expenses  = $last_seed->expenses;
-                $current_seed->utilities  = $last_seed->utilities;
-                $current_seed->debt_repay  = $last_seed->debt_repay;
-                $current_seed->charity =  $last_seed->charity;
-                $current_seed->family_support =  $last_seed->family_support;
-                $current_seed->personal_commitments =  $last_seed->personal_commitments;
-                $current_seed->save();
-            }
-        }
+        // if(!$current_seed){
+        //         $current_seed = new Budget();
+        //         $current_seed->user_id = $user->id;
+        //         $current_seed->period = date('Y-m').'-01';
+        //         if($last_seed){
+        //             $current_seed->investment_fund =  $last_seed->investment_fund;
+        //             $current_seed->personal_fund =  $last_seed->personal_fund;
+        //             $current_seed->emergency_fund =  $last_seed->emergency_fund;
+        //             $current_seed->financial_training =  $last_seed->financial_training;
+        //             $current_seed->career_development =  $last_seed->career_development;
+        //             $current_seed->mental_development =  $last_seed->mental_development;
+        //             $current_seed->accomodation  = $last_seed->accomodation;
+        //             $current_seed->mobility  = $last_seed->mobility;
+        //             $current_seed->expenses  = $last_seed->expenses;
+        //             $current_seed->utilities  = $last_seed->utilities;
+        //             $current_seed->debt_repay  = $last_seed->debt_repay;
+        //             $current_seed->charity =  $last_seed->charity;
+        //             $current_seed->family_support =  $last_seed->family_support;
+        //             $current_seed->personal_commitments =  $last_seed->personal_commitments;
+        //             $current_seed->save();
+        //         }
+        //         // $current_seed->save();
+        //         $current_seed = Budget::where('user_id', $user->id)
+        //                             ->where('period', date('Y-m').'-01')
+        //                             ->orderBy('period', 'DESC')->first();
+        // }else{
+        //     $total = [ $current_seed->investment_fund, $current_seed->personal_fund,$current_seed->emergency_fund,$current_seed->financial_training,
+        //                 $current_seed->career_development,$current_seed->mental_development, $current_seed->accomodation, $current_seed->mobility,
+        //                 $current_seed->expenses,$current_seed->utilities,$current_seed->debt_repay, $current_seed->charity,
+        //                 $current_seed->family_support, $current_seed->personal_commitments ];
+        //     $total = array_sum($total);
+        //     if($last_seed && $total == 0){
+        //         $current_seed->investment_fund =  $last_seed->investment_fund;
+        //         $current_seed->personal_fund =  $last_seed->personal_fund;
+        //         $current_seed->emergency_fund =  $last_seed->emergency_fund;
+        //         $current_seed->financial_training =  $last_seed->financial_training;
+        //         $current_seed->career_development =  $last_seed->career_development;
+        //         $current_seed->mental_development =  $last_seed->mental_development;
+        //         $current_seed->accomodation  = $last_seed->accomodation;
+        //         $current_seed->mobility  = $last_seed->mobility;
+        //         $current_seed->expenses  = $last_seed->expenses;
+        //         $current_seed->utilities  = $last_seed->utilities;
+        //         $current_seed->debt_repay  = $last_seed->debt_repay;
+        //         $current_seed->charity =  $last_seed->charity;
+        //         $current_seed->family_support =  $last_seed->family_support;
+        //         $current_seed->personal_commitments =  $last_seed->personal_commitments;
+        //         $current_seed->save();
+        //     }
+        // }
         return  $current_seed;
     }
 
@@ -158,14 +158,14 @@ class CalculatorClass{
         $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
                              ->orderBy('period', 'DESC')->first();
 
-        if(!$target_seed){
-            $target_seed = new Budget();
-            $target_seed->user_id = $user->id;
-            $target_seed->period =$target;
-            $target_seed->save();
-            $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
-                ->orderBy('period', 'DESC')->first();
-        }
+        // if(!$target_seed){
+        //     $target_seed = new Budget();
+        //     $target_seed->user_id = $user->id;
+        //     $target_seed->period =$target;
+        //     $target_seed->save();
+        //     $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
+        //         ->orderBy('period', 'DESC')->first();
+        // }
         return  $target_seed;
     }
 

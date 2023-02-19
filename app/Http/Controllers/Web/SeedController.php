@@ -47,6 +47,7 @@ class SeedController extends Controller
 
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::getAverageSeed($user);
+
       AllocationHelpers::monthlyRecurssionChecker($user);
 
       $previous_budgets = Budget::where('user_id', $user->id)->count();
@@ -242,9 +243,11 @@ class SeedController extends Controller
         $values = array();
         $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
 
-        foreach($labels as $label){
+
+        foreach($labels as $key => $label){
             $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                             ->where('expenditure',$label) ->sum('amount');
+            $labels[$key] = SeedController::filterExpenditure($label);
             array_push($values, $amount);
         }
 
@@ -253,7 +256,20 @@ class SeedController extends Controller
         return view('user.360.expenditure', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'backgrounds' ,'expenditure','expenditure_detail'));
     }
 
-    public function philantrophy(){
+    private static function filterExpenditure($value){
+        if($value == 'family'){
+            $value = 'Home & Family';
+        }else if ($value == 'debt_repayment') {
+            $value = 'Debt Repayment';
+        }else if($value){
+           $value = ucfirst($value);
+        }
+        return $value;
+     }
+
+
+
+     public function philantrophy(){
         $user = auth()->user();
         $month =  date('Y-m').'-01';
         $isValid = SevenG::isSevenGVal($user);
@@ -304,7 +320,7 @@ class SeedController extends Controller
           'personal' => 'required|numeric|min:0',
           'others' => 'required|numeric|min:0'
         ]);
-        
+
         $giving =  array_sum([$request->charity, $request->family_support,$request->personal,  $request->others]);
 
         if($giving == $grand->current){
