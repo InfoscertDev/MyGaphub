@@ -304,6 +304,7 @@ class SeedController extends Controller
           'personal' => 'required|numeric|min:0',
           'others' => 'required|numeric|min:0'
         ]);
+        
         $giving =  array_sum([$request->charity, $request->family_support,$request->personal,  $request->others]);
 
         if($giving == $grand->current){
