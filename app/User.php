@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Notifications\VerifyEmail;
 
-class User extends Authenticatable implements MustVerifyEmail,JWTSubject 
+class User extends Authenticatable implements MustVerifyEmail,JWTSubject
 {
     use Notifiable;
 
@@ -25,11 +25,11 @@ class User extends Authenticatable implements MustVerifyEmail,JWTSubject
     /**
      * The attributes that should be hidden for arrays.
      *
-     * @var array 
+     * @var array
      */
-    protected $hidden = [   
+    protected $hidden = [
         'password', 'remember_token',
-    ]; 
+    ];
 
     protected $appends = [
         'unseen_notifications', 'user_profile'
@@ -38,29 +38,28 @@ class User extends Authenticatable implements MustVerifyEmail,JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
-    }  
+    }
 
     public function getJWTCustomClaims()
     {
         return [];
     }
-  
+
     public function profile(){
         return  $this->hasOne('App\UserProfile', 'id', 'profile_id');
     }
 
     public function getUserProfileAttribute(){
         $profile = UserProfile::find($this->profile_id);
-        return $profile;  
+        return $profile;
     }
 
-    public function getUnseenNotificationsAttribute(){ 
+    public function getUnseenNotificationsAttribute(){
         return Notification::where('user_id', $this->id)->where('seen',0)->count();
     }
-    
+
     public function sendEmailVerificationNotification()
     {
-        
         $this->notify(new VerifyEmail); // my notification
     }
 }

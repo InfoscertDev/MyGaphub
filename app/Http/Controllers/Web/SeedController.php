@@ -279,7 +279,6 @@ class SeedController extends Controller
         foreach($labels as $label){
             if($label == "Others"){
                 $list =  array('Charitable Giving', 'Extended Family Support', 'Personal Conviction Commitments');
-                info(['Available',$list]);
                 $amount = SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                              ->where('seed_category', 'discretionary')->whereNotIn('label',$list) ->sum('amount');
             }else{
