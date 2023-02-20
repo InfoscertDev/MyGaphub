@@ -20,7 +20,7 @@ class AcquisitionApi extends Controller
     private static $reap_link =  'https://gappropertyhub.com/api';
     // GANP
     private static $ganp_token = 'xnbbnxbcbvjhnbkgvnmbbnfmohbvjcfgjmcbjmhnomcfjnomnpamqasxmbcvbvnfvbcfhfbvhjjjkfjknfvbiolckojinkjondodnglhdn';
-    private static $ganp_link = 'http://www.gapassethub.com/api';
+    private static $ganp_link = 'https://gapassethub.com/api';
 
     public function favourite(Request $request)
     {

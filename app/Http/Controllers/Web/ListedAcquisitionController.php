@@ -21,10 +21,10 @@ class ListedAcquisitionController extends Controller
     // REAP
     private static $token = 'qswsdopspncagajkxnnznbxghsjksjujiubszajkbagznbzvszhjvxhvsvzghzgxgvxhgdjhvhchxbhxbxvvxvhhxvhvhhmdjxdbjxvhjhxdbvjxdxjbvlbjz';
     private static $reap_link = 'https://gappropertyhub.com/api';
-    // GANP 
+    // GANP
     private static $ganp_token = 'xnbbnxbcbvjhnbkgvnmbbnfmohbvjcfgjmcbjmhnomcfjnomnpamqasxmbcvbvnfvbcfhfbvhjjjkfjknfvbiolckojinkjondodnglhdn';
-    private static $ganp_link = 'http://www.gapassethub.com/public/api';
- 
+    private static $ganp_link = 'https://gapassethub.com/public/api';
+
     public function featuredReap(Request $request){
         $user = auth()->user();
         $sort = $request->get('sort');
@@ -41,27 +41,27 @@ class ListedAcquisitionController extends Controller
         $data = [];
         foreach ($featured as $feature) {
             foreach($feature->feature_type as $asset) array_push($data,$asset);
-        } 
+        }
         $total = count($data);
         $assets = new stdClass();
-        $assets->data = $data; 
+        $assets->data = $data;
         // var_dump($total);
         if(!$sort) $sort = 1;
-        $isAcquisiton = true; 
-        return view('user.acquisition.opportunity.reap_gap_asset', 
+        $isAcquisiton = true;
+        return view('user.acquisition.opportunity.reap_gap_asset',
                                 compact('isAcquisiton',  'total', 'sort', 'prop' ,'sasset' ,
                                      'set','assets'));
     }
 
     public function singleReap($sasset){
-        $user = auth()->user(); 
-        
+        $user = auth()->user();
+
         if(str_contains($sasset,'_')){
-            $id = explode('_',$sasset)[0]; 
+            $id = explode('_',$sasset)[0];
         }else{
             $id = $sasset;
         }
-        
+
         $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
         $reap  = json_decode($status);
         if($reap){
@@ -69,21 +69,21 @@ class ListedAcquisitionController extends Controller
             if($user){
                 $reap_favourite = Exchanger::reap_favourite($user);
                 $is_favourite = in_array($sasset, (array)$reap_favourite);
-            } 
+            }
             $asset  = $reap->asset;
             $asset->share = route('user.single_reap', [$asset->id.'_'.explode(' ',$asset->name)[0]]);
             $specials  = $reap->specials;
             $features1  = $reap->features1;
-            $features2  = $reap->features2; 
-            $images  = $reap->images; 
+            $features2  = $reap->features2;
+            $images  = $reap->images;
             $related = array_slice( $reap->related, 0, 4);
             $promotion = json_decode(json_encode($reap->promotion), false); ;
             $promotion = array_slice( $reap->promotion, 0, 2);
-            $isSingleReap = true; 
+            $isSingleReap = true;
             $page_title = $asset->name;
             $country = 0;
-            // info([$asset->share]); 
-    
+            // info([$asset->share]);
+
             return view('user.acquisition.opportunity.gap_single_asset', compact( 'sasset' ,'asset', 'id','is_favourite','page_title' ,
                   'country','isSingleReap',  'specials', 'features1', 'features2', 'images', 'related', 'promotion'));
         }else{
@@ -91,17 +91,17 @@ class ListedAcquisitionController extends Controller
         }
 
     }
- 
+
     public function createAlert(Request $request){
         $user = auth()->user();
         $header = $request->get('header');
         $access = $request->get('access');
         $acquisition = $request->get('acquisition');
-        
+
         if($acquisition == 'reap'){
             $alert = $request->get('alert');
             if($header == "cakjsnodidjnjksnjbnxdjdbndjcbdbncfjn" && $access == "soilkamziajmiojamsioajsmisnmisjoisjxoiasjiasojksijdksnjswidjsdijkns"){
-                $alert_detail = ListedInfo::addToReapAlert($user, $alert); 
+                $alert_detail = ListedInfo::addToReapAlert($user, $alert);
                 return response()->json(['status' => true, 'date' => $alert_detail ,'message' => 'Listing Saved succefully']);
             }else{
                 return response()->json(['status' => false, 'message' => 'Acquisition not available']);
@@ -115,13 +115,13 @@ class ListedAcquisitionController extends Controller
         $user = auth()->user();
         if($user){
             $this->validate($request, [
-                'subject' => 'required', 
+                'subject' => 'required',
                 'message' => 'required|min:10|max:512'
             ]);
             $request['user_id'] = $user->id;
             $request['name'] = $user->firstname . ' '.$user->surname;
             $request['email'] = $user->email;
-            if($request->mobile){ 
+            if($request->mobile){
                 $this->validate($request, [
                     'mobile' => 'required|numeric',
                 ]);
@@ -129,31 +129,31 @@ class ListedAcquisitionController extends Controller
                 $profile->phone = $request->mobile;
                 $profile->save();
                 $request['mobile'] = $request->mobile;
-            } 
-            $request['mobile'] = $user->profile->phone;  
+            }
+            $request['mobile'] = $user->profile->phone;
         }else{
              $this->validate($request, [
                 'name' => 'required|between:3,25',
-                'email' => 'required|email', 
+                'email' => 'required|email',
                 'mobile' => 'required|numeric',
-                'subject' => 'required', 
+                'subject' => 'required',
                 'message' => 'required|min:10|max:512',
-            ]); 
-        } 
-        $feedback = ModelsReapAssetInterest::create($request->all()); 
+            ]);
+        }
+        $feedback = ModelsReapAssetInterest::create($request->all());
         Mail::to('admin@mygaphub.com')->send(new ReapInterestedArea($user, $user->profile,$feedback));
         $msg = "Your Interest has been submitted";
         return redirect('/acquisition/asset/appreciating')->with('success', $msg);
     }
- 
+
     public function reserveReapInvestment(Request $request, $sasset){
         $user = auth()->user();
         $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
         $reap  = json_decode($status);
-        if($reap){ 
+        if($reap){
             $asset  = $reap->asset;
             Mail::to('admin@mygaphub.com')->send(new ReapAssetInterest($user,  $user->profile, $asset));
-            $msg = "Your Interest has been submitted"; 
+            $msg = "Your Interest has been submitted";
             return redirect('/acquisition/asset/appreciating')->with('success', $msg);
         }else{
             $msg = "There is an error reserving this Asset";
@@ -166,15 +166,15 @@ class ListedAcquisitionController extends Controller
         $page = $request->get('page', 1);
         $sort = $request->get('sort');
         $prop = $request->get('property');
-        $sasset = $request->get('sasset'); 
-        $set = 0; 
+        $sasset = $request->get('sasset');
+        $set = 0;
         $assets = [];
         $favourite_meta = [];
         $reap_favourite = Exchanger::reap_favourite($user);
         if(count($reap_favourite)){
             $favourite_meta = Exchanger::paginate_favourite($reap_favourite, $page);
-            $data =  [ 'list' => $favourite_meta['favourite'], 'token' => $this::$token]  ;   
-            
+            $data =  [ 'list' => $favourite_meta['favourite'], 'token' => $this::$token]  ;
+
             $status = Http::post($this::$reap_link."/assets/list",$data) ;
             $reap  = json_decode($status);
             if($reap->success){
@@ -184,7 +184,7 @@ class ListedAcquisitionController extends Controller
                 }
             }
         }
-        
+
         return view('user.acquisition.favourite.reap_assets', compact( 'assets','favourite_meta'));
     }
 
@@ -198,10 +198,10 @@ class ListedAcquisitionController extends Controller
         $ganp_favourite = Exchanger::ganp_favourite($user);
         if(count($ganp_favourite)){
             $favourite_meta = Exchanger::paginate_favourite($ganp_favourite, $page);
-            $data =  [ 'list' => $favourite_meta['favourite'], 'token' => $this::$ganp_token];   
+            $data =  [ 'list' => $favourite_meta['favourite'], 'token' => $this::$ganp_token];
             $status = Http::post($this::$ganp_link."/ganp/cultivations/list",$data) ;
             $ganp  = json_decode($status);
-            // info([$this::$ganp_link."/ganp/cultivations/list",$data]); 
+            // info([$this::$ganp_link."/ganp/cultivations/list",$data]);
             if($ganp && $ganp->success){
                 $cultivations = $ganp->cultivations;
                 foreach($cultivations as $asset){
@@ -209,7 +209,7 @@ class ListedAcquisitionController extends Controller
                 }
             }
         }
-        
+
         return view('user.acquisition.favourite.ganp_assets', compact( 'country', 'cultivations', 'favourite_meta'));
     }
 
@@ -220,16 +220,16 @@ class ListedAcquisitionController extends Controller
         if($plant){
             $asset = $plant->cultivation;
             Mail::to('admin@mygaphub.com')->send(new GanpAssetInvestment($user,  $user->profile, $asset, $request->units));
-            $msg = "Your Interest has been submitted"; 
+            $msg = "Your Interest has been submitted";
             return response()->json([
-                'success' => true,  
-                'message' => $msg 
+                'success' => true,
+                'message' => $msg
             ]);
-        }else{ 
+        }else{
             $msg = "There is an error reserving this Asset";
             return response()->json([
                 'success' => false,
-                'message' => $msg 
+                'message' => $msg
             ]);
         }
     }

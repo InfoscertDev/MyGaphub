@@ -4,7 +4,7 @@
         {{-- @include('inc.ganp-banner') --}}
         {{-- <div class="bg-gap-light b-rad-20">
             <div class="row my-4 wd-8 mx-auto">
-                <div class="my-4 b-rad-20 mt-1 cal-head hd-country" style="background: url({{  url('http://www.gapassethub.com/public/'. str_replace('public', 'storage', $gcountry->image)) }}) no-repeat;  background-position: center;" id="authhead">
+                <div class="my-4 b-rad-20 mt-1 cal-head hd-country" style="background: url({{  url('https://gapassethub.com/public/'. str_replace('public', 'storage', $gcountry->image)) }}) no-repeat;  background-position: center;" id="authhead">
                     <div class="b-rad-20 overlay2" style="height: 110px !important;">
                         <div class="disclaim text-center">
                             <h2 class="list-explore">GANP
@@ -27,7 +27,7 @@
                             <div class="reap-asset mx-2 elevation-3">
                                 <div class="list-img">
                                     <a href="{{ route('user.single_ganp',[$plant->id, 'tresh' => rand(1000,9999) ]) }}" class="card-link text-white">
-                                        <img src="{{ url('http://www.gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1)) }}" alt=" " class="img img-responsive">
+                                        <img src="{{ url('https://gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1)) }}" alt=" " class="img img-responsive">
                                     </a>
                                 </div>
                                 <div class="list-body">

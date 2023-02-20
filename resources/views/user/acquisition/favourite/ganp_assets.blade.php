@@ -15,7 +15,7 @@
                             <div class="reap-asset mx-2 elevation-3">
                                 <div class="list-img">
                                     <a href="{{ route('user.single_ganp',[$plant->id, 'tresh' => rand(1000,9999) ]) }}" class="card-link text-white">
-                                        <img src="{{ url('http://www.gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1)) }}" alt=" " class="img img-responsive">
+                                        <img src="{{ url('https://gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1)) }}" alt=" " class="img img-responsive">
                                     </a>
                                 </div>
                                 <div class="list-body">
@@ -41,7 +41,7 @@
                                                     <script>
                                                         var isTool = false;
                                                         var share = "<?php echo $plant->share ?>";
-                                                        var image = "<?php echo url('http://www.gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1 )) ?>";
+                                                        var image = "<?php echo url('https://gapassethub.com/public/'. str_replace('public', 'storage', $plant->image1 )) ?>";
                                                         function toggleShare(){
                                                             $('#confirm_copy').hide();
                                                             $('#share_link').val(this.share, this.image);

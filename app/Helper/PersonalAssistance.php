@@ -22,7 +22,7 @@ class PersonalAssistance {
     private $link = 'https://gappropertyhub.com/api';
     // GANP
     private $ganp_token = 'xnbbnxbcbvjhnbkgvnmbbnfmohbvjcfgjmcbjmhnomcfjnomnpamqasxmbcvbvnfvbcfhfbvhjjjkfjknfvbiolckojinkjondodnglhdn';
-    private $ganp_link = 'http://www.gapassethub.com/api';
+    private $ganp_link = 'http://gapassethub.com/api';
 
 
     public function __construct($user)
