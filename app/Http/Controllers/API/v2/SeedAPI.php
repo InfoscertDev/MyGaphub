@@ -149,14 +149,14 @@ class SeedAPI extends Controller
 
     public function expenditure(Request $request){
         $user = $request->user();
-
+        $month =  date('Y-m').'-01';
         $fin = CalculatorClass::finicial($user);
         $expenditure =  $fin['calculator'];
         // $expenditure_detail = GapAccount::calcExpenditure($user,$expenditure);
         $values = array();
         $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
 
-        
+
         foreach($labels as $key => $label){
             $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
                                             ->where('expenditure',$label) ->sum('amount');
@@ -167,7 +167,7 @@ class SeedAPI extends Controller
         $expenditure_detail = compact('labels','values') ;
         $data = compact('expenditure','expenditure_detail');
 
-        return response()->json([ 
+        return response()->json([
             'status' => true,
             'data' => $data,
             'message' => '360  Expenditure detail'
@@ -187,6 +187,7 @@ class SeedAPI extends Controller
 
     public function philantrophy(Request $request){
         $user = $request->user();
+        $month =  date('Y-m').'-01';
 
         $grand = Grand::where('user_id', $user->id)->first();
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
@@ -217,7 +218,7 @@ class SeedAPI extends Controller
         $philantrophy_detail = compact('labels','values') ;
         $data = compact( 'philantrophy', 'grand','philantrophy_detail');
 
-        return response()->json([ 
+        return response()->json([
             'status' => true,
             'data' => $data,
             'message' => '360  Philantrophy detail'
