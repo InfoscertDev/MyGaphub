@@ -371,7 +371,7 @@ class CalculatorClass{
         $expenditure = [];
         $discretionary = [];
 
-        if(!$seed)  {
+        if($seed)  {
             // Unroll given SEED data to  each section
             array_push($savings,  $seed->investment_fund) ;
             array_push($savings,  $seed->personal_fund) ;
