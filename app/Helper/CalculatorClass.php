@@ -371,22 +371,24 @@ class CalculatorClass{
         $expenditure = [];
         $discretionary = [];
 
-        // Unroll given SEED data to  each section
-        array_push($savings,  $seed->investment_fund) ;
-        array_push($savings,  $seed->personal_fund) ;
-        array_push($savings,  $seed->emergency_fund) ;
-        array_push($education,  $seed->financial_training) ;
-        array_push($education,  $seed->career_development) ;
-        array_push($education,  $seed->mental_development) ;
-        array_push($expenditure,  $seed->accomodation) ;
-        array_push($expenditure,  $seed->mobility) ;
-        array_push($expenditure,  $seed->expenses) ;
-        array_push($expenditure,  $seed->utilities) ;
-        array_push($expenditure,  $seed->debt_repay) ;
-        array_push($discretionary,  $seed->charity) ;
-        array_push($discretionary,  $seed->family_support) ;
-        array_push($discretionary,  $seed->personal_commitments) ;
-        array_push($discretionary,  $seed->others) ;
+        if(!$seed)  {
+            // Unroll given SEED data to  each section
+            array_push($savings,  $seed->investment_fund) ;
+            array_push($savings,  $seed->personal_fund) ;
+            array_push($savings,  $seed->emergency_fund) ;
+            array_push($education,  $seed->financial_training) ;
+            array_push($education,  $seed->career_development) ;
+            array_push($education,  $seed->mental_development) ;
+            array_push($expenditure,  $seed->accomodation) ;
+            array_push($expenditure,  $seed->mobility) ;
+            array_push($expenditure,  $seed->expenses) ;
+            array_push($expenditure,  $seed->utilities) ;
+            array_push($expenditure,  $seed->debt_repay) ;
+            array_push($discretionary,  $seed->charity) ;
+            array_push($discretionary,  $seed->family_support) ;
+            array_push($discretionary,  $seed->personal_commitments) ;
+            array_push($discretionary,  $seed->others) ;
+        }
 
         // Sum each section amount
         $savings = array_sum($savings) ;
