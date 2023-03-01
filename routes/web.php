@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/360/investment', 'Web\PortfolioController@investment')->name('360.investment');
         Route::get('/360/cash', 'Web\WheelController@cash')->name('360.cash');
         Route::get('/360/mortgage', 'Web\LiabilitiesController@mortgage')->name('360.mortgage');
+
         Route::get('/360/philantrophy', 'Web\SeedController@philantrophy')->name('360.philantrophy');
         Route::get('/360/philanthropy', 'Web\SeedController@philantrophy')->name('360.philantrophy');
         Route::get('/360/income', 'Web\IndependenceController@income')->name('360.income');

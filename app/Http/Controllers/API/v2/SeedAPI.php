@@ -52,12 +52,13 @@ class SeedAPI extends Controller
 
     public function periodHistory(Request $request, $period){
         $user = $request->user();
+        $backgrounds = array_reverse(GapAccount::accountBackground());
         $current_seed = CalculatorClass::getCurrentSeed($user);
         $target_seed = CalculatorClass::getTargetSeed($user);
 
         $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
-        $data = compact('current_seed', 'target_seed', 'monthly_seed');
+        $data = compact('current_seed', 'target_seed', 'monthly_seed', 'backgrounds');
 
         return response()->json([
             'status' => true,
