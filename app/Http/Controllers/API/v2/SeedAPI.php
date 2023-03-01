@@ -35,6 +35,7 @@ class SeedAPI extends Controller
         }
       }
 
+      $backgrounds = array_reverse(GapAccount::accountBackground());
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = CalculatorClass::getSeedDetail($target_seed);
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
@@ -42,11 +43,11 @@ class SeedAPI extends Controller
       $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
       AllocationHelpers::monthlyRecurssionChecker($user);
 
-      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed', 'periods','historic_seed' );
+      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed', 'periods','historic_seed', 'backgrounds' );
       return response()->json([
         'status' => true,
         'data' => $data,
-        'message' => ''
+        'message' => 'Seed information'
       ], 200);
     }
 
