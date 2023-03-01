@@ -522,9 +522,9 @@ class GapAccountCalculator
             'account_name' => $accountname,
             'account_type' => ($total > 1) ? 'Multiple Accounts': 'Single Account',
             'sum' => $sum,
-            'updated_at' => date('Y-m-d H:i:s'),
-
+            'updated_at' => date('Y-m-d H:i:s')
         ];
+        
         if (isset($audit->wheel_point_at)) {
             $wheel = ($audit->wheel_point_at);
             // Confirm if last Account is not the same as the current account
