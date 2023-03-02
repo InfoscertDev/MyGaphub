@@ -26,12 +26,16 @@ class SeedAPI extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
 
-      //Rollover  diaog    
+      //Rollover  diaog
       $preview = $request->input('preview');
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
         $current_seed->save();
+        return response()->json([
+            'status' => true,
+            'message' => 'Rollover changed'
+        ]);
       }
 
       $backgrounds = array_reverse(GapAccount::accountBackground());
