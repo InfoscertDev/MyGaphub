@@ -32,12 +32,11 @@ class SeedAPI extends Controller
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
         $current_seed->save();
-        return response()->json([
-            'status' => true,
-            'message' => 'Rollover changed'
-        ]);
+        // return response()->json([
+        //     'status' => true,
+        //     'message' => 'Rollover changed'
+        // ]);
       }
-
       //
       $backgrounds = array_reverse(GapAccount::accountBackground());
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
