@@ -54,12 +54,13 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         // Dashboard
         Route::get('/dashboard', 'API\v2\ToolAPI@dashboard');
         Route::post('/dashboard/tiles', 'API\v2\ToolAPI@storeTiles');
+        Route::get('/notifications', 'API\v2\ToolAPI@notifications');
         Route::get('/snapshot', 'API\v2\SevenGAPI@snapshot');
-
-        Route::resource('reminder','API\v2\ReminderAPI');
+        // Avtion Plan
         Route::get('/actionplan', 'API\v2\AssetActionController@action');
         Route::get('/todayplan', 'API\v2\AssetActionController@today');
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
+        Route::resource('reminder','API\v2\ReminderAPI');
 
         Route::get('/acquisition/favourite/', 'API\v2\AcquisitionApi@favourite');
         Route::get('/acquisition/favourite/ganp', 'API\v2\AcquisitionApi@favouriteGanp');
