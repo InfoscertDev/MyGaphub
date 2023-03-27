@@ -46,6 +46,7 @@ class PersonalAssistance {
     }
 
     public function acqusition(){
+
         $audit = UserAudit::where('user_id', $this->user->id)->first();
         $reaps = json_decode($audit->reap_favourite);
         $ganps = json_decode($audit->ganp_favourite);
@@ -57,22 +58,25 @@ class PersonalAssistance {
         $random_ganp = rand(0, $total_ganp - 1);
         $asset = null;
         $type = $this->acqusition_choice($total_reap, $total_ganp);
-
-        if($type == "reap"){
-            if(isset($reaps[$random_reap])){
-                $status = Http::get($this->link."/assets/$reaps[$random_reap]?token=".$this->token) ;
-                $reap  = json_decode($status);
-                $asset = $reap->asset;
+        try{
+            if($type == "reap"){
+                if(isset($reaps[$random_reap])){
+                    $status = Http::get($this->link."/assets/$reaps[$random_reap]?token=".$this->token) ;
+                    $reap  = json_decode($status);
+                    $asset = $reap->asset;
+                }
+            }else if($type == "ganp"){
+                if($ganps[$random_ganp]){
+                    $status = Http::get($this->ganp_link."/ganp/asset/$ganps[$random_ganp]?token=".$this->ganp_token) ;
+                    $ganp  = json_decode($status);
+                    // var_dump($ganps[$random_ganp],$ganp);s
+                    $asset = $ganp;
+                }
             }
-        }else if($type == "ganp"){
-            if($ganps[$random_ganp]){
-                $status = Http::get($this->ganp_link."/ganp/asset/$ganps[$random_ganp]?token=".$this->ganp_token) ;
-                $ganp  = json_decode($status);
-                // var_dump($ganps[$random_ganp],$ganp);s
-                $asset = $ganp;
-            }
+            return compact('type', 'asset');
+        }catch (\Throwable $th) {
+            return compact('type', 'asset');
         }
-        return compact('type', 'asset');
     }
 
     public function acqusition_choice($total_reap, $total_ganp){
