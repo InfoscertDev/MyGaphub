@@ -60,8 +60,6 @@ class HomeController extends Controller
         $audit = Audit::where('user_id', $user->id)->first();
         $tiles = HelperClass::dashboardTiles();
 
-
-
         if(!$audit){
             $audit = new Audit();
             $audit->user_id = $user->id;

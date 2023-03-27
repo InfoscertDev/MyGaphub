@@ -61,33 +61,36 @@ class ListedAcquisitionController extends Controller
         }else{
             $id = $sasset;
         }
+        try {
+            $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
+            $reap  = json_decode($status);
+            if($reap){
+                $is_favourite = null;
+                if($user){
+                    $reap_favourite = Exchanger::reap_favourite($user);
+                    $is_favourite = in_array($sasset, (array)$reap_favourite);
+                }
+                $asset  = $reap->asset;
+                $asset->share = route('user.single_reap', [$asset->id.'_'.explode(' ',$asset->name)[0]]);
+                $specials  = $reap->specials;
+                $features1  = $reap->features1;
+                $features2  = $reap->features2;
+                $images  = $reap->images;
+                $related = array_slice( $reap->related, 0, 4);
+                $promotion = json_decode(json_encode($reap->promotion), false); ;
+                $promotion = array_slice( $reap->promotion, 0, 2);
+                $isSingleReap = true;
+                $page_title = $asset->name;
+                $country = 0;
+                // info([$asset->share]);
 
-        $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
-        $reap  = json_decode($status);
-        if($reap){
-            $is_favourite = null;
-            if($user){
-                $reap_favourite = Exchanger::reap_favourite($user);
-                $is_favourite = in_array($sasset, (array)$reap_favourite);
+                return view('user.acquisition.opportunity.gap_single_asset', compact( 'sasset' ,'asset', 'id','is_favourite','page_title' ,
+                      'country','isSingleReap',  'specials', 'features1', 'features2', 'images', 'related', 'promotion'));
+            }else{
+                return  redirect('404');
             }
-            $asset  = $reap->asset;
-            $asset->share = route('user.single_reap', [$asset->id.'_'.explode(' ',$asset->name)[0]]);
-            $specials  = $reap->specials;
-            $features1  = $reap->features1;
-            $features2  = $reap->features2;
-            $images  = $reap->images;
-            $related = array_slice( $reap->related, 0, 4);
-            $promotion = json_decode(json_encode($reap->promotion), false); ;
-            $promotion = array_slice( $reap->promotion, 0, 2);
-            $isSingleReap = true;
-            $page_title = $asset->name;
-            $country = 0;
-            // info([$asset->share]);
-
-            return view('user.acquisition.opportunity.gap_single_asset', compact( 'sasset' ,'asset', 'id','is_favourite','page_title' ,
-                  'country','isSingleReap',  'specials', 'features1', 'features2', 'images', 'related', 'promotion'));
-        }else{
-            return  redirect('404');
+        } catch (\Throwable $th) {
+            return  redirect('404')->with(['error' => 'Server Down. Check back later']);
         }
 
     }

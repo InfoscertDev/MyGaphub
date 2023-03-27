@@ -175,22 +175,31 @@ class AcquisitionApi extends Controller
              ], 400);
         }
 
-        $status = Http::get($this::$ganp_link."/ganp/asset/$sasset?token=".$this::$ganp_token) ;
+        try {
+            $status = Http::get($this::$ganp_link."/ganp/asset/$sasset?token=".$this::$ganp_token) ;
 
-        $plant  = json_decode($status);
-        if($plant){
-            $asset  = $plant->cultivation;
-            Mail::to('admin@mygaphub.com')->send(new GanpAssetInvestment($user, $user->profile,$asset, $request->units));
-            return response()->json([
-                'status' => true,
-                'message' => "Your Interest has been submitted"
-            ], 200);
-        }else{
+            $plant  = json_decode($status);
+            if($plant){
+                $asset  = $plant->cultivation;
+                Mail::to('admin@mygaphub.com')->send(new GanpAssetInvestment($user, $user->profile,$asset, $request->units));
+                return response()->json([
+                    'status' => true,
+                    'message' => "Your Interest has been submitted"
+                ], 200);
+            }else{
+                $msg = "There is an error reserving this Asset";
+                return response()->json([
+                    'status' => false,
+                    'message' => $msg
+                ], 400);
+            }
+        } catch (\Throwable $th) {
+
             $msg = "There is an error reserving this Asset";
             return response()->json([
                 'status' => false,
                 'message' => $msg
-            ], 400);
+            ], 500);
         }
     }
 }

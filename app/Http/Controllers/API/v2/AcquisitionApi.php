@@ -141,21 +141,29 @@ class AcquisitionApi extends Controller
 
     public function reserveReapInvestment(Request $request, $sasset){
         $user =  $request->user();
-        $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
-        $reap  = json_decode($status);
-        if($reap){
-            $asset  = $reap->asset;
-            Mail::to('admin@mygaphub.com')->send(new ReapAssetInterest($user, $user->profile,$asset));
-            return response()->json([
-                'status' => true,
-                'message' => "Your Interest has been submitted"
-            ], 200);
-        }else{
+        try {
+            $status = Http::get($this::$reap_link."/assets/$sasset?token=".$this::$token) ;
+            $reap  = json_decode($status);
+            if($reap){
+                $asset  = $reap->asset;
+                Mail::to('admin@mygaphub.com')->send(new ReapAssetInterest($user, $user->profile,$asset));
+                return response()->json([
+                    'status' => true,
+                    'message' => "Your Interest has been submitted"
+                ], 200);
+            }else{
+                $msg = "There is an error reserving this Asset";
+                return response()->json([
+                    'status' => false,
+                    'message' => $msg
+                ], 400);
+            }
+        } catch (\Throwable $th) {
             $msg = "There is an error reserving this Asset";
             return response()->json([
                 'status' => false,
                 'message' => $msg
-            ], 400);
+            ], 500);
         }
     }
 

@@ -59,19 +59,22 @@ class AcquisitionController extends Controller
         $price_from = str_replace(' ', '%20', $request->ct_price_from);
         $price_to = str_replace(' ', '%20', $request->ct_price_to);
         $sort = $request->ct_sort;
-        if($keyword || $country || $city || $property || $price_from || $price_to){
+        try {
+            if($keyword || $country || $city || $property || $price_from || $price_to){
+                $reap_search = compact('keyword', 'country', 'city', 'property', 'price_from', 'price_to', 'sort');
+                $status = Http::get($this::$link."/search?ct_keyword=$keyword&page=$page&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_price_to=$price_to&token=".$this::$token);
+                $reap  = json_decode($status);
+                $total = $reap->total || 0;
+                $assets = json_decode(json_encode($reap->result), false);
+                $isAcquisiton = true;
+                $isListAsset = true;
 
-            $reap_search = compact('keyword', 'country', 'city', 'property', 'price_from', 'price_to', 'sort');
-            $status = Http::get($this::$link."/search?ct_keyword=$keyword&page=$page&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_price_to=$price_to&token=".$this::$token);
-            $reap  = json_decode($status);
-            $total = $reap->total || 0;
-            $assets = json_decode(json_encode($reap->result), false);
-            $isAcquisiton = true;
-            $isListAsset = true;
-
-            return view('user.acquisition.opportunity.reap_gap_asset',
-                            compact('set', 'isListAsset',  'isAcquisiton', 'total','sasset', 'sort','prop' , 'assets', 'reap_search'));
-        }else{
+                return view('user.acquisition.opportunity.reap_gap_asset',
+                                compact('set', 'isListAsset',  'isAcquisiton', 'total','sasset', 'sort','prop' , 'assets', 'reap_search'));
+            }else{
+                return redirect()->back()->with(['error' => 'One of the search criteria is required']);
+            }
+        } catch (\Throwable $th) {
             return redirect()->back()->with(['error' => 'One of the search criteria is required']);
         }
     }
@@ -90,20 +93,23 @@ class AcquisitionController extends Controller
         $property = $request->get('property');
         $price_from = $request->get('pfrom');
         $price_to = $request->get('pto');
-
-        if($keyword || $country || $city || $property || $price_from || $price_to || $sort){
-            $reap_search = compact('keyword', 'country', 'city', 'property', 'price_from', 'price_to', 'sort');
-            $status = Http::get($this::$link."/search?ct_keyword=$keyword&page=$page&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_sort=$sort&ct_price_to=$price_to&token=".$this::$token) ;
-            $reap  = json_decode($status);
-            $total = $reap->total || 0;
-            $assets = json_decode(json_encode($reap->result), false);
-            $isAcquisiton = true;
-            return view('user.acquisition.opportunity.reap_gap_asset',
-                                compact('set', 'isAcquisiton', 'total','sasset', 'sort','prop' , 'assets', 'reap_search'));
-        }else{
-            return redirect()->back()->with(['error' => 'One of the search criteria is required']);
+        try {
+            if($keyword || $country || $city || $property || $price_from || $price_to || $sort){
+                $reap_search = compact('keyword', 'country', 'city', 'property', 'price_from', 'price_to', 'sort');
+                $status = Http::get($this::$link."/search?ct_keyword=$keyword&page=$page&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_sort=$sort&ct_price_to=$price_to&token=".$this::$token) ;
+                $reap  = json_decode($status);
+                $total = $reap->total || 0;
+                $assets = json_decode(json_encode($reap->result), false);
+                $isAcquisiton = true;
+                return view('user.acquisition.opportunity.reap_gap_asset',
+                                    compact('set', 'isAcquisiton', 'total','sasset', 'sort','prop' , 'assets', 'reap_search'));
+            }else{
+                return redirect()->back()->with(['error' => 'One of the search criteria is required']);
+            }
+            // echo($this::$link."/search?ct_keyword=$keyword&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_price_to=$price_to&token=".$this::$token);
+        } catch (\Throwable $th) {
+            return  redirect('404')->with(['error' => 'Server Down. Check back later']);
         }
-        // echo($this::$link."/search?ct_keyword=$keyword&ct_country=$country&ct_city=$city&ct_property=$property&ct_price_from=$price_from&ct_price_to=$price_to&token=".$this::$token);
     }
 
     public function favouriteAsset(Request $request,$asset){
@@ -139,30 +145,34 @@ class AcquisitionController extends Controller
         $sasset = $request->get('sasset');
         $set = $asset; $id = $asset;
 
-        if($prop || $sort){
-            // Track Property Listing
-            if($prop && $user){
-                $tracker = new GaphubTracker($user);
-                $tracker->reapPropertyTracker($prop);
-            }
-
-            $status = Http::get($this::$link."/search?ct_property_type=$prop&ct_sort=$sort&page=$page&token=".$this::$token) ;
-            $reap  = json_decode($status);
-            $total = $reap->total;
-
-            $assets = json_decode(json_encode($reap->result), false);
-            if(!$sort) $sort = 1;
-            $isAcquisiton = true;
-            return view('user.acquisition.opportunity.reap_gap_asset',
-                                compact('set',  'isAcquisiton',  'total', 'sasset', 'sort','prop' , 'assets'));
-        }else{
-            if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
-                     strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
-                 $isListAsset = true;
-                return view('user.acquisition.opportunity.reap_asset', compact('isListAsset','sasset', 'asset', 'set'));
+        try {     
+            if($prop || $sort){
+                // Track Property Listing
+                if($prop && $user){
+                    $tracker = new GaphubTracker($user);
+                    $tracker->reapPropertyTracker($prop);
+                }
+    
+                $status = Http::get($this::$link."/search?ct_property_type=$prop&ct_sort=$sort&page=$page&token=".$this::$token) ;
+                $reap  = json_decode($status);
+                $total = $reap->total;
+    
+                $assets = json_decode(json_encode($reap->result), false);
+                if(!$sort) $sort = 1;
+                $isAcquisiton = true;
+                return view('user.acquisition.opportunity.reap_gap_asset',
+                                    compact('set',  'isAcquisiton',  'total', 'sasset', 'sort','prop' , 'assets'));
             }else{
-                return   redirect('404');
+                if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
+                         strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
+                     $isListAsset = true;
+                    return view('user.acquisition.opportunity.reap_asset', compact('isListAsset','sasset', 'asset', 'set'));
+                }else{
+                    return   redirect('404');
+                }
             }
+        } catch (\Throwable $th) {
+            return  redirect('404')->with(['error' => 'Server Down. Check back later']);
         }
 
     }
@@ -175,26 +185,30 @@ class AcquisitionController extends Controller
         $page = $request->get('page');
         $set = $asset;
 
-        if($country){
-            // info($this::$ganp_link."/ganp/assets/$country?token=".$this::$ganp_token);
-            $status = Http::get($this::$ganp_link."/ganp/assets/$country?page=$page&token=".$this::$ganp_token) ;
-            $plant  = json_decode($status);
-            $cultivations = $plant->cultivations;// info($cultivations); // info([$cultivations->data]);
-            $gcountry = $plant->country;
-            $isGanp = true;
-            return view('user.acquisition.opportunity.ganp_country', compact('set','asset', 'country', 'cultivations', 'gcountry', 'isGanp', 'sort', 'page'));
-        }else{
-            if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
-                        strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
-
-                $status = Http::get($this::$ganp_link."/ganp/countries?token=".$this::$ganp_token) ;
-                $ganp  = json_decode($status);
-                $countries = $ganp->countries;
-                $country = 0;
-                return view('user.acquisition.opportunity.ganp_assets', compact('asset', 'countries', 'country', 'sort', 'page'));
+        try {
+            if($country){
+                // info($this::$ganp_link."/ganp/assets/$country?token=".$this::$ganp_token);
+                $status = Http::get($this::$ganp_link."/ganp/assets/$country?page=$page&token=".$this::$ganp_token) ;
+                $plant  = json_decode($status);
+                $cultivations = $plant->cultivations;// info($cultivations); // info([$cultivations->data]);
+                $gcountry = $plant->country;
+                $isGanp = true;
+                return view('user.acquisition.opportunity.ganp_country', compact('set','asset', 'country', 'cultivations', 'gcountry', 'isGanp', 'sort', 'page'));
             }else{
-                return  redirect('404');
+                if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
+                            strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
+    
+                    $status = Http::get($this::$ganp_link."/ganp/countries?token=".$this::$ganp_token) ;
+                    $ganp  = json_decode($status);
+                    $countries = $ganp->countries;
+                    $country = 0;
+                    return view('user.acquisition.opportunity.ganp_assets', compact('asset', 'countries', 'country', 'sort', 'page'));
+                }else{
+                    return  redirect('404');
+                }
             }
+        } catch (\Throwable $th) {
+            return  redirect('404')->with(['error' => 'Server Down. Check back later']);
         }
     }
 
