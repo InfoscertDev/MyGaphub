@@ -183,10 +183,11 @@
                             // remove old options
                             list_allocation.not(':first').remove();;
                             $('#allocation option:gt(0)').remove();
-                            $('#expenditure option:gt(0)').remove();
+
 
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
+                                    $('#expenditure option:gt(0)').remove();
                                     if(list_expenditure.length <= 1){
                                         allocation = allocation.toLowerCase();
                                         let label = (allocation == 'family') ? allocation = 'Home & Family' :
