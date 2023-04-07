@@ -164,7 +164,7 @@
                 let  list_allocation = $("#allocation"),
                      list_expenditure =  $('#expenditure');
 
-                console.log(category, expenditure);
+                // console.log(category, expenditure);
 
                 if(expenditure == 'Home & Family') expenditure = 'family';
                 if(expenditure == 'Debt Repayment') expenditure = 'debt_repayment';
@@ -180,8 +180,11 @@
                         // console.log(allocations, expenditure_labels)
 
                         if (allocations) {
-                            list_allocation.not(':first').remove();; // remove old options
+                            // remove old options
+                            list_allocation.not(':first').remove();;
                             $('#allocation option:gt(0)').remove();
+                            $('#expenditure option:gt(0)').remove();
+
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
                                     if(list_expenditure.length <= 1){
@@ -192,6 +195,7 @@
                                         .attr("value", allocation).text(label));
                                     }
                                 } else if(category == 'expenditure' && expenditure){
+
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }else {
