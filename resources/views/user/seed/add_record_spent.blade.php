@@ -187,8 +187,8 @@
 
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
-                                    $('#expenditure option:gt(0)').remove();
                                     if(list_expenditure.length <= 1){
+                                        $('#expenditure option:gt(0)').remove();
                                         allocation = allocation.toLowerCase();
                                         let label = (allocation == 'family') ? allocation = 'Home & Family' :
                                                 (allocation == 'debt_repayment') ?  allocation = 'Debt Repayment' : allocation;
@@ -196,7 +196,6 @@
                                         .attr("value", allocation).text(label));
                                     }
                                 } else if(category == 'expenditure' && expenditure){
-
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }else {
