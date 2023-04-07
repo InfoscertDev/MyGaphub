@@ -164,6 +164,11 @@
                 let  list_allocation = $("#allocation"),
                      list_expenditure =  $('#expenditure');
 
+                console.log(category, expenditure);
+
+                if(expenditure == 'Home & Family') expenditure = 'family';
+                if(expenditure == 'Debt Repayment') expenditure = 'debt_repayment';
+
                 $.ajax({
                     type: 'GET',
                     url: `/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
@@ -181,7 +186,6 @@
                                 if(category == 'expenditure'){
                                     if(list_expenditure.length <= 1){
                                         allocation = allocation.toLowerCase();
-                                        console
                                         let label = (allocation == 'family') ? allocation = 'Home & Family' :
                                                 (allocation == 'debt_repayment') ?  allocation = 'Debt Repayment' : allocation;
                                         list_expenditure.append($("<option></option>")
@@ -197,6 +201,10 @@
                             });
                         }
                     },
+
+                    error: function (data,  ){
+
+                    }
                 })
 
             }

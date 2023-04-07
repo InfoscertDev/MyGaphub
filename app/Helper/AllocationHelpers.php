@@ -30,11 +30,12 @@ class AllocationHelpers{
 
             // Budget Allocations
             $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
-                    ->where('status',1)->where('recuring',1)->get()->toArray();
+                                ->where('status',1)->where('recuring',1)->get()->toArray();
 
 
-            $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $last_period)
-                ->where('status',1)->where('recuring',1)->get()->toArray();
+            $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)
+                                    ->where('period', $last_period)->where('status',1)
+                                    ->where('recuring',1)->get()->toArray();
 
             foreach ($current_allocations as $allocation) {
                 $newallocation = (array) $allocation;
