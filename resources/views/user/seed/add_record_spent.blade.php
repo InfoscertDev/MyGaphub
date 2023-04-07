@@ -164,8 +164,6 @@
                 let  list_allocation = $("#allocation"),
                      list_expenditure =  $('#expenditure');
 
-                // console.log(category, expenditure);
-
                 if(expenditure == 'Home & Family') expenditure = 'family';
                 if(expenditure == 'Debt Repayment') expenditure = 'debt_repayment';
 
@@ -176,7 +174,10 @@
                         let listings = data.data;
                         allocations = listings.budget_allocation
                         expenditure_labels = listings.expenditure_labels
-                        if(category == 'expenditure' && !expenditure) allocations = expenditure_labels
+                        if(category == 'expenditure' && !expenditure) {
+                            $('#expenditure option:gt(0)').remove();
+                            allocations = expenditure_labels
+                        }
                         // console.log(allocations, expenditure_labels)
 
                         if (allocations) {
@@ -184,18 +185,17 @@
                             list_allocation.not(':first').remove();;
                             $('#allocation option:gt(0)').remove();
 
-
                             $.each(allocations, function(key,allocation) {
                                 if(category == 'expenditure'){
-                                    if(list_expenditure.length <= 1){
-                                        $('#expenditure option:gt(0)').remove();
-                                        allocation = allocation.toLowerCase();
-                                        let label = (allocation == 'family') ? allocation = 'Home & Family' :
+                                    // console.log(list_expenditure.options,list_expenditure.options.length, list_expenditure.length <= 1);
+                                    allocation = allocation.toLowerCase();
+                                    let label = (allocation == 'family') ? allocation = 'Home & Family' :
                                                 (allocation == 'debt_repayment') ?  allocation = 'Debt Repayment' : allocation;
-                                        list_expenditure.append($("<option></option>")
-                                        .attr("value", allocation).text(label));
-                                    }
+
+                                    list_expenditure.append($("<option></option>")
+                                    .attr("value", allocation).text(label));
                                 } else if(category == 'expenditure' && expenditure){
+
                                     list_allocation.append($("<option></option>")
                                     .attr("value", allocation.id).text(allocation.label));
                                 }else {
