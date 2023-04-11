@@ -45,7 +45,8 @@ class IncomeAccount extends Model
     protected function getAutomatedAttribute($value){
         if($this->income_type  == 'portfolio'){
             $portfolio = PortfolioAsset::find($this->portfolio_asset_id);
-            return $portfolio->automated;
+            info($portfolio);
+            return ($portfolio) ? $portfolio->automated : 1;
         }else{
             return $value;
         }
@@ -63,7 +64,7 @@ class IncomeAccount extends Model
     protected function incomeName(){
         if($this->income_type  == 'portfolio'){
             $portfolio = PortfolioAsset::find($this->portfolio_asset_id);
-            return $portfolio->name;
+            return $portfolio->name ?? '';
         }
     }
 }
