@@ -58,7 +58,7 @@ class IncomeAccount extends Model
         }else{
             return $value;
         }
-    }
+    } 
 
     protected function incomeName(){
         if($this->income_type  == 'portfolio'){

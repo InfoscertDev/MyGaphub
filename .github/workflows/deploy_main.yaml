@@ -17,8 +17,8 @@ jobs:
 
           script: |
             cd /var/www
-            cd mygaphub.com/web/appstaging/core
+            cd /mygaphub.com/web/appstaging/core
             git fetch --all
             git pull origin main
             echo 'Updates successfully pulled from MAIN branch'
-           
+
