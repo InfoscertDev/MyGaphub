@@ -12,7 +12,7 @@ class IncomeAccount extends Model
 
     // protected $fillable = [
     //     'amount', 'income_currency', 'income_name'
-    // ];  
+    // ];
 
     protected function getIncomeNameAttribute($value){
         return (($this->income_type == 'non_portfolio') ? $value : $this->incomeName()) ;
@@ -28,7 +28,7 @@ class IncomeAccount extends Model
                 $average = array_sum($non_portfolio->toArray()) / count($non_portfolio);
                 return round($average, 2);
             }else{
-                return round($value, 2);  
+                return round($value, 2);
             }
         }
     }
@@ -36,7 +36,7 @@ class IncomeAccount extends Model
     protected function getChannelAttribute($value){
         if($this->income_type  == 'portfolio'){
             $portfolio = PortfolioAsset::find($this->portfolio_asset_id);
-            return ucfirst($portfolio->asset_class); 
+            return ucfirst($portfolio->asset_class);
         }else{
             return $value;
         }
@@ -54,7 +54,7 @@ class IncomeAccount extends Model
     protected function getIncomeCurrencyAttribute($value){
         if($this->income_type == 'portfolio'){
             $portfolio = PortfolioAsset::find($this->portfolio_asset_id);
-            return $portfolio->asset_currency;
+            return ($portfolio) ? $portfolio->asset_currency : '$';
         }else{
             return $value;
         }
