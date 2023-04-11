@@ -21,12 +21,12 @@ class IncomeAccount extends Model
     protected function getAmountAttribute($value){
         if($this->income_type  == 'portfolio'){
             $portfolio = PortfolioAsset::find($this->portfolio_asset_id);
-            return round($portfolio->monthly_roi,2);
+            return ($portfolio) ? round($portfolio->monthly_roi,2) : 0;
         }else{
             $non_portfolio = NonPortfolioRecord::where('user_id', $this->user_id)->where('income_id', $this->id)->pluck('amount');
             if(count($non_portfolio)){
                 $average = array_sum($non_portfolio->toArray()) / count($non_portfolio);
-                return round($average, 2);
+                return round($average, 2) ?? 0;
             }else{
                 return round($value, 2);
             }
@@ -58,7 +58,7 @@ class IncomeAccount extends Model
         }else{
             return $value;
         }
-    } 
+    }
 
     protected function incomeName(){
         if($this->income_type  == 'portfolio'){
