@@ -54,7 +54,9 @@ class GapAccountCalculator
 
         foreach($cash as $money){
             if($convert){}
-            $current = GapExchangeHelper::convert_currency($user, $money->account_currency,$money->current, $money->automated);
+            $current = GapExchangeHelper::convert_currency($user,
+                            $money->account_currency,$money->current, $money->automated
+            );
             array_push($values,$current);
             // array_push($sum,$current);
         }
@@ -62,17 +64,6 @@ class GapAccountCalculator
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
         }
-        // foreach($seveng as $money){
-        //     array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
-        // }
-        // foreach($bespokes as $money){
-        //     if($money->bespoke_type == 'saveup'){
-        //         array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
-        //     }
-        // }
-        // foreach($cash as $money){
-        //     array_push($percentages, round(($money->current / ($sum ? $sum : 1)) * 100));
-        // }
         // Add Cash Labels
         foreach($cash as $money){
             array_push($labels, $money->account_name);
@@ -186,13 +177,15 @@ class GapAccountCalculator
         $liability = Liability::where('user_id', $user->id)->where('isArchive', 0)->get();
         $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->get();
         $cash = Cash::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $funds = PortfolioHelper::investmentFunds($user);
 
         $mort_act = GapAccountCalculator::calcMortgagesAccount($mortgages, $user);
         $lia_act= GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
         $equ_act = GapAccountCalculator::calcEquityAccount($equity);
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
 
-        $asset = $cash_act['sum'];
+        $asset = $cash_act['sum'] +  $funds['investment'];
+
         return [ 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'], 'equity' => $equ_act['sum'],
                     'home' => $equ_act['home'], 'asset' => $asset ];
     }
@@ -210,13 +203,14 @@ class GapAccountCalculator
 
     public static function calcNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
+
         $funds = PortfolioHelper::investmentFunds($user);
         $liability = (int)$networth['liability'];
         $mortgage = (int)$networth['mortgage'];
         $home = (int)$networth['home'];
-        $investment = $funds['investment'];
+        // $investment = $funds['investment'];
 
-        $asset =  (int)$networth['asset'] + $investment;
+        $asset =  (int)$networth['asset'];
         $equity = $home - $mortgage;
         $sum = ($asset)  - ($liability);
         // var_dump($equity);
@@ -524,7 +518,7 @@ class GapAccountCalculator
             'sum' => $sum,
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         if (isset($audit->wheel_point_at)) {
             $wheel = ($audit->wheel_point_at);
             // Confirm if last Account is not the same as the current account

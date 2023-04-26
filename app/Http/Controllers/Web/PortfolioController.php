@@ -193,8 +193,8 @@ class PortfolioController extends Controller
             'currency' => 'required',
             'asset_name' => 'required|max:50',
             'description' => 'required|max:350',
-            'asset_value' => 'required|integer',
-            'monthly_roi' => 'required|integer',
+            'asset_value' => 'required|numeric',
+            'monthly_roi' => 'required|numeric',
             'portfolio_type' => 'required|integer',
             'credit_value' => 'required|integer',
             'projected_value' => 'required|integer',
@@ -241,11 +241,12 @@ class PortfolioController extends Controller
 
         $this->validate($request, [
             'asset_name' => 'required|string',
-            'asset_value' => 'required|integer',
-            'income' => 'integer',
+            'asset_value' => 'required|numeric',
+            'income' => 'numeric',
             'portfolio_type' => 'required|integer',
             'automated_rate' => 'required'
         ]);
+
         $asset  = PortfolioAsset::where('user_id', $user->id)->where('id',$id)->first();
         if($asset){
             $asset->name = $request->asset_name;

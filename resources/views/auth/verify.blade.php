@@ -11,7 +11,7 @@
                             {{ __('A fresh verification link has been sent to your email address.') }}
                         </div>
                     @endif
-                     
+
                     <div class="">
                         <div class="confirm mb-2">
                             <i class="fa fa-check confirm-fa"></i>
@@ -21,9 +21,9 @@
                         <h3 class="mt-2 bold mx-2"><b>Thank you for your registration</b></h3>
                         <span class="line-step mx-auto" style="width:50%; left: -40px;"></span>
                         {{-- <span class="line-step2"></span> --}}
-                    </div>  
+                    </div>
                     <div class="text-center">
-                        {{ __('Please check your email to verify your account. ') }}
+                        {{ __('Please check your email (including your spam folder) to verify your account. ') }}
                         {{-- <p>Your 7G result will be waiting for you.</p> --}}
                         {{-- {{ __('Your 7G result will be waiting for you.') }} --}}
                         {{ __('If you did not receive the email') }}, <a href="{{ route('verification.resend') }}">{{ __('click here to request another') }}</a>.
