@@ -60,7 +60,7 @@
                             </h6>
                         </li>
                         <li class="list-group-item">
-                            <h6 class="text-muted">Spent last mouth
+                            <h6 class="text-muted">Spent last month
                                  <span class="float-right"><i class="fa fa-calendar"></i></span>
                             </h6>
                             <h6 class="">

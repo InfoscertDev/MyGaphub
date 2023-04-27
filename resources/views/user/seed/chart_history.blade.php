@@ -10,7 +10,6 @@
         // var labels = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
         // historicSeedBar
 
-
     </script>
      @include('user.seed.partials.history_barchart')
 @endsection
