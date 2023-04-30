@@ -8,15 +8,29 @@ use Illuminate\Support\Facades\Storage;
 
 class PortfolioAsset extends Model
 {
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'record',
+        'name',
+        'location',
+        'description',
+        'average_value',
+        'average_income',
+        'average_amount',
+        'monthly_roi',
+        'average_revenue',
+        'photo_url'
+    ];
 
     protected $appends = [
-        'record', 
+        'record',
         'average_income',
         'average_value',
         'average_amount',
         'average_revenue',
         'photo_url'
-    ]; 
+    ];
 
     public function getPortfolioTypeAttribute($value){
         $asset_type = GapAssetType::find($this->portfolio_type_id);
@@ -27,11 +41,11 @@ class PortfolioAsset extends Model
     }
 
     public function getPhotoUrlAttribute(){
-        //    return  url(Storage::url($this->photo)); 
+        //    return  url(Storage::url($this->photo));
         //    return  asset('/assets/'. $this->photo);
         return  asset('/assets/'. str_replace('public', 'storage', $this->photo));
-    } 
-    
+    }
+
     public function getDocument1Attribute($document1){
         if($document1){
             $file = explode("|", $document1);
@@ -93,12 +107,12 @@ class PortfolioAsset extends Model
         return $document8;
     }
 
-    public function getRecordAttribute(){   
+    public function getRecordAttribute(){
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)->orderBy('period', 'DESC')->first();
-        return ['expendirure'=> $asset->expenditure ?? 0, 'revenue'=> $asset->revenue ?? 0]; 
+        return ['expendirure'=> $asset->expenditure ?? 0, 'revenue'=> $asset->revenue ?? 0];
     }
 
-    public function getAverageIncomeAttribute(){   
+    public function getAverageIncomeAttribute(){
         $period = date('Y-m',strtotime($this->created_at));
        $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
 
@@ -112,10 +126,10 @@ class PortfolioAsset extends Model
         }else{
             $average_income = $this->monthly_roi;
         }
-        return $average_income;  
+        return $average_income;
     }
 
-    public function getMonthlyRoiAttribute($value){   
+    public function getMonthlyRoiAttribute($value){
        $period = date('Y-m',strtotime($this->created_at));
         $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
@@ -126,70 +140,69 @@ class PortfolioAsset extends Model
             $average_income= array_sum(array_column($asset->toArray(), 'net_income'));
             $average_income=  $average_income / count($asset->toArray());
         }else{
-            $average_income = $value; 
+            $average_income = $value;
         }
 
-        return $average_income; 
+        return $average_income;
     }
 
-    public function getAssetValueAttribute($value){   
+    public function getAssetValueAttribute($value){
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
                         ->orderBy('period', 'DESC')->first();
         $amount = (isset($asset->amount)) ?  $asset->amount: $value;
-        return $amount;  
+        return $amount;
     }
 
-    public function getAverageAmountAttribute($value){   
+    public function getAverageAmountAttribute($value){
         $period = date('Y-m',strtotime($this->created_at));
        $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
                         ->whereDate('period', '>=', $period)
                         ->orderBy('period', 'DESC')->limit(6)->get();
-        
+
         if(count($asset->toArray())){
             $average_value= array_sum(array_column($asset->toArray(), 'amount'));
             $average_value=  $average_value / count($asset->toArray());
         }else{
-            $average_value = $value; 
+            $average_value = $value;
         }
 
-        return $average_value; 
+        return $average_value;
     }
 
-    public function getAverageValueAttribute($value){   
+    public function getAverageValueAttribute($value){
         $period = date('Y-m',strtotime($this->created_at));
        $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
                         ->whereDate('period', '>=', $period)
                         ->orderBy('period', 'DESC')->limit(6)->get();
-        
+
         if(count($asset->toArray())){
             $average_value= array_sum(array_column($asset->toArray(), 'expenditure'));
             $average_value=  $average_value / count($asset->toArray());
         }else{
-            $average_value = $value; 
+            $average_value = $value;
         }
 
-        return $average_value; 
+        return $average_value;
     }
 
-    public function getAverageRevenueAttribute($value){   
+    public function getAverageRevenueAttribute($value){
         $period = date('Y-m',strtotime($this->created_at));
          $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
                         ->whereDate('period', '>=', $period)
                         ->orderBy('period', 'DESC')->limit(6)->get();
-                     
+
         if(count($asset->toArray())){
             $average_value= array_sum(array_column($asset->toArray(), 'revenue'));
             $average_value=  $average_value / count($asset->toArray());
         }else{
-            $average_value = $value; 
+            $average_value = $value;
         }
- 
-        return $average_value; 
+
+        return $average_value;
     }
 
-    
+
 }
- 

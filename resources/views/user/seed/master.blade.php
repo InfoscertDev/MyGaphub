@@ -72,9 +72,7 @@
             <script>
                 $(function() {  $('#chooseSeedMode').modal('show'); })
             </script>
-
         @endif
-
 
         @if(request()->input('spend'))
             <script>

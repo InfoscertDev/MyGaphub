@@ -126,9 +126,9 @@
             $('#viewTransactionsModal').modal('show');
 
             $.each(record_spents, function(key1, records){
-                let header =  $(`<div class="ml-3 mt-3"> 
+                let header =  $(`<div class="ml-3 mt-3">
                     ${(Object.keys(records)[0])}
-                        
+
                     </div>`);
                     // <span class="float-right mr-3"> ${currency}${(Object.values(records)[key1]) ? (Object.values(records)[key1].total_amount).toFixed(2) : 0.00 } </span>
                 // console.log(Object.values(records)[key1], header);
@@ -186,7 +186,6 @@
                 $('#update_record_recurring').attr('checked', record.recuring);
                 $('#editRecordDetailModal').modal('show');
                 $('#viewRecordDetailModal').modal('hide');
-               
             }
         }
     </script>

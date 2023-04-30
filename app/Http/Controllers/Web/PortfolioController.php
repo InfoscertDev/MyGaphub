@@ -247,10 +247,12 @@ class PortfolioController extends Controller
             'automated_rate' => 'required'
         ]);
 
+        info($id);
+        // $asset  = PortfolioAsset::where('user_id', $user->id)->where('id',$id)->firstOrFail();
+        $asset  = PortfolioAsset::findOrFail($id);
 
-        $asset  = PortfolioAsset::where('user_id', $user->id)->where('id',$id)->first();
-        info($asset);
         if($asset){
+            if($request->hasFile(['asset_document'])) PortfolioHelper::uploadPortfolioDocument($user,$asset, $request);
             $asset->name = $request->asset_name;
             $asset->location = $request->location;
             $asset->description = $request->description;
@@ -258,8 +260,7 @@ class PortfolioController extends Controller
             $asset->monthly_roi = $request->income;
             $asset->automated = $request->automated_rate;
             $asset->portfolio_type_id = $request->portfolio_type;
-            if($request->hasFile(['asset_document'])) PortfolioHelper::uploadPortfolioDocument($user,$asset, $request);
-            info($request->asset_value);
+
             $asset->save();
             return redirect()->back()->with(['success'=> 'Asset Updated successfully']);
         }else{
