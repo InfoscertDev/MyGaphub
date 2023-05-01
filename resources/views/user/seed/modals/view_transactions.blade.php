@@ -34,7 +34,7 @@
                 </div>
                 <div class="record_summary">
                     <div class="preview">
-                        <span class="float-right"><i class="fa fa-pencil mr-3 mt-3" onclick="handleUpdateRecord()"></i></span>
+                        <span class="float-right" id="edit_record"><i class="fa fa-pencil mr-3 mt-3" onclick="handleUpdateRecord()"></i></span>
                           <div class="ico bg-info">  </div>
                           <h5 class="pb-1" id="record_label"></h5>
                           <p>

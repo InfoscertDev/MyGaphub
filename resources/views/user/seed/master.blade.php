@@ -78,6 +78,7 @@
             <script>
                 $(function() {    handleRecordView(); })
 
+                console.log('Record Spend');
                 function handleRecordView(){
                     let id = "<?php  echo request()->input('dygvhsbjyfctguysbhdd')?>";
                     $('#viewRecordDetailModal').modal('show');
@@ -94,6 +95,9 @@
                             $('#record_note').text(record.note)
                             $('#spent_current_month').text(record.spent_current_month);
                             $('#spent_last_month').text(record.spent_last_month);
+                            $('#edit_record').hide();
+                            if(record.recuring){ $('#record_recursion').show();}
+                            else{ $('#record_recursion').hide(); }
                         },
                         error: function (request, status, error) {
                             // console.log(status, error)
