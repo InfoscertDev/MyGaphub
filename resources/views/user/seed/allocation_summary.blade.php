@@ -159,7 +159,7 @@
                 url: '/home/seed/record/'+id,
                 success: function(data, status){
                     record = data.data;
-                    console.log(record)
+                    // console.log(record)
                     $('.ico').text(record.label.charAt(0))
                     $('#record_label').text(record.label)
                     $('#record_amount').text((record.amount).toFixed(2))

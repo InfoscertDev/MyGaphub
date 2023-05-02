@@ -11,9 +11,13 @@ class RecordBudgetSpent extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'period',
-        'allocation_id', 'label',
-        'amount', 'note',
-        'date' , 'recuring'
+        'user_id',
+        'period',
+        'allocation_id',
+        'label',
+        'amount',
+        'note',
+        'date' ,
+        'recuring'
     ];
 }

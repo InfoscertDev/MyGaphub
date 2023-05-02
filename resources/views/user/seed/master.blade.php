@@ -77,8 +77,6 @@
         @if(request()->input('spend'))
             <script>
                 $(function() {    handleRecordView(); })
-
-                console.log('Record Spend');
                 function handleRecordView(){
                     let id = "<?php  echo request()->input('dygvhsbjyfctguysbhdd')?>";
                     $('#viewRecordDetailModal').modal('show');
@@ -88,6 +86,7 @@
                         url: '/home/seed/record/'+id,
                         success: function(data, status){
                             record = data.data;
+                            console.log('Record');
                             $('.ico').text(record.label.charAt(0))
                             $('#record_label').text(record.label)
                             $('#record_amount').text((record.amount).toFixed(2))

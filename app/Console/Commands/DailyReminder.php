@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Helper\IntegrationParties;
 use App\Mail\SevegValidate;
 use App\User;
+use App\Models\Asset\RecordBudgetSpent;
 use Illuminate\Console\Command;
 use App\Helper\AnalyticsClass;
 use Illuminate\Support\Facades\Mail;
@@ -43,6 +44,8 @@ class DailyReminder extends Command
      */
     public function handle()
     {
+       $this->recurringRecordSpend();
+
        $this->validateEmailReminder();
 
        $this->analyticsValidation();
@@ -73,6 +76,22 @@ class DailyReminder extends Command
                     Mail::to($user->email)->send(new SevegValidate($user));
                 }
             }
+        }
+    }
+
+    public function recurringRecordSpend(){
+        $todayDay = date('d');
+        $current_period = date('Y-m').'-01';
+        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+        $records = RecordBudgetSpent::whereDay('date', $todayDay)
+                    ->where('recuring', 1)->get()->toArray();
+
+
+        foreach($records as $spent){
+            $new_spent = (array) $spent; //json_decode(json_encode($spent), true);
+            $new_spent['date'] = date('Y-m-d');
+            $new_spent['period'] = $current_period;
+            RecordBudgetSpent::create($new_spent);
         }
     }
 }

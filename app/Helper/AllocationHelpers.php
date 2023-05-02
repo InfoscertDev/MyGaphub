@@ -85,7 +85,7 @@ class AllocationHelpers{
     }
 
     /**
-     * An averafe Seed: The is a verage moving value of allocated budget for the last 6 months
+     * An average Seed: The is a verage moving value of allocated budget for the last 6 months
     */
     public static function averageSeedDetail($user){
         $calculator = Calculator::where('user_id', $user->id)->first();
