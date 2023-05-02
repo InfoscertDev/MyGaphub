@@ -40,7 +40,7 @@
                                 Date:
                             </div>
                             <div class="col-sm-7">
-                                <input type="date"  name="date" id="date" max="{{ date('Y-m-d') }}" required class="bs-none input-money wd-f form-control b-rad-10">
+                                <input type="date"  name="date" id="date" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" required class="bs-none input-money wd-f form-control b-rad-10">
                             </div>
                         </div>
 

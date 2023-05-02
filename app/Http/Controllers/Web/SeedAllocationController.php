@@ -193,6 +193,8 @@ class SeedAllocationController extends Controller
       $request['seed_category'] = $request->category;
       $request['user_id'] = $user->id;
       $request['period'] =  date('Y-m').'-01';
+      if($request['recuring'] == 1) $request['date'] = $request->date;
+
 
       $budget_allocation =  SeedBudgetAllocation::create($request->all());
       return redirect()->route('seed.summary', $request->category)->with(['success' => 'Allocation has been created']);
@@ -277,10 +279,12 @@ class SeedAllocationController extends Controller
             'amount' => 'required|numeric|min:1',
           //   'date' => 'required|date'
         ]);
+
         $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
         $request['allocation_id'] = $request->allocation;
         $request['user_id'] = $user->id;
         $request['period'] =  date('Y-m').'-01';
+
         $record_spent =  RecordBudgetSpent::create($request->all());
 
         return redirect()->route('seed', ['spend' => 'w67tsedgfthudbyhbj','dygvhsbjyfctguysbhdd' => $record_spent->id])

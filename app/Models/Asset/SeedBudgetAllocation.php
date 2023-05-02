@@ -10,11 +10,14 @@ class SeedBudgetAllocation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'period',
-        'seed_category', 'label',
+        'user_id',
+        'period',
+        'seed_category',
+        'label',
         'amount', 'note',
         'expenditure',
-        'recuring'
+        'recuring',
+        'date'
     ];
 
 

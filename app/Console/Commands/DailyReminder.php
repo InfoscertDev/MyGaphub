@@ -83,6 +83,7 @@ class DailyReminder extends Command
         $todayDay = date('d');
         $current_period = date('Y-m').'-01';
         $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+        
         $records = RecordBudgetSpent::whereDay('date', $todayDay)
                     ->where('recuring', 1)->get()->toArray();
 
