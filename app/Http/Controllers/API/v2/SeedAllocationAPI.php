@@ -39,6 +39,7 @@ class SeedAllocationAPI extends Controller
         $request['seed_category'] = $request->category;
         $request['user_id'] = $user->id;
         $request['period'] =  date('Y-m').'-01';
+        if($request['recuring'] == 1) $request['date'] = $request->date;
         $budget_allocation =  SeedBudgetAllocation::create($request->all());
 
         return response()->json([
@@ -61,7 +62,7 @@ class SeedAllocationAPI extends Controller
             if($validator->fails()){
                 return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
             }
-
+ 
             // if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
             //     return response()->json(['status' => false,'message' => 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction'], 404);
             // }
@@ -163,11 +164,11 @@ class SeedAllocationAPI extends Controller
 
                 $amount = array_sum(array_column($spend->toArray(), 'amount')) ;
                 $record = array();
-                
+
                 foreach ($spend as $sp) {
                     $sp->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->where('label',$sp->label)->sum('amount');
                     $sp->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->where('label',$sp->label)->sum('amount');
-                } 
+                }
                 $record[$key]['total_amount'] = $amount;
                 $record[$key]['list'] = $spend;
                 $record[$key]['spent'] = compact('spent_current_month', 'spent_last_month');

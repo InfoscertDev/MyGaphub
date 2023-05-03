@@ -99,7 +99,7 @@
 
         function handleAllocationEdit(){
             if(seed){
-
+                console.log(seed.allocated.recuring);
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
 
                 $('.seed_category').html(seed.allocated.seed_category);

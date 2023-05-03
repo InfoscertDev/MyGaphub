@@ -128,7 +128,7 @@ class SeedAllocationController extends Controller
 
         if($category == 'expenditure'){
             foreach($budget_allocation as $allocation){
-                info($allocation);
+                // info($allocation);
                if($allocation->seed_category == 'expenditure'){
                     // if($allocation->expenditure == 'family'){
                     //     $label  = 'Home & Family';
@@ -202,18 +202,22 @@ class SeedAllocationController extends Controller
 
     public function updateCategoryAllocation(Request $request, $id){
         $user = $request->user();
-
         $month =  date('Y-m').'-01';
         $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        info($request->all());
+
         if($allocated){
             $this->validate($request,[
               'label' => 'required|between:3,50',
               'amount' => 'required|numeric|min:1',
+              'recuring' => 'nullable'
             ]);
 
             // if($validator->fails()){
             //   return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
             // }
+
+
 
             $current_seed = CalculatorClass::getCurrentSeed($user);
             $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
@@ -222,10 +226,11 @@ class SeedAllocationController extends Controller
             if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
                 return redirect()->back()->with('error', 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction');
             }
-          if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
-          $allocated->update($request->all());
 
-          return  redirect()->back()->with('success','Seed Allocation has been updated');
+            if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
+            $allocated->update($request->all());
+
+            return  redirect()->back()->with('success','Seed Allocation has been updated');
 
         }else{
           return redirect()->back()->with('error', 'Allocation not found', 404);
@@ -250,7 +255,8 @@ class SeedAllocationController extends Controller
         }
       }
 
-    public function showRecordSpend(Request $request, $id){
+
+      public function showRecordSpend(Request $request, $id){
         $user = $request->user();
         $month =  date('Y-m').'-01'; $cp = date('m')-1;
         $last_period =  date('Y-'). $cp .'-01';
@@ -301,6 +307,7 @@ class SeedAllocationController extends Controller
                 'amount' => 'required|numeric|min:1',
               //   'date' => 'required|date'
             ]);
+
 
             if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
 

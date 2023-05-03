@@ -9,7 +9,7 @@ use App\Asset\SeedBudget as Budget;
 
 class AllocationHelpers{
     // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
-    // LTER TABLE `seed_budget_allocations` ADD `date` DATE NULL DEFAULT NULL AFTER `recuring`;
+    // ALTER TABLE `seed_budget_allocations` ADD `date` DATE NULL DEFAULT NULL AFTER `recuring`;
 
     public static function monthlyRecurssionChecker($user){
         $current_period = date('Y-m').'-01';
