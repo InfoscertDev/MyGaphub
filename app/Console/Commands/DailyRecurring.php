@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 use App\User;
 use App\Models\Asset\RecordBudgetSpent;
 use App\Models\Asset\SeedBudgetAllocation;
-use Illuminate\Console\Command;
 
 
 class DailyRecurring extends Command
@@ -65,9 +64,7 @@ class DailyRecurring extends Command
         $allocations = SeedBudgetAllocation::whereDay('date', $todayDay)
                          ->where('recuring', 1)->get()->toArray();
 
-        foreach($allocations as $spent){
-            $request['allocation_id'] = $request->allocation;
-            $request['period'] =  date('Y-m').'-01';
+        foreach($allocations as $new_spent){
 
             $payload = [
                 'user_id' => $new_spent->user_id,
