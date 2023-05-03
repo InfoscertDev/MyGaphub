@@ -44,7 +44,7 @@ class DailyReminder extends Command
      */
     public function handle()
     {
-       $this->recurringRecordSpend();
+
 
        $this->validateEmailReminder();
 
@@ -79,20 +79,5 @@ class DailyReminder extends Command
         }
     }
 
-    public function recurringRecordSpend(){
-        $todayDay = date('d');
-        $current_period = date('Y-m').'-01';
-        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
-        
-        $records = RecordBudgetSpent::whereDay('date', $todayDay)
-                    ->where('recuring', 1)->get()->toArray();
 
-
-        foreach($records as $spent){
-            $new_spent = (array) $spent; //json_decode(json_encode($spent), true);
-            $new_spent['date'] = date('Y-m-d');
-            $new_spent['period'] = $current_period;
-            RecordBudgetSpent::create($new_spent);
-        }
-    }
 }

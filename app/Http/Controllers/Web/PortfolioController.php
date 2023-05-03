@@ -247,7 +247,7 @@ class PortfolioController extends Controller
             'automated_rate' => 'required'
         ]);
 
-        info($id);
+        // info($request->all());
         // $asset  = PortfolioAsset::where('user_id', $user->id)->where('id',$id)->firstOrFail();
         $asset  = PortfolioAsset::findOrFail($id);
 

@@ -204,7 +204,7 @@ class SeedAllocationController extends Controller
         $user = $request->user();
         $month =  date('Y-m').'-01';
         $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
-        info($request->all());
+        // info($request->all());
 
         if($allocated){
             $this->validate($request,[
