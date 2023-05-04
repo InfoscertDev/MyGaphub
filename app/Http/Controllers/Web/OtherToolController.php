@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserProfile as Profile;
 use App\Helper\HelperClass as Helper;
-use App\FinicialCalculator as Calculator;  
+use App\FinicialCalculator as Calculator;
 use App\Asset\GapCurrency;
 use App\Helper\GapExchangeHelper;
 use App\Http\Controllers\Controller;
@@ -21,7 +21,7 @@ class OtherToolController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -34,7 +34,7 @@ class OtherToolController extends Controller
         $welcome = true;
         return view('user.coming-soon', compact('welcome'));
     }
-    
+
     public function soon()
     {
         $welcome = true;
@@ -56,9 +56,9 @@ class OtherToolController extends Controller
     {
         return view('user.tools.feedback');
     }
-    
+
     public function compliance(){
-        
+
         return view('user.tools.compliance');
     }
 
@@ -69,7 +69,7 @@ class OtherToolController extends Controller
     public function support(){
         $page_title = "Quick Start Guide";
 
-        $gap_supports = [ 
+        $gap_supports = [
             ['title' => 'How to Register on GAPhub', 'id' => 'F09LFhTcXTM', 'video' => 'https://youtu.be/F09LFhTcXTM'],
             ['title' => 'How to validate 7G Assumptions', 'id' => 'UUhvK8xWl4g', 'video' => 'https://youtu.be/UUhvK8xWl4g'],
             ['title' => 'How to reserve an asset', 'id' => 'SJF_r22JWLg', 'video' => 'https://youtu.be/SJF_r22JWLg'],
@@ -87,45 +87,45 @@ class OtherToolController extends Controller
             ["id"=>"6","author_name"=>"Smith Daniel","author_details"=>"a:10:{s:17:\"author_image_path\";s:71:\"http:\/\/prismcheck.com\/releaseb\/wp-content\/uploads\/2020\/11\/Debt_Free.png\";s:15:\"author_position\";s:0:\"\";s:14:\"author_company\";s:4:\"ZOya\";s:18:\"author_company_url\";s:0:\"\";s:12:\"author_email\";s:0:\"\";s:18:\"author_rating_type\";i:0;s:27:\"author_featured_image_video\";s:5:\"image\";s:18:\"author_description\";s:54:\"Thanks to your efficient help and support my business.\";s:18:\"author_social_link\";i:0;s:12:\"publish_date\";s:10:\"2022-01-21\";}","date"=>"2022-01-21","testimonial_status"=>"approved"]
         ];
         $group_testimonial = array_chunk($testimonials, 3);
-        
+
         foreach($group_testimonial as $testimonial){
             foreach($testimonial as $row){
                 info($row['author_name']);
             }
         }
-        
+
         return view('user.support.index', compact("page_title", 'gap_supports'));
     }
 
     public function sendFeedback(Request $request)
-    { 
+    {
         $user = auth()->user();
         $this->validate($request, [
-            'subject' => 'required', 
+            'subject' => 'required',
             'message' => 'required|min:10|max:512'
         ]);
- 
+
         $request['user_id'] = $user->id;
-        $feedback = UserFeedback::create($request->all()); 
+        $feedback = UserFeedback::create($request->all());
         //  info($feedback); // admin@mygaphub.com dev.kabiruwahab@gmail.com
-        Mail::to('admin@mygaphub.com')->send(new MailUserFeedback($user, $feedback));
+        // Mail::to('admin@mygaphub.com')->send(new MailUserFeedback($user, $feedback));
         $msg = "Your Feedback has been submitted";
-        return redirect('/home')->with('success', $msg);
-    }  
- 
+        return redirect('/home/feedback')->with(['modal' => $msg]);
+    }
+
     public function profile()
     {
         $id = auth()->user()->id;
-        $user = User::find($id); 
+        $user = User::find($id);
         $profile = $user->profile;
-        
+
         if (!$profile) {
            $profile = new Profile();
            $profile->save();
            $user->profile_id  = $profile->id;
-           $user->save(); 
-        } 
-        
+           $user->save();
+        }
+
         $countries = Helper::countries();
         return view('user.tools.profile', compact('profile', 'user', 'countries'));
     }
@@ -133,7 +133,7 @@ class OtherToolController extends Controller
     public function picture(Request $request)
     {
         $id = auth()->user()->id;
-        $user = User::find($id)->profile; 
+        $user = User::find($id)->profile;
         $request->validate(['photo'=>'required']);
 
         if($request->hasFile('photo')){
@@ -142,9 +142,9 @@ class OtherToolController extends Controller
             $ext = $request->file('photo')->getClientOriginalExtension();
             $fileNameStore = sha1(time()). rand(100000, 999999) . '.'.$ext;
             $photo = $request->file('photo')->storeAs('public/user', $fileNameStore);
-        } 
+        }
         $user->image =  $photo;
-        $user->save(); 
+        $user->save();
         $msg = "Profile Picture has been updated";
         return redirect()->back()->with('success', $msg);
     }
@@ -153,14 +153,14 @@ class OtherToolController extends Controller
         $this->validate($request, [ 'avatar' => 'required' ]);
 
         $id = auth()->user()->id;
-        $user = User::find($id)->profile; 
+        $user = User::find($id)->profile;
 
         if($request->avatar  == "default_nabjna") { $user->image =  "public/avatar/default.png";}
         else if($request->avatar  == "avamale1_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Male 1.png";}
         else if($request->avatar  == "avafemale1_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Female 1.png";}
         else if($request->avatar  == "avamale2_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Male 2.png";}
         else if($request->avatar  == "avafemale2_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Female 2.png";}
-        
+
         else if($request->avatar  == "avamale3_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Male 3.png";}
         else if($request->avatar  == "avafemale3_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Female 3.png";}
         else if($request->avatar  == "avamale4_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Male 4.png";}
@@ -168,8 +168,8 @@ class OtherToolController extends Controller
 
         else if($request->avatar  == "avamale5_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Male 5.png";}
         else if($request->avatar  == "avafemale5_ienbabdhbs") { $user->image =  "public/avatar/Avatar_Female 5.png";}
-        
-        $user->save(); 
+
+        $user->save();
         $msg = "Profile Picture has been updated";
         return redirect()->back()->with('success', $msg);
 
@@ -179,22 +179,22 @@ class OtherToolController extends Controller
     {
         $max_year = date('Y-m-d', strtotime('-18 years'));
         $this->validate($request, [
-            'firstname' => 'required|min:3', 
-            'phone' => 'required|max:18', 
-            'surname' => 'required|min:3', 
-            'phone' => 'min:8|numeric', 
+            'firstname' => 'required|min:3',
+            'phone' => 'required|max:18',
+            'surname' => 'required|min:3',
+            'phone' => 'min:8|numeric',
             'date' => 'date|before:'.$max_year
-        ],[ 
+        ],[
             'date.before' => 'Input a correct date of Birth: GAPhub user must be at least 18 years of age.',
             'phone.numeric' => 'The phone number must be a valid number.'
         ]);
-  
+
         $id = auth()->user()->id;
-        $user = User::find($id); 
-        $profile = $user->profile; 
+        $user = User::find($id);
+        $profile = $user->profile;
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
-        $user->save();  
+        $user->save();
         $profile->dob_count = $profile->dob_count + 1;
         $profile->phone = $request->phone;
         $profile->date_of_birth = $request->date;
@@ -208,11 +208,11 @@ class OtherToolController extends Controller
     }
 
     public function changePassword(Request $request){
-        
+
         $this->validate($request, [
             'current_password' => 'required|string|min:8',
             'new_password' => 'required|string|min:8|confirmed'
-        ]); 
+        ]);
         $id = auth()->user()->id;
         $user = User::find($id);
         $isPass = Hash::check($request->current_password, $user->password);
@@ -220,7 +220,7 @@ class OtherToolController extends Controller
             $password = Hash::make($request->new_password);
             $user->password = $password;
             $user->save();
-            Auth::logout(); 
+            Auth::logout();
             return redirect('/login')->with(['success' => 'Your password has been updated. Please re-login']);
         } else {
             return  redirect()->back()->with(['error' => 'Current Password  does not match']);
@@ -243,23 +243,23 @@ class OtherToolController extends Controller
     public function updateExchange(Request $request){
         $user = auth()->user();
         // Log::info($request);
-        $this->validate($request, [ 
+        $this->validate($request, [
             'currency' => 'required',
             'rate' => 'required|numeric'
         ]);
-        
+
         $manual_currencies = GapCurrency::where('user_id', $user->id)->first();
         $manual_rates = json_decode($manual_currencies->currencies);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = $calculator->currency;
-        $bcurrency = explode(" ",$currency)[1]; 
+        $bcurrency = explode(" ",$currency)[1];
         foreach ($manual_rates as $key => &$rate) {
             if($key == $request->currency){
                 $manual_rates->$key = $request->rate;
-            }else{ 
+            }else{
                 $manual_rates->$key = $rate;
             }
-        } 
+        }
         $manual_currencies->base = $bcurrency;
         $manual_currencies->currencies = json_encode($manual_rates);
         $manual_currencies->save();
