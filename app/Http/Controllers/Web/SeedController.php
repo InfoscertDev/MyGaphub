@@ -240,18 +240,19 @@ class SeedController extends Controller
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
 
-        $values = array();
-        $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
+        // $values = array();
+        // $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
 
+        // $average =  AllocationHelpers::averageSeedExpenditure($user);
 
-        foreach($labels as $key => $label){
-            $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
-                                            ->where('expenditure',$label) ->sum('amount');
-            $labels[$key] = SeedController::filterExpenditure($label);
-            array_push($values, $amount);
-        }
+        // foreach($labels as $key => $label){
+        //     $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+        //                                     ->where('expenditure',$label) ->sum('amount');
+        //     $labels[$key] = SeedController::filterExpenditure($label);
+        //     array_push($values, $amount);
+        // }
 
-        $expenditure_detail = compact('labels','values') ;
+        $expenditure_detail =AllocationHelpers::averageSeedExpenditure($user);
         // info($expenditure_detail);
         return view('user.360.expenditure', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'backgrounds' ,'expenditure','expenditure_detail'));
     }

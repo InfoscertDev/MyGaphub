@@ -141,7 +141,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::post('/360/income/records/{id}', 'Web\IndependenceController@updateIncomeRecord')->name('360.update.income_record');
         // Portfolio
         Route::get('/portfolio', 'Web\PortfolioController@index')->name('portfolio');
-        Route::post('/portfolio/asset/', 'Web\PortfolioController@addPortfolioAsset')->name('portfolio.new_asset');
+        Route::post('/portfolio/asset', 'Web\PortfolioController@addPortfolioAsset')->name('portfolio.new_asset');
         Route::get('/portfolio/asset/{type}', 'Web\PortfolioController@portfolioAssetType')->name('portfolio.asset_type');
         Route::get('/portfolio/{braid}', 'Web\PortfolioController@braid')->name('portfolio.braid');
         Route::get('/portfolio/{braid}/{id}', 'Web\PortfolioController@braidInformation')->name('portfolio.braid.info');

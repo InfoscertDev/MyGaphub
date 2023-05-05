@@ -67,11 +67,11 @@ class PortfolioApi extends Controller
             'currency' => 'required',
             'asset_name' => 'required|max:50',
             'description' => 'required|max:350',
-            'asset_value' => 'required|integer',
-            'monthly_roi' => 'required|integer',
-            'credit_value' => 'required|integer',
-            'projected_value' => 'required|integer',
-            'portfolio_type' => 'required|integer',
+            'asset_value' => 'required|numeric',
+            'monthly_roi' => 'required|numeric',
+            'credit_value' => 'required|numeric',
+            'projected_value' => 'required|numeric',
+            'portfolio_type' => 'required|numeric',
             'asset_category' => 'required|in:existing,desired',
             'asset_class' => 'required|in:business,risk,intellectual,depreciating,appreciating'
         ],[

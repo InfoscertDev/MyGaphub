@@ -110,10 +110,87 @@ class AllocationHelpers{
             $historic_seed[$period] = AllocationHelpers::getSeedAverage($calculator,$p_seeds);
         }
 
-        $average_seed = AllocationHelpers::getSeedAverage($calculator,$seeds);
+        $average_seed = AllocationHelpers::getSeedAverage($calculator, $seeds);
         // info($average_seed);
 
         return compact('average_seed', 'historic_seed', 'periods');
+    }
+
+    public static function averageSeedExpenditure($user){
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $year = (int)date('Y') + 1;
+        $target = $year.'-01-01';
+        $current_period = strtotime(date('Y-m').'-01');
+        $from = date('Y-m-d' , strtotime("-7 months",  $current_period));
+        $to = date('Y-m-d' , strtotime("-1 months",  $current_period));
+        $seeds =  SeedBudgetAllocation::where('user_id', $user->id)
+                        ->where('seed_category', 'expenditure')
+                        ->whereBetween('period', [$from, $to])
+                        ->latest()->get()->toArray();
+
+        $total_seeds = SeedBudgetAllocation::where('user_id', $user->id)
+                    ->where('seed_category', 'expenditure')
+                    ->whereBetween('period', [$from, $to])
+                    ->groupBy('period')->count();
+
+        // info($total_seeds);
+
+        $values = array();
+        $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
+
+
+        $calculator_expenditure = [$calculator->mortgage, $calculator->mobility,
+                                    $calculator->expenses, $calculator->utility ,
+                                   $calculator->dept_repay];
+        $accommodation = array();
+        $transportation = array();
+        $family = array();
+        $utilities = array();
+        $debt_repayment = array();
+
+        foreach ($seeds as $seed) {
+            // info($seed);
+           if($seed['expenditure'] == 'accomodation') array_push($accomodation, $seed);
+           if($seed['expenditure'] == 'transportation') array_push($transportation, $seed);
+           if($seed['expenditure'] == 'family') array_push($family, $seed);
+           if($seed['expenditure'] == 'utilities') array_push($utilities, $seed);
+           if($seed['expenditure'] == 'debt_repayment') array_push($debt_repayment, $seed);
+        }
+
+        info(array_column($family, 'period'));
+        $accommodation = array_sum(array_column($accommodation, 'amount'));
+        $transportation = array_sum(array_column($transportation, 'amount'));
+        $family = array_sum(array_column($family, 'amount'));
+        $utilities = array_sum(array_column($utilities, 'amount'));
+        $debt_repayment = array_sum(array_column($debt_repayment, 'amount'));
+
+        // info([ $accommodation, $transportation, $family, $utilities, $debt_repayment]);
+
+        if(count($seeds) > 1){
+            // After 2 months
+           $values = [
+            $accommodation, $transportation, $family, $utilities, $debt_repayment
+           ];
+        }else{
+            // Before 2 months of  use
+            $values = [
+                $accommodation + $calculator_expenditure[0], $transportation  + $calculator_expenditure[1],
+                $family + $calculator_expenditure[2], $utilities +  $calculator_expenditure[3],
+                $debt_repayment +  $calculator_expenditure[4]
+            ];
+        }
+        return compact('labels', 'values');
+    }
+
+    private static function filterExpenditure($value){
+        if($value == 'family'){
+            $value = 'Home & Family';
+        }else if ($value == 'debt_repayment') {
+            $value = 'Debt Repayment';
+        }else if($value){
+           $value = ucfirst($value);
+        }
+        return $value;
     }
 
     private static function getSeedAverage($calculator,$seeds){

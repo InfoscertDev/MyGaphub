@@ -192,12 +192,12 @@ class PortfolioController extends Controller
         $request->validate([
             'currency' => 'required',
             'asset_name' => 'required|max:50',
-            'description' => 'required|max:350',
+            'description' => 'max:350',
             'asset_value' => 'required|numeric',
             'monthly_roi' => 'required|numeric',
+            'projected_value' => 'required|numeric',
+            'credit_value' => 'required|numeric',
             'portfolio_type' => 'required|integer',
-            'credit_value' => 'required|integer',
-            'projected_value' => 'required|integer',
             'ahbjjshbjsnmbnmsbxdnvsxbv' => 'required|in:existing,desired',
             'ajnsjxnjsnxbjnbajknsjnds' => 'required|in:business,risk,intellectual,depreciating,appreciating'
         ],[
