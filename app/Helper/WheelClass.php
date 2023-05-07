@@ -120,7 +120,7 @@ class WheelClass extends Controller
         $myaccount  = Philantrophy::where('user_id', $user->id)->first();
         $account_items = Grand::where('user_id', $user->id)->count();
         $account_detail = GapAccount::calcPhilantrophy($myaccount, $user);
-        GapAccount::saveUpdatedTiles($user, 'philantropy', $account_items, $account_detail['sum'] );
+        GapAccount::saveUpdatedTiles($user, 'philanthropy', $account_items, $account_detail['sum'] );
     }
 }
  

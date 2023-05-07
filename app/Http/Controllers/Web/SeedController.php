@@ -252,7 +252,7 @@ class SeedController extends Controller
         //     array_push($values, $amount);
         // }
 
-        $expenditure_detail =AllocationHelpers::averageSeedExpenditure($user);
+        $expenditure_detail = AllocationHelpers::averageSeedExpenditure($user);
         // info($expenditure_detail);
         return view('user.360.expenditure', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'backgrounds' ,'expenditure','expenditure_detail'));
     }
@@ -306,7 +306,7 @@ class SeedController extends Controller
         }
 
         // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
-        $philantrophy_detail = compact('labels','values') ;
+        $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);// compact('labels','values') ;
 
         return view('user.360.philantrophy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
     }
