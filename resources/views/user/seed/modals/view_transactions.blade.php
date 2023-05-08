@@ -133,7 +133,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="switch text-left">
-                                   <input class="" id="update_record_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="update_record_recurring"></label>
+                                   <input class="" id="update_record_recurring" name="record_spend_recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="update_record_recurring"></label>
                                 </div>
                             </div>
                         </div>

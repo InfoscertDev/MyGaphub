@@ -227,7 +227,7 @@ class SeedAllocationController extends Controller
                 return redirect()->back()->with('error', 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction');
             }
 
-            if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
+            $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
             $allocated->update($request->all());
 
             return  redirect()->back()->with('success','Seed Allocation has been updated');
@@ -304,12 +304,10 @@ class SeedAllocationController extends Controller
         if($record){
             $this->validate($request, [
                 'label' => 'required|between:3,50',
-                'amount' => 'required|numeric|min:1',
-              //   'date' => 'required|date'
+                'amount' => 'required|numeric|min:1'
             ]);
 
-
-            if($request->recuring)  $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
+            $request['recuring'] = ($request->record_spend_recuring == 'on') ? 1 : 0;
 
             $record->update($request->all());
 
