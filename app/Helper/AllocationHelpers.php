@@ -179,6 +179,7 @@ class AllocationHelpers{
            ];
         }else{
             // Before 2 months of  use
+            $total_seeds += 1;
             $values = [
                 ($accommodation + $calculator_expenditure[0]) / $total_seeds, ($transportation  + $calculator_expenditure[1]) / $total_seeds,
                 ($family + $calculator_expenditure[2]) / $total_seeds, ($utilities +  $calculator_expenditure[3]) / $total_seeds,
