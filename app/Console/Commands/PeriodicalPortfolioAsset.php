@@ -45,14 +45,14 @@ class PeriodicalPortfolioAsset extends Command
         $last_period =  date('Y-').$month.'-01';
 
         // Portfolio Cron
-        $gaphubers_portfoilo = PortfolioAsset::where('period', $last_period)
-                ->where('isArchive', 0)->get();
+        $gaphubers_portfoilo = PortfolioAsset::where('period', $current_period)
+                                     ->where('isArchive', 0)->get();
 
         foreach($gaphubers_portfoilo as $portfolio){
             $asset_records = new PortfoloAssetRecord();
             $asset_records->user_id = $portfolio->user_id;
             $asset_records->portfolio_asset_id = $portfolio->id;
-            $asset_records->period = $current_period;
+            $asset_records->period = $last_period;
             $asset_records->amount = $portfolio->asset_value;
             $asset_records->save();
         }
