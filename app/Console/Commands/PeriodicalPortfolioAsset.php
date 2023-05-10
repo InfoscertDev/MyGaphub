@@ -21,7 +21,7 @@ class PeriodicalPortfolioAsset extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command';
 
     /**
      * Create a new command instance.
@@ -43,31 +43,18 @@ class PeriodicalPortfolioAsset extends Command
         $month = date('m')-1;
         $current_period = date('Y-m').'-01';
         $last_period =  date('Y-').$month.'-01';
-        
-        // Budget Allocations
-        $allocations = SeedBudgetAllocation::where('period', $last_period)->where('status',1)
-                            ->where('recuring',1)->get()->toArray();
-
-        foreach ($allocations as $allocation) {
-            $newallocation = (array) $allocation;
-            $newallocation['period'] = $current_period;
-            SeedBudgetAllocation::create($newallocation);
-            echo('Allocation Created ...');
-        }
 
         // Portfolio Cron
         $gaphubers_portfoilo = PortfolioAsset::where('period', $last_period)
                 ->where('isArchive', 0)->get();
- 
+
         foreach($gaphubers_portfoilo as $portfolio){
-            $asset_records = new PortfoloAssetRecord(); 
+            $asset_records = new PortfoloAssetRecord();
             $asset_records->user_id = $portfolio->user_id;
             $asset_records->portfolio_asset_id = $portfolio->id;
-            $asset_records->period = $current_period; 
+            $asset_records->period = $current_period;
             $asset_records->amount = $portfolio->asset_value;
-            $asset_records->save(); 
+            $asset_records->save();
         }
-
-
-    } 
+    }
 }

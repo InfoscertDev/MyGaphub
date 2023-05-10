@@ -44,8 +44,6 @@ class DailyReminder extends Command
      */
     public function handle()
     {
-
-
        $this->validateEmailReminder();
 
        $this->analyticsValidation();
