@@ -61,9 +61,9 @@ class SeedAllocationAPI extends Controller
 
         //   info($request->recurring);
 
-            if($validator->fails()){
-                return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-            }
+        if($validator->fails()){
+            return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+        }
 
         // if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
         //     return response()->json(['status' => false,'message' => 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction'], 404);
@@ -155,9 +155,9 @@ class SeedAllocationAPI extends Controller
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
             $summary = AllocationHelpers::allocationSummay($allocated, $spents);
             $spents = RecordBudgetSpent::whereAllocationId($id)
-            ->get()->groupBy(function($item) {
-                return $item->date;
-            });
+                                        ->get()->groupBy(function($item) {
+                                            return $item->date;
+                                        });
             $record_spents = array();
 
             foreach ($spents as $key => $spend) {
