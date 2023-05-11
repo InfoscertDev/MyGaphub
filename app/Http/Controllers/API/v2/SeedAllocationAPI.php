@@ -59,7 +59,7 @@ class SeedAllocationAPI extends Controller
             'amount' => 'required|numeric|min:10',
           ]);
 
-          info($request->recurring);
+        //   info($request->recurring);
 
             if($validator->fails()){
                 return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);

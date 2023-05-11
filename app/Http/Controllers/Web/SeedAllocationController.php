@@ -307,10 +307,13 @@ class SeedAllocationController extends Controller
                 'amount' => 'required|numeric|min:1'
             ]);
 
+
             $request['recuring'] = ($request->record_spend_recuring == 'on') ? 1 : 0;
+
 
             $record->update($request->all());
 
+            // info($record);
             return redirect()->back()->with('success','Alllocation Record has been updated');
         }else{
             return  redirect()->back()->with('error', 'Allocation not found');
