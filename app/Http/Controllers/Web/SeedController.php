@@ -129,9 +129,10 @@ class SeedController extends Controller
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::averageSeedDetail($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $average_detail =AllocationHelpers::averageSeedDetail($user)['average_seed'];
-      $historic_seed =AllocationHelpers::averageSeedDetail($user)['historic_seed'];
-      $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
+      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+      $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
+    //   $historic_seed = array_reverse($historic_seed);
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
       return view('user.seed.history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
@@ -179,9 +180,9 @@ class SeedController extends Controller
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
 
-      $average_detail =AllocationHelpers::averageSeedDetail($user)['average_seed'];
-      $historic_seed =AllocationHelpers::averageSeedDetail($user)['historic_seed'];
-      $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
+      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+      $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
       return view('user.seed.chart_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail','average_detail', 'historic_seed','periods'

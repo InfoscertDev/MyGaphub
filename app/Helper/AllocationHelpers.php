@@ -100,7 +100,7 @@ class AllocationHelpers{
         // Load the last 6 months without current month and next year
         $seeds =  SeedBudgetAllocation::where('user_id', $user->id)
                         ->whereBetween('period', [$from, $to])
-                        ->latest()->get();
+                        ->orderBy('period', 'ASC')->get();
 
         $total_seeds = Budget::where('user_id', $user->id)
                         ->whereBetween('period', [$from, $to])

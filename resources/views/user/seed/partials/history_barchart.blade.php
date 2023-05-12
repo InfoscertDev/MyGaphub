@@ -17,7 +17,7 @@
             const element = data[key];
             let period = new Date(key).toLocaleString('en-us', { month: 'short' });
             labels.push(period) ;
-            console.log(element);
+            // console.log(element);
 
             savings.push( element.table.savings);
             education.push(+element.table.education);
@@ -27,7 +27,7 @@
     }
 
 
-    console.log(savings, education, expenditure);
+    // console.log(savings, education, expenditure);
 
     if (chart) {
         chart.getContext('2d');

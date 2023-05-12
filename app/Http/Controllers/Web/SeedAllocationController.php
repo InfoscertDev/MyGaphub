@@ -56,7 +56,7 @@ class SeedAllocationController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $data,
-                'message' => 'Alllocation Summary'
+                'message' => 'Allocation Summary'
             ], 200);
       }else{
         return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
@@ -269,7 +269,7 @@ class SeedAllocationController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $record,
-                'message' => 'Alllocation Record'
+                'message' => 'Allocation Record'
               ]);
         }else{
             return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
@@ -314,7 +314,7 @@ class SeedAllocationController extends Controller
             $record->update($request->all());
 
             // info($record);
-            return redirect()->back()->with('success','Alllocation Record has been updated');
+            return redirect()->back()->with('success','Allocation Record has been updated');
         }else{
             return  redirect()->back()->with('error', 'Allocation not found');
         }

@@ -182,7 +182,7 @@ class SeedAllocationAPI extends Controller
             return response()->json([
               'status' => true,
               'data' => $data,
-              'message' => 'Alllocation Summary'
+              'message' => 'Allocation Summary'
             ]);
         }else{
           return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
@@ -225,7 +225,6 @@ class SeedAllocationAPI extends Controller
                 'amount' => 'required|numeric|min:0'
             ]);
 
-
             if($validator->fails()){
                 return response()->json([ 'status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
@@ -235,7 +234,7 @@ class SeedAllocationAPI extends Controller
             return response()->json([
                 'status' => true,
                 'data' => $record,
-                'message' => 'Alllocation Record has been updated'
+                'message' => 'Allocation Record has been updated'
               ]);
         }else{
             return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
