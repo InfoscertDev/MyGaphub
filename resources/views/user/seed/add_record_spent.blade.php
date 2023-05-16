@@ -30,7 +30,7 @@
                             <div class="col-sm-7">
                                 <div class="price-wrap d-flex ">
                                     <label for="" class="price-currency mt-2">{{ $currency }}</label>
-                                    <input type="number" onfocus="focalPoint(this)"  name="amount" id="amount" required  min="0" value="0"  class="bs-none input-money wd-f form-control b-rad-10">
+                                    <input type="number" onfocus="focalPoint(this)"  name="amount" id="amount" required  min="0" value="0"  step="0.01"  class="bs-none input-money wd-f form-control b-rad-10">
                                 </div>
                             </div>
                         </div>
