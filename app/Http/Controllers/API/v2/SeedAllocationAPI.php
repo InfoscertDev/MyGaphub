@@ -240,4 +240,16 @@ class SeedAllocationAPI extends Controller
             return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
         }
     }
+
+    public function deleteRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        $spent = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($spent){
+            $spent->delete();
+            return response()->json(['status' => true ,'message' =>'Record Spent has been deleted']);
+        }else{
+            return response()->json(['status' => false , 'message' => 'Record Spent not found' ]);
+        }
+    }
 }

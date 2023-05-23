@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::delete('/seed/store/allocation/{id}', 'Web\SeedAllocationController@deleteAllocation')->name('seed.delete.allocation');
         Route::post('/seed/record/spent', 'Web\SeedAllocationController@storeRecordSpent')->name('seed.add.record_spent');
         Route::post('/seed/record/spent/{id}', 'Web\SeedAllocationController@updateRecordSpend')->name('seed.update.record_spent');
+        Route::delete('/seed/record/spent/{id}', 'Web\SeedAllocationController@deleteRecordSpend')->name('seed.delete.record_spent');
         // SevenG
         Route::get('/7g', 'Web\SevenGSnapshotController@index')->name('7g');
         Route::get('/7g/edit', 'Web\SevenGSnapshotController@create')->name('7g.editall');

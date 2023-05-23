@@ -283,7 +283,7 @@ class SeedAllocationController extends Controller
             'allocation' => 'required|exists:seed_budget_allocations,id',
             'label' => 'required|between:3,50',
             'amount' => 'required|numeric|min:1',
-          //   'date' => 'required|date'
+            'date' => 'required|date'
         ]);
 
         $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
@@ -307,16 +307,26 @@ class SeedAllocationController extends Controller
                 'amount' => 'required|numeric|min:1'
             ]);
 
-
             $request['recuring'] = ($request->record_spend_recuring == 'on') ? 1 : 0;
-
 
             $record->update($request->all());
 
-            // info($record);
             return redirect()->back()->with('success','Allocation Record has been updated');
         }else{
             return  redirect()->back()->with('error', 'Allocation not found');
+        }
+    }
+
+    public function deleteRecordSpend(Request $request, $id){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        info([$month, $id]);
+        $spent = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        if($spent){
+            $spent->delete();
+            return redirect()->back()->with('success','Record Spent has been deleted');
+        }else{
+            return redirect()->back()->with('error', 'Record Spent not found', 404);
         }
     }
 }

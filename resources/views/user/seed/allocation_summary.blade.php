@@ -74,7 +74,9 @@
 
         function handleAllocationView(e){
             id = e.dataset.allocation;
-            $('#deleteForm').attr('action', url+'/'+id)
+
+            $('#deleteForm').attr('action', url+'/'+id);
+
             $.ajax({
                 type: 'GET',
                 url: '/home/seed/allocate/'+id,
@@ -99,7 +101,6 @@
 
         function handleAllocationEdit(){
             if(seed){
-                console.log(seed.allocated.recuring);
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
 
                 $('.seed_category').html(seed.allocated.seed_category);
@@ -128,8 +129,8 @@
             $.each(record_spents, function(key1, records){
                 let header =  $(`<div class="ml-3 mt-3">
                     ${(Object.keys(records)[0])}
-
-                    </div>`);
+                     </div>`
+                );
                     // <span class="float-right mr-3"> ${currency}${(Object.values(records)[key1]) ? (Object.values(records)[key1].total_amount).toFixed(2) : 0.00 } </span>
                 // console.log(Object.values(records)[key1], header);
 
@@ -159,7 +160,7 @@
                 url: '/home/seed/record/'+id,
                 success: function(data, status){
                     record = data.data;
-
+                    $('#deleteRecordForm').attr('action', record_url+'/'+record.id)
                     $('.ico').text(record.label.charAt(0))
                     $('#record_label').text(record.label)
                     $('#record_amount').text((record.amount).toFixed(2))

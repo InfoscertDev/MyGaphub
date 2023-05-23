@@ -34,7 +34,10 @@
                 </div>
                 <div class="record_summary">
                     <div class="preview">
-                        <span class="float-right" id="edit_record"><i class="fa fa-pencil mr-3 mt-3" onclick="handleUpdateRecord()"></i></span>
+                        <div class="float-right">
+                            <span class="" id="edit_record"><i class="fa fa-pencil mr-3 mt-3" onclick="handleUpdateRecord()"></i></span>
+                            <span class="mr-2"> <i class="hand fs-18 fa fa-trash" onclick="$('#confirmDeleteRecordSpent').modal('show')"></i> </span>
+                        </div>
                           <div class="ico bg-info">  </div>
                           <h5 class="pb-1" id="record_label"></h5>
                           <p>
@@ -148,6 +151,37 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+
+<!--  -->
+<div class="modal fade" id="confirmDeleteRecordSpent" tabindex="-1" role="dialog" aria-labelledby="confirmKpi" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Confirm Delete Account</h5>
+                <button type="button" class="close" onclick="$('#confirmDeleteRecordSpent').modal('hide');"  aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center">Are you sure you want to delete this record spent?</h5>
+            </div>
+
+            <form id="deleteRecordForm" action="{{ route('seed.delete.record_spent', 3) }}" method="post">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-footer justify-content-center">
+                    <div class="text-left">
+                        <button type="submit" id="confirmAccountRemove"  class="btn btn-pry px-3 mr-3">Yes</button>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" onclick="$('#confirmDeleteRecordSpent').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
