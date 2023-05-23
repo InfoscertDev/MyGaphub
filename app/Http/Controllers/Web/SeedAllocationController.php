@@ -242,13 +242,14 @@ class SeedAllocationController extends Controller
         $month =  date('Y-m').'-01';
         $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocation){
-            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-            if(count($record_spents) == 0){
-                $allocation->delete();
-                return redirect()->back()->with('success','Allocation has been deleted');
-            }else{
-                return redirect()->back()->with('error', 'Allocation cannot be deleted');
-            }
+            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
+            
+            $allocation->delete();
+            return redirect()->back()->with('success','Allocation has been deleted');
+            // if(count($record_spents) == 0){
+            // }else{
+            //     return redirect()->back()->with('error', 'Allocation cannot be deleted');
+            // }
 
         }else{
             return redirect()->back()->with('error', 'Allocation not found', 404);
@@ -320,7 +321,7 @@ class SeedAllocationController extends Controller
     public function deleteRecordSpend(Request $request, $id){
         $user = $request->user();
         $month =  date('Y-m').'-01';
-        info([$month, $id]);
+        // info([$month, $id]);
         $spent = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
         if($spent){
             $spent->delete();

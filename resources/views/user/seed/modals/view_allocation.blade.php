@@ -43,7 +43,7 @@
                             Balance:
                         </div>
                         <div class="col-sm-6">
-                                {{ $currency }}<span class="allocation_balance"></span>
+                                {{ $currency }} <span class="allocation_balance"></span>
                         </div>
                     </div>
                     <hr>
@@ -75,7 +75,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <h5 class="text-center">Are you sure you want to delete this allocation?</h5>
+                <div class="text-center my-3 mx-2">
+                    <h5 >Are you sure you want to delete this allocation?</h5>
+                    <h6 classs=""> All related record spent will be deleted</h6>
+                </div>
             </div>
 
             <form id="deleteForm" action="{{ route('seed.delete.allocation', 3) }}" method="post">

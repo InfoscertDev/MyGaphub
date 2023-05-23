@@ -83,16 +83,16 @@ class SeedAllocationAPI extends Controller
         $month =  date('Y-m').'-01';
         $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
         if($allocation){
-            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-            if(count($record_spents) == 0){
-                $allocation->delete();
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Allocation has been deleted'
-                ], 201);
-            }else{
-                return response()->json([ 'status' => false, 'message' => 'Allocation cannot be deleted' ], 400);
-            }
+            $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
+            $allocation->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Allocation has been deleted'
+            ], 201);
+            // if(count($record_spents) == 0){
+            // }else{
+            //     return response()->json([ 'status' => false, 'message' => 'Allocation cannot be deleted' ], 400);
+            // }
 
         }else{
             return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
