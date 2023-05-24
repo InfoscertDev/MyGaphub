@@ -36,7 +36,7 @@
                     <div class="preview">
                         <div class="float-right">
                             <span class="" id="edit_record"><i class="fa fa-pencil mr-3 mt-3" onclick="handleUpdateRecord()"></i></span>
-                            <span class="mr-2"> <i class="hand fs-18 fa fa-trash" onclick="$('#confirmDeleteRecordSpent').modal('show')"></i> </span>
+                            <span class="mr-2" id="delete_record"> <i class="hand fs-18 fa fa-trash" onclick="$('#confirmDeleteRecordSpent').modal('show')"></i> </span>
                         </div>
                           <div class="ico bg-info">  </div>
                           <h5 class="pb-1" id="record_label"></h5>

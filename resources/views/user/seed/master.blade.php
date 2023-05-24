@@ -86,7 +86,6 @@
                         url: '/home/seed/record/'+id,
                         success: function(data, status){
                             record = data.data;
-                            console.log('Record');
                             $('.ico').text(record.label.charAt(0))
                             $('#record_label').text(record.label)
                             $('#record_amount').text((record.amount).toFixed(2))
@@ -95,6 +94,7 @@
                             $('#spent_current_month').text(record.spent_current_month);
                             $('#spent_last_month').text(record.spent_last_month);
                             $('#edit_record').hide();
+                            $('#delete_record').hide();
                             if(record.recuring){ $('#record_recursion').show();}
                             else{ $('#record_recursion').hide(); }
                         },
