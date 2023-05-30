@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <div class="price-wrap">
                             <label for="" class="price-currency">{{ $symbol }}</label>
-                            <input type="number"  min="0" {{ ($grand->main) ? 'disabled': '' }} onfocus="focalPoint(this)" value="{{$grand->target}}"  class="" name="target" id="target" required>
+                            <input type="number"  min="0" {{ ($grand->main) ? '' : '' }} onfocus="focalPoint(this)" value="{{$grand->target}}"  class="" name="target" id="target" required>
                         </div> 
                     </div>
                 </li>
