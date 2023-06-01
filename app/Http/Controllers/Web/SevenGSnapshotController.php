@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 
 use App\FinicialCalculator as Calculator;
-use App\FinicialQuestion as Question; 
+use App\FinicialQuestion as Question;
 
 use App\SevenG\AlphaFin as Alpha;
 use App\SevenG\BetaFin as Beta;
@@ -14,12 +14,12 @@ use App\SevenG\DeptFin as Dept;
 use App\SevenG\EducationFin as Education;
 use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
- 
+
 use App\Helper\CalculatorClass as Fin;
 use App\Helper\GapExchangeHelper;
 use App\Helper\HelperClass;
 use App\Helper\AnalyticsClass;
-use App\SevenG\BespokeKPI; 
+use App\SevenG\BespokeKPI;
 
 use App\Helper\WheelClass as Wheel;
 use App\Http\Controllers\Controller;
@@ -31,16 +31,16 @@ use Illuminate\Support\Facades\Mail;
 
 
 class SevenGSnapshotController extends Controller
-{ 
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    { 
+    {
         // Variable
-        $user = auth()->user(); 
+        $user = auth()->user();
 
         // Mail::to('dev.kabiruwahab@gmail.com')->send(new SevegValidate($user));
         AnalyticsClass::initSevenG($user);
@@ -58,57 +58,57 @@ class SevenGSnapshotController extends Controller
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
-       
-        // info($calculator); 
+
+        // info($calculator);
 
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
-                    ,'step3'=>$credit->main,'step2'=> $beta->main, 'step1'=> $alpha->main ]; 
+                    ,'step3'=>$credit->main,'step2'=> $beta->main, 'step1'=> $alpha->main ];
         $isValid = AnalyticsClass::isSevenGVal($user);
 
         if(!$alpha->main){
-            $alpha->current = $fin['saving']; 
-         } 
-       
-        // Load Page 
+            $alpha->current = $fin['saving'];
+         }
+
+        // Load Page
         if ($fin['saving'] == 0 && $fin['portfolio'] == 0 && $fin['cost'] == 0) {
             $currencies = HelperClass::popularCurrenciens();
             $currency = explode(" ", $calculator->currency)[0];
             return view('guest.calculator', compact('currencies', 'user', 'calculator', 'currency'));
         }else if (!$questions->step1 || !$questions->step2 || !$questions->step3 || !$questions->step4) {
             return view('auth.registerquest');
-        }else{ 
+        }else{
             AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
             $saveup = 0; $debt= 0;
             $total_bespoke = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->count();
             $user_bespokes = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->latest()->limit(7)->get();
             $wheel_bespoke = GapExchangeHelper::bespokeInWheel($user, $total_bespoke);
-            foreach($wheel_bespoke as $bespoke){ 
+            foreach($wheel_bespoke as $bespoke){
                 if(count($user_bespokes) < 7){
                     $user_bespokes->push($bespoke);
-                } 
+                }
             }
             $rand = rand(100, 9999);
-            foreach($user_bespokes as $bespoke){ 
+            foreach($user_bespokes as $bespoke){
                 if($bespoke->bespoke_type == 'saveup'){
                     $bespoke->kpi = "$saveup-$bespoke->id-$rand";
                     $saveup++;
                 }
-                if($bespoke->bespoke_type == 'dept'){ 
+                if($bespoke->bespoke_type == 'dept'){
                     $bespoke->kpi = "$debt-$bespoke->id-$rand";
-                    $debt++; 
+                    $debt++;
                 }
-            } 
+            }
 
             $total_bespoke = count($user_bespokes);
             $bespokes = AnalyticsClass::valBespoke($user_bespokes);
-            
+
             $bespoke_labels = []; $bespoke_values = [];
             $bespoke_bg = [];
-            foreach ($bespokes as $bespoke) { 
+            foreach ($bespokes as $bespoke) {
                 array_push($bespoke_labels, $bespoke['name']);
                 array_push($bespoke_values, $bespoke['value']);
                 array_push($bespoke_bg, $bespoke['bg']);
-            } 
+            }
 
             $seveng = AnalyticsClass::valSevenG($user);
             $steps = []; $backgrounds = [];
@@ -117,11 +117,11 @@ class SevenGSnapshotController extends Controller
                 $i = (int)$key + (int)1;
                 if($mains[$key] == 1){
                     $step = $seveng[$key];
-                    $val = 1; 
-                }else{ 
+                    $val = 1;
+                }else{
                     $step = $quest[$key];
-                    $val = 0; 
-                }  
+                    $val = 0;
+                }
                 $bg = ($val)  ? HelperClass::numPercentageColor($step) : '#494949';
                 array_push($steps, $step);
                 array_push($backgrounds, $bg);
@@ -131,8 +131,8 @@ class SevenGSnapshotController extends Controller
             $symbol = explode(' ', $calculator->currency)[0];
             $page_title = 'Performance Indicators Chart';
             $support = true;
- 
-            return view('user.7g.index', compact('steps', 'backgrounds', 'alpha','beta','credit','dept','education', 
+
+            return view('user.7g.index', compact('steps', 'backgrounds', 'alpha','beta','credit','dept','education',
                             'freedom','grand','symbol', 'comments', 'page_title', 'support','isValid', 'user_bespokes',
                         'bespoke_labels', 'bespoke_values', 'bespoke_bg', 'total_bespoke'));//->with($data);
         }
@@ -145,32 +145,32 @@ class SevenGSnapshotController extends Controller
         $total_bespoke = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->count();
         $user_bespokes = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->latest()->limit(7)->get();
         $wheel_bespoke = GapExchangeHelper::bespokeInWheel($user, $total_bespoke);
-        foreach($wheel_bespoke as $bespoke){ 
+        foreach($wheel_bespoke as $bespoke){
             if(count($user_bespokes) < 7){
                 $user_bespokes->push($bespoke);
-            } 
+            }
         }
         $rand = rand(100, 9999);
-        foreach($user_bespokes as $bespoke){ 
+        foreach($user_bespokes as $bespoke){
             if($bespoke->bespoke_type == 'saveup'){
                 $bespoke->kpi = "$saveup-$bespoke->id-$rand";
                 $saveup++;
             }
-            if($bespoke->bespoke_type == 'dept'){ 
+            if($bespoke->bespoke_type == 'dept'){
                 $bespoke->kpi = "$debt-$bespoke->id-$rand";
-                $debt++; 
+                $debt++;
             }
-        }  
+        }
 
         $total_bespoke = count($user_bespokes);
-        
+
         $bespokes = AnalyticsClass::valBespoke($user_bespokes);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $symbol = explode(' ', $calculator->currency)[0];
 
         $bespoke_labels = [];$bespoke_values = [];
-        $bespoke_bg = []; 
-        foreach ($bespokes as $bespoke) { 
+        $bespoke_bg = [];
+        foreach ($bespokes as $bespoke) {
             array_push($bespoke_labels, $bespoke['name']);
             array_push($bespoke_values, $bespoke['value']);
             array_push($bespoke_bg, $bespoke['bg']);
@@ -185,7 +185,7 @@ class SevenGSnapshotController extends Controller
         $user =  auth()->user();
         $calculator = Calculator::where('user_id', $user->id )->first();
         $fin =  Fin::finicial($user);
-        
+
         $symbol = explode(' ', $calculator->currency)[0];
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
@@ -196,21 +196,21 @@ class SevenGSnapshotController extends Controller
         $grand = Grand::where('user_id', $user->id)->first();
 
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
-            ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ]; 
+            ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ];
         $isValid = AnalyticsClass::isSevenGVal($user);
         if(!$grand->main){
-            $grand->target = $fin['cost']; 
-        }   
+            $grand->target = $fin['cost'];
+        }
         AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
         $stepBack = AnalyticsClass::stepBack($user, $mains);
-        $steps = $stepBack['steps']; 
-        $backgrounds = $stepBack['backgrounds'];   
+        $steps = $stepBack['steps'];
+        $backgrounds = $stepBack['backgrounds'];
         $comments = HelperClass::comments();
- 
-        $data = compact('alpha','beta','credit','dept','education', 'freedom', 
+
+        $data = compact('alpha','beta','credit','dept','education', 'freedom',
                         'grand','symbol', 'steps', 'backgrounds', 'comments',
                         'isValid');
-        
+
         return view('user.7g.editall')->with($data);
     }
 
@@ -222,7 +222,7 @@ class SevenGSnapshotController extends Controller
      */
     public function store(Request $request)
     {
-        $user =  auth()->user();  
+        $user =  auth()->user();
         $this->validate($request, [ 'seveng' => 'required']);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $fin =  Fin::finicial($user);
@@ -245,11 +245,11 @@ class SevenGSnapshotController extends Controller
             $alpha->target = $request->target;
             $alpha->strategy = $request->strategy;
             // $alpha->baseline = $request->baseline;
-            $alpha->save(); 
+            $alpha->save();
             $calculator->extra_save = $request->current;
             $calculator->save();
             Wheel::updateCashTile($user);
-            return redirect()->back(); 
+            return redirect()->back();
         }
         if($request->seveng == "bjhz9qnbxb6zdjh2uxajhhvsb"){
             if($request->personal_val && $request->personal_val == 'iauhuiahjnjaknijaiiunaiujs'){
@@ -260,13 +260,13 @@ class SevenGSnapshotController extends Controller
             }
             if($request->purchase){
                 $beta = Beta::where('user_id', $user->id)->first();
-                $beta->main = 1; 
+                $beta->main = 1;
                 $beta->is_purchased = 1;
                 $beta->save();
                 Wheel::updateCashTile($user);
                 return redirect()->back();
             }else{
-                $this->validate($request, [ 
+                $this->validate($request, [
                     'current' => 'required|numeric',
                     'target' => 'required|numeric',
                 ]);
@@ -291,9 +291,9 @@ class SevenGSnapshotController extends Controller
             if($request->unsecured){
                 $credit = Credit::where('user_id', $user->id)->first();
                 $credit->current = 0;
-                $credit->baseline = 0; 
-                $credit->main = 1; 
-                $credit->save(); 
+                $credit->baseline = 0;
+                $credit->main = 1;
+                $credit->save();
                 $audit = UserAudit::where('user_id', $user->id)->first();
                 $audit->is_allocated = 1;
                 $audit->save();
@@ -367,16 +367,16 @@ class SevenGSnapshotController extends Controller
             }
             $this->validate($request, [
                 'current' => 'required|numeric',
-                // 'target' => 'required|numeric', 
+                // 'target' => 'required|numeric',
                 // 'current' => 'required|numeric',
             ]);
             $freedom = Freedom::where('user_id', $user->id)->first();
             $freedom->main = 1;
             // if(!$freedom->main){}
             $calculator->other_income = $request->current;
-            $freedom->current = $request->current; 
-            $calculator->save(); 
-            $freedom->target = $fin['cost']; 
+            $freedom->current = $request->current;
+            $calculator->save();
+            $freedom->target = $fin['cost'];
             $freedom->strategy = $request->strategy;
             $freedom->save();
             return redirect()->back();
@@ -385,8 +385,10 @@ class SevenGSnapshotController extends Controller
             if($request->personal_val && $request->personal_val == 'iauhuiahjnjaknijaiiunaiujs'){
                 $grand = Grand::where('user_id', $user->id)->first();
                 $grand->strategy = $request->strategy;
+                $grand->target = $request->target;
                 $grand->save();
-                return response()->json(['status' => true, 'message' => 'Successfull Saved']);
+                return redirect()->back();
+                // return response()->json(['status' => true, 'message' => 'Successfull Saved']);
             }
             $this->validate($request, [
                 'current' => 'required|numeric',
@@ -407,7 +409,7 @@ class SevenGSnapshotController extends Controller
     }
 
     public function storeBespoke(Request $request){
-        $user =  auth()->user();  
+        $user =  auth()->user();
         $bespokes = BespokeKPI::where('user_id', $user->id)->latest()->limit(7)->get();
         $this->validate($request, [ 'bespoke' => 'required']);
         // return $bespoke;
@@ -431,7 +433,7 @@ class SevenGSnapshotController extends Controller
             $saveup->current = $request->current;
             $saveup->save();
             return redirect('/home/7g?kpi=bespoke')->with(['success' => 'Bespoke KPI saved successfully']);
-        } 
+        }
         if($request->bespoke == "dejhiojdnoijdnsnvhbnvxjhxnvsjhsvnxshyg"){
             $this->validate($request, [
                 'kpi_name' => 'required|max:9',
@@ -452,15 +454,15 @@ class SevenGSnapshotController extends Controller
             $dept->current = $request->current;
             $dept->save();
             return redirect('/home/7g?kpi=bespoke')->with(['success' => 'Bespoke KPI saved successfully']);
-        } 
-        return redirect()->back(); 
-    }  
+        }
+        return redirect()->back();
+    }
 
     public function updateBespoke(Request $request, $id){
-        $user =  auth()->user();  
+        $user =  auth()->user();
         $bespoke = BespokeKPI::where('user_id',$user->id)->where('id', $id)->first();
-        if($bespoke && !$request->biunxicmkxbjvnjncm){ 
-            if($bespoke->bespoke_type =='saveup'){ 
+        if($bespoke && !$request->biunxicmkxbjvnjncm){
+            if($bespoke->bespoke_type =='saveup'){
                 $this->validate($request,  [
                     'target' => 'required',
                     'current' => 'required',
@@ -477,7 +479,7 @@ class SevenGSnapshotController extends Controller
             } elseif($bespoke->bespoke_type =='dept'){
                 $this->validate($request,  [
                     'baseline' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 $bespoke->current = $request->current;
                 $bespoke->baseline = $request->baseline;
@@ -488,12 +490,12 @@ class SevenGSnapshotController extends Controller
                 }else{
                     return  redirect('/home/7g?kpi=bespoke')->with(['success' => 'Bespoke KPI saved successfully']);
                 }
-            } 
+            }
         }elseif($request->biunxicmkxbjvnjncm){
             if($request->biunxicmkxbjvnjncm == "aznjzbhxjnsxjbnxhsjgczbhzbvcjhbxvnbjhjzcb"){
                 $this->validate($request,  [
                     'target' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 $cash = CashAccount::where('user_id',$user->id)->where('id', $id)->first();
                 $cash->current = $request->current;
@@ -504,15 +506,15 @@ class SevenGSnapshotController extends Controller
             if($request->biunxicmkxbjvnjncm == "skjnaznkszxjnszjnzjnzjnmhjzbnhjxvgyzbjhbxc"){
                 $this->validate($request,  [
                     'baseline' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 $liability = LiabilityAccount::where('user_id',$user->id)->where('id', $id)->first();
                 $liability->current = $request->current;
                 $liability->baseline = $request->baseline;
                 $liability->extra = $request->strategy;
                 $liability->save();
-            } 
-            
+            }
+
             if($request->basement){
                 return  redirect()->back()->with(['success' => 'Bespoke KPI saved successfully']);
             }else{

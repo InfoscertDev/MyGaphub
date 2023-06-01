@@ -8,16 +8,17 @@ use App\SevenG\DeptFin as Dept;
 use App\SevenG\EducationFin as Education;
 use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
-use App\FinicialQuestion as Question; 
-
+use App\FinicialQuestion as Question;
+use App\Asset\SeedBudget as Budget;
 
 use App\Wheel\MortgageAccount as Mortgage;
 use App\Wheel\LiabilityAccount as Liability;
 use App\Helper\CalculatorClass as Fin;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\HelperClass as Helper;
+use App\Helper\AllocationHelpers;
 use App\UserAudit;
- 
+
 class AnalyticsClass {
 
     public static function isSevenGVal($user){
@@ -29,7 +30,7 @@ class AnalyticsClass {
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
 
-        if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main 
+        if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main
             || !$education->main || !$freedom->main  || !$grand->main){
             return false;
         }else{
@@ -40,29 +41,43 @@ class AnalyticsClass {
     public static function initBudgetValue($user, $credit, $debt,$freedom, $grand){
         $audit = UserAudit::where('user_id', $user->id)->select('is_allocated')->first();
         $fin =  Fin::finicial($user);
+        $current_period = strtotime(date('Y-m').'-01');
+        $from = date('Y-m-d' , strtotime("-7 months",  $current_period));
+        $to = date('Y-m-d' , strtotime("-1 months",  $current_period));
+        $total_seeds = Budget::where('user_id', $user->id)
+                                ->whereBetween('period', [$from, $to])
+                                ->selectRaw('count(*) as total, period')
+                                ->count();
+
         if($audit->is_allocated){
-            $seveng = $seveng = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get(); 
+            $seveng = $seveng = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get();
             $allocated = GapAccount::calcLiabilitiesAccount([], $user, false, $seveng);
-            $credit->baseline = $allocated['user_baseline']; 
+            $credit->baseline = $allocated['user_baseline'];
             $credit->current = $allocated['user_current'];
-        }  
+        }
         if($debt->isArchive){
             $primary_resident = Mortgage::where('user_id', $user->id)->where('secured_against','Primary Residential Home')
                                 ->where('isArchive', 0)->first();
             if($primary_resident){
-                $debt->baseline = $primary_resident->open_balance; 
-                $debt->current = $primary_resident->current_balance;   
+                $debt->baseline = $primary_resident->open_balance;
+                $debt->current = $primary_resident->current_balance;
             }
         }
-        if($freedom){ 
-            $freedom->target = $fin['cost']; 
-            $freedom->current = $fin['portfolio']; 
-        }   
-        if(!$grand->main){ 
+        if($freedom){
+            $freedom->target = $fin['cost'];
+            $freedom->current = $fin['portfolio'];
+        }
+
+        if(!$grand->main){
             $grand->current = $fin['calculator']->charity;
-        } 
+        }
+
+        if($total_seeds > 1){
+            $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);
+            $grand->current = array_sum($philantrophy_detail['values']);
+        }
     }
- 
+
     public static function valSevenG($user){
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
@@ -80,7 +95,7 @@ class AnalyticsClass {
         }else{
             $step1 = 0;
         }
- 
+
         if($beta->is_purchased){
             $step2 = 100;
         }else{
@@ -90,7 +105,7 @@ class AnalyticsClass {
               $step2 = ((int)$step2 <= 0) ? 0: (int)$step2;
             }else{
                 $step2 = 0;
-            } 
+            }
         }
 
         if ($credit->current > 0 && $credit->baseline > 0) {
@@ -98,17 +113,17 @@ class AnalyticsClass {
             $step3 = ((int)$step3 >= 100) ? 100: (int)$step3;
             $step3 = ((int)$step3 <= 0) ? 0: (int)$step3;
         }else{
-            if($credit->baseline == 0) $step3 = 0; 
-            if($credit->current == 0) $step3 = 100; 
-        } 
+            if($credit->baseline == 0) $step3 = 0;
+            if($credit->current == 0) $step3 = 100;
+        }
 
-        if ($debt->current > 0 && $debt->baseline > 0) { 
+        if ($debt->current > 0 && $debt->baseline > 0) {
             $step4 =  ($debt->baseline - $debt->current) * 100 / $debt->baseline;
             $step4 = ((int)$step4 > 100) ? 100: (int)$step4;
             $step4 = ((int)$step4 <= 0) ? 0: (int)$step4;
         }else{
-            if($debt->baseline == 0) $step4 = 0; 
-            if($debt->current == 0) $step4= 100; 
+            if($debt->baseline == 0) $step4 = 0;
+            if($debt->current == 0) $step4= 100;
         }
 
         if ($education->current > 0 && $education->target > 0) {
@@ -134,7 +149,7 @@ class AnalyticsClass {
         }else{
             $step7 = 0;
         }
-        
+
         // return compact('step1', 'step2', 'step3', 'step4', 'step5','step6','step7');
         return compact('step7', 'step6', 'step5', 'step4', 'step3','step2','step1');
     }
@@ -147,7 +162,7 @@ class AnalyticsClass {
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
-        
+
         if (!$alpha)  Alpha::create([ 'user_id' => $user->id]);
         if (!$beta)  Beta::create([ 'user_id' => $user->id]);
         if (!$credit)  Credit::create([ 'user_id' => $user->id]);
@@ -156,7 +171,7 @@ class AnalyticsClass {
         if (!$freedom)  Freedom::create([ 'user_id' => $user->id]);
         if (!$grand)  Grand::create([ 'user_id' => $user->id]);
     }
-    
+
     public static function stepBack($user, $mains){
         $questions = Question::where('user_id', $user->id)->first();
         $quest = Helper::convertToSnapshot($questions);
@@ -170,8 +185,8 @@ class AnalyticsClass {
                 $val = 1;
             }else{
                 $step = $quest[$key];
-                $val = 0; 
-            } 
+                $val = 0;
+            }
             $bg = ($val)  ? Helper::numPercentageColor($step) : '#494949';
             array_push($steps, $step);
             array_push($backgrounds, $bg);
@@ -191,18 +206,18 @@ class AnalyticsClass {
         $education = Education::where('user_id', $user->id)->select('current','target')->first();
         $freedom = Freedom::where('user_id', $user->id)->select('current','target')->first();
         $grand = Grand::where('user_id', $user->id)->select('current','target')->first();
-        
+
         $seveng = ['grand'=>$grand,'freedom'=>$freedom, 'education'=>$education, 'debt'=>$debt
-                    ,'credit'=>$credit,'beta'=>$beta, 'alpha'=> $alpha ]; 
-        
+                    ,'credit'=>$credit,'beta'=>$beta, 'alpha'=> $alpha ];
+
         return compact('seveng');
-        
+
     }
 
     public static function valBespoke($bespoke){
         // var_dump($bespoke[0]); return;
-        $bespokes = []; 
-        for ($index=0; $index <= 6; $index++) { 
+        $bespokes = [];
+        for ($index=0; $index <= 6; $index++) {
             $name = '';  $value = 0; $bg = '';
             if(isset($bespoke[$index]) ){
                 if($bespoke[$index]->bespoke_type == 'saveup') {
@@ -220,7 +235,7 @@ class AnalyticsClass {
                 $custom = compact('name', 'value', 'bg');
             }
             array_push($bespokes, $custom);
-        } 
+        }
         return $bespokes;
     }
 }

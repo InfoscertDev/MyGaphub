@@ -284,7 +284,7 @@ class PortfolioController extends Controller
         if($request->jaznjsxnjszbnjcknjkxnjkxncskniujkns){
             $period = $request->jaznjsxnjszbnjcknjkxnjkxncskniujkns.'-01';
             $this->validate($request,
-                ['jaznjsxnjszbnjcknjkxnjkxncskniujkns' => 'date|before:today'],
+                ['jaznjsxnjszbnjcknjkxnjkxncskniujkns' => 'date|before:yesterday'],
                 ['jaznjsxnjszbnjcknjkxnjkxncskniujkns.date' => 'Incorrect Period']
             );
         }

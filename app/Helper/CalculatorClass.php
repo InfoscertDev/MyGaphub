@@ -55,9 +55,9 @@ class CalculatorClass{
         $non_portfolio  = $portfolios['income_non_portfolio'];
         $calculator->other_income = $portfolio;
 
-        $investment = $funds['investment'];
+        // $investment = $funds['investment'];
         $saving = $calculator->extra_save;
-        // $investment = $calculator->investment;
+        $investment = $calculator->investment;
         $roce = $calculator->roce;
         return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce',
                             'expenditure','investment', 'calculator', 'isBudgetable');
