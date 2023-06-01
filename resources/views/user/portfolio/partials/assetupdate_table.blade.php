@@ -5,8 +5,8 @@
         <input type="hidden" name="jaznjsxnjszbnjcknjkxnjkxncskniujkns" id="jahbnkmnbjlikvhjcvhjfcghv">
         <div id="update_record_table">
             <table class="table table-striped table-asset table-bordered wd-f" >
-                <tr style="background: #E6C069;">    
-                    <th style="width: 25%;">Update Period </th> 
+                <tr style="background: #E6C069;">
+                    <th style="width: 25%;">Update Period </th>
                     <th class="text-center bold"><span id="updatePeriod"> {{  date('F') }} {{  date('Y') }} </span>
                         <span class="pull-right">
                             <input type="month" class="form-control" max="<?php echo date("Y-m"); ?>" name="record_period" id="record_period" style="display: none; height:28px;">
@@ -15,73 +15,73 @@
                         </span>
                     </th>
                 </tr>
-                <tr>      
+                <tr>
                     <td>Asset</td>
-                    <td> 
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="{{$asset->asset_value}}" name="amount" id="amount"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
+                        </div>
+                    </td>
                 </tr>
-                <tr>      
+                <tr>
                     <td>Revenue</td>
-                    <td>  
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="revenue" id="revenue"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <th colspan="2" class="bold text-center">Expenditure</th>
                 </tr>
-                <tr>     
+                <tr>
                     <td>Management Fees</td>
-                    <td> 
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="management" id="management"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
+                        </div>
+                    </td>
                 </tr>
-                <tr>     
+                <tr>
                     <td>Taxes</td>
-                    <td> 
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="taxes" id="taxes"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
+                        </div>
+                    </td>
                 </tr>
-                <tr>     
+                <tr>
                     <td>Maintenance Cost</td>
-                    <td> 
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="maintenance" id="maintenance"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
+                        </div>
+                    </td>
                 </tr>
-                <tr>     
+                <tr>
                     <td>Other Cost</td>
-                    <td> 
+                    <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                             <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="others" id="others"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
-                        </div>    
-                    </td> 
-                </tr>
-                <tr>      
-                    <td>Maintenance Details </td>
-                    <td>  
-                        <textarea name="maintenance_details" id="maintenance_details" placeholder="Answer " id="" cols="30" rows="3" class="noresize form-control b-rad-10 bg-light"></textarea>    
+                        </div>
                     </td>
                 </tr>
-                <tr>     
+                <tr>
+                    <td>Maintenance Details </td>
+                    <td>
+                        <textarea name="maintenance_details" id="maintenance_details" placeholder="Answer " id="" cols="30" rows="3" class="noresize form-control b-rad-10 bg-light"></textarea>
+                    </td>
+                </tr>
+                <tr>
                     <td>Other Notes </td>
-                    <td>  
-                        <textarea name="note" id="note"  placeholder="Answer " id="" cols="30" rows="3" class="noresize form-control b-rad-10 bg-light"></textarea>    
+                    <td>
+                        <textarea name="note" id="note"  placeholder="Answer " id="" cols="30" rows="3" class="noresize form-control b-rad-10 bg-light"></textarea>
                     </td>
                 </tr>
             </table>
@@ -90,12 +90,12 @@
                 <button type="button" id="review_now" class="btn btn-table mt-2 mr-3 sm-mr-2 px-2 sm-btn-block">Review</button>
             </div>
         </div>
-        
+
         <div id="review_record_table" style="display: none;">
             <table class="table table-striped table-asset table-bordered wd-f">
-                <tr style="background: #E6C069;">    
+                <tr style="background: #E6C069;">
                     <th class="text-center" colspan="2">UPDATE SUMMARY
-                    </th> 
+                    </th>
                 </tr>
                 <tr >
                     <th style="width: 30%" class="bold">
@@ -119,12 +119,12 @@
                     <th class="bold"> Net Income </th>
                     <th class="bold">  {{ $asset_currency }}<span id="asset_income_review"></span></th>
                 </tr>
-                
-                <tr>      
+
+                <tr>
                     <td>Maintenance Details </td>
                     <td>  <span id="asset_maintenance_review"></span>  </td>
                 </tr>
-                <tr>      
+                <tr>
                     <td>Other Notes </td>
                     <td>  <span id="asset_note_review"></span> </td>
                 </tr>
@@ -153,38 +153,38 @@
             <div class="modal-footer mx-auto">
                 <div class="text-left">
                     <button type="submit" id="confirmAddPeriod"  class="btn btn-pry px-3 mr-3">Yes</button>
-                </div> 
-                <div class="text-right"> 
+                </div>
+                <div class="text-right">
                     <button type="button" onclick="$('#confirmUpdateRecordAddition').modal('hide')" class="btn btn-default px-3 mr-3">No</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script>  
+<script>
     $(function () {
         $('#review_now').click(function(){
             if($('#management').val() && $('#taxes').val() && $('#others').val() &&  $('#amount').val()
                    && $('#maintenance').val() && $('#revenue').val()){
-                var expenditure = parseInt(parseInt($('#management').val()) + parseInt($('#taxes').val()) + 
+                var expenditure = parseInt(parseInt($('#management').val()) + parseInt($('#taxes').val()) +
                                     parseInt($('#others').val()) + parseInt($('#maintenance').val()) );
-                
+
                 $('#update_record_table').hide();
                 $('#review_record_table').fadeIn();
                 $('#updatePeriodReview').text($('#updatePeriod').text()) ;
                 $('#asset_value_review').text($('#amount').val()) ;
                 $('#asset_revenue_review').text($('#revenue').val()) ;
-    
+
                 $('#asset_expenditure_review').text(expenditure) ;
                 $('#asset_income_review').text(+$('#revenue').val() - +expenditure ) ;
-                
+
                 $('#asset_maintenance_review').text($('#maintenance_details').val()) ;
                 $('#asset_note_review').text($('#note').val()) ;
             }else{
-                $(document).ready(function(){ 
+                $(document).ready(function(){
                     swal("", "All fields are mandatory. Enter zero if no information is available", "error");
                 });
-               
+
             }
 
         });
@@ -192,7 +192,7 @@
         $('#back_update').click(function(){
             $('#update_record_table').fadeIn();
             $('#review_record_table').hide();
-        });   
+        });
 
         $('#record_period').change(function(){
             var period = $('#record_period').val();
@@ -209,8 +209,8 @@
                     method: 'GET',
                     url: "<?php echo Request::url() ?>"+`?header=${header}&access=${current}&period=${period}`,
                     success: function (data, status) {
-                        if(status == "success" && data.asset_records){ 
-                            loadRecordInfo(data); 
+                        if(status == "success" && data.asset_records){
+                            loadRecordInfo(data);
                         }else{
                             $('#confirmUpdateRecordAddition').modal('show');
                         }
@@ -228,25 +228,25 @@
                 method: 'GET',
                 url: "<?php echo Request::url() ?>"+`?header=${header}&access=${current}&period=${period}`,
                 success: function (data, status) {
-                    if(status == "success" && data.asset_records){ 
+                    if(status == "success" && data.asset_records){
                         // console.log('Load Record');
-                       loadRecordInfo(data); 
+                       loadRecordInfo(data);
                     }
                 }
             });
         });
     });
-    function loadRecordInfo(data){  
+    function loadRecordInfo(data){
         var period = $('#record_period').val();
         let period_format = new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(period))
                                         +' ' + new Intl.DateTimeFormat('en', { year: 'numeric' }).format(new Date(period));
         $('#updatePeriod').text(period_format);
-        // console.log(period_format); 
+        // console.log(period_format);
         // $('#updatePeriod').text(period);
         $('#jahbnkmnbjlikvhjcvhjfcghv').val(period);
         this.asset_records = data.asset_records;
         $('#amount').val(this.asset_records.amount);
-        $('#revenue').val(this.asset_records.revenue); 
+        $('#revenue').val(this.asset_records.revenue);
         $('#management').val(this.asset_records.management);
         $('#taxes').val(this.asset_records.taxes);
         $('#others').val(this.asset_records.others);
@@ -258,7 +258,7 @@
     let edit;
     function toggleRecord(){
         $('#record_period').fadeIn();
-        $('#toggle_record').hide(); 
+        $('#toggle_record').hide();
         // $('#confirm_record').fadeIn();
         // return document.getElementById('record_period').click();
     }

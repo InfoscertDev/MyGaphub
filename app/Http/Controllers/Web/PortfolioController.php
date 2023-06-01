@@ -281,10 +281,11 @@ class PortfolioController extends Controller
             'taxes' => 'required|integer|min:0|max:10000000000',
         ]);
         $period  = date('Y-m').'-01';
+        // before:yesterday
         if($request->jaznjsxnjszbnjcknjkxnjkxncskniujkns){
             $period = $request->jaznjsxnjszbnjcknjkxnjkxncskniujkns.'-01';
             $this->validate($request,
-                ['jaznjsxnjszbnjcknjkxnjkxncskniujkns' => 'date|before:yesterday'],
+                ['jaznjsxnjszbnjcknjkxnjkxncskniujkns' => 'date'],
                 ['jaznjsxnjszbnjcknjkxnjkxncskniujkns.date' => 'Incorrect Period']
             );
         }
