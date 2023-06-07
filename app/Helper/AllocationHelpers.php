@@ -355,7 +355,7 @@ class AllocationHelpers{
             array_push($sum, $account->amount);
         }
         $total_spent = array_sum($sum);
-        $total_left = $allocated->amount - $total_spent;
+        $total_left = round($allocated->amount - $total_spent, 2);
         $left_percentage = ($total_spent > 0) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
 
         $spent_percentage = ($left_percentage != 100) ? 100 - $left_percentage : $left_percentage;

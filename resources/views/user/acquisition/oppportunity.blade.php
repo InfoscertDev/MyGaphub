@@ -41,9 +41,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="asset-list asset-opt">
+                <!-- <div class="asset-list asset-opt">
                     <div class="list-img img-right img-opt">
-                        <!-- <img src="{{ isset($acquisition[1]) && $acquisition[1]->photo ? $acquisition[1]->photo : asset('/assets/images/piawsgxshsgsxszazxabay163752.png') }}" alt=" " class="img img-responsive"> -->
                         <img src="{{ asset('/assets/images/piawsgxshsgsxszazxabay163752.png') }}" alt=" " class="img img-responsive">
                     </div>
                     <div class="list-body">
@@ -62,7 +61,7 @@
                             <a href="{{ route('user.ganp-opportunity', $asset) }}" class="card-link text-white"><button class="btn btn-pry px-4" > Explore</button></a>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>

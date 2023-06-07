@@ -30,15 +30,18 @@
                         data: net_values,
                         backgroundColor: net_backgrounds,
                         borderColor: net_backgrounds,
+                        clamp: true,
                         datalabels: {
-                            color: '#fff'
+                            color: '#000',
+                            anchor: 'end',
+                            font: { size: 15}
                         }
                     }]
                 },
                 options: {
                     legend: {
                         display: false,
-                        position: 'bottom'
+                        position: 'top'
                     },
                     onClick: graphNetClickEvent ,
                     plugins: {
@@ -111,14 +114,16 @@
                             backgroundColor: net_backgrounds,
                             borderColor: net_backgrounds,
                             datalabels: {
-                                color: '#fff'
+                                color: '#000',
+                                anchor: 'end',
+                                font: { size: 15}
                             }
                         }]
                     },
                     options: {
                         legend: {
                             display: false,
-                            position: 'bottom'
+                            position: 'top'
                         },
                         onClick: graphNetClickEvent ,
                         plugins: {
@@ -252,7 +257,7 @@
                                     <span class="pane-para">
                                         <b class="mr-1"> Savings</b>  <span class="">{{$currency}}{{number_format((float)$average_detail['table']['savings'], 2)}}</span>
                                     </span>
-                                    <span class="pane-para">                                           
+                                    <span class="pane-para">
                                         <b class="mr-1">Expenditure:</b>  <span class="">{{$currency}}{{number_format((float)$average_detail['table']['expenditure'], 2)}}</span>
                                     </span>
                                 </div>
@@ -369,9 +374,9 @@
                             <a href="{{ route('user.reap-featured') }}" class="text-white">
                                 <span class="pane-para pane-para-sm text-underline">Featured Real Estate Opportunities</span>
                             </a>
-                            <a href="{{ route('user.ganp-opportunity', 'appreciating') }}" class="text-white">
+                            <!-- <a href="{{ route('user.ganp-opportunity', 'appreciating') }}" class="text-white">
                                 <span class="pane-para pane-para-sm text-underline"> Featured Green Asset Opportunities</span>
-                            </a>
+                            </a> -->
                         </p>
                     </div>
                 </div>
@@ -436,9 +441,9 @@
                                @if($assistance['acquisition']['type'] == 'reap' && $assistance['acquisition']['asset'])
                                     <a class="text-white" href="{{ route('user.reap-opportunity',['appreciating', 'sasset' => $assistance['acquisition']['asset']->id]) }}">   {{  str_limit($assistance['acquisition']['asset']->name, $limit = 40, $end = '...') }} </a>
                                @endif
-                               @if($assistance['acquisition']['type'] == 'ganp' && $assistance['acquisition']['asset'])
+                               <!-- @if($assistance['acquisition']['type'] == 'ganp' && $assistance['acquisition']['asset'])
                                     <a class="text-white" href="{{ route('user.single_ganp',[ $assistance['acquisition']['asset']->cultivation->id, 'tresh' => rand(1000,9999) ])  }}">   {{  str_limit($assistance['acquisition']['asset']->cultivation->name, $limit = 40, $end = '...') }} </a>
-                               @endif
+                               @endif -->
                             </span>
                             @if($assistance['personal']['type'])
                                 <span class="pane-para mb-1"> <a class="text-white" href="{{route($assistance['personal']['type'])}}"> {{$assistance['personal']['setup']}}</a> </span>

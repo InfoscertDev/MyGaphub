@@ -80,8 +80,8 @@
                                     <option value="">-- Select --</option>
                                 </select>
                                 <div class="mt-2 record_details" style="display: none">
-                                    <div class="small">Available Balance: {{$currency}} <span id="summary_balance">300.00</span></div>
-                                    <div class="small text-muted">Available After Spent: {{$currency}}<span id="summary_spent">300.00</span></div>
+                                    <div class="small">Available Balance: {{$currency}} <span id="summary_balance"></span></div>
+                                    <div class="small text-muted">Available After Spent: {{$currency}}<span id="summary_spent"></span></div>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                 let allocation = allocations.find((al) => {return al.id == e.value});
                 if(allocation.summary){
                     $('#summary_balance').text(allocation.summary.total_left);
-                    $('#summary_spent').text(+allocation.summary.total_left - $('#amount').val());
+                    $('#summary_spent').text((+allocation.summary.total_left - $('#amount').val()).toFixed(2));
                 }
             }
 

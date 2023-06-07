@@ -1,8 +1,8 @@
 @extends('layouts.user')
 
-@section('script')   
+@section('script')
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
- 
+
     <script>
         var user_currency = "<?php echo $currency ?>";
         var ctx = document.getElementById('retirementDetailBar');
@@ -14,7 +14,13 @@
     @include('user.360.partials.account_chartpie')
 @endsection
 
-@section('content') 
+@section('content')
+@if(request()->input('detail') == 'note')
+    <script>
+        $(function () { $('#snapshotDetailModal').modal('show') } )
+    </script>
+@endif
+
 <div class="row">
     <div class="d-flex col-12 mb-3">
         <div class="col-3">
@@ -32,15 +38,16 @@
         <div style="display: block; width: 105%;">
             <div class="card mb-2">
                 @include('widgets.financial_snapshot')
+                @include('widgets.snapshot_details')
                 <div class="text-center my-3">
                    <a data-target="#snapshotDetailModal" data-toggle="modal" class="text-dark text-underline">View Notes </a>
-                    @include('widgets.snapshot_details')
+
                 </div>
             </div>
             <div class="mt-5">
                 <h5 class="text-center text-underline bold">Opportunities for You</h5>
                 <div class="row mx-auto">
-                    <div class="col-6 col-xs-12 px-2">
+                    <div class="col-9 col-xs-12 px-2">
                         <div class="reap-asset mx-0 px-0">
                             <div class="list-img" style="height: 220px">
                                 <a href="{{ route('user.reap-opportunity', 'appreciating') }}" class="card-link text-white">
@@ -49,17 +56,17 @@
                                 <h6 class="text-underline">Income: £1,800.00 </h6>
                             </div>
                         </div>
-                    </div> 
-                    <div class="col-6 col-xs-12 px-2">
+                    </div>
+                    <!-- <div class="col-6 col-xs-12 px-2">
                         <div class="reap-asset mx-0 px-0">
                             <div class="list-img " style="height: 220px">
                                 <a href="{{ route('user.ganp-opportunity', 'appreciating') }}" class="card-link text-white">
                                     <img src="{{ asset('/assets/images/piawsgxshsgsxszazxabay163752.png') }}" alt=" " class="img img-responsive">
-                                </a> 
+                                </a>
                                 <h6 class="text-underline">Capital Required: £1,000.00 </h6>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -67,33 +74,33 @@
     <div class="col-md-7 col-sm-12 ">
         <div id="roi_upgrade">
             @include('widgets.roi_upgrade')
-        </div> 
+        </div>
         <hr class="bold" style="height: 8px;"/>
         <div class="bar_chart mt-0 px-2">
             @include('user.360.modals.retirement')
-            @if (count($retirement)) 
+            @if (count($retirement))
                 <div class="row sm-mx-0">
                     <div class="col-sm-6 col-xs-12 pr-0">
                         <h6 class="text-underline  bold" style="font-size: 13px;">Your Pension Pot(Accrued Income = {{$currency}}{{ number_format($retirement_detail['sum']) }})
-                            <span class="pull-right"> 
+                            <span class="pull-right">
                                 @if (isset($archive))
                                     <a class="text-dark" href="{{ route('360.retirement') }}" data-toggle="tooltip" title="Click to view retirement "><i class="fa fa-sticky-note"></i></a>
                                 @else
                                     <a class="text-dark" href="{{ route('360.retirement', ['archive' => 'all']) }}" data-toggle="tooltip" title="Click to view Archived Pension"><i class="fa fa-archive"></i></a>
-                                @endif    
+                                @endif
                             </span>
-                        </h6> 
+                        </h6>
                         <ul class="list-group list-group-flush cash-tiles list-toggled list-toggled2">
-                            @foreach ($retirement as $key => $pension)  
+                            @foreach ($retirement as $key => $pension)
                                 <li class="list-group-item my-1 px-1 mx-0"  onclick="editAccount({{$key}})">
                                     @if(!$archive && isset($backgrounds[$key]))<span class="account_detail" style="width:6px;background: {{$backgrounds[$key]}};"> </span> @endif
-                                    <span class="pl-1 mr-1"> {{ str_limit( $pension->name, 9) }}–</span> 
+                                    <span class="pl-1 mr-1"> {{ str_limit( $pension->name, 9) }}–</span>
                                     <span class="mr-2 bold"> {{ str_limit($pension->pension_type, 8) }}:
-                                    </span> <span class="mr-2">{{$currency}}{{ number_format($pension->current, 2) }}</span> 
+                                    </span> <span class="mr-2">{{$currency}}{{ number_format($pension->current, 2) }}</span>
                                     <span class="pull-right"><i class="fa fa-chevron-right"></i> </span>
-                                </li> 
-                            @endforeach 
-                        </ul> 
+                                </li>
+                            @endforeach
+                        </ul>
                         @if(count($retirement) > 5)
                             <button class="list-toggle mx-auto btn-sm wd-5 btn px-2 bg-none mt-1">
                                 <span class="expand text-underline">View More</span>
@@ -101,9 +108,9 @@
                             </button>
                         @endif
                         <div class="py-3 text-center">
-                            <button class="btn btn-pry px-2" data-toggle="modal" data-target="#retirementModalAccount"> Add Pension Account </button>  
+                            <button class="btn btn-pry px-2" data-toggle="modal" data-target="#retirementModalAccount"> Add Pension Account </button>
                         </div>
-                    </div>  
+                    </div>
                     <div class="col-sm-6 col-xs-12 px-0">
                         <div class="chart mt-0">
                             <h5 class="text-underline text-center bold my-2">Pension Distribution</h5>
@@ -113,19 +120,19 @@
                     </div>
                 </div>
             @else
-                
+
                 <div class="jumbotron bg-white">
                     @if($archive)
                         <h4 class="text-center">No Archive Pension Yet</h4>
                     @else
                         <h4 class="text-center">No Account Created Yet</h4>
                         <div class="pt-5 text-center">
-                            <button class="btn btn-pry px-2" data-toggle="modal" data-target="#retirementModalAccount"> Add Pension Account </button>  
+                            <button class="btn btn-pry px-2" data-toggle="modal" data-target="#retirementModalAccount"> Add Pension Account </button>
                         </div>
                     @endif
                 </div>
             @endif
-           
+
         </div>
     </div>
 </div>
@@ -135,11 +142,11 @@
     function editAccount(index){
         var pension = this.pensions[index];
         this.account = pension;
-        bindPension(pension); 
+        bindPension(pension);
         $(`#editPensionModal`).modal('show');
     }
 
-    function bindPension(account){ 
+    function bindPension(account){
         // var account_currency = document.getElementById('account_currency');
         var name = document.getElementById('name');
         var provider = document.getElementById('provider');
@@ -159,14 +166,14 @@
         current.value = account.current_year_bal;
         user_act.value = account.id;
         assured_income.value = account.accured_current_income;
-        
+
         monthly.value = account.monthly_contribution;
-        percentage_cos.value = account.percentage_cos; 
+        percentage_cos.value = account.percentage_cos;
         retirement.value = account.retirement_age;
         year_retirement.value = account.year_retirement + ' Years' ;
         retire_balance.value = account.retire_balance ;
         retire_income.value = account.retire_income ;
-        // var act = account.dob.split('-')[0];  
+        // var act = account.dob.split('-')[0];
         // var act = 1994;
         // var cur_year = new Date().getFullYear();
         // var yretirement = (+act + +account.retirement_age) - cur_year;
@@ -175,7 +182,7 @@
         // retire_assured.value = ((account.monthly_contribution * 12) * (yretirement) + account.current).toLocaleString();
     }
 
-    var editmode = false; 
+    var editmode = false;
     function toggleEdit(){
         var monthly = document.getElementById('monthly');
         var retirement = document.getElementById('retirement');
@@ -186,21 +193,22 @@
         this.editmode = !this.editmode;
         if(this.editmode){
             monthly.disabled = false;  retirement.disabled = false;
-            provider.disabled = false;  
-            $('#update_account').fadeIn(700); 
-            $('#archiveAccount').hide(); 
+            provider.disabled = false;
+            $('#update_account').fadeIn(700);
+            $('#archiveAccount').hide();
         }else{
             monthly.disabled = true; retirement.disabled = true;
-            provider.disabled = true;  
-            $('#update_account').hide(); 
-            $('#archiveAccount').fadeIn(); 
+            provider.disabled = true;
+            $('#update_account').hide();
+            $('#archiveAccount').fadeIn();
         }
     }
-    
+
     $(function() {
         $('#removeAccount').on('click', function(){
             $('#confirmRemoveAccount').modal('show');
-        }) 
+        });
+
         $('#confirmAccountRemove').on('click', function(){
             var header = "pwiuduihdnjhnsbdgjvjxbsngmbhhgkhdccghdx";
             var add = "uyaghgbshgbhsjxbhsjxbvbhxdbvdhgbvghdvcghvgdhcvhsnbhsb";
@@ -219,17 +227,19 @@
                 }
             });
         });
+
         $('#addAccount').on('click', function(){
             $('#confirmAddAccount').modal('show');
-        }) 
+        });
+
         $('#confirmAccountAdd').on('click', function(){
             var header = "pwiuduihdnjhnsbdgjvjxbsngmbhhgkhdccghdx";
             var add = "atyhgujhashgbsxdhgvshgsghfgnbvjbsjkbvjbvjhdx";
             var id = account.id;
             $.ajax({
-                type: 'GET', 
+                type: 'GET',
                 url: "<?php echo route('360.retirement') ?>"+`?header=${header}&account=${id}&access=${add}`,
-                success: function(data, status){ 
+                success: function(data, status){
                     $('#justUnarchive').fadeIn();
                     $('#confirmRemoveAccount').modal('hide');
                     $('#editPensionModal').modal('hide');
@@ -239,7 +249,7 @@
             });
         });
     });
-         
+
 </script>
  @include('user.360.details.retirement')
 @endsection

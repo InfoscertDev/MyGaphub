@@ -367,6 +367,7 @@ class IndependenceController extends Controller
 
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
+
         if($archive){
             $incomes = Income::where('user_id', $user->id)->where('isArchive', 1)->orderBy('income_date', 'DESC')->get();
         }else{
