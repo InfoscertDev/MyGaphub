@@ -34,7 +34,6 @@ class SeedController extends Controller
 
 
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
-        // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1;
         $current_seed->save();
         return redirect()->route('seed');
@@ -52,13 +51,12 @@ class SeedController extends Controller
 
       $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $target_detail = CalculatorClass::getSeedDetail($target_seed);
+      $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
 
       return view('user.seed.master', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
           'average_detail', 'current_detail', 'target_detail','average_seed', 'previous_budgets'));
     }
-
 
     public function storeSetBudget(Request $request){
         $user = $request->user();
@@ -68,13 +66,15 @@ class SeedController extends Controller
         $request->validate([
           'budget' => 'required|numeric'
         ]);
+        
+        $isTarget = ($request->period == 'ediucfhjbndcfjnkdcknj') ? 'target' : 'current';
 
-        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
         $available_allocation = $request->budget - $current_detail['total'];
         // info($content);
         // info([$available_allocation,$request->seed, $request->budget]);
         if($available_allocation >= 0){
-            $seed = CalculatorClass::getCurrentSeed($user);
+            $seed = $isTarget ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1 ;
             $seed->update();
@@ -113,6 +113,30 @@ class SeedController extends Controller
          'available_allocation', 'current_detail'
       ));
     }
+
+    public function future(Request $request){
+        $user = auth()->user();
+        $page_title = "My Budget";
+        $clone = $request->input('clone');
+        $support = true; $month =  date('Y-m').'-01';
+        $preview = $request->input('preview');
+
+        $seed_backgrounds = CalculatorClass::accountBackground();
+        $isValid = SevenG::isSevenGVal($user);
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+        $current_seed = CalculatorClass::getCurrentSeed($user);
+        $target_seed = CalculatorClass::getTargetSeed($user, $clone);
+        $average_seed = CalculatorClass::getAverageSeed($user);
+        $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
+
+        info($target_seed);
+        $available_allocation = $target_seed->budget_amount - $target_detail['total'];
+
+        return view('user.seed.future', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+           'available_allocation', 'target_detail'
+        ));
+      }
 
 
     public function history(Request $request){

@@ -8,6 +8,7 @@ use App\DiscretionaryBudget as Philantrophy;
 use App\UserAudit as Audit;
 use App\Helper\IncomeHelper;
 use stdClass;
+use App\Models\Asset\SeedBudgetAllocation;
 
 
 //
@@ -96,83 +97,47 @@ class CalculatorClass{
     public static function getCurrentSeed($user){
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')
             ->orderBy('period', 'DESC')->first();
-        $month = date('m')-1;
-        $last_seed = Budget::where('user_id', $user->id)->where('period', date('Y-').$month.'-01')
-            ->orderBy('period', 'DESC')->first();
-        // var_dump($last_seed);
-        // if(!$current_seed){
-        //         $current_seed = new Budget();
-        //         $current_seed->user_id = $user->id;
-        //         $current_seed->period = date('Y-m').'-01';
-        //         if($last_seed){
-        //             $current_seed->investment_fund =  $last_seed->investment_fund;
-        //             $current_seed->personal_fund =  $last_seed->personal_fund;
-        //             $current_seed->emergency_fund =  $last_seed->emergency_fund;
-        //             $current_seed->financial_training =  $last_seed->financial_training;
-        //             $current_seed->career_development =  $last_seed->career_development;
-        //             $current_seed->mental_development =  $last_seed->mental_development;
-        //             $current_seed->accomodation  = $last_seed->accomodation;
-        //             $current_seed->mobility  = $last_seed->mobility;
-        //             $current_seed->expenses  = $last_seed->expenses;
-        //             $current_seed->utilities  = $last_seed->utilities;
-        //             $current_seed->debt_repay  = $last_seed->debt_repay;
-        //             $current_seed->charity =  $last_seed->charity;
-        //             $current_seed->family_support =  $last_seed->family_support;
-        //             $current_seed->personal_commitments =  $last_seed->personal_commitments;
-        //             $current_seed->save();
-        //         }
-        //         // $current_seed->save();
-        //         $current_seed = Budget::where('user_id', $user->id)
-        //                             ->where('period', date('Y-m').'-01')
-        //                             ->orderBy('period', 'DESC')->first();
-        // }else{
-        //     $total = [ $current_seed->investment_fund, $current_seed->personal_fund,$current_seed->emergency_fund,$current_seed->financial_training,
-        //                 $current_seed->career_development,$current_seed->mental_development, $current_seed->accomodation, $current_seed->mobility,
-        //                 $current_seed->expenses,$current_seed->utilities,$current_seed->debt_repay, $current_seed->charity,
-        //                 $current_seed->family_support, $current_seed->personal_commitments ];
-        //     $total = array_sum($total);
-        //     if($last_seed && $total == 0){
-        //         $current_seed->investment_fund =  $last_seed->investment_fund;
-        //         $current_seed->personal_fund =  $last_seed->personal_fund;
-        //         $current_seed->emergency_fund =  $last_seed->emergency_fund;
-        //         $current_seed->financial_training =  $last_seed->financial_training;
-        //         $current_seed->career_development =  $last_seed->career_development;
-        //         $current_seed->mental_development =  $last_seed->mental_development;
-        //         $current_seed->accomodation  = $last_seed->accomodation;
-        //         $current_seed->mobility  = $last_seed->mobility;
-        //         $current_seed->expenses  = $last_seed->expenses;
-        //         $current_seed->utilities  = $last_seed->utilities;
-        //         $current_seed->debt_repay  = $last_seed->debt_repay;
-        //         $current_seed->charity =  $last_seed->charity;
-        //         $current_seed->family_support =  $last_seed->family_support;
-        //         $current_seed->personal_commitments =  $last_seed->personal_commitments;
-        //         $current_seed->save();
-        //     }
-        // }
+
         return  $current_seed;
     }
 
-    public static function getTargetSeed($user){
-        $year = (int)date('Y') + 1;
-        $target = $year.'-01-01';
-        $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
+    public static function getTargetSeed($user, $clone = null){
+        $target_period = date('Y-m',  strtotime("+1 month")).'-01';
+        $current_period = date('Y-m').'-01';
+
+        $target_seed = Budget::where('user_id', $user->id)->where('period',$target_period)
                              ->orderBy('period', 'DESC')->first();
 
-        // if(!$target_seed){
-        //     $target_seed = new Budget();
-        //     $target_seed->user_id = $user->id;
-        //     $target_seed->period =$target;
-        //     $target_seed->save();
-        //     $target_seed = Budget::where('user_id', $user->id)->where('period',$target)
-        //         ->orderBy('period', 'DESC')->first();
-        // }
+        if(!$target_seed){
+            if($clone){
+                $current_seed = Budget::where('user_id', $user->id)->where('period', $target_period)->first();
+                $target_seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $target_period]);
+                $target_seed->budget_amount = isset($current_seed) ? $current_seed->budget_amount : 0;
+                $target_seed->priviewed = 1;
+                $target_seed->save();
+
+                // Budget Allocations
+                $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)
+                            ->where('period', $target_period)->where('status',1)
+                            ->get()->toArray();
+
+                foreach ($current_allocations as $allocation) {
+                    $newallocation = (array) $allocation;
+                    $newallocation['period'] = $target_period;
+                    SeedBudgetAllocation::create($newallocation);
+                }
+            }else{
+                $target_seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $target_period]);
+            }
+        }
+
         return  $target_seed;
     }
 
     public static function averageSeedDetail($user){
         $calculator = Calculator::where('user_id', $user->id)->first();
         $year = (int)date('Y') + 1;
-        $target = $year.'-01-01';
+        $target =  date('Y-m',  strtotime("+1 month")).'-01';
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         // Make sure Philantrophy Information is available
         if(!$philantrophy) {
@@ -261,7 +226,7 @@ class CalculatorClass{
         $calculator = Calculator::where('user_id', $user->id)->first();
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
         $year = (int)date('Y') + 1;
-        $target = $year.'-01-01';
+        $target =  date('Y-m',  strtotime("+1 month")).'-01';
         // Make sure Philantrophy Information is available
         if(!$philantrophy) {
             GapAccountCalculator::initUserChartity($user);

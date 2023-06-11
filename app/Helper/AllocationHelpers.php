@@ -15,27 +15,19 @@ class AllocationHelpers{
     public static function monthlyRecurssionChecker($user){
         $current_period = date('Y-m').'-01';
         $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
-        // $last_period = date($current_period, strtotime("-1 Month"));
 
         $current_seed = Budget::where('user_id', $user->id)->where('period', $current_period)->first();
         $last_seed = Budget::where('user_id', $user->id)->where('period', $last_period)->first();
 
-        // info([$current_seed, $last_seed]);
 
         // || ($seed->budget_amount == 0 && $last_seed)
         if(!$current_seed ){
             $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
-            // $seed->user_id = $user->id;
-            // $seed->period = $current_period;
             $seed->budget_amount = isset($last_seed) ? $last_seed->budget_amount : 0;
             $seed->priviewed = 0;
             $seed->save();
 
             // Budget Allocations
-            $allocations = SeedBudgetAllocation::where('user_id', $user->id)->where('period', $current_period)
-                                ->where('status',1)->get()->toArray();
-
-
             $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)
                                     ->where('period', $last_period)->where('status',1)
                                     ->get()->toArray();
@@ -48,19 +40,22 @@ class AllocationHelpers{
         }
     }
 
-    public static function getAllocatedSeedDetail($user){
+    public static function getAllocatedSeedDetail($user, $package =  null){
         $current_period = date('Y-m').'-01';
+        $target_period = date('Y-m',  strtotime("+1 month")).'-01';
+        $period = ($package == 'target') ? $target_period : $current_period;
+
 
         $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
-                         ->where('user_id', $user->id)->where('period', $current_period)->get();
+                         ->where('user_id', $user->id)->where('period', $period)->get();
         $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')
-                         ->where('user_id', $user->id)->where('period', $current_period)->get();
+                         ->where('user_id', $user->id)->where('period', $period)->get();
         $expenditure_allocation = SeedBudgetAllocation::where('seed_category', 'expenditure')
-                         ->where('user_id', $user->id)->where('period', $current_period)->get();
+                         ->where('user_id', $user->id)->where('period', $period)->get();
         $discretionary_allocation = SeedBudgetAllocation::where('seed_category', 'discretionary')
-                         ->where('user_id', $user->id)->where('period', $current_period)->get();
+                         ->where('user_id', $user->id)->where('period', $period)->get();
 
-        $record_spent = RecordBudgetSpent::where('user_id', $user->id)->where('period', $current_period)->get();
+        $record_spent = RecordBudgetSpent::where('user_id', $user->id)->where('period', $period)->get();
 
         $savings = array_sum(array_column($savings_allocation->toArray(), 'amount'));
         $education = array_sum(array_column($education_allocation->toArray(), 'amount'));

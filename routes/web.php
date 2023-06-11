@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         // Seed
         Route::get('/seed', 'Web\SeedController@index')->name('seed');
         Route::get('/seed/create', 'Web\SeedController@create')->name('seed.create');
+        Route::get('/seed/future', 'Web\SeedController@future')->name('seed.future');
         Route::get('/seed/history', 'Web\SeedController@history')->name('seed.history');
         Route::get('/seed/history/chart', 'Web\SeedController@chartHistory')->name('seed.chart_history');
         Route::get('/seed/history/{period}', 'Web\SeedController@periodHistory')->name('seed.periodic_history');
