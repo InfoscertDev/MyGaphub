@@ -16,8 +16,9 @@
                     @csrf
                     <input type="hidden" name="jhbxjhbsuhjbhajbghjvajhbsxgb" value="yugvabhjvbavbjhzbjhbhajvbhgvbhvjbjhbazJHbbj">
                     <input type="hidden" name="category" value="expenditure">
-                    <div class="my-4">
+                    @if( str_contains(url()->full(), 'future') )   <input type="hidden" name="period" value="seed_future_budget" />  @endif
 
+                    <div class="my-4">
                         <div class="form-group my-3 row">
                             <div class="col-sm-6">
                                Expenditure Category:
@@ -85,10 +86,6 @@
                         <div class="row mt-4 justify-content-center " id="edit_current" >
                             <button type="submiit" class="btn btn-md btn-pry px-4">Submit</button>
                         </div>
-                        <!-- <div class="row mt-3 justify-content-center " id="total_current">
-                            <span class="h5 mr-3">Total</span>
-                            <div type="submiit" class="btn-pry px-4">{{ $currency }}{{number_format($current_detail['total'],2)}}</div>
-                        </div>  -->
                     </div>
                 </form>
             </div>

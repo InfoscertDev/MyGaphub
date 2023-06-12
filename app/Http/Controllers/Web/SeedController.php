@@ -66,7 +66,7 @@ class SeedController extends Controller
         $request->validate([
           'budget' => 'required|numeric'
         ]);
-        
+
         $isTarget = ($request->period == 'ediucfhjbndcfjnkdcknj') ? 'target' : 'current';
 
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
@@ -74,7 +74,7 @@ class SeedController extends Controller
         // info($content);
         // info([$available_allocation,$request->seed, $request->budget]);
         if($available_allocation >= 0){
-            $seed = $isTarget ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
+            $seed = ($isTarget == 'target') ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1 ;
             $seed->update();

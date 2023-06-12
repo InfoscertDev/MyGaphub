@@ -28,8 +28,8 @@ class SeedAllocationController extends Controller
     public function showAlloction(Request $request, $id){
       $user = $request->user();
 
-      $month =  date('Y-m').'-01';
-      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+      $period =  date('Y-m').'-01';
+      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
 
       if($allocated){
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
@@ -66,21 +66,24 @@ class SeedAllocationController extends Controller
 
     public function seedSummaryPage(Request $request, $seed){
         $user = $request->user();
-        $month =  date('Y-m').'-01';
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
         $category = $request->input('category');
+        $budget = $request->input('budget');
+
         $seeds = ['savings', 'expenditure','education', 'discretionary'];
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
-        $category = (in_array($category, $categories)) ? $category: null;
-        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-        $backgrounds = array_reverse(GapAccount::accountBackground());
+        $isTarget = ($request->budget == 'seed_future_budget') ? 'target' : 'current';
 
+        $category = (in_array($category, $categories)) ? $category: null;
+        $period =   ($isTarget == 'target') ? date('Y-m',  strtotime("+1 month")).'-01' : date('Y-m').'-01';
+        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
+        $backgrounds = array_reverse(GapAccount::accountBackground());
         if ($seed == 'expenditure' && !$category){
             $groups = array();
             $labels = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
-                            ->where('user_id', $user->id)->where('period', $month)->get();
+                            ->where('user_id', $user->id)->where('period', $period)->get();
 
             foreach ($allocations->toArray() as $allocation) {
                 array_push($labels, $allocation['expenditure']);
@@ -88,7 +91,7 @@ class SeedAllocationController extends Controller
             }
 
             foreach($groups as $key => $group){
-                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $period)->where('user_id', $user->id)
                                                                     ->where('expenditure',$group['label']) ->sum('amount');
             }
             $allocations = array_values($groups) ;
@@ -96,7 +99,7 @@ class SeedAllocationController extends Controller
             return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
         } else if(in_array($seed, $seeds)){
             $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
-                        ->where('user_id', $user->id)->where('period', $month)
+                        ->where('user_id', $user->id)->where('period', $period)
                         ->when($category, function ($query, $category) {
                             return $query->where('expenditure', $category);
                         })->latest()->get();
@@ -116,7 +119,7 @@ class SeedAllocationController extends Controller
     public function listAllocation(Request $request){
         $user = $request->user();
 
-        $month =  date('Y-m').'-01';
+        $period =  date('Y-m').'-01';
         $labels = array();
         $category = $request->input('category') ?? 'savings';
         $expenditure = $request->input('expenditure');
@@ -124,7 +127,7 @@ class SeedAllocationController extends Controller
                                     ->when($expenditure, function ($query, $expenditure) {
                                         return $query->where('expenditure', $expenditure);
                                     })
-                                  ->where('user_id', $user->id)->where('period', $month)->get();
+                                  ->where('user_id', $user->id)->where('period', $period)->get();
 
         if($category == 'expenditure'){
             foreach($budget_allocation as $allocation){
@@ -181,8 +184,13 @@ class SeedAllocationController extends Controller
 
         $request['label'] = $request->other_label;
       }
-      $current_seed = CalculatorClass::getCurrentSeed($user);
-      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+
+      $isTarget = ($request->period == 'seed_future_budget') ? 'target' : 'current';
+      
+
+      $current_seed =  ($isTarget == 'target') ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
+
       $available_allocation = $current_seed->budget_amount -  $current_detail['total'];
 
       if($request->amount > $available_allocation){
@@ -192,7 +200,7 @@ class SeedAllocationController extends Controller
       $request['recuring'] = ($request->recuring == 'on') ? 1 : 0;
       $request['seed_category'] = $request->category;
       $request['user_id'] = $user->id;
-      $request['period'] =  date('Y-m').'-01';
+      $request['period'] =   ($isTarget == 'target') ? date('Y-m',  strtotime("+1 month")).'-01' : date('Y-m').'-01';
       if($request['recuring'] == 1) $request['date'] = $request->date;
 
 
@@ -202,8 +210,8 @@ class SeedAllocationController extends Controller
 
     public function updateCategoryAllocation(Request $request, $id){
         $user = $request->user();
-        $month =  date('Y-m').'-01';
-        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $period =  date('Y-m').'-01';
+        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
         // info($request->all());
 
         if($allocated){
@@ -212,12 +220,6 @@ class SeedAllocationController extends Controller
               'amount' => 'required|numeric|min:1',
               'recuring' => 'nullable'
             ]);
-
-            // if($validator->fails()){
-            //   return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
-            // }
-
-
 
             $current_seed = CalculatorClass::getCurrentSeed($user);
             $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
@@ -239,11 +241,11 @@ class SeedAllocationController extends Controller
 
     public function deleteAllocation(Request $request, $id){
         $user = $request->user();
-        $month =  date('Y-m').'-01';
-        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $period =  date('Y-m').'-01';
+        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
         if($allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
-            
+
             $allocation->delete();
             return redirect()->back()->with('success','Allocation has been deleted');
             // if(count($record_spents) == 0){
@@ -259,12 +261,12 @@ class SeedAllocationController extends Controller
 
       public function showRecordSpend(Request $request, $id){
         $user = $request->user();
-        $month =  date('Y-m').'-01'; $cp = date('m')-1;
+        $period =  date('Y-m').'-01'; $cp = date('m')-1;
         $last_period =  date('Y-'). $cp .'-01';
-        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        $record = RecordBudgetSpent::whereId($id)->where('period', $period)->first();
         if($record){
 
-            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $month)->where('label',$record->label)->sum('amount');
+            $record->spent_current_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $period)->where('label',$record->label)->sum('amount');
             $record->spent_last_month = RecordBudgetSpent::where('user_id', $user->id)->where('period', $last_period)->where('label',$record->label)->sum('amount');
 
             return response()->json([
@@ -300,8 +302,8 @@ class SeedAllocationController extends Controller
 
     public function updateRecordSpend(Request $request, $id){
         $user = $request->user();
-        $month =  date('Y-m').'-01';
-        $record = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        $period =  date('Y-m').'-01';
+        $record = RecordBudgetSpent::whereId($id)->where('period', $period)->first();
         if($record){
             $this->validate($request, [
                 'label' => 'required|between:3,50',
@@ -320,9 +322,9 @@ class SeedAllocationController extends Controller
 
     public function deleteRecordSpend(Request $request, $id){
         $user = $request->user();
-        $month =  date('Y-m').'-01';
-        // info([$month, $id]);
-        $spent = RecordBudgetSpent::whereId($id)->where('period', $month)->first();
+        $period =  date('Y-m').'-01';
+        // info([$period, $id]);
+        $spent = RecordBudgetSpent::whereId($id)->where('period', $period)->first();
         if($spent){
             $spent->delete();
             return redirect()->back()->with('success','Record Spent has been deleted');

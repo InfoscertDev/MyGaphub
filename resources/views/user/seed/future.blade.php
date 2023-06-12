@@ -38,35 +38,6 @@
             <p id="warning-error" class="text-center small" style="display: none;"></p>
             @if(session('alert'))
                 <p class="text-center small">Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction</p>
-
-                <!-- <div class="modal" id="budgetAlertMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog  modal-dialog-centered" role="document">
-                        <div class="modal-content modal-content-centre b-rad-20">
-                            <div class="modal-body">
-                                <div class="py-4">
-                                    <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
-                                        <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Yes</a> </li>
-                                        <li class="btn list-group-item my-2 text-center"><a href="{{ route('seed') }}" class="card-link text-white">No</a> </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-content">
-                            <div class="modal-body mt-3">
-                                <h5 class="text-center">Your set amount is lower than the sum of your allocated SEED, would you like to proceed with the new budget amount? </h5>
-                            </div>
-
-                            <div class="modal-footer mx-auto mb-3 mt-2">
-                                <div class="text-left">
-                                    <button type="submit" onclick="$('#budgetForm').submit()"  class="btn btn-pry px-3 mr-3">Yes</button>
-                                </div>
-                                <div class="text-right">
-                                    <button type="button" onclick="window.location.reload()" class="btn btn-default px-3 mr-3">No</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>  $(function() {  $('#budgetAlertMode').modal('show'); })-->
                 <script>
                     $('#warning-icon').show();
                 </script>
@@ -82,14 +53,16 @@
         </div>
     </div>
 
-
+    @include('user.seed.modals.savings_allocation')
+    @include('user.seed.modals.education_allocation')
+    @include('user.seed.modals.discretionary_allocation')
+    @include('user.seed.modals.expenditure_allocation')
     <br><br>
 
     <div class="row  mt-5 mb-2">
         <div class="col-md-3">
             @if($target_detail['table']['savings'] == 0)
                 <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($target_detail['table']['savings'], 2) }} </div> -->
                     <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Savings</h3>
@@ -98,8 +71,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary', 'savings') }}">
-                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($target_detail['table']['savings'], 2) }} </div> -->
+                <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary','savings') }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Savings</h3>
@@ -120,7 +92,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-expenditure tool-pane hand" href="{{ route('seed.summary', 'expenditure') }}">
+                <a class="seed-pane seed-expenditure tool-pane hand" href="{{ route('seed.summary', ['expenditure','budget' => 'seed_future_budget']) }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Expenditure</h3>
@@ -141,7 +113,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', 'education') }}">
+                <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary','education') }}">
                     <!-- <div class="seed-badge br-none"  >{{$currency}}{{ number_format($target_detail['table']['education'], 2) }}</div>
                     <div class="tool-title"> <h3 class="center">Education</h3></div> -->
                     <div class="tool-title">
@@ -164,7 +136,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary', 'discretionary') }}">
+                <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary','discretionary') }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3 class="bold">Discretionary</h3>
