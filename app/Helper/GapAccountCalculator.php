@@ -17,6 +17,7 @@ use App\SevenG\EducationFin as Education;
 use App\Helper\CalculatorClass as Fin;
 use App\SevenG\BespokeKPI;
 use App\Wheel\CashAccount as Cash;
+use App\Helper\AllocationHelpers;
 
 class GapAccountCalculator
 {
@@ -308,9 +309,9 @@ class GapAccountCalculator
                 $accured_current_income = ($current_year_bal * $assured_intrest) / 12;
             }
             $accured_retire_income = ($retire_balance * $current_year_accured) / $current_year_bal;
-            $seed = $average_seed ? $average_seed : 1;
+
+            $seed = $average_seed['total'] ? $average_seed['total'] : 1;
             $percentage_cos = ($accured_current_income / $seed) * 100;
-            // info(['Accured', $assured_intrest, $accured_current_income]);
 
             $pension->year_retirement = $year_to_retirement;
             $pension->current_year_bal = $current_year_bal;
@@ -321,7 +322,7 @@ class GapAccountCalculator
         }
         return $pensions;
     }
-
+ 
     public static function calcPensionAccount($accounts){
         $values = []; $labels = [];
         foreach($accounts as $account){
@@ -372,7 +373,7 @@ class GapAccountCalculator
     }
 
     public static function calcExpenditure($user,$expenditure){
-        $total_seed = CalculatorClass::averageSeedDetail($user)['total_seed'];
+        $total_seed =  AllocationHelpers::averageSeedDetail($user)['average_seed'];
         $averageSeed = CalculatorClass::getAverageSeed($user);
         $values = []; $labels = [];
         if($total_seed){
@@ -392,7 +393,6 @@ class GapAccountCalculator
 
     public static function calcPhilantrophy($user){
         $averageSeed = CalculatorClass::getAverageSeed($user);
-        // $total_seed = CalculatorClass::averageSeedDetail($user)['total_seed'];
         $values = []; $labels = [];
         $values = [$averageSeed->charity, $averageSeed->family_support, $averageSeed->personal_commitments, $averageSeed->others ];
 

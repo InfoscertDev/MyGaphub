@@ -19,8 +19,6 @@ class AllocationHelpers{
         $current_seed = Budget::where('user_id', $user->id)->where('period', $current_period)->first();
         $last_seed = Budget::where('user_id', $user->id)->where('period', $last_period)->first();
 
-
-        // || ($seed->budget_amount == 0 && $last_seed)
         if(!$current_seed ){
             $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
             $seed->budget_amount = isset($last_seed) ? $last_seed->budget_amount : 0;
@@ -89,6 +87,7 @@ class AllocationHelpers{
         $calculator = Calculator::where('user_id', $user->id)->first();
         $year = (int)date('Y') + 1;
         $target = $year.'-01-01';
+
         $current_period = strtotime(date('Y-m').'-01');
         $from = date('Y-m-d' , strtotime("-7 months",  $current_period));
         $to = date('Y-m-d' , strtotime("-1 months",  $current_period));
@@ -114,9 +113,8 @@ class AllocationHelpers{
         }
 
         $average_seed = AllocationHelpers::getSeedAverage($calculator, $seeds, $total_seeds);
-        // info($average_seed);
 
-        return compact('average_seed', 'historic_seed', 'periods');
+        return compact('average_seed', 'historic_seed', 'periods','total_seeds');
     }
 
     public static function averageSeedExpenditure($user){

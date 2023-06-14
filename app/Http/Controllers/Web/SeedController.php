@@ -130,7 +130,7 @@ class SeedController extends Controller
         $average_seed = CalculatorClass::getAverageSeed($user);
         $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
 
-        info($target_seed);
+        // info($target_seed);
         $available_allocation = $target_seed->budget_amount - $target_detail['total'];
 
         return view('user.seed.future', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',

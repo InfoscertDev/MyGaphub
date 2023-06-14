@@ -18,6 +18,7 @@ use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\HelperClass as Helper;
 use App\Helper\AllocationHelpers;
 use App\UserAudit;
+use App\Models\Asset\SeedBudgetAllocation;
 
 class AnalyticsClass {
 
@@ -50,8 +51,8 @@ class AnalyticsClass {
                                 ->count();
 
         if($audit->is_allocated){
-            $seveng = $seveng = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get();
-            $allocated = GapAccount::calcLiabilitiesAccount([], $user, false, $seveng);
+            $liability =  Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get();
+            $allocated = GapAccount::calcLiabilitiesAccount([], $user, false, $liability);
             $credit->baseline = $allocated['user_baseline'];
             $credit->current = $allocated['user_current'];
         }
@@ -74,7 +75,9 @@ class AnalyticsClass {
 
         if($total_seeds > 1){
             $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);
+            $expenditure_detail =  AllocationHelpers::averageSeedExpenditure($user);
             $grand->current = array_sum($philantrophy_detail['values']);
+            $freedom->target =  array_sum($expenditure_detail['values']);
         }
     }
 
@@ -150,7 +153,6 @@ class AnalyticsClass {
             $step7 = 0;
         }
 
-        // return compact('step1', 'step2', 'step3', 'step4', 'step5','step6','step7');
         return compact('step7', 'step6', 'step5', 'step4', 'step3','step2','step1');
     }
 
@@ -194,10 +196,18 @@ class AnalyticsClass {
         return compact('steps', 'backgrounds');
     }
 
-    public static function seveng_steps(){
-        // Variable
-        $user = auth()->user();
+    public static function seveng_steps($user){
         AnalyticsClass::initSevenG($user);
+        //
+        $audit = UserAudit::where('user_id', $user->id)->select('is_allocated')->first();
+        $fin =  Fin::finicial($user);
+        $current_period = strtotime(date('Y-m').'-01');
+        $from = date('Y-m-d' , strtotime("-7 months",  $current_period));
+        $to = date('Y-m-d' , strtotime("-1 months",  $current_period));
+        $total_seeds = Budget::where('user_id', $user->id)
+                                ->whereBetween('period', [$from, $to])
+                                ->selectRaw('count(*) as total, period')
+                                ->count();
          // Analytics
         $alpha = Alpha::where('user_id', $user->id)->select('current','target')->first();
         $beta = Beta::where('user_id', $user->id)->select('current','target')->first();
@@ -206,6 +216,35 @@ class AnalyticsClass {
         $education = Education::where('user_id', $user->id)->select('current','target')->first();
         $freedom = Freedom::where('user_id', $user->id)->select('current','target')->first();
         $grand = Grand::where('user_id', $user->id)->select('current','target')->first();
+
+        if($audit->is_allocated){
+            $liability = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get();
+            $allocated = GapAccount::calcLiabilitiesAccount([], $user, false, $liability);
+            $credit->baseline = $allocated['user_baseline'];
+            $credit->current = $allocated['user_current'];
+        }
+        if($debt->isArchive){
+            $primary_resident = Mortgage::where('user_id', $user->id)->where('secured_against','Primary Residential Home')
+                                ->where('isArchive', 0)->first();
+            if($primary_resident){
+                $debt->baseline = $primary_resident->open_balance;
+                $debt->current = $primary_resident->current_balance;
+            }
+        }
+        if($freedom){
+            $freedom->current = $fin['portfolio'];
+            $freedom->target = $fin['cost'];
+        }
+        if(!$grand->main){
+            $grand->current = $fin['calculator']->charity;
+        }
+        if($total_seeds > 1){
+            $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);
+            $expenditure_detail =  AllocationHelpers::averageSeedExpenditure($user);
+
+            $grand->current = array_sum($philantrophy_detail['values']);
+            $freedom->target = array_sum($expenditure_detail['values']);
+        }
 
         $seveng = ['grand'=>$grand,'freedom'=>$freedom, 'education'=>$education, 'debt'=>$debt
                     ,'credit'=>$credit,'beta'=>$beta, 'alpha'=> $alpha ];

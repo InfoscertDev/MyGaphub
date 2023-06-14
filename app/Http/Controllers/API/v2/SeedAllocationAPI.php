@@ -33,12 +33,14 @@ class SeedAllocationAPI extends Controller
           return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
         }
 
-        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+        $isTarget = ($request->period == 'seed_future_budget') ? 'target' : 'current';
 
-        // if($current_detail['total'])
+        $current_seed =  ($isTarget == 'target') ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
+        $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
+
         $request['seed_category'] = $request->category;
         $request['user_id'] = $user->id;
-        $request['period'] =  date('Y-m').'-01';
+        $request['period'] = ($isTarget == 'target') ? date('Y-m',  strtotime("+1 month")).'-01' : date('Y-m').'-01';
         if($request['recuring'] == 1) $request['date'] = $request->date;
         $budget_allocation =  SeedBudgetAllocation::create($request->all());
 
@@ -100,7 +102,8 @@ class SeedAllocationAPI extends Controller
       }
 
 
-    public function listAllocation(Request $request){
+
+      public function listAllocation(Request $request){
         $user = $request->user();
 
         $month =  date('Y-m').'-01';
@@ -144,6 +147,7 @@ class SeedAllocationAPI extends Controller
          ]);
 
     }
+
     public function showAlloction(Request $request, $id){
         $user = $request->user();
 

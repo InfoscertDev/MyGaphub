@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
+use App\Helper\AllocationHelpers;
 use App\Helper\HelperClass;
 use App\Helper\CalculatorClass as Fin;
 use App\FinicialCalculator as Calculator;
@@ -193,7 +194,7 @@ class IndependenceController extends Controller
         }
         $dob = $profile->date_of_birth;
         if($dob){
-            $average_seed = CalculatorClass::averageSeedDetail($user)['total'];
+            $average_seed = AllocationHelpers::averageSeedDetail($user)['average_seed'];
             $retirement = GapAccount::pensionPOT($retirement, $dob, $average_seed);
         }
 

@@ -19,31 +19,32 @@ use App\ILab;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Asset\SeedBudget as Budget;
 
+
 class SeedAPI extends Controller
 {
     public function index(Request $request){
       $user = $request->user();
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
+      $average_seed = CalculatorClass::getAverageSeed($user);
 
       //Rollover  diaog
       $preview = $request->input('preview');
+
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
         $current_seed->save();
-        // return response()->json([
-        //     'status' => true,
-        //     'message' => 'Rollover changed'
-        // ]);
       }
       //
-      $backgrounds = array_reverse(GapAccount::accountBackground());
-      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
-      $target_detail = CalculatorClass::getSeedDetail($target_seed);
-      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
       $historic_seed =AllocationHelpers::averageSeedDetail($user)['historic_seed'];
       $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
+      $backgrounds = array_reverse(GapAccount::accountBackground());
+
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
+      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+
       AllocationHelpers::monthlyRecurssionChecker($user);
 
       $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed', 'periods','historic_seed', 'backgrounds' );
@@ -82,11 +83,13 @@ class SeedAPI extends Controller
         return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
       }
 
+      $isTarget = ($request->period == 'seed_future_budget') ? 'target' : 'current';
+
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $available_allocation = $request->budget - $current_detail['total'];
 
         if($available_allocation >= 0 || $request->seed == 'ediucfhjbndcfjnkdcknjeusydgfbhbswd'){
-            $seed = CalculatorClass::getCurrentSeed($user);
+            $seed = ($isTarget == 'target') ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
             $seed->budget_amount =  $request->budget;
             $seed->priviewed = 1;
             $seed->update();

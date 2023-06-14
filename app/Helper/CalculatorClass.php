@@ -8,8 +8,8 @@ use App\DiscretionaryBudget as Philantrophy;
 use App\UserAudit as Audit;
 use App\Helper\IncomeHelper;
 use stdClass;
+use App\Helper\AllocationHelpers;
 use App\Models\Asset\SeedBudgetAllocation;
-
 
 //
 class CalculatorClass{
@@ -18,25 +18,29 @@ class CalculatorClass{
         // Initial Budget or Calculator Workflow
         $calculator = Calculator::where('user_id', $user->id)->first();
         // Current Budget or Average Seed
-        $seed = CalculatorClass::averageSeedDetail($user);
-        $averageSeed = CalculatorClass::getAverageSeed($user);
-        $isBudgetable = ($seed['total_seed'] > 1) ? true : false;
-        // Use Seed if Average Income is available
-        if($seed['total_seed'] > 1){
+        $allocated = AllocationHelpers::averageSeedDetail($user);
+        $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
+        $seed = $allocated['average_seed'];
+        $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
+
+        // Use Budget if Average Income is available
+        if($isBudgetable){
             $cost = $seed['total'];
             $calculator->periodic_savings = $seed['table']['savings'];
             $expenditure = $seed['table']['expenditure'];
             $calculator->charity = $seed['table']['discretionary'];
             $calculator->education =  $seed['table']['education'];
-            $calculator->mortgage = $averageSeed->accomodation;
-            $calculator->mobility = $averageSeed->mobility;
-            $calculator->utility = $averageSeed->utilities;
-            $calculator->expenses = $averageSeed->expenses;
-            $calculator->dept_repay = $averageSeed->debt_repay;
+
+            $calculator->mortgage = $averageExpenditure['values'][0];
+            $calculator->mobility = $averageExpenditure['values'][1];
+            $calculator->expenses = $averageExpenditure['values'][2];
+            $calculator->utility = $averageExpenditure['values'][3];
+            $calculator->dept_repay = $averageExpenditure['values'][4];
         }else{
             // Primary Cost of Living
             $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility +
                      $calculator->expenses + $calculator->dept_repay;
+
             $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
         }
         // Portfolio and Asset
@@ -52,14 +56,16 @@ class CalculatorClass{
             $audit->save();
             $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
         }
+
         $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
         $non_portfolio  = $portfolios['income_non_portfolio'];
         $calculator->other_income = $portfolio;
 
-        // $investment = $funds['investment'];
         $saving = $calculator->extra_save;
+        // $investment = $funds['investment'];
         $investment = $calculator->investment;
         $roce = $calculator->roce;
+
         return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce',
                             'expenditure','investment', 'calculator', 'isBudgetable');
     }
@@ -149,8 +155,9 @@ class CalculatorClass{
         $seeds =  Budget::where('user_id', $user->id)->where('period', '!=', $target)
                             ->where('period', '!=', date('Y-m').'-01')
                             ->latest()->limit(6)->get();
+        //List all avaialable period
         $periods = array_column($seeds->toArray(), 'period');
-        // info($periods);
+
 
         $savings = [];
         $education = [];
@@ -175,7 +182,6 @@ class CalculatorClass{
             array_push($discretionary,  $seed->others) ;
         }
 
-        // info(['Calculator >>>'.$calculator]);
         $mortgage = isset($calculator->mortgage) ? $calculator->mortgage : 0;
         $calc_expenditure =  $mortgage + $calculator->mobility + $calculator->utility +
                         $calculator->expenses + $calculator->dept_repay;

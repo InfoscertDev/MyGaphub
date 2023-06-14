@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\UserProfile as Profile;
 use App\Helper\HelperClass;
+use App\Helper\AllocationHelpers;
+
 use Illuminate\Support\Facades\Validator;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\CalculatorClass as Fin;
@@ -37,7 +39,7 @@ class ToolAPI extends Controller
 
         $residential = Wheel::primaryEquityDetails($user);
         $net_detail = GapAccount::homeNetWorth($user);
-        $average_detail = Fin::averageSeedDetail($user);
+        $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
 
         if(!$audit->dashboard){
             $audit->dashboard = json_encode($tiles);

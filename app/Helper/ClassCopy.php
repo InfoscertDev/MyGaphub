@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Helper\AllocationHelpers;
 use App\FinicialCalculator as Calculator;
 use App\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
@@ -17,7 +18,7 @@ class CalculatorClass{
         // Initial Budget or Calculator Workflow
         $calculator = Calculator::where('user_id', $user->id)->first();
         // Current Budget or Average Seed
-        $seed = CalculatorClass::averageSeedDetail($user);
+        $seed =  AllocationHelpers::averageSeedDetail($user)['average_seed'];
         $averageSeed = CalculatorClass::getAverageSeed($user);
         $isBudgetable = ($seed['total_seed'] > 1) ? true : false;
         // Use Seed if Average Income is available

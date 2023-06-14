@@ -88,12 +88,11 @@ class HomeController extends Controller
             $personal = new PersonalAssistance($user);
             $assistance = $personal->assistance();
 
-            // info([$assistance['acquisition']['asset']]);
             $currency = explode(" ", $calculator->currency)[0];
             $snap = Fin::snapshot($fin['calculator'], $fin['cost']);
+
             $residential = Wheel::primaryEquityDetails($user);
             $net_detail = GapAccount::homeNetWorth($user);
-            $average_detail = Fin::averageSeedDetail($user);
             $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
             $seveng = SevenG::seveng_steps($user)['seveng'];
 
