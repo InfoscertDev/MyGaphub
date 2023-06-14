@@ -55,6 +55,18 @@ class SeedAPI extends Controller
       ], 200);
     }
 
+    public function target(){
+        $user = $request->user();
+        $clone = $request->input('clone');
+        $target_seed = CalculatorClass::getTargetSeed($user, $clone);
+
+        return response()->json([
+            'status' => true,
+            'data' => $target_seed,
+            'message' => 'Seed information'
+          ], 200);
+    }
+
     public function periodHistory(Request $request, $period){
         $user = $request->user();
         $backgrounds = array_reverse(GapAccount::accountBackground());
