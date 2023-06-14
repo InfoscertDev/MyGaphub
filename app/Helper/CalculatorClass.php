@@ -115,7 +115,7 @@ class CalculatorClass{
                              ->orderBy('period', 'DESC')->first();
 
         if(!$target_seed){
-            if($clone){
+            if($clone == 'rjkhbhfhdhbd'){
                 $current_seed = Budget::where('user_id', $user->id)->where('period', $target_period)->first();
                 $target_seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $target_period]);
                 $target_seed->budget_amount = isset($current_seed) ? $current_seed->budget_amount : 0;
@@ -132,7 +132,7 @@ class CalculatorClass{
                     $newallocation['period'] = $target_period;
                     SeedBudgetAllocation::create($newallocation);
                 }
-            }else{
+            }else if($clone == "ygfebhjgsbh"){
                 $target_seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $target_period]);
             }
         }
