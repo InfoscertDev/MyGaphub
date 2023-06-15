@@ -20,7 +20,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="{{$asset->asset_value}}" name="amount" id="amount"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="{{$asset->asset_value}}" name="amount" id="amount"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -29,7 +29,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="revenue" id="revenue"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="revenue" id="revenue"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -41,7 +41,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="management" id="management"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="management" id="management"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -50,7 +50,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="taxes" id="taxes"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="taxes" id="taxes"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -59,7 +59,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="maintenance" id="maintenance"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="maintenance" id="maintenance"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -68,7 +68,7 @@
                     <td>
                         <div class="price-wrap d-flex">
                             <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
-                            <input type="number" required  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="others" id="others"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
+                            <input type="number" required  step="0.01"  onfocus="focalPoint(this)"  min="0" max="10000000000" value="" name="others" id="others"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                         </div>
                     </td>
                 </tr>
@@ -245,14 +245,14 @@
         // $('#updatePeriod').text(period);
         $('#jahbnkmnbjlikvhjcvhjfcghv').val(period);
         this.asset_records = data.asset_records;
-        $('#amount').val(this.asset_records.amount);
-        $('#revenue').val(this.asset_records.revenue);
-        $('#management').val(this.asset_records.management);
-        $('#taxes').val(this.asset_records.taxes);
-        $('#others').val(this.asset_records.others);
-        $('#maintenance').val(this.asset_records.maintenance);
-        $('#maintenance_details').val(this.asset_records.maintenance_details);
-        $('#note').val(this.asset_records.note);
+        $('#amount').val(this.asset_records?.amount);
+        $('#revenue').val(this.asset_records?.revenue);
+        $('#management').val(this.asset_records?.management);
+        $('#taxes').val(this.asset_records?.taxes);
+        $('#others').val(this.asset_records?.others);
+        $('#maintenance').val(this.asset_records?.maintenance);
+        $('#maintenance_details').val(this.asset_records?.maintenance_details);
+        $('#note').val(this.asset_records?.note);
         $('#confirmUpdateRecordAddition').modal('hide');
     }
     let edit;

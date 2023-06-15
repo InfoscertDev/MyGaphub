@@ -227,10 +227,10 @@
 
             <div class="modal-footer mx-auto">
                 <div class="text-left">
-                    <button type="button" class="btn btn-pry px-3 mr-3"><a href="{{ route('seed.future',['clone' => 'rjkhbhfhdhbd'] ) }}" class="card-link hand text-white" >Yes</a> </button>
+                    <button type="button" class="btn btn-pry px-3 mr-3">    <a href="{{ route('seed.future',['clone' => 'rjkhbhfhdhbd'] ) }}" class="card-link hand text-white" >Yes</a> </button>
                 </div>
                 <div class="text-right">
-                    <button type="button" class="btn btn-default px-3 mr-3"><a href="{{ route('seed.future') }}" class="card-link hand" >No</a>  </button>
+                    <button type="button" class="btn btn-default px-3 mr-3"><a href="{{ route('seed.future',['clone' => 'ygfebhjgsbh'] ) }}" class="card-link hand" >No</a>  </button>
                 </div>
             </div>
         </div>

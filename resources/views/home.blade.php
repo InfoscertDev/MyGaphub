@@ -439,7 +439,7 @@
                             <span class="pane-para"><span class="tile">Recomendations:</span> </span>
                             <span class="pane-para mb-1">
                                @if($assistance['acquisition']['type'] == 'reap' && $assistance['acquisition']['asset'])
-                                    <a class="text-white" href="{{ route('user.reap-opportunity',['appreciating', 'sasset' => $assistance['acquisition']['asset']->id]) }}">   {{  str_limit($assistance['acquisition']['asset']->name, $limit = 40, $end = '...') }} </a>
+                                    <a class="text-white" href="{{ route('user.single_reap',[$assistance['acquisition']['asset']->id]) }}">   {{  str_limit($assistance['acquisition']['asset']->name, $limit = 40, $end = '...') }} </a>
                                @endif
                                <!-- @if($assistance['acquisition']['type'] == 'ganp' && $assistance['acquisition']['asset'])
                                     <a class="text-white" href="{{ route('user.single_ganp',[ $assistance['acquisition']['asset']->cultivation->id, 'tresh' => rand(1000,9999) ])  }}">   {{  str_limit($assistance['acquisition']['asset']->cultivation->name, $limit = 40, $end = '...') }} </a>

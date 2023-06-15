@@ -25,7 +25,7 @@ class CalculatorClass{
 
         // Use Budget if Average Income is available
         if($isBudgetable){
-            $cost = $seed['total'];
+            $cost = round($seed['total'], 2);
             $calculator->periodic_savings = $seed['table']['savings'];
             $expenditure = $seed['table']['expenditure'];
             $calculator->charity = $seed['table']['discretionary'];
