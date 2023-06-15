@@ -67,10 +67,6 @@ class SeedAllocationAPI extends Controller
             return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
         }
 
-        // if($request->amount >= $available_allocation  && !($allocated->amount >= $request->amount)){
-        //     return response()->json(['status' => false,'message' => 'Your set amount is lower than the sum of your allocated SEED, reduce any of your allocated SEED to accommodate this reduction'], 404);
-        // }
-
          $allocated->update($request->all());
 
           return response()->json(['status' => true, 'data' => $allocated,'message' => 'Seed Allocation has been updated']);

@@ -186,7 +186,7 @@ class SeedAllocationController extends Controller
       }
 
       $isTarget = ($request->period == 'seed_future_budget') ? 'target' : 'current';
-      
+
 
       $current_seed =  ($isTarget == 'target') ? CalculatorClass::getTargetSeed($user) : CalculatorClass::getCurrentSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
@@ -205,7 +205,8 @@ class SeedAllocationController extends Controller
 
 
       $budget_allocation =  SeedBudgetAllocation::create($request->all());
-      return redirect()->route('seed.summary', $request->category)->with(['success' => 'Allocation has been created']);
+      return redirect()->back()->with(['success' => 'Allocation has been created']);
+    //   return redirect()->route('seed.summary', $request->category)->with(['success' => 'Allocation has been created']);
     }
 
     public function updateCategoryAllocation(Request $request, $id){

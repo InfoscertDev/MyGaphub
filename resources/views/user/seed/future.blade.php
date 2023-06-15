@@ -71,7 +71,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary','savings') }}">
+                <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary', ['savings','budget' => 'seed_future_budget']) }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Savings</h3>
@@ -113,9 +113,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary','education') }}">
-                    <!-- <div class="seed-badge br-none"  >{{$currency}}{{ number_format($target_detail['table']['education'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Education</h3></div> -->
+                <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', ['education','budget' => 'seed_future_budget']) }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3 class="bold">Education</h3>
@@ -136,7 +134,7 @@
                     </div>
                 </div>
             @else
-                <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary','discretionary') }}">
+                <a class="seed-pane seed-discretionary tool-pane hand"  href="{{ route('seed.summary',['discretionary','budget' => 'seed_future_budget']) }}">
                     <div class="tool-title">
                         <div class="center">
                             <h3 class="bold">Discretionary</h3>
