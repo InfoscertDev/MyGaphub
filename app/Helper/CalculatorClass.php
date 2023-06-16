@@ -58,7 +58,8 @@ class CalculatorClass{
         }
 
         $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
-        $non_portfolio  = $portfolios['income_non_portfolio'];
+        $portfolio = round($portfolio,2);
+        $non_portfolio  = round($portfolios['income_non_portfolio'], 2);
         $calculator->other_income = $portfolio;
 
         $saving = $calculator->extra_save;

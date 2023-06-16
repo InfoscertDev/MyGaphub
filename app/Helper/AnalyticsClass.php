@@ -242,8 +242,8 @@ class AnalyticsClass {
             $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);
             $expenditure_detail =  AllocationHelpers::averageSeedExpenditure($user);
 
-            $grand->current = array_sum($philantrophy_detail['values']);
-            $freedom->target = array_sum($expenditure_detail['values']);
+            $grand->current = round(array_sum($philantrophy_detail['values']), 2);
+            $freedom->target =  round(array_sum($expenditure_detail['values']), 2);
         }
 
         $seveng = ['grand'=>$grand,'freedom'=>$freedom, 'education'=>$education, 'debt'=>$debt
