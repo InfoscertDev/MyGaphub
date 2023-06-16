@@ -59,11 +59,12 @@ class SeedAPI extends Controller
         $user = $request->user();
         $clone = $request->input('clone');
         $target_seed = CalculatorClass::getTargetSeed($user, $clone);
+        $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
 
         return response()->json([
             'status' => true,
-            'data' => $target_seed,
-            'message' => 'Seed information'
+            'data' => compact('target_seed', 'target_detail'),
+            'message' => 'Seed Future information'
           ], 200);
     }
 
