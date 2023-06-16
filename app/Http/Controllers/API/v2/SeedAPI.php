@@ -55,7 +55,7 @@ class SeedAPI extends Controller
       ], 200);
     }
 
-    public function target(){
+    public function target(Request $request){
         $user = $request->user();
         $clone = $request->input('clone');
         $target_seed = CalculatorClass::getTargetSeed($user, $clone);
