@@ -117,7 +117,7 @@ class CalculatorClass{
 
         if(!$target_seed){
             if($clone == 'rjkhbhfhdhbd'){
-                $current_seed = Budget::where('user_id', $user->id)->where('period', $target_period)->first();
+                $current_seed = Budget::where('user_id', $user->id)->where('period', $current_period)->first();
                 $target_seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $target_period]);
                 $target_seed->budget_amount = isset($current_seed) ? $current_seed->budget_amount : 0;
                 $target_seed->priviewed = 1;
@@ -125,7 +125,7 @@ class CalculatorClass{
 
                 // Budget Allocations
                 $current_allocations = SeedBudgetAllocation::where('user_id', $user->id)
-                            ->where('period', $target_period)->where('status',1)
+                            ->where('period', $current_period)->where('status',1)
                             ->get()->toArray();
 
                 foreach ($current_allocations as $allocation) {

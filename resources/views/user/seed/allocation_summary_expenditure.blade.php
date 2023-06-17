@@ -21,7 +21,11 @@
                     <a href="{{ route('seed.create') }}" class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
                 <span class="mx-auto text-center">
-                    {{ date('F')}} {{ date('Y')}}
+                    @if( str_contains(url()->full(), 'future') )
+                         {{ date('F Y',  strtotime("+1 month")) }}
+                    @else
+                        {{ date('F')}} {{ date('Y')}}
+                    @endif
                 </span>
             </div>
             <div class="summary-card">
@@ -34,11 +38,19 @@
                     <div class="list-group">
                         @foreach($allocations as $allocation)
                             <div class="list-group-item" >
-                                <a class="d-flex mt-2 mb-1 card-link" style="color: inherit;" href="{{ route('seed.summary',     [ 'expenditure','category' => $allocation['label'] ]) }}">
-                                    <span class="box-identify box-expenditure"></span>
-                                    <h5 class="text-capitalize"> {{ filterExpenditure($allocation['label']) }} </h5>
-                                    <h5 class="flex-end">{{$currency}}{{ (isset($allocation['amount'])) ? number_format(($allocation['amount']), 2) : 0 }}</h5>
-                                </a>
+                                @if( str_contains(url()->full(), 'future') )
+                                    <a class="d-flex mt-2 mb-1 card-link" style="color: inherit;" href="{{ route('seed.summary', [ 'expenditure','category' => $allocation['label'],'budget' => 'seed_future_budget' ]) }}">
+                                        <span class="box-identify box-expenditure"></span>
+                                        <h5 class="text-capitalize"> {{ filterExpenditure($allocation['label']) }} </h5>
+                                        <h5 class="flex-end">{{$currency}}{{ (isset($allocation['amount'])) ? number_format(($allocation['amount']), 2) : 0 }}</h5>
+                                    </a>
+                                @else
+                                    <a class="d-flex mt-2 mb-1 card-link" style="color: inherit;" href="{{ route('seed.summary', [ 'expenditure','category' => $allocation['label'] ]) }}">
+                                        <span class="box-identify box-expenditure"></span>
+                                        <h5 class="text-capitalize"> {{ filterExpenditure($allocation['label']) }} </h5>
+                                        <h5 class="flex-end">{{$currency}}{{ (isset($allocation['amount'])) ? number_format(($allocation['amount']), 2) : 0 }}</h5>
+                                    </a>
+                                @endif
                             </div>
                         @endforeach
                     </div>
