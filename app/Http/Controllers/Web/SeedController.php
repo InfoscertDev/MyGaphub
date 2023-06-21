@@ -19,6 +19,7 @@ use App\Helper\CalculatorClass;
 use App\Helper\GapExchangeHelper;
 use App\Helper\IncomeHelper;
 use App\ILab;
+use Carbon\Carbon;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
@@ -167,23 +168,25 @@ class SeedController extends Controller
     public function periodHistory(Request $request, $period){
       $user = auth()->user();
       $page_title = "My Historic Seed";
-      $support = true; $month =  date('Y-m').'-01';
+      $support = true;
+      $month =  date('Y-m').'-01';
       $preview = $request->input('preview');
 
-      $seed_backgrounds = CalculatorClass::accountBackground();
-      $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
-      $current_seed = CalculatorClass::getCurrentSeed($user);
-      $target_seed = CalculatorClass::getTargetSeed($user);
-      $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
-      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+      $period_end = Carbon::createFromFormat('Y-m-d', $period)
+                        ->endOfMonth()->format('Y-m-d');
 
-      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+      $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+      $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                ->whereBetween('period', [$period, $period_end])->get();
+      $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
+
       $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
-      $available_allocation = $current_seed->budget_amount - $current_detail['total'];
-      return view('user.seed.period_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail','average_detail', 'monthly_seed', 'periods', 'period'
+
+
+      return view('user.seed.period_history', compact('page_title', 'support', 'currency',
+        'monthly_seed', 'periods', 'period', 'record_seed'
       ));
     }
 
@@ -333,7 +336,7 @@ class SeedController extends Controller
         // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
         $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);// compact('labels','values') ;
 
-        return view('user.360.philantrophy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
+        return view('user.360.philanthropy', compact('isValid', 'currency','currencies', 'net_detail' ,'net','equity_info','income_detail', 'philantrophy', 'grand','philantrophy_detail'));
     }
 
     public function savePhilantrophy(Request $request){

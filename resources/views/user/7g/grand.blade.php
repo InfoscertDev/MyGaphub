@@ -83,7 +83,7 @@
             @endif
             <div class="text-center mb-4">
                 @if ($grand->main)
-                    <button class="btn btn-pry px-5" type="button"> <a href="{{route('360.philantrophy')}}" class="card-link text-white">View More</a> </button>
+                    <button class="btn btn-pry px-5" type="button"> <a href="{{route('360.philanthropy')}}" class="card-link text-white">View More</a> </button>
                 @else
                     <button class="btn btn-pry px-5" type="submit">Save</button>
                 @endif

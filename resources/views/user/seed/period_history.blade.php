@@ -18,11 +18,16 @@
             </div>
         </div>
         <br> <br>
-        <div class="col-md-5 col-sm-12 sm-default mt-3">
+        <div class="col-md-12 col-sm-12 sm-default mt-3">
             <div class="d-flex">
                 <h3 class="bold mr-2">
-                Total: {{$currency}}{{ number_format($monthly_seed['total'], 2) }}
+                    Total: {{$currency}}{{ number_format($monthly_seed['total'], 2) }}
                 </h3>
+                <div class="flex-end">
+                    <h3 class="bold mr-2">
+                        Total Spent: {{$currency}}{{ number_format($record_seed, 2) }}
+                    </h3>
+                </div>
             </div>
         </div>
     </div>
@@ -31,7 +36,6 @@
     <div class="row  mt-2 mb-2">
         <div class="col-md-3">
             <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($average_detail['table']['savings'], 2) }} </div> -->
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Savings</h3>
@@ -75,6 +79,24 @@
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
             <p class="text-center text-muted font-italic">Click any of the tiles to view details or click here to view <a href="{{ route('seed.chart_history') }}"> charts</a>  </p>
+        </div>
+        <div class="col-12 mt-5 mx-auto text-center">
+            @if($record_seed > $monthly_seed['total'] )
+                <div>
+                    <p>You were <span class="text-danger">{{$currency}}{{ number_format( ($record_seed - $monthly_seed['total']), 2) }}</span> over your budget</p>
+                </div>
+            @endif
+            @if($monthly_seed['total'] > $record_seed)
+                <div class="">
+                    <i class="fa-light fa-face-worried"></i>
+                    <p>You were <span class="text-success">{{$currency}}{{ number_format( ($monthly_seed['total'] - $record_seed), 2) }}</span> under your budget</p>
+                </div>
+            @endif
+            @if($monthly_seed['total'] == $record_seed)
+                <div class="">
+                    <p>You were spot on with your budget</p>
+                </div>
+            @endif
         </div>
     </div>
 

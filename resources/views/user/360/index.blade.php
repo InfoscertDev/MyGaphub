@@ -27,9 +27,9 @@
                 @if (count($tiles))
                     @foreach ($tiles as $key => $tile)
                     <li class="list-group-item my-1">
-                            <a href="{{ url('/home/360/'.$tile['account_name'] )}}" class="card-link text-white">
+                        <a href="{{ url('/home/360/'.$tile['account_name'] )}}" class="d-flex card-link text-white">
                             <span class="mr-2 text-capitalize"> {{$tile['account_name']}} –</span> <span class="mr-2 bold"> {{$tile['account_type']}}  </span> <span class="mr-2">{{$currency}}{{ number_format( $tile['sum'] , 2) }}</span>
-                            <span class="pull-right"><i class="fa fa-chevron-right"></i> </span>
+                            <span class="flex-end"><i class="fa fa-chevron-right"></i> </span>
                         </a>
                     </li>
                     @endforeach
