@@ -13,9 +13,9 @@ class CurrencyRate extends Command
      * The name and signature of the console command.
      *
      * @var string
-     */ 
+     */
     protected $signature = 'currency:rate';
- 
+
     /**
      * The console command description.
      *
@@ -40,8 +40,8 @@ class CurrencyRate extends Command
      */
     public function handle()
     {
-        info(['Integrating', date('Y-m-d H:i')]);
-        $integration = new Integrations(); 
+        // info(['Integrating', date('Y-m-d H:i')]);
+        $integration = new Integrations();
         $integration->load_currency_converter();
     }
-}  
+}

@@ -311,7 +311,7 @@
               <label for='' class="circle " id="tab_9">
                 <div class="lan"  id="">
                   <span class="line"></span>
-                  <a target="" href="{{ route('360.philantrophy') }}">
+                  <a target="" href="{{ route('360.philanthropy') }}">
                     <img src="https://www.mygaphub.com/360/img/Philantropy.jpg" alt="" class="img overton {{ Request::is('home/360/philantrophy') ? 'current_wheel' : '' }} " id="lab_9">
                   </a>
                 </div>

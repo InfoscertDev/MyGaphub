@@ -295,7 +295,7 @@ class SeedController extends Controller
 
 
 
-     public function philantrophy(){
+     public function philanthropy(){
         $user = auth()->user();
         $month =  date('Y-m').'-01';
         $isValid = SevenG::isSevenGVal($user);

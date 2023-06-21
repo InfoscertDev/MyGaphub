@@ -55,21 +55,21 @@ class WheelClass extends Controller
         $myaccount = Income::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $account_items = Income::where('user_id', $user->id)->count();
         $account_detail = GapAccount::calcIncomeAccount($user, $myaccount);
-        $fin = CalculatorClass::finicial($user);  
+        $fin = CalculatorClass::finicial($user);
         $income_detail = IncomeHelper::analyseIncome($user,$fin['portfolio']);
         $calculator = Calculator::where('user_id', $user->id)->first();
         if($isUpdate){
             if($income_detail['portfolio_diff'] < 0){
                 $calculator->other_income = $income_detail['income_portfolio'];
                 $calculator->save();
-            } 
-        }else{ 
+            }
+        }else{
             $calculator->other_income = $income_detail['income_portfolio'];
             $calculator->save();
         }
         GapAccount::saveUpdatedTiles($user, 'income', $account_items, $account_detail['sum'] );
     }
-    
+
     public static function equityDetails($user){
         $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $equity_items = HomeEquity::where('user_id', $user->id)->count();
@@ -78,9 +78,9 @@ class WheelClass extends Controller
            $eq->mortgage;
            $eq->equity =  $eq->market_value -  ($eq->mortgage ? $eq->mortgage->current_balance : 0);
            $eq->ownership = round($eq->equity / (($eq->market_value  > 0) ? $eq->market_value : 1)) * 100;
-           $eq->chart = [ 'labels' => ['Mortgage', 'Home Equity'], 
+           $eq->chart = [ 'labels' => ['Mortgage', 'Home Equity'],
                         'values' => [($eq->mortgage ? $eq->mortgage->current_balance : 0), $eq->equity ] ];
-        } 
+        }
         $backgrounds = GapAccount::accountBackground();
         return compact('backgrounds','equity','equity_detail');
     }
@@ -94,12 +94,12 @@ class WheelClass extends Controller
                 $primary->mortgage;
                 $primary->equity =  $primary->market_value -  ($primary->mortgage ? $primary->mortgage->current_balance : 0);
                 $primary->ownership = round(($primary->equity /  (($primary->market_value  > 0) ? $primary->market_value : 1)) * 100);
-                $total = $primary->equity + $primary->market_value; 
+                $total = $primary->equity + $primary->market_value;
                 $primary->per_mortgage = round((($primary->mortgage ? $primary->mortgage->current_balance : 0) / $primary->market_value) * 100);
-                $primary->chart = [ 'labels' => ['Mortgage', 'Home Equity'], 
+                $primary->chart = [ 'labels' => ['Mortgage', 'Home Equity'],
                              'values' => [$primary->per_mortgage, $primary->ownership ] ];
             }
-        } 
+        }
         return compact('primary');
     }
     public static function updateProtectionTile($user){
@@ -123,4 +123,3 @@ class WheelClass extends Controller
         GapAccount::saveUpdatedTiles($user, 'philanthropy', $account_items, $account_detail['sum'] );
     }
 }
- 

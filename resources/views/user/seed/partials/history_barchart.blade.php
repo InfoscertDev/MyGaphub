@@ -1,5 +1,4 @@
-
-
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 <script>
     var chart = document.getElementById('historicSeedBar');
     var lineChart = document.getElementById('historicSeedLine');
@@ -18,7 +17,6 @@
             let period = new Date(key).toLocaleString('en-us', { month: 'short' });
             labels.push(period) ;
             // console.log(element);
-
             savings.push( element.table.savings);
             education.push(+element.table.education);
             expenditure.push(+element.table.expenditure);
@@ -31,7 +29,6 @@
 
     if (chart) {
         chart.getContext('2d');
-
         var historicSeed = new  Chart(chart, {
                 type: 'bar',
                 data: {
@@ -43,7 +40,7 @@
                         backgroundColor: seed_backgrounds[0],
                         borderColor: seed_backgrounds[0],
                         datalabels: {
-                            color: '#fff',  position: 'top'
+                            color: '#000',    anchor: 'end',
                         }
                     },
                     {
@@ -53,7 +50,9 @@
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
-                            color: '#fff',  position: 'top'
+                            color: '#000',
+                            anchor: 'end',
+                            font: { size: 15}
                         }
                     },{
                         label: 'Expenditure',
@@ -62,7 +61,9 @@
                         backgroundColor: seed_backgrounds[2],
                         borderColor: seed_backgrounds[2],
                         datalabels: {
-                            color: '#fff'
+                            color: '#000' ,
+                            anchor: 'end',
+                            font: { size: 15}
                         }
                     },
                     {
@@ -72,7 +73,9 @@
                         backgroundColor: seed_backgrounds[3],
                         borderColor: seed_backgrounds[3],
                         datalabels: {
-                            color: '#fff'
+                            color: '#000',
+                            anchor: 'end',
+                            font: { size: 15}
                         }
                     }]
                 },
@@ -86,6 +89,7 @@
                     layout: {
                         padding: 15
                     },
+                    onHover: graphHoverEvent ,
                     events: [],
                     scales: {
                         // xAxes:[{
@@ -96,10 +100,10 @@
                         yAxes:[{
                             display: true,
                             ticks: {
-                                beginAtZero: true,  min: 0
-                                // callback: function(value, index, values) {
-                                //     return currency + parseInt(value).toLocaleString();
-                                // }
+                                beginAtZero: true,  min: 0,
+                                callback: function(value, index, values) {
+                                    return currency + parseInt(value).toLocaleString();
+                                }
                             }
                         }]
                     },
@@ -128,7 +132,7 @@
                         backgroundColor: seed_backgrounds[0],
                         borderColor: seed_backgrounds[0],
                         datalabels: {
-                            color: '#fff',  position: 'top'
+                            color: '#fff',    anchor: 'end',
                         }
                     },
                     {
@@ -138,7 +142,7 @@
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
-                            color: '#fff',  position: 'top'
+                            color: '#fff',    anchor: 'end',
                         }
                     },{
                         label: 'Expenditure',
@@ -197,6 +201,21 @@
                     }
                 }
             });
+    }
+
+    let act_segment;
+    function graphHoverEvent (evt, elements) {
+        if (elements && elements.length) {
+            act_segment = elements[0];
+            this.chart.update();
+            selectedIndex = act_segment["_index"];
+            act_segment._model.outerRadius += 10;
+        } else {
+            if (act_segment) {
+                act_segment._model.outerRadius -= 10;
+            }
+            act_segment = null;
+        }
     }
 
 </script>

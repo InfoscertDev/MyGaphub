@@ -56,10 +56,13 @@
              $(function() {  $('#createRecordSpentModal').modal('show'); })
          </script>
      @elseif(request()->input('preview')  && $previous_budgets > 2)
-         <div class="modal show" id="chooseSeedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+         <div class="modal show" id="chooseSeedMode" tabindex="-1" data-keyboard="false" role="dialog" aria-hidden="true">
              <div class="modal-dialog  modal-dialog-centered" role="document">
                  <div class="modal-content modal-content-centre b-rad-20">
                      <div class="modal-body">
+                         <button type="button" class="btn btn-sm btn-close  pull-right" data-dismiss="modal" aria-label="Close">
+                             <span aria-hidden="true" class="text-white">X</span>
+                         </button>
                          <div class="py-4">
                              <ul class="list-group list-group-flush cash-tiles portfolio-tiles">
                                  <li class="list-group-item my-2 text-center"> <a href="{{route('seed', ['record' =>'sjhdbcfnkdmffgcyu' ]) }}" class="card-link text-white"> Record Spend</a> </li>
@@ -216,9 +219,14 @@
  </div>
 
 
- <div class="modal show" id="feedbackModal" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
+ <div class="modal show" id="feedbackModal" tabindex="-1" data-keyboard="false"  role="dialog" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content b-rad-20">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="$('#feedbackModal').modal('hide');"  aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="modal-body">
                 <div class="text-center">
                     <h5 class="p-2">Would you like to duplicate current month's <br> budget for next month</h5>
