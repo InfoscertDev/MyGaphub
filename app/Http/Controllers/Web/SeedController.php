@@ -229,13 +229,6 @@ class SeedController extends Controller
         $period_end = Carbon::createFromFormat('Y-m-d', $period)
                           ->endOfMonth()->format('Y-m-d');
 
-        $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
-
-        // $allocations = SeedBudgetAllocation::where('user_id', $user->id)
-        //                             ->where('seed_category', strval($seed))
-        //                             ->where('period', $period)
-        //                             ->latest()->get();
-
         // $record_spend = RecordBudgetSpent::where('user_id', $user->id)
         //                           ->whereBetween('period', [$period, $period_end])->get();
         // $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
@@ -258,7 +251,7 @@ class SeedController extends Controller
 
             foreach($groups as $key => $group){
                 $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $period)->where('user_id', $user->id)
-                                                                    ->where('expenditure',$group['label']) ->sum('amount');
+                                                    ->where('expenditure',$group['label']) ->sum('amount');
             }
             $allocations = array_values($groups) ;
 
@@ -272,8 +265,7 @@ class SeedController extends Controller
 
             foreach($allocations as $allocation){
                 $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-                $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
-                $allocation->summary = compact('record_spents', 'summary');
+                $allocation->actual =  array_sum(  array_column($record_spents->toArray(),'amount')  ) ;
             }
 
              return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',

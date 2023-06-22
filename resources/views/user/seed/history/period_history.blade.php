@@ -55,24 +55,24 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
+            <a href="{{ route('seed.periodic_history_report', [$period, 'education'])  }}" class="seed-pane seed-education tool-pane hand" >
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Education</h3>
                         <p>{{$currency}}{{ number_format($monthly_seed['seed']['education'], 2) }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-discretionary tool-pane hand"  onclick="$('#discretionaryAllocationModal').modal('show')">
+            <a href="{{ route('seed.periodic_history_report', [$period, 'discretionary'])  }}" class="seed-pane seed-discretionary tool-pane hand" >
                 <div class="tool-title">
                     <div class="center">
                         <h3 class="bold">Discretionary</h3>
                         <p>{{$currency}}{{ number_format($monthly_seed['seed']['discretionary'], 2) }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
