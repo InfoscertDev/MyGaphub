@@ -65,9 +65,9 @@
 
                                 </div>
                                 <div class="d-flex">
-                                    <p class="mb-1 ff-rob" style="margin-left: 36px;">
+                                    <p   class="mb-1 ff-rob" style="margin-left: 36px;">
                                         {{$currency}}{{ number_format($allocation->actual,2) }}  Actual
-                                    </p>
+                                    </p >
                                     <p class="flex-end mr-3">Budget</p>
                                 </div>
                             </div>
