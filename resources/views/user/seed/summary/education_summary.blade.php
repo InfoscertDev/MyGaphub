@@ -1,7 +1,7 @@
 
 <div class="modal fade" id="educationSummaryModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content wd-c b-rad-20"> 
+        <div class="modal-content wd-c b-rad-20">
             <div class="modal-body">
                 <div class="d-block wd-f ">
                     <h2 class="text-center ff-rob">
@@ -10,8 +10,8 @@
                             <span aria-hidden="true" class="text-white">X</span>
                         </button>
                     </h2>
-                    
-                </div>  
+
+                </div>
                 <!-- <p class="wd-7 mx-auto text-center">(Complete the form below) </p> -->
                <div class="my-4">
                     <table class="table table-striped wd-f">
@@ -42,7 +42,7 @@
                     <div class="mt-4 mb-2 text-center">
                         <button class="btn btn-md btn-pry px-4"  data-toggle="modal" data-target="#educationAllocationModal" onclick="$('#educationSummaryModal').modal('hide')" > Add More </button>
                     </div>
-               </div> 
+               </div>
             </div>
         </div>
 
@@ -77,30 +77,30 @@
                     family = document.getElementById('family'),
                     others = document.getElementById('others'),
                     commitments = document.getElementById('commitments');
-                    
-                if (this.editmode) { 
+
+                if (this.editmode) {
                     investment.disabled = true; personal.disabled = true;
                     emergency.disabled = true; finicial.disabled = true;
                     career.disabled = true; mental.disabled = true;
-                    accomodation.disabled = true;  expenses.disabled = true; 
-                    mobility.disabled = true;  utilities.disabled = true; 
-                    debt.disabled = true; 
+                    accomodation.disabled = true;  expenses.disabled = true;
+                    mobility.disabled = true;  utilities.disabled = true;
+                    debt.disabled = true;
                     charity.disabled = true; others.disabled = true;
                     family.disabled = true; commitments.disabled = true;
-                    
-                    $('#edit_current').hide(); $('#total_current').fadeIn(700); 
+
+                    $('#edit_current').hide(); $('#total_current').fadeIn(700);
                 }else{
                     investment.disabled = false; personal.disabled = false;
                     emergency.disabled = false; finicial.disabled = false;
                     career.disabled = false; mental.disabled = false;
-                    accomodation.disabled = false;  expenses.disabled = false; 
-                    mobility.disabled = false;  utilities.disabled = false; 
-                    debt.disabled = false; 
-                    
+                    accomodation.disabled = false;  expenses.disabled = false;
+                    mobility.disabled = false;  utilities.disabled = false;
+                    debt.disabled = false;
+
                     charity.disabled = false; others.disabled = false;
                     family.disabled = false; commitments.disabled = false;
-                   
-                    $('#edit_current').fadeIn(700);  $('#total_current').hide(); 
+
+                    $('#edit_current').fadeIn(700);  $('#total_current').hide();
                 }
 
                 this.editmode = !this.editmode;

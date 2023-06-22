@@ -21,7 +21,7 @@
         <div class="col-md-12 col-sm-12 sm-default mt-3">
             <div class="d-flex">
                 <h3 class="bold mr-2">
-                    Total: {{$currency}}{{ number_format($monthly_seed['total'], 2) }}
+                    Total Budget: {{$currency}}{{ number_format($monthly_seed['total'], 2) }}
                 </h3>
                 <div class="flex-end">
                     <h3 class="bold mr-2">
@@ -35,14 +35,14 @@
 
     <div class="row  mt-2 mb-2">
         <div class="col-md-3">
-            <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
+            <a href="{{ route('seed.periodic_history_report', [$period, 'savings'])  }}" class="seed-pane seed-savings tool-pane hand">
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Savings</h3>
                         <p>{{$currency}}{{ number_format($monthly_seed['seed']['savings'], 2) }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
             <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
@@ -99,20 +99,4 @@
             @endif
         </div>
     </div>
-
-
-    <script>
-        let viewmode = false;
-        function toggleBudgetMode(){
-            if(viewmode){
-                $('#view_budget_amount').show();
-                $('#edit_budget_amount').hide();
-            }else{
-                $('#view_budget_amount').hide();
-                $('#edit_budget_amount').show();
-            }
-            viewmode = !viewmode
-        }
-
-    </script>
 @endsection

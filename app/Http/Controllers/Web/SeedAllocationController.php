@@ -73,9 +73,9 @@ class SeedAllocationController extends Controller
 
         $seeds = ['savings', 'expenditure','education', 'discretionary'];
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
-        $isTarget = ($request->budget == 'seed_future_budget') ? 'target' : 'current';
-
         $category = (in_array($category, $categories)) ? $category: null;
+
+        $isTarget = ($request->budget == 'seed_future_budget') ? 'target' : 'current';
         $period =   ($isTarget == 'target') ? date('Y-m',  strtotime("+1 month")).'-01' : date('Y-m').'-01';
         $current_detail = AllocationHelpers::getAllocatedSeedDetail($user, $isTarget);
         $backgrounds = array_reverse(GapAccount::accountBackground());

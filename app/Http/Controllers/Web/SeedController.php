@@ -160,7 +160,33 @@ class SeedController extends Controller
       $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
-      return view('user.seed.history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+      return view('user.seed.history.index', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
+         'available_allocation', 'current_detail','average_detail', 'historic_seed','periods'
+      ));
+    }
+
+   public function chartHistory(Request $request){
+      $user = auth()->user();
+      $page_title = "My Historic Seed";
+      $support = true; $month =  date('Y-m').'-01';
+      $preview = $request->input('preview');
+
+      $seed_backgrounds = CalculatorClass::accountBackground();
+      $isValid = SevenG::isSevenGVal($user);
+      $calculator = Calculator::where('user_id', $user->id)->first();
+      $currency = explode(" ", $calculator->currency)[0];
+      $current_seed = CalculatorClass::getCurrentSeed($user);
+      $target_seed = CalculatorClass::getTargetSeed($user);
+      $average_detail = AllocationHelpers::averageSeedDetail($user);
+      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+
+      $available_allocation = $current_seed->budget_amount - $current_detail['total'];
+
+      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
+      $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
+      return view('user.seed.history.chart_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail','average_detail', 'historic_seed','periods'
       ));
     }
@@ -182,38 +208,82 @@ class SeedController extends Controller
                                 ->whereBetween('period', [$period, $period_end])->get();
       $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
 
-      $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
 
-      return view('user.seed.period_history', compact('page_title', 'support', 'currency',
+      return view('user.seed.history.period_history', compact('page_title', 'support', 'currency',
         'monthly_seed', 'periods', 'period', 'record_seed'
       ));
     }
 
-    public function chartHistory(Request $request){
-      $user = auth()->user();
-      $page_title = "My Historic Seed";
-      $support = true; $month =  date('Y-m').'-01';
-      $preview = $request->input('preview');
+    public function periodHistoryReport(Request $request, $period, $seed){
+        $user = auth()->user();
+        $page_title = "My Historic Seed";
+        $support = true;
+        $month =  date('Y-m').'-01';
+        $preview = $request->input('preview');
 
-      $seed_backgrounds = CalculatorClass::accountBackground();
-      $isValid = SevenG::isSevenGVal($user);
-      $calculator = Calculator::where('user_id', $user->id)->first();
-      $currency = explode(" ", $calculator->currency)[0];
-      $current_seed = CalculatorClass::getCurrentSeed($user);
-      $target_seed = CalculatorClass::getTargetSeed($user);
-      $average_detail = AllocationHelpers::averageSeedDetail($user);
-      $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+        $category = $request->input('category');
+        $period_end = Carbon::createFromFormat('Y-m-d', $period)
+                          ->endOfMonth()->format('Y-m-d');
 
-      $available_allocation = $current_seed->budget_amount - $current_detail['total'];
+        $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
-      $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
-      $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
-      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+        // $allocations = SeedBudgetAllocation::where('user_id', $user->id)
+        //                             ->where('seed_category', strval($seed))
+        //                             ->where('period', $period)
+        //                             ->latest()->get();
 
-      return view('user.seed.chart_history', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail','average_detail', 'historic_seed','periods'
-      ));
+        // $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+        //                           ->whereBetween('period', [$period, $period_end])->get();
+        // $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
+
+        $seeds = ['savings', 'expenditure','education', 'discretionary'];
+        $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
+        $category = (in_array($category, $categories)) ? $category: null;
+        $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
+        if ($seed == 'expenditure' && !$category){
+            $groups = array();
+            $labels = array();
+            $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
+                            ->where('user_id', $user->id)->where('period', $period)->get();
+
+            foreach ($allocations->toArray() as $allocation) {
+                array_push($labels, $allocation['expenditure']);
+                $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
+            }
+
+            foreach($groups as $key => $group){
+                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $period)->where('user_id', $user->id)
+                                                                    ->where('expenditure',$group['label']) ->sum('amount');
+            }
+            $allocations = array_values($groups) ;
+
+            return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
+        } else if(in_array($seed, $seeds)){
+            $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+                        ->where('user_id', $user->id)->where('period', $period)
+                        ->when($category, function ($query, $category) {
+                            return $query->where('expenditure', $category);
+                        })->latest()->get();
+
+            foreach($allocations as $allocation){
+                $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+                $summary = AllocationHelpers::allocationSummay($allocation, $record_spents);
+                $allocation->summary = compact('record_spents', 'summary');
+            }
+
+             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
+                    'allocations', 'periods', 'period', 'seed'
+            ));
+        }else{
+            return  redirect('404');
+        }
+
+
     }
 
     public function storeSeed(Request $request){
