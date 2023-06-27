@@ -12,6 +12,7 @@
             {name: 'Europe', coords: [50.9030599, 6.4213693], status: 'mrk'}
         ];
         var global =   <?php echo json_encode($global) ?>;
+        var currency = "<?php echo $currency ?>";
         //  Chart
         var braid_roi = <?php echo json_encode($roi_watch['braid_roi'])  ?>;
         var labels = ['B','R','A','I','D'];

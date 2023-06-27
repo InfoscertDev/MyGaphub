@@ -2,12 +2,14 @@
 @extends('layouts.user')
 
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script>
         const labelReportValue = document.getElementById('labelReportValue');
         if(labelReportValue){
             labelReportValue.getContext('2d');
 
             const labels =  <?php echo json_encode($labels) ?>;
+            const currency = "<?php echo $currency ?>";
             const budget_values = <?php echo json_encode($budget)  ?>;
             const actual_values = <?php echo json_encode($actual)  ?>;
 
@@ -20,10 +22,11 @@
                         {
                             label: 'Budget',
                             data: budget_values,
-                            backgroundColor: '#008080',
-                            borderColor: '#008080',
-                            datalabels: {
+                            backgroundColor: '#964B00',
+                            borderColor: '#964B00',
+                            datalabels: { 
                                 color: '#fff',
+                                // anchor: 'end',
                                 position: 'top'
                             }
                         },
@@ -34,6 +37,7 @@
                             borderColor: '#808080',
                             datalabels: {
                                 color: '#fff',
+                                // anchor: 'end',
                                 position: 'top'
                             }
                         }
@@ -54,15 +58,23 @@
                             ticks: {
                                 beginAtZero: true,
                                 callback: function(value, index, values) {
-                                    return  parseInt(value).toLocaleString();
+                                    return  currency + parseInt(value).toLocaleString();
                                 }
                             },
                         }],
                         xAxes: [{
                             barPercentage: 0.4
                         }]
+                    },
+
+                    plugins: {
+                        datalabels: {
+                            formatter: function(value, context) {
+                                return currency + parseInt(value).toLocaleString();
+                            }
+                        }
                     }
-                }
+                },
          });
 
         }
