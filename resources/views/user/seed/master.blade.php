@@ -222,12 +222,11 @@
  <div class="modal show" id="feedbackModal" tabindex="-1" data-keyboard="false"  role="dialog" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content b-rad-20">
-            <div class="modal-header">
-                <button type="button" class="close" onclick="$('#feedbackModal').modal('hide');"  aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+
             <div class="modal-body">
+                <button type="button" class="btn btn-sm btn-close  pull-right" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">X</span>
+                </button>
                 <div class="text-center">
                     <h5 class="p-2">Would you like to duplicate current month's <br> budget for next month</h5>
                 </div>

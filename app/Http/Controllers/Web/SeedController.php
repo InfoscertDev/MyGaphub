@@ -237,22 +237,23 @@ class SeedController extends Controller
         $labels = [];
         if ($seed == 'expenditure' && !$category){
             $groups = array();
-            $labels = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
                             ->where('user_id', $user->id)->where('period', $period)->get();
 
             foreach ($allocations->toArray() as $allocation) {
                 array_push($labels, $allocation['expenditure']);
                 $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
+                $groups[$allocation['expenditure']]['amount'][] = $allocation['amount'];
             }
 
-            foreach($groups as $key => $group){
-                $groups[$key]['amount'] =  SeedBudgetAllocation::where('period', $period)->where('user_id', $user->id)
-                                                    ->where('expenditure',$group['label']) ->sum('amount');
-            }
             $allocations = array_values($groups) ;
 
-            return view('user.seed.allocation_summary_expenditure', compact('currency','current_detail','allocations', 'seed'));
+            info($allocations);
+
+            return view('user.seed.history.period_expenditure_report', compact('page_title', 'support', 'currency',
+                   'allocations', 'periods', 'period', 'seed', 'labels'
+            ));
+
         } else if(in_array($seed, $seeds)){
             if($label){
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
@@ -266,7 +267,6 @@ class SeedController extends Controller
                 $labels = array_column($allocations->toArray(), 'period');
                 $budget = array_column($allocations->toArray(), 'amount');
                 $actual = array_column($record_spend->toArray(), 'amount');
-                // info([$labels, $record_spend]);
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                             ->where('user_id', $user->id)->where('period', $period)
@@ -279,10 +279,10 @@ class SeedController extends Controller
                     $allocation->actual =  array_sum(  array_column($record_spents->toArray(),'amount')  ) ;
                 }
             }
+            return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
+                   'allocations', 'periods', 'period', 'seed', 'label', 'budget', 'actual', 'labels'
+           ));
 
-             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
-                    'allocations', 'periods', 'period', 'seed', 'label', 'budget', 'actual', 'labels'
-            ));
         }else{
             return  redirect('404');
         }

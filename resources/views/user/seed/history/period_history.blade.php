@@ -45,14 +45,14 @@
             </a>
         </div>
         <div class="col-md-3">
-            <div class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
+            <a href="{{ route('seed.periodic_history_report', [$period, 'expenditure'])  }}" class="seed-pane seed-expenditure tool-pane hand"  onclick="$('#expenditureAllocationModal').modal('show')">
                 <div class="tool-title">
                     <div class="center">
                         <h3  class="bold">Expenditure</h3>
                         <p>{{$currency}}{{ number_format($monthly_seed['seed']['expenditure'], 2) }}</p>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
             <a href="{{ route('seed.periodic_history_report', [$period, 'education'])  }}" class="seed-pane seed-education tool-pane hand" >
