@@ -78,10 +78,11 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::get('/seed', 'API\v2\SeedAPI@index');
         Route::get('/seed/target', 'API\v2\SeedAPI@target');
         Route::post('/seed/store/budget', 'API\v2\SeedAPI@storeSetBudget');
+        Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
         Route::get('/seed/history/{period}/{seed}', 'API\v2\SeedAPI@periodHistoryReport');
-        Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@listAllocation');
+        // SEED Allocations
         Route::post('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@storeCategoryAllocation');
         Route::put('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@updateCategoryAllocation');
         Route::delete('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@deleteAllocation');
