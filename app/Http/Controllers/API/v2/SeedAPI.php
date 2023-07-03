@@ -19,6 +19,7 @@ use App\ILab;
 use Carbon\Carbon;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\RecordBudgetSpent;
 
 
 class SeedAPI extends Controller
