@@ -77,7 +77,7 @@
                             anchor: 'end',
                             font: { size: 15}
                         }
-                    }]
+                    }],
                     options: {
                         // responsive: true,
                         // maintainAspectRatio: false,
@@ -122,7 +122,7 @@
         lineChart.getContext('2d');
         var historicSeed = new  Chart(lineChart, {
                 type: 'line',
-                ill:false,
+                // fill:false,
                 data: {
                     labels: labels,
                     datasets: [{

@@ -85,6 +85,78 @@ class SeedAPI extends Controller
           ], 200);
     }
 
+    public function periodHistoryReport(Request $request, $period, $seed){
+        $user = $request->user();
+        $month =  date('Y-m').'-01';
+        $label = $request->input('label');
+
+        $category = $request->input('category');
+        $period_end = Carbon::createFromFormat('Y-m-d', $period)
+                          ->endOfMonth()->format('Y-m-d');
+
+        $seeds = ['savings', 'expenditure','education', 'discretionary'];
+        $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
+        $category = (in_array($category, $categories)) ? $category: null;
+        $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+        $budget = []; $actual =[];
+        $labels = [];
+
+        if ($seed == 'expenditure' && !$category){
+            $groups = array();
+            $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
+                            ->where('user_id', $user->id)->where('period', $period)->get();
+
+            foreach ($allocations->toArray() as $allocation) {
+                array_push($labels, $allocation['expenditure']);
+                $groups[$allocation['expenditure']]['label'] = $allocation['expenditure'];
+                $groups[$allocation['expenditure']]['amount'][] = $allocation['amount'];
+            }
+
+            $allocations = array_values($groups) ;
+            $data = compact('allocations', 'periods', 'period', 'seed', 'labels');
+
+            return response()->json([
+                'status' => true,
+                'data' =>  $data,
+                'message' => ''
+            ]);
+        } else if(in_array($seed, $seeds)){
+            if($label){
+                $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+                                ->where('label', $label)
+                            ->whereBetween('period', [$period, $period_end])->get();
+
+                $allocation_ids = array_column($allocations->toArray(), 'id');
+                $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                  ->where('allocation_id', $allocation_ids)
+                                  ->whereBetween('period', [$period, $period_end])->get();
+                $labels = array_column($allocations->toArray(), 'period');
+                $budget = array_column($allocations->toArray(), 'amount');
+                $actual = array_column($record_spend->toArray(), 'amount');
+            }else{
+                $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+                            ->where('user_id', $user->id)->where('period', $period)
+                            ->when($category, function ($query, $category) {
+                                return $query->where('expenditure', $category);
+                            })->latest()->get();
+
+                foreach($allocations as $allocation){
+                    $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+                    $allocation->actual =  array_sum(  array_column($record_spents->toArray(),'amount')  ) ;
+                }
+            }
+
+            $data = compact('allocations', 'periods', 'period', 'seed', 'label', 'budget', 'actual', 'labels');
+
+            return response()->json([
+                'status' => true,
+                'data' =>  $data,
+                'message' => ''
+            ]);
+
+        }
+    }
+
     public function storeSetBudget(Request $request){
       $user = $request->user();
 

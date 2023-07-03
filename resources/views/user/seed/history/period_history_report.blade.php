@@ -24,7 +24,7 @@
                             data: budget_values,
                             backgroundColor: '#964B00',
                             borderColor: '#964B00',
-                            datalabels: { 
+                            datalabels: {
                                 color: '#fff',
                                 // anchor: 'end',
                                 position: 'top'
@@ -97,13 +97,9 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <span class="mr-3 pb-2" id="goback">
-                @if( str_contains(url()->full(), 'future') )
-                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.summary', ['expenditure','budget' => 'seed_future_budget']): route('seed.future') }}"
-                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
-                @else
-                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.summary', 'expenditure') : route('seed.create') }}"
-                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
-                @endif
+                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
+                            class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
+                </a>
             </span>
             <div class="disclaim text-center">
                 <select onchange="window.location.assign('{{ route('seed.history') .'/' }}' + this.value)"

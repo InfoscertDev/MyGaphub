@@ -61,14 +61,13 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::get('/todayplan', 'API\v2\AssetActionController@today');
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
         Route::resource('reminder','API\v2\ReminderAPI');
-
+        // Acquisition
         Route::get('/acquisition/favourite/', 'API\v2\AcquisitionApi@favourite');
         Route::get('/acquisition/favourite/ganp', 'API\v2\AcquisitionApi@favouriteGanp');
         Route::get('/acquisition/favourite/{asset}', 'API\v2\AcquisitionApi@favouriteAsset');
         Route::post('/acquisition/interest/reap/{sasset}', 'API\v2\AcquisitionApi@interestReapInvestment');
         Route::post('/acquisition/investment/reap/{sasset}', 'API\v2\AcquisitionApi@reserveReapInvestment');
         Route::post('/acquisition/investment/ganp/{sasset}', 'API\v2\AcquisitionApi@reserveGanpInvestment');
-
         // Profiles
         Route::get('/profile', 'API\v2\ToolAPI@profile');
         Route::post('/tools/preference/exchange', 'API\v2\ToolAPI@updateExchange');
@@ -78,8 +77,9 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         // SEED
         Route::get('/seed', 'API\v2\SeedAPI@index');
         Route::get('/seed/target', 'API\v2\SeedAPI@target');
-        Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
         Route::post('/seed/store/budget', 'API\v2\SeedAPI@storeSetBudget');
+        Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
+        Route::get('/seed/history/{period}/{seed}', 'API\v2\SeedAPI@periodHistoryReport');
         Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@listAllocation');
         Route::post('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@storeCategoryAllocation');

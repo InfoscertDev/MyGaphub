@@ -184,7 +184,7 @@
                      <th class="bold text-uppercase text-underline hand" >
                          <a href="{{ route('seed.create') }}" class="text-dark">Current</a>
                      </th>
-                     <th class="bold text-uppercase text-underline hand" data-toggle="modal" data-target="#nextyearBudgetModal">Target </th>
+                     <th class="bold text-uppercase text-underline hand">Future </th>
                  </tr>
                  @php
                      $seeds = ['Savings', 'Education','Expenditure','Discretionary'];

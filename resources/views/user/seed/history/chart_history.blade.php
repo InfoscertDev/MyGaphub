@@ -1,16 +1,6 @@
 @extends('layouts.user')
 
 @section('script')
-
-    <script>
-        var averageChart = document.getElementById('averageSeedChart');
-        var currentSeed = document.getElementById('currentSeedChart');
-        var targetChart = document.getElementById('targetSeedChart');
-
-        // var labels = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
-        // historicSeedBar
-
-    </script>
      @include('user.seed.partials.history_barchart')
 @endsection
 

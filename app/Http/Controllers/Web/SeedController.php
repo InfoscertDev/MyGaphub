@@ -248,8 +248,6 @@ class SeedController extends Controller
 
             $allocations = array_values($groups) ;
 
-            info($allocations);
-
             return view('user.seed.history.period_expenditure_report', compact('page_title', 'support', 'currency',
                    'allocations', 'periods', 'period', 'seed', 'labels'
             ));
