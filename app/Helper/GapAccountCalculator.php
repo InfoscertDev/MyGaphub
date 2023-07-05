@@ -508,7 +508,7 @@ class GapAccountCalculator
         //if($accountname =='liability')  $accountname = 'liabilities';
 
         $audit = UserAudit::where('user_id', $user->id)->first();
-        if($total){
+        if($sum > 0){
            if(!$audit){
                 $audit = new Audit();
                 $audit->user_id = $user->id;
@@ -521,7 +521,7 @@ class GapAccountCalculator
                 'sum' => $sum,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
-    
+
             if (isset($audit->wheel_point_at)) {
                 $wheel = ($audit->wheel_point_at);
                 // Confirm if last Account is not the same as the current account

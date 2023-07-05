@@ -25,8 +25,8 @@
                             backgroundColor: '#964B00',
                             borderColor: '#964B00',
                             datalabels: {
-                                color: '#fff',
-                                // anchor: 'end',
+                                color: '#000',
+                                anchor: 'end',
                                 position: 'top'
                             }
                         },
@@ -36,8 +36,8 @@
                             backgroundColor: '#808080',
                             borderColor: '#808080',
                             datalabels: {
-                                color: '#fff',
-                                // anchor: 'end',
+                                color: '#000',
+                                anchor: 'end',
                                 position: 'top'
                             }
                         }

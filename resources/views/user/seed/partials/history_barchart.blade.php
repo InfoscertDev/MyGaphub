@@ -41,6 +41,7 @@
                         borderColor: seed_backgrounds[0],
                         datalabels: {
                             color: '#000',    anchor: 'end',
+                            font: { size: 15 }
                         }
                     },
                     {
@@ -52,7 +53,7 @@
                         datalabels: {
                             color: '#000',
                             anchor: 'end',
-                            font: { size: 15}
+                            font: { size: 15 }
                         }
                     },{
                         label: 'Expenditure',
@@ -63,7 +64,7 @@
                         datalabels: {
                             color: '#000' ,
                             anchor: 'end',
-                            font: { size: 15}
+                            font: { size: 15 }
                         }
                     },
                     {
@@ -75,12 +76,10 @@
                         datalabels: {
                             color: '#000',
                             anchor: 'end',
-                            font: { size: 15}
+                            font: { size: 15 }
                         }
                     }],
                     options: {
-                        // responsive: true,
-                        // maintainAspectRatio: false,
                         legend: {
                             display: true,
                             position: 'bottom',
@@ -132,7 +131,7 @@
                         backgroundColor: seed_backgrounds[0],
                         borderColor: seed_backgrounds[0],
                         datalabels: {
-                            color: '#fff',    anchor: 'end',
+                            color: '#000',    anchor: 'end',
                         }
                     },
                     {
@@ -142,7 +141,7 @@
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
-                            color: '#fff',    anchor: 'end',
+                            color: '#000',    anchor: 'end',
                         }
                     },{
                         label: 'Expenditure',
@@ -151,7 +150,7 @@
                         backgroundColor: seed_backgrounds[2],
                         borderColor: seed_backgrounds[2],
                         datalabels: {
-                            color: '#fff'
+                             color: '#000',    anchor: 'end',
                         }
                     },
                     {
@@ -161,7 +160,7 @@
                         backgroundColor: seed_backgrounds[3],
                         borderColor: seed_backgrounds[3],
                         datalabels: {
-                            color: '#fff'
+                             color: '#000',    anchor: 'end',
                         }
                     }]
                 },
