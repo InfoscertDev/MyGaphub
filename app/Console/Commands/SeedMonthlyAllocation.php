@@ -4,6 +4,10 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\Models\Asset\SeedBudgetAllocation;
+use App\Models\Asset\RecordBudgetSpent;
+use App\Asset\SeedBudget as Budget;
+
 class SeedMonthlyAllocation extends Command
 {
     /**

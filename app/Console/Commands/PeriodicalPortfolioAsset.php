@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Asset\PortfolioAsset;
 use App\Asset\PortfoloAssetRecord;
-use App\Models\Asset\SeedBudgetAllocation;
 use Illuminate\Console\Command;
 
 class PeriodicalPortfolioAsset extends Command

@@ -114,6 +114,42 @@
                         }
                     }
                 },
+
+                options: {
+                    // responsive: true,
+                    // maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                    },
+                    layout: {
+                        padding: 15
+                    },
+                    events: [],
+                    scales: {
+                        // xAxes:[{
+                        //     display: true,
+                        //     barThickness: 60,  // number (pixels) or 'flex'
+                        //     maxBarThickness: 70 // number (pixels)
+                        // }],
+                        yAxes:[{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,  min: 0
+                                // callback: function(value, index, values) {
+                                //     return currency + parseInt(value).toLocaleString();
+                                // }
+                            }
+                        }]
+                    },
+                    plugins: {
+                        datalabels: {
+                            formatter: function(value, context) {
+                                return currency + parseInt(value).toLocaleString();
+                            }
+                        }
+                    }
+                }
             });
     }
 

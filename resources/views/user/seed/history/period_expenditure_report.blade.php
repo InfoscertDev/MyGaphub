@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <span class="mr-3 pb-2" id="goback">
-                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history', ['period' => $period,  $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
+                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history', ['period' => $period,'seed' =>  $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
                             class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                 </a>
             </span>

@@ -54,12 +54,12 @@ class AllocationHelpers{
                          ->where('user_id', $user->id)->where('period', $period)->get();
 
         $record_spent = RecordBudgetSpent::where('user_id', $user->id)->where('period', $period)->get();
+        $total_spent = array_sum(array_column($record_spent->toArray(), 'amount'));
 
         $savings = array_sum(array_column($savings_allocation->toArray(), 'amount'));
         $education = array_sum(array_column($education_allocation->toArray(), 'amount'));
         $expenditure = array_sum(array_column($expenditure_allocation->toArray(), 'amount'));
         $discretionary = array_sum(array_column($discretionary_allocation->toArray(), 'amount'));
-        $total_spent = array_sum(array_column($record_spent->toArray(), 'amount'));
 
 
         $table = compact('savings', 'education', 'expenditure', 'discretionary');

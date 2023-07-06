@@ -60,12 +60,11 @@ class DailyRecurring extends Command
             RecordBudgetSpent::create($new_spent);
         }
 
-
+        // Recurring Allocation
         $allocations = SeedBudgetAllocation::whereDay('date', $todayDay)
                          ->where('recuring', 1)->get()->toArray();
 
         foreach($allocations as $new_spent){
-
             $payload = [
                 'user_id' => $new_spent->user_id,
                 'recuring' => $new_spent->recuring,

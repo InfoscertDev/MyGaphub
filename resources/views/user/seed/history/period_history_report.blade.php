@@ -16,7 +16,7 @@
             // console.log(labels, budget_values, actual_values);
             const reportBarChart = new Chart(labelReportValue, {
                 type: 'bar',
-                data: {
+                data: { 
                     labels: labels,
                     datasets: [
                         {
@@ -97,7 +97,7 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <span class="mr-3 pb-2" id="goback">
-                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
+                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
                             class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                 </a>
             </span>
@@ -148,14 +148,24 @@
                                     </div>
                                 </a>
                             @endforeach
+
+                            <div class="mt-4">
+                                <p class="text-center font-italic">Click any of the items above to view the chart</p>
+                            </div>
                         @else
                             <div class="chart">
                                 <canvas id="labelReportValue" width="500px" style="width: 120%; margin:  0; min-height: 190px"></canvas>
                             </div>
+
+                            <div class="mt-4">
+                                <p class="text-center font-italic">Click
+                                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
+                                                class="text-dark" > here
+                                    </a>
+                                     to return to the previous page
+                                </p>
+                            </div>
                         @endif
-                    </div>
-                    <div class="mt-4">
-                        <p class="text-center font-italic">Click any of the items above to view the chart</p>
                     </div>
                 </div>
 
