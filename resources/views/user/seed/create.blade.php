@@ -18,7 +18,7 @@
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Click to edit"><i class="fa fa-info mx-2 "></i></span>
 
                     <img class="img img-responsive" id="warning-icon" style="display: none; position: relative; top: -10px; width: 25px;" src="{{ asset('/assets/icon/warning.svg')}}" alt="">
-                    
+
                 </div>
                 <div id="edit_budget_amount" style="display: none;">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post" id="budgetForm">
@@ -184,7 +184,7 @@
 
         <div class="col-md-5 col-sm-12 sm-default">
             <div class="d-flex">
-                <h3 class="bold mr-3">Total Spent: </h3>
+                <h3 class="bold mr-3">Total Actual: </h3>
                 <span class="px-2 h3">{{$currency}}{{ number_format($current_detail['total_spent'], 2) }} </span>
             </div>
         </div>
@@ -244,7 +244,7 @@
             let allocated = "<?php echo $current_detail['total']; ?>";
             let balance = (+e.value -  +allocated)
             allocation.innerText = balance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-          
+
             if(+balance >= 0){
                 $('#warning-icon').hide();
                 $('#warning-error').hide();

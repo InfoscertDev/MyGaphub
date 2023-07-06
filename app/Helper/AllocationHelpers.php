@@ -43,7 +43,6 @@ class AllocationHelpers{
         $target_period = date('Y-m',  strtotime("+1 month")).'-01';
         $period = ($package == 'target') ? $target_period : $current_period;
 
-
         $savings_allocation = SeedBudgetAllocation::where('seed_category', 'savings')
                          ->where('user_id', $user->id)->where('period', $period)->get();
         $education_allocation = SeedBudgetAllocation::where('seed_category', 'education')

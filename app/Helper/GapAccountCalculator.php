@@ -506,7 +506,7 @@ class GapAccountCalculator
         if($accountname =='liabilities')  $accountname = 'liability';
         if($accountname =='philantropy')  $accountname = 'philanthropy';
         //if($accountname =='liability')  $accountname = 'liabilities';
-
+        $sum = 0;
         $audit = UserAudit::where('user_id', $user->id)->first();
 
         if(!$audit){
@@ -526,16 +526,17 @@ class GapAccountCalculator
             $wheel = ($audit->wheel_point_at);
             // Confirm if last Account is not the same as the current account
             $key = array_search($accountname, array_column($wheel, 'account_name'));
-            if($sum <= 0 || (is_int($key) && $key >= 0)){
+            
+            if($sum == 0 || (is_int($key) && $key >= 0)){
                 if(isset($wheel[$key])) {
                     unset($wheel[$key]);
                     $wheel = array_values($wheel);
                 }
             }
-            if(count($wheel) >= 8){
-                array_pop($wheel);
-            }
-            array_unshift($wheel, $tile);
+
+            if(count($wheel) >= 8)  array_pop($wheel);
+            if ($sum != 0) array_unshift($wheel, $tile);
+
             $audit->wheel_point_at =  ($wheel);
             $audit->save();
         }else{
