@@ -506,7 +506,7 @@ class GapAccountCalculator
         if($accountname =='liabilities')  $accountname = 'liability';
         if($accountname =='philantropy')  $accountname = 'philanthropy';
         //if($accountname =='liability')  $accountname = 'liabilities';
-        $sum = 0;
+    
         $audit = UserAudit::where('user_id', $user->id)->first();
 
         if(!$audit){
