@@ -325,10 +325,10 @@ class SeedAPI extends Controller
 
         $grand = Grand::where('user_id', $user->id)->first();
         $validator = Validator::make($request->all(),[
-          'charity' => 'required|integer|min:0',
-          'family_support' => 'required|integer|min:0',
-          'personal' => 'required|integer|min:0',
-          'others' => 'required|integer|min:0'
+          'charity' => 'required|numeric|min:0',
+          'family_support' => 'required|numeric|min:0',
+          'personal' => 'required|numeric|min:0',
+          'others' => 'required|numeric|min:0'
         ]);
 
         if($validator->fails()){
