@@ -200,12 +200,12 @@ class SeedController extends Controller
 
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
-      $period_end = Carbon::createFromFormat('Y-m-d', $period)
-                        ->endOfMonth()->format('Y-m-d');
+      $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                 ->whereBetween('period', [$period, $period_end])->get();
+
       $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
 
       $periods = AllocationHelpers::averageSeedDetail($user)['periods'];

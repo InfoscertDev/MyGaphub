@@ -77,8 +77,12 @@ class SeedAPI extends Controller
         $target_seed = CalculatorClass::getTargetSeed($user);
 
         $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+        $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                 ->whereBetween('period', [$period, $period_end])->get();
 
-        $data = compact('current_seed', 'target_seed', 'monthly_seed', 'backgrounds');
+        $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
+
+        $data = compact('monthly_seed', 'record_seed');
 
         return response()->json([
             'status' => true,
