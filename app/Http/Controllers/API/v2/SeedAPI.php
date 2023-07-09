@@ -351,7 +351,11 @@ class SeedAPI extends Controller
           Wheel::updateGivingTile($user);
           return  response()->json( compact('philantrophy') );
        }else{
-        return  response()->json(['error' => 'Your Giving must be equal to your grand']);
+        return  response()->json([
+            'status' => false,
+            'data' => $giving,
+            'error' => 'Your Giving must be equal to your grand'
+        ]);
        }
     }
 
