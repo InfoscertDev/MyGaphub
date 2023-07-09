@@ -72,10 +72,8 @@ class SeedAPI extends Controller
 
     public function periodHistory(Request $request, $period){
         $user = $request->user();
-        $backgrounds = array_reverse(GapAccount::accountBackground());
-        $current_seed = CalculatorClass::getCurrentSeed($user);
-        $target_seed = CalculatorClass::getTargetSeed($user);
 
+        $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
         $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
         $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                  ->whereBetween('period', [$period, $period_end])->get();
