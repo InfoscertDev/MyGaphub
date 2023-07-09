@@ -353,7 +353,7 @@ class SeedAPI extends Controller
        }else{
         return  response()->json([
             'status' => false,
-            'data' => $giving,
+            'data' => $grand->current,
             'error' => 'Your Giving must be equal to your grand'
         ]);
        }
