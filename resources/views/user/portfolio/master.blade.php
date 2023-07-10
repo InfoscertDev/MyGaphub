@@ -124,8 +124,7 @@
                 <div class="text-center py-2">
                     <h6>Ready to onboard an existing asset or set an investment goal?</h6>
                     <div class="my-4">
-                        <button class="btn-primary btn px-3" data-toggle="modal" data-target="#newPortfolioAssetModal">Add Asset</button>
-                        @include('user.portfolio.modals.portfolio_asset')
+                        <a class="btn-primary btn px-3" href="{{ route('portfolio.asset_type',['type' => 'existing']) }}">Add Asset</a>
                     </div>
                 </div>
             </div>
@@ -136,7 +135,7 @@
                     <tr class="" >
                        <th rowspan="2"></th>
                        <th colspan="2" class="text-center">Existing Assets</th>
-                       <th colspan="2" class="text-center">Desired Assets</th>
+                       <!-- <th colspan="2" class="text-center">Desired Assets</th> -->
                        <th colspan="2" class="text-center">Anticipated Total <br>(Existing+Desired)</th>
                     </tr>
                     <tr>

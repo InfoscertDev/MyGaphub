@@ -4,7 +4,7 @@
     'name' => 'MyGaphub',
     'env' => 'local',
     'debug' => true,
-    'url' => 'https://appstaging.mygaphub.com',
+    'url' => 'http://localhost',
     'asset_url' => NULL,
     'timezone' => 'UTC',
     'locale' => 'en',
@@ -209,7 +209,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/var/www/clients/client1/web1/web/appstaging/core/storage/framework/cache/data',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -292,7 +292,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'c1gaphub_staging',
+        'database' => 'mygaphub',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -300,11 +300,11 @@
       array (
         'driver' => 'mysql',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => '192.168.64.2',
         'port' => '3306',
-        'database' => 'c1gaphub_staging',
-        'username' => 'c1gaphub_staging',
-        'password' => 'MyGaphub@Stag!ng',
+        'database' => 'mygaphub',
+        'username' => 'kaywize',
+        'password' => 'kaywize',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -320,11 +320,11 @@
       array (
         'driver' => 'pgsql',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => '192.168.64.2',
         'port' => '3306',
-        'database' => 'c1gaphub_staging',
-        'username' => 'c1gaphub_staging',
-        'password' => 'MyGaphub@Stag!ng',
+        'database' => 'mygaphub',
+        'username' => 'kaywize',
+        'password' => 'kaywize',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -335,11 +335,11 @@
       array (
         'driver' => 'sqlsrv',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => '192.168.64.2',
         'port' => '3306',
-        'database' => 'c1gaphub_staging',
-        'username' => 'c1gaphub_staging',
-        'password' => 'MyGaphub@Stag!ng',
+        'database' => 'mygaphub',
+        'username' => 'kaywize',
+        'password' => 'kaywize',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -380,13 +380,13 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/clients/client1/web1/web/appstaging/core/storage/app',
+        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/clients/client1/web1/web/appstaging/core/storage/app/public',
-        'url' => 'https://appstaging.mygaphub.com/storage',
+        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app/public',
+        'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
       's3' => 
@@ -403,7 +403,7 @@
     ),
     'links' => 
     array (
-      '/var/www/clients/client1/web1/web/appstaging/core/public/storage' => '/var/www/clients/client1/web1/web/appstaging/core/storage/app/public',
+      '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/public/storage' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -422,7 +422,7 @@
   ),
   'jwt' => 
   array (
-    'secret' => 'RLh6XVLFZQnXb7Y1euOCjcdLGySnOyaXwjy4I9p9HMc3hPt7GUKVGT7t6natJVK4',
+    'secret' => 'fv1FZzvOQ7xgewy8hD3zpRkcLsEBQf67uhL6veMgxwPMJXji8eYpbFcnbDcTp2kf',
     'keys' => 
     array (
       'public' => NULL,
@@ -474,13 +474,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/var/www/clients/client1/web1/web/appstaging/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/var/www/clients/client1/web1/web/appstaging/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -531,7 +531,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/var/www/clients/client1/web1/web/appstaging/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -543,11 +543,11 @@
       'smtp' => 
       array (
         'transport' => 'smtp',
-        'host' => 'smtp.strato.de',
+        'host' => 'mail.infoscert.com',
         'port' => '587',
-        'encryption' => 'tls',
-        'username' => 'k.wahab@expectoo.de',
-        'password' => '!TestExi7819',
+        'encryption' => NULL,
+        'username' => 'help@infoscert.com',
+        'password' => '@Info.Support',
         'timeout' => NULL,
         'auth_mode' => NULL,
       ),
@@ -589,7 +589,7 @@
     ),
     'from' => 
     array (
-      'address' => 'support@mygaphub.com',
+      'address' => 'support@infoscert.com',
       'name' => 'MyGaphub',
     ),
     'markdown' => 
@@ -597,7 +597,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/var/www/clients/client1/web1/web/appstaging/core/resources/views/vendor/mail',
+        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -664,7 +664,7 @@
       2 => '127.0.0.1',
       3 => '127.0.0.1:8000',
       4 => '::1',
-      5 => 'appstaging.mygaphub.com',
+      5 => 'localhost',
     ),
     'guard' => 
     array (
@@ -873,7 +873,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/var/www/clients/client1/web1/web/appstaging/core/storage/framework/sessions',
+    'files' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -893,9 +893,9 @@ You can switch the language used with the tabs at the top right (or from the nav
   array (
     'paths' => 
     array (
-      0 => '/var/www/clients/client1/web1/web/appstaging/core/resources/views',
+      0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/views',
     ),
-    'compiled' => '/var/www/clients/client1/web1/web/appstaging/core/storage/framework/views',
+    'compiled' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/views',
   ),
   'dompdf' => 
   array (
@@ -903,10 +903,10 @@ You can switch the language used with the tabs at the top right (or from the nav
     'orientation' => 'portrait',
     'defines' => 
     array (
-      'font_dir' => '/var/www/clients/client1/web1/web/appstaging/core/storage/fonts/',
-      'font_cache' => '/var/www/clients/client1/web1/web/appstaging/core/storage/fonts/',
-      'temp_dir' => '/tmp',
-      'chroot' => '/var/www/clients/client1/web1/web/appstaging/core',
+      'font_dir' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/fonts/',
+      'font_cache' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/fonts/',
+      'temp_dir' => '/var/folders/vg/tpwq1v850jqckkjv6wpf8s6c0000gn/T',
+      'chroot' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -972,7 +972,7 @@ You can switch the language used with the tabs at the top right (or from the nav
       'ensure_pages_exist' => true,
       'page_paths' => 
       array (
-        0 => '/var/www/clients/client1/web1/web/appstaging/core/resources/js/Pages',
+        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/js/Pages',
       ),
       'page_extensions' => 
       array (

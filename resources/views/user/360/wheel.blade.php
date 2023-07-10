@@ -31,14 +31,16 @@
     position: absolute;
   }
   .slice {
-    /* overflow: hidden; */
-    /* position: absolute; */
     top: 53px;
     left: 13px;
     width: 45%;
     height: 48%;
-    transform-origin: 104% 138%;
+    transform-origin: 103% 138%;
   }
+  .cash-slice{
+    transform-origin: 105% 140%;
+  }
+
   /* Cell orientation */
   /* .wheel12 { transform: rotate(13deg) skewX(30deg); } */
   .wheel1 {transform: rotate(60deg) skewX(30deg);}
@@ -53,6 +55,7 @@
   .wheel10 {transform: rotate(330deg) skewX(30deg);}
   .wheel11 {transform: rotate(360deg) skewX(30deg);}
   .wheel12 {transform: rotate(30deg) skewX(30deg);}
+
   .menunav label .over, .menunav label.lane {
     /* cursor: pointer;  */
   }
@@ -287,7 +290,7 @@
                 </div>
               </label>
             </li>
-            <li class='wheel7 slice' >
+            <li class='wheel7 slice cash-slice' >
               <label for='' class="circle " id="tab_7">
                 <div class="lan"  id="">
                   <span class="line"></span>
