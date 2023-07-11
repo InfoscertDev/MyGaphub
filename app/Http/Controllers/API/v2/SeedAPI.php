@@ -130,10 +130,12 @@ class SeedAPI extends Controller
                                 ->where('label', $label)
                             ->whereBetween('period', [$period, $period_end])->get();
 
+                $periods  = array_column($allocations->toArray(), 'period');
                 $allocation_ids = array_column($allocations->toArray(), 'id');
                 $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                   ->where('allocation_id', $allocation_ids)
                                   ->whereBetween('period', [$period, $period_end])->get();
+
                 $labels = array_column($allocations->toArray(), 'period');
                 $budget = array_column($allocations->toArray(), 'amount');
                 $actual = array_column($record_spend->toArray(), 'amount');

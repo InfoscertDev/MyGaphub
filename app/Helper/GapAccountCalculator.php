@@ -7,6 +7,7 @@ use App\UserAudit as Audit;
 use App\UserAudit;
 use App\Wheel\LiabilityAccount as Liability;
 use App\Wheel\MortgageAccount as Mortgage;
+use App\Wheel\PensionAccount as Pension;
 use Carbon\Carbon;
 use App\DiscretionaryBudget as Philantrophy;
 use App\SevenG\AlphaFin as Alpha;
@@ -82,13 +83,20 @@ class GapAccountCalculator
     }
 
     public static function calcAssetAccount($user,$cash, $equity){
-        $percentages = []; $labels = ['Investments', 'Cash', 'Home Equity'];
+        $percentages = [];
+        $labels = ['Investments', 'Cash', 'Pension','Home Equity'];
         $funds = PortfolioHelper::investmentFunds($user);
         $cash_detail = GapAccountCalculator::calcCashAccount($cash, $user);
+
+        $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $equ_detail = GapAccountCalculator::calcEquityAccount($equity);
-        $values = [ $funds['investment'], $cash_detail['sum'],  $equ_detail['sum'] ];
+        $pension_detail = GapAccountCalculator::calcPensionAccount($retirement);
+
+
+        $values = [ $funds['investment'], $cash_detail['sum'],  $pension_detail['sum'],  $equ_detail['sum'] ];
 
         $sum = array_sum($values);
+
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
         }
@@ -186,12 +194,15 @@ class GapAccountCalculator
         $lia_act= GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
         $equ_act = GapAccountCalculator::calcEquityAccount($equity);
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
-        // $pension = GapAccount::pensionPOT($retirement, $dob, $average_seed);
+        $pension_act = GapAccountCalculator::calcPensionAccount($retirement);
 
-        $asset = $cash_act['sum'] +  $funds['investment'];
 
-        return [ 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'], 'equity' => $equ_act['sum'],
-                    'home' => $equ_act['home'], 'asset' => $asset ];
+        $current_asset = $cash_act['sum'] +  $funds['investment'];
+        return [
+                'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'],
+                'equity' => $equ_act['sum'],  'pension' => $pension_act['sum'],
+                'home' => $equ_act['home'], 'asset' => $current_asset
+        ];
     }
 
     public static function oldCalcNetWorth($user){
@@ -212,15 +223,15 @@ class GapAccountCalculator
         $liability = (int)$networth['liability'];
         $mortgage = (int)$networth['mortgage'];
         $home = (int)$networth['home'];
-        // $investment = $funds['investment'];
+        $pension = (int)$networth['pension'];
 
         $asset =  (int)$networth['asset'];
         $equity = $home - $mortgage;
         $sum = ($asset)  - ($liability);
-        // var_dump($equity);
-        $labels = ['Assets', 'Liabilities', 'Home Equity'];
-        $values = [$asset, $liability, $equity];
-        return compact('sum', 'labels', 'values', 'equity', 'liability', 'asset');
+
+        $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
+        $values = [$asset, $liability, $pension, $equity];
+        return compact('sum', 'labels', 'values', 'equity', 'liability', 'pension','asset');
     }
 
     public static function homeNetWorth($user){
