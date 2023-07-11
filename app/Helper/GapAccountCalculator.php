@@ -178,12 +178,15 @@ class GapAccountCalculator
         $liability = Liability::where('user_id', $user->id)->where('isArchive', 0)->get();
         $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->get();
         $cash = Cash::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
+
         $funds = PortfolioHelper::investmentFunds($user);
 
         $mort_act = GapAccountCalculator::calcMortgagesAccount($mortgages, $user);
         $lia_act= GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
         $equ_act = GapAccountCalculator::calcEquityAccount($equity);
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
+        // $pension = GapAccount::pensionPOT($retirement, $dob, $average_seed);
 
         $asset = $cash_act['sum'] +  $funds['investment'];
 
@@ -441,24 +444,32 @@ class GapAccountCalculator
         return compact('labels', 'values', 'target');
     }
 
-    public static function currentILab($user, $cash){
+    public static function currentILab($user, $cash_accounts){
         $networth = GapAccountCalculator::netWorthVariable($user);
+        // Portfolio
         $fin =  Fin::finicial($user);
         $portfolio = $fin['portfolio'];
         $investment = $fin['investment'];
         $non_portfolio = $fin['non_portfolio'];
-        $credit = (int)$networth['liability'];
-        $mortgage = (int)$networth['mortgage'];
-        $savings = GapAccountCalculator::calcCashAccount($cash, $user)['sum'];
+        $income = $non_portfolio + $portfolio;
+        // Net Worth
+        $cash = GapAccountCalculator::calcCashAccount($cash_accounts, $user)['sum'];
         $equity = round((int)$networth['equity'], 2);
+        $asset = array_sum([$investment, $cash, $equity ]);
+        // SEED
         $expenditure = round($fin['expenditure'],2);
         $education = round($fin['calculator']->education,2);
         $periodic_saving = round($fin['calculator']->periodic_savings, 2);
         $discretionary = round($fin['calculator']->charity,2);
-        $asset = array_sum([$investment , $equity , $savings]);
-        $liabilities = $credit + $mortgage;
-        $income = $non_portfolio + $portfolio;
         $budget = round(($periodic_saving + $education + $expenditure + $discretionary), 2);
+        // Liabilities
+        $credit = (int)$networth['liability'];
+        $mortgage = (int)$networth['mortgage'];
+        $liabilities = $credit + $mortgage;
+
+
+
+
         $current_ilab = collect(compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio',
                                     'portfolio', 'periodic_saving', 'education', 'expenditure', 'discretionary'));
 
@@ -505,8 +516,7 @@ class GapAccountCalculator
         // Rename some mispelt section
         if($accountname =='liabilities')  $accountname = 'liability';
         if($accountname =='philantropy')  $accountname = 'philanthropy';
-        //if($accountname =='liability')  $accountname = 'liabilities';
-    
+
         $audit = UserAudit::where('user_id', $user->id)->first();
 
         if(!$audit){
@@ -526,7 +536,7 @@ class GapAccountCalculator
             $wheel = ($audit->wheel_point_at);
             // Confirm if last Account is not the same as the current account
             $key = array_search($accountname, array_column($wheel, 'account_name'));
-            
+
             if($sum == 0 || (is_int($key) && $key >= 0)){
                 if(isset($wheel[$key])) {
                     unset($wheel[$key]);
