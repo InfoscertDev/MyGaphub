@@ -10,7 +10,7 @@
         var total_equity = <?php echo $net_detail['equity'] ?>;
         var total_liability = <?php echo $net_detail['liability'] ?>;
         var total_asset = <?php echo $net_detail['asset'] ?>;
-       
+
     </script>
      @include('user.360.partials.account_chartbar')
 @endsection
@@ -24,38 +24,39 @@
                     <h2 class=" bold">Net Worth: {{$currency}}<span id="total_net">{{ number_format($net_detail['sum'], 2) }} </span>
                         <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Here is the difference between what you own and what you owe financially.."><i class="fa fa-info mx-2 "></i></span>
                     </h2>
-                  {{-- <p class="wd-7 border text-center">Here is the difference between what you own and what you owe financially. </p>--}}  
+                  {{-- <p class="wd-7 border text-center">Here is the difference between what you own and what you owe financially. </p>--}}
                 </div>
-                <div class="bar_chart mt-4"> 
+                <div class="bar_chart mt-4">
                         <h5 class="text-underline  bold">Assets Vs Liabilities</h5>
                         <ul class="list-group list-group-flush cash-tiles">
-                            @foreach ($net_detail['labels'] as $key => $equ) 
+                            @foreach ($net_detail['labels'] as $key => $equ)
                                 @php
                                     if(strtolower($equ) == 'assets') $link = 'asset';
                                     if(strtolower($equ) == 'liabilities') $link = 'liability';
+                                    if(strtolower($equ) == 'pensions') $link = 'retirement';
                                     if(strtolower($equ) == 'home equity') $link = 'equity';
                                 @endphp
                                 <div class="my-1">
                                     <a href="{{route('360.'.$link)}}" class="card-link ">
-                                        <li class="list-group-item">  
-                                            <span class="mr-2 bold"> Current {{$equ}}:</span> <span class="mr-2">{{$currency}}{{ number_format($net_detail['values'][$key], 2) }} </span> 
-                                        </li> 
+                                        <li class="list-group-item">
+                                            <span class="mr-2 bold"> Current {{$equ}}:</span> <span class="mr-2">{{$currency}}{{ number_format($net_detail['values'][$key], 2) }} </span>
+                                        </li>
                                     </a>
                                 </div>
-                            @endforeach 
-                            <div>  
+                            @endforeach
+                            <div>
                                 <a href="{{ route('360.equity') }}">
-                                    <li class="list-group-item mt-5">  
-                                        <span class="mr-2 bold"> Add Home Equity:  </span> 
-                                        <span class="mr-4"> 
+                                    <li class="list-group-item mt-5">
+                                        <span class="mr-2 bold"> Add Home Equity:  </span>
+                                        <span class="mr-4">
                                             <div class=" switch pull-right">
                                                 <input class=""  oninput="updateNetWorth()" id="switch_equity" name="analytics" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_equity"></label>
                                             </div>
-                                        </span> 
-                                    </li> 
+                                        </span>
+                                    </li>
                                 </a>
                             </div>
-                        </ul> 
+                        </ul>
                     <div class="chart my-3  mr-4">
                         <h5 class="text-underline bold my-2 mb-3">Net Worth Distribution</h5>
                         <canvas id="expenditureDetailBar" style="width: 380px !important; "></canvas>
@@ -65,17 +66,17 @@
             <div class="col-md-7 col-sm-12 px-0">
                 @include('user.360.wheel')
             </div>
-        </div> 
-    @else  
+        </div>
+    @else
         <div class="row my-4">
             <div class="col-md-5 col-sm-12">
                 <h5 class="text-underline bold my-2">Recently Updated Tiles</h5>
                 <ul class="list-group list-group-flush cash-tiles">
                     @if (count($tiles))
-                        @foreach ($tiles as $key => $tile)  
+                        @foreach ($tiles as $key => $tile)
                         <li class="list-group-item my-1">
                             <a href="{{ url('/home/360/'.$tile['account_name'] )}}" class="card-link text-white">
-                                <span class="mr-2 text-capitalize"> {{$tile['account_name']}} –</span> <span class="mr-2 bold"> {{$tile['account_type']}}  </span> <span class="mr-2">{{$currency}}{{ number_format( $tile['sum'] , 2) }}</span> 
+                                <span class="mr-2 text-capitalize"> {{$tile['account_name']}} –</span> <span class="mr-2 bold"> {{$tile['account_type']}}  </span> <span class="mr-2">{{$currency}}{{ number_format( $tile['sum'] , 2) }}</span>
                             </a>
                         </li>
                         @endforeach
@@ -85,9 +86,9 @@
                         </div>
                     @endif
                 </ul>
-            </div>  
+            </div>
             <div class="col-md-7 col-sm-12 px-0">
-                @include('user.360.wheel') 
+                @include('user.360.wheel')
             </div>
         </div>
         <div class="row">

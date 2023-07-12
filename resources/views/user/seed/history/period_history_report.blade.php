@@ -2,7 +2,7 @@
 @extends('layouts.user')
 
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script> -->
     <script>
         const labelReportValue = document.getElementById('labelReportValue');
         if(labelReportValue){
@@ -16,7 +16,7 @@
             // console.log(labels, budget_values, actual_values);
             const reportBarChart = new Chart(labelReportValue, {
                 type: 'bar',
-                data: { 
+                data: {
                     labels: labels,
                     datasets: [
                         {

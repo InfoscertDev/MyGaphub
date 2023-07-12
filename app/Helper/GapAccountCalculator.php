@@ -91,16 +91,17 @@ class GapAccountCalculator
         $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $equ_detail = GapAccountCalculator::calcEquityAccount($equity);
         $pension_detail = GapAccountCalculator::calcPensionAccount($retirement);
+        $pension = $pension_detail['sum'];
+        $equity =  $equ_detail['sum'];
 
+        $values = [ $funds['investment'], $cash_detail['sum'], $pension, $equity ];
 
-        $values = [ $funds['investment'], $cash_detail['sum'],  $pension_detail['sum'],  $equ_detail['sum'] ];
-
-        $sum = array_sum($values);
+        $sum = array_sum([$funds['investment'], $cash_detail['sum']]);
 
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
         }
-        return compact('sum', 'labels', 'values', 'percentages' );
+        return compact('sum', 'labels', 'values', 'percentages', 'pension', 'equity' );
     }
 
     public static function calcMortgagesAccount($accounts, $user, $archive = false, $convert = true){
@@ -196,8 +197,8 @@ class GapAccountCalculator
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
         $pension_act = GapAccountCalculator::calcPensionAccount($retirement);
 
-
         $current_asset = $cash_act['sum'] +  $funds['investment'];
+
         return [
                 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'],
                 'equity' => $equ_act['sum'],  'pension' => $pension_act['sum'],
@@ -226,6 +227,7 @@ class GapAccountCalculator
         $pension = (int)$networth['pension'];
 
         $asset =  (int)$networth['asset'];
+        $asset += $pension;
         $equity = $home - $mortgage;
         $sum = ($asset)  - ($liability);
 
@@ -466,7 +468,7 @@ class GapAccountCalculator
         // Net Worth
         $cash = GapAccountCalculator::calcCashAccount($cash_accounts, $user)['sum'];
         $equity = round((int)$networth['equity'], 2);
-        $asset = array_sum([$investment, $cash, $equity ]);
+        $asset = array_sum([$investment, $cash ]);
         // SEED
         $expenditure = round($fin['expenditure'],2);
         $education = round($fin['calculator']->education,2);
@@ -477,8 +479,6 @@ class GapAccountCalculator
         $credit = (int)$networth['liability'];
         $mortgage = (int)$networth['mortgage'];
         $liabilities = $credit + $mortgage;
-
-
 
 
         $current_ilab = collect(compact('investment', 'equity', 'savings', 'credit', 'mortgage', 'non_portfolio',

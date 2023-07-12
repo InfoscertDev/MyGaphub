@@ -22,7 +22,7 @@
 
     <div class="row mt-4 mb-3">
         <div class="col-12 mt-4">
-            <p class="text-center text-muted font-italic">Click  <span class="text-underline" onclick="toggleChart()">here</span>  to switch the chart or click <a href="{{ route('seed.history') }}" class="text-muted text-underline">here</a>  return to the tiles </p>
+            <p class="text-center text-muted font-italic">Click <a href="{{ route('seed.history') }}" class="text-muted text-underline">here</a>  return to the tiles </p>
         </div>
     </div>
 

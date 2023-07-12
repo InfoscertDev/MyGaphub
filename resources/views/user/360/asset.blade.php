@@ -9,6 +9,9 @@
         var values =   <?php echo json_encode($asset_detail['percentages']) ?>;
         var labels =   <?php echo json_encode($asset_detail['labels']) ?>;
         var backgrounds =   <?php echo json_encode($backgrounds) ?>;
+        var total_asset = <?php echo $asset_detail['sum'] ?>;
+        var total_pension = <?php echo $asset_detail['pension'] ?>;
+        var total_equity = <?php echo $asset_detail['equity'] ?>;
     </script>
     @include('user.360.partials.account_chartpie')
 @endsection
@@ -17,7 +20,7 @@
 <div class="row">
     <div class="col-md-5 col-sm-12">
         <div class="">
-            <h2 class=" bold">Assets: {{$currency}}{{ number_format($asset_detail['sum'], 2) }}
+            <h2 class=" bold">Assets: {{$currency}}<span id="total_net">{{ number_format($asset_detail['sum'], 2) }}</span>
                 <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="This includes all your investments, Cash and Home Equity."><i class="fa fa-info mx-2 "></i></span>
                 {{--<p class="wd-7 border text-center px-2">This includes all your investments, Cash and Home Equity </p> --}}
              </h2>
@@ -51,16 +54,26 @@
                         <li class="list-group-item my-1"  >
                             @if(isset($backgrounds[2]))<span class="account_detail" style="background: {{$backgrounds[2]}};"> </span> @endif
                             <span class="mr-2"> Pension -</span> <span class="mr-2 bold">360<sup>o</sup>:</span> <span class="mr-2">{{$currency}}{{ number_format($asset_detail['values'][2], 2)  }}</span>
-                            <span class="pull-right"><i class="fa fa-chevron-right"></i> </span>
+
+                            <span class="mr-4">
+                                <div class=" switch pull-right">
+                                    <input class=""  oninput="updateAssetWorth()" id="switch_pension" name="pension" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_pension"></label>
+                                </div>
+                            </span>
                         </li>
                     </a>
                 </div>
                 <div>
                     <a href="{{ route('360.equity')}}" class="card-link d-block">
                         <li class="list-group-item my-1"  >
-                            @if(isset($backgrounds[2]))<span class="account_detail" style="background: {{$backgrounds[2]}};"> </span> @endif
+                            @if(isset($backgrounds[3]))<span class="account_detail" style="background: {{$backgrounds[3]}};"> </span> @endif
                             <span class="mr-2"> Home Equity -</span> <span class="mr-2 bold">360<sup>o</sup>:</span> <span class="mr-2">{{$currency}}{{ number_format($asset_detail['values'][3], 2)  }}</span>
-                            <span class="pull-right"><i class="fa fa-chevron-right"></i> </span>
+
+                            <span class="mr-4">
+                                <div class=" switch pull-right">
+                                    <input class=""  oninput="updateAssetWorth()" id="switch_equity" name="equity" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_equity"></label>
+                                </div>
+                            </span>
                         </li>
                     </a>
                 </div>
@@ -84,6 +97,25 @@
         var equity = this.equity[index];
         bindEquity(equity);
         $(`#editEquityModal`).modal('show');
+    }
+
+     function updateAssetWorth(){
+        var equity = document.getElementById('switch_equity'),
+            pension = document.getElementById('switch_pension'),
+            net = document.getElementById('total_net');
+        var asset_worth =  total_asset;
+
+        if(equity.checked){
+            asset_worth += parseInt(total_equity);
+        }
+
+        if(pension.checked){
+            asset_worth += parseInt(total_pension);
+        }
+        // else{
+        //     net.textContent = parseInt(+total_asset - +total_liability).toFixed(2).toLocaleString();
+        // }
+        net.textContent = parseInt((+asset_worth)).toFixed(2).toLocaleString();
     }
 
     function initVariable(){

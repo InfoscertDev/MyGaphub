@@ -258,14 +258,17 @@ class SeedController extends Controller
                                 ->where('label', $label)
                                 ->whereBetween('period', [$period, $period_end])->get();
 
-                $periods  = array_column($allocations->toArray(), 'period');
                 $allocation_ids = array_column($allocations->toArray(), 'id');
                 $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                   ->where('allocation_id', $allocation_ids)
                                   ->whereBetween('period', [$period, $period_end])->get();
+
                 $labels = array_column($allocations->toArray(), 'period');
+                // $lables = array_map( function($time){ info($time); return date('F', strtotime($time)); }, $alloccation_labels);
+                // info($labels);
                 $budget = array_column($allocations->toArray(), 'amount');
                 $actual = array_column($record_spend->toArray(), 'amount');
+
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                             ->where('user_id', $user->id)->where('period', $period)
@@ -285,8 +288,6 @@ class SeedController extends Controller
         }else{
             return  redirect('404');
         }
-
-
     }
 
     public function storeSeed(Request $request){
@@ -359,7 +360,7 @@ class SeedController extends Controller
     }
 
     private static function filterExpenditure($value){
-        if($value == 'family'){
+        if($value == 'familx`y'){
             $value = 'Home & Family';
         }else if ($value == 'debt_repayment') {
             $value = 'Debt Repayment';
