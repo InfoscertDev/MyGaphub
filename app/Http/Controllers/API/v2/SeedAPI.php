@@ -315,7 +315,7 @@ class SeedAPI extends Controller
         }
 
         // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
-        $philantrophy_detail = compact('labels','values') ;
+        $philantrophy_detail = AllocationHelpers::averageSeedPhilantrophy($user);
         $data = compact( 'philantrophy', 'grand','philantrophy_detail');
 
         return response()->json([
