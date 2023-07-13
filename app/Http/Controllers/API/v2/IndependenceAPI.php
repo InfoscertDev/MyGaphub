@@ -22,6 +22,8 @@ use App\Helper\WheelClass as Wheel;
 use App\User;
 use App\UserAudit as Audit;
 
+use App\Helper\AllocationHelpers;
+
 
 class IndependenceAPI extends Controller
 {
