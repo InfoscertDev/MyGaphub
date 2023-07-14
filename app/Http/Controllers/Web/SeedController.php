@@ -81,7 +81,6 @@ class SeedController extends Controller
             $seed->update();
             if(str_contains($content, 'multipart/form-data')) return response()->json([ 'status' => true ]);
             return redirect()->back()->with(['success' => 'Seed Budget has been set']);
-
         }else{
             if(str_contains($content, 'multipart/form-data')) return response()->json([ 'status' => true ]);
             return redirect()->back()->with(['alert' => 'Your set amount is lower than the sum of your allocated SEED,'])->withInput();
@@ -156,7 +155,7 @@ class SeedController extends Controller
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
       $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
-    //   $historic_seed = array_reverse($historic_seed);
+
       $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];

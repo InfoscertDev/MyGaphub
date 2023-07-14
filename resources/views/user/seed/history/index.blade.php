@@ -79,19 +79,4 @@
         </div>
     </div>
 
-
-    <script>
-        let viewmode = false;
-        function toggleBudgetMode(){
-            if(viewmode){
-                $('#view_budget_amount').show();
-                $('#edit_budget_amount').hide();
-            }else{
-                $('#view_budget_amount').hide();
-                $('#edit_budget_amount').show();
-            }
-            viewmode = !viewmode
-        }
-
-    </script>
 @endsection

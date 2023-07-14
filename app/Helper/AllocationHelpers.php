@@ -135,7 +135,7 @@ class AllocationHelpers{
                         ->groupBy('period')->get();
         $total_seeds = count($total_seeds);
 
-        $values = array();
+        $values = array(); $percentages = array();
         $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
 
 
@@ -178,6 +178,12 @@ class AllocationHelpers{
                 ($debt_repayment +  $calculator_expenditure[4]) / $total_seeds
             ];
         }
+
+        $sum =  array_sum($values);
+        foreach($values as $money){
+            array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
+        }
+
         return compact('labels', 'values');
     }
 
