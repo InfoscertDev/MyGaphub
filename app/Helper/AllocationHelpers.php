@@ -179,10 +179,6 @@ class AllocationHelpers{
             ];
         }
 
-        $sum =  array_sum($values);
-        foreach($values as $money){
-            array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
-        }
 
         return compact('labels', 'values');
     }
