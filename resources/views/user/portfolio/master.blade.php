@@ -17,9 +17,7 @@
         var braid_roi = <?php echo json_encode($roi_watch['braid_roi'])  ?>;
         var labels = ['B','R','A','I','D'];
         var existing_values = <?php echo json_encode($existing_report['values'])  ?>;
-        var desired_values = <?php echo json_encode($desired_report['values'])  ?>;
         var existing_incomes = <?php echo json_encode($existing_report['incomes'])  ?>;
-        var desired_incomes = <?php echo json_encode($desired_report['incomes'])  ?>;
 
         const braidValue = document.getElementById('braidValue');
         const braidIncome = document.getElementById('braidIncome');
@@ -52,6 +50,21 @@
 @endsection
 
 @section('content')
+<style>
+    @media (min-width: 768px){}
+        .col-add{
+            flex-basis: 34%;
+            margin: 0px;
+            padding-right: 0px;
+        }
+        .col-table{
+            overflow-x: scroll;
+            flex-basis: 65%;
+            margin: 0px;
+            padding-left: 0px;
+        }
+
+</style>
     <link rel="stylesheet" href="{{ asset('assets/css/vectormap.css') }}">
 
     <div class="row mx-auto">
@@ -120,89 +133,63 @@
                     <td><a href="{{ route('portfolio.braid', ['depreciating'])}}" class="text-dark card-link">{{round($roi_braid[4])}}%</a></td>
                 </tr>
             </table>
-            <div class="jumbotron mt-4 py-4 mt-2 bg-dark-gray b-rad-20">
-                <div class="text-center py-2">
-                    <h6>Ready to onboard an existing asset or set an investment goal?</h6>
-                    <div class="my-4">
-                        <a class="btn-primary btn px-3" href="{{ route('portfolio.asset_type',['type' => 'existing']) }}">Add Asset</a>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-4 col-sm-12 pr-0">
+                    <div class="jumbotron p-2  bg-dark-gray b-rad-20">
+                        <div class="text-center py-2">
+                            <h6>Ready to onboard an existing asset or set an investment goal?</h6>
+                            <div class="my-4">
+                                <a class="btn-primary btn px-3" href="{{ route('portfolio.asset_type',['type' => 'existing']) }}">Add Asset</a>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="col-md-8 col-sm-12 pl-0" style="overflow-x: scroll;">
+                    <table class="bg-gray sm-table-responsive table table-bordered pl-2 wd-f">
+                        <tbody class="" >
+                            <tr>
+                                <td></td>
+                                <td class="text-center bold">Value</td>
+                                <td class="text-center bold">Income</td>
+                            </tr>
+                            <tr>
+                                <th><a href="{{ route('portfolio.braid', ['business'])}}" class="text-dark card-link">Business</a></th>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][0], 2)}}</td>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][0], 2)}}</td>
+                            </tr>
+                            <tr>
+                                <th><a href="{{ route('portfolio.braid', ['risk'])}}" class="text-dark card-link">Risk</a></th>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][1], 2)}}</td>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][1], 2)}}</td>
+                            </tr>
+                            <tr>
+                                <th><a href="{{ route('portfolio.braid', ['appreciating'])}}" class="text-dark card-link">Appreciating</a></th>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][2], 2)}}</td>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][2], 2)}}</td>
+                            </tr>
+                            <tr>
+                                <th><a href="{{ route('portfolio.braid', ['intellectual'])}}" class="text-dark card-link">Intellectual</a></th>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][3], 2)}}</td>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][3], 2)}}</td>
+                            </tr>
+                            <tr>
+                                <th><a href="{{ route('portfolio.braid', ['depreciating'])}}" class="text-dark card-link">Depreciating</a></th>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][4], 2)}}</td>
+                                <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][4], 2)}}</td>
+                            </tr>
+                            <tr>
+                                <th class="bold">Total</th>
+                                <td class="bold">{{$currency}}{{number_format(array_sum($existing_report['values']),2)}}</td>
+                                <td class="bold">{{$currency}}{{number_format(array_sum($existing_report['incomes']), 2)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-sm-12 " style="overflow-x: scroll;">
-            <table class="bg-gray sm-table-responsive table table-bordered pl-2 wd-f">
-                <tbody class="" >
-                    <tr class="" >
-                       <th rowspan="2"></th>
-                       <th colspan="2" class="text-center">Existing Assets</th>
-                       <!-- <th colspan="2" class="text-center">Desired Assets</th> -->
-                       <th colspan="2" class="text-center">Anticipated Total <br>(Existing+Desired)</th>
-                    </tr>
-                    <tr>
-                        <td class="text-center bold">Value</td>
-                        <td class="text-center bold">Income</td>
-                        <td class="text-center bold">Value</td>
-                        <td class="text-center bold">Income</td>
-                        <td class="text-center bold">Value</td>
-                        <td class="text-center bold">Income</td>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ route('portfolio.braid', ['business'])}}" class="text-dark card-link">Business</a></th>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][0], 2)}}</td>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][0], 2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['values'][0],2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['incomes'][0], 2)}}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['values'][0] + $desired_report['values'][0],2) }}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['incomes'][0] + $desired_report['incomes'][0], 2 )}}</td>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ route('portfolio.braid', ['risk'])}}" class="text-dark card-link">Risk</a></th>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][1], 2)}}</td>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][1], 2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['values'][1],2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['incomes'][1], 2)}}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['values'][1] + $desired_report['values'][1],2) }}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['incomes'][1] + $desired_report['incomes'][1], 2 )}}</td>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ route('portfolio.braid', ['appreciating'])}}" class="text-dark card-link">Appreciating</a></th>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][2], 2)}}</td>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][2], 2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['values'][2],2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['incomes'][2], 2)}}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['values'][2] + $desired_report['values'][2],2) }}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['incomes'][2] + $desired_report['incomes'][2], 2 )}}</td>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ route('portfolio.braid', ['intellectual'])}}" class="text-dark card-link">Intellectual</a></th>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][3], 2)}}</td>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][3], 2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['values'][3],2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['incomes'][3], 2)}}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['values'][3] + $desired_report['values'][3],2) }}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['incomes'][3] + $desired_report['incomes'][3], 2 )}}</td>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ route('portfolio.braid', ['depreciating'])}}" class="text-dark card-link">Depreciating</a></th>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['values'][4], 2)}}</td>
-                        <td class="bg-exist">{{$currency}}{{number_format($existing_report['incomes'][4], 2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['values'][4],2)}}</td>
-                        <td class="bg-desire">{{$currency}}{{number_format($desired_report['incomes'][4], 2)}}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['values'][4] + $desired_report['values'][4],2) }}</td>
-                        <td class="bg-anticipate">{{$currency}}{{number_format($existing_report['incomes'][4] + $desired_report['incomes'][4], 2 )}}</td>
-                    </tr>
-                    <tr>
-                        <th class="bold">Total</th>
-                        <td class="bold">{{$currency}}{{number_format(array_sum($existing_report['values']),2)}}</td>
-                        <td class="bold">{{$currency}}{{number_format(array_sum($existing_report['incomes']), 2)}}</td>
-                        <td class="bold">{{$currency}}{{number_format(array_sum($desired_report['values']),2)}}</td>
-                        <td class="bold">{{$currency}}{{number_format(array_sum($desired_report['incomes']), 2)}}</td>
-                        <td class="bold">{{$currency}}{{number_format((array_sum($existing_report['values']) + array_sum($desired_report['values'])),2) }}</td>
-                        <td class="bold">{{$currency}}{{number_format((array_sum($existing_report['incomes']) + array_sum($desired_report['incomes'])),2) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
     </div>
+
 
 @endsection

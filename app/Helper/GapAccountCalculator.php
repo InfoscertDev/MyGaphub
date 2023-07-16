@@ -556,7 +556,7 @@ class GapAccountCalculator
             }
 
             if(count($wheel) >= 8)  array_pop($wheel);
-            if ($sum != 0) array_unshift($wheel, $tile);
+            if ((int)$sum != 0) array_unshift($wheel, $tile);
 
             $audit->wheel_point_at =  ($wheel);
             $audit->save();

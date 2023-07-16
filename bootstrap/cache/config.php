@@ -209,7 +209,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/cache/data',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -380,12 +380,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app',
+        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app/public',
+        'root' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -403,7 +403,7 @@
     ),
     'links' => 
     array (
-      '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/public/storage' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/app/public',
+      '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/public/storage' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -474,13 +474,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -531,7 +531,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/logs/laravel.log',
+        'path' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -597,7 +597,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/views/vendor/mail',
+        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -873,7 +873,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/sessions',
+    'files' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -893,9 +893,9 @@ You can switch the language used with the tabs at the top right (or from the nav
   array (
     'paths' => 
     array (
-      0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/views',
+      0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/resources/views',
     ),
-    'compiled' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/framework/views',
+    'compiled' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/framework/views',
   ),
   'dompdf' => 
   array (
@@ -903,10 +903,10 @@ You can switch the language used with the tabs at the top right (or from the nav
     'orientation' => 'portrait',
     'defines' => 
     array (
-      'font_dir' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/fonts/',
-      'font_cache' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/storage/fonts/',
+      'font_dir' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/fonts/',
+      'font_cache' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/storage/fonts/',
       'temp_dir' => '/var/folders/vg/tpwq1v850jqckkjv6wpf8s6c0000gn/T',
-      'chroot' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core',
+      'chroot' => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core',
       'enable_font_subsetting' => false,
       'pdf_backend' => 'CPDF',
       'default_media_type' => 'screen',
@@ -972,7 +972,7 @@ You can switch the language used with the tabs at the top right (or from the nav
       'ensure_pages_exist' => true,
       'page_paths' => 
       array (
-        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/releasec/core/resources/js/Pages',
+        0 => '/Users/ultraputers/Desktop/Infoscert/mygaphub/released/core/resources/js/Pages',
       ),
       'page_extensions' => 
       array (

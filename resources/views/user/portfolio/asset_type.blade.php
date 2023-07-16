@@ -9,34 +9,34 @@
         var depreciating = <?php echo json_encode($depreciating) ?>;
 
     </script>
-@endsection 
+@endsection
 
 @section('content')
     @include('user.portfolio.modals.new_portfolio_asset')
     <div class="wd-f bg-white">
         <div class="m-2">
-            <div class="gap-lists portfolio-lists ml-0 mx-4 sm-mx-0">  
+            <div class="gap-lists portfolio-lists ml-0 mx-4 sm-mx-0">
                 <span class="mx-3 pb-2" id="goback">
                     <a href="#" class="text-dark bold" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
-                <div class="pl-2 mb-2 gap-center">  
-                    <h4 class="bold text-underline">ASSET CLASSES </h4>
+                <div class="pl-2 mb-2 gap-center">
+                    <h4 class="bold text-underline">ASSET CLASSEM </h4>
                     <h6 class="">Select which Class you will like to add this asset to:</h6>
-                </div> 
+                </div>
                 <div class="asset-list b-rad-20 hand elevation-1 mb-2"  onclick="newPortfolio(this, 'business')">
                     <div class="list-img img-right">
                         <img src="{{ asset('/assets/images/wuuquywhqe-12835412.png') }}" alt=" " class="img img-responsive">
                     </div>
-                    <div class="list-body mt-3"> 
+                    <div class="list-body mt-3">
                         <h4 class="list-title txt-primary">Business Asset</h4>
                         <p class="list-intro pr-2">Established profitable business operations that you have 100% control over. </p>
                     </div>
-                </div> 
+                </div>
                 <div class="asset-list b-rad-20 hand elevation-1 mb-2"  onclick="newPortfolio(this, 'risk')">
                     <div class="list-img img-right">
                         <img src="{{ asset('/assets/images/hq7uswer52.png') }}" alt=" " class="img img-responsive">
                     </div>
-                    <div class="list-body mt-3"> 
+                    <div class="list-body mt-3">
                         <h4 class="list-title txt-primary">Risk Asset</h4>
                         <p class="list-intro pr-2">These are equities, stocks & share which you have little or no control over.</p>
                     </div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
     <script>
         var asset_cat = null;
         function newPortfolio(e, asset){
@@ -78,4 +78,4 @@
             $('#newPortfolioAssetModal').modal('show');
         }
     </script>
-@endsection 
+@endsection

@@ -11,9 +11,6 @@
                             <li class="list-group-item my-2 text-center" onclick="window.location ='<?php echo route('portfolio.asset_type',['type' => 'existing']) ?>'">
                                 Existing Asset (Currently Owned)
                             </li>
-                            <li class="list-group-item my-2 text-center" onclick="window.location ='<?php echo route('portfolio.asset_type',['type' => 'desired']) ?>'">
-                                Desired Asset (Investment Goal)
-                            </li>
                         </ul>
                     </div>
                 </div>

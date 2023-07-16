@@ -6,20 +6,10 @@
             data: {
                 labels: labels,
                 datasets: [{
-                        label: 'Existing',
+                        label: 'Investments',
                         data: existing_values,
                         backgroundColor: '#E6C069',
                         borderColor: '#E6C069',
-                        datalabels: {
-                            color: '#fff',
-                            position: 'top'
-                        }
-                    },{
-                        label: 'Desired',
-                        data: desired_values,
-
-                        backgroundColor: '#ED3237',
-                        borderColor: '#ED3237',
                         datalabels: {
                             color: '#fff',
                             position: 'top'
