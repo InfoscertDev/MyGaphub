@@ -67,10 +67,11 @@
     function updateNetWorth(){
         var equity = document.getElementById('switch_equity'),
             net = document.getElementById('total_net');
+        console.log(equity);
         if(equity.checked){
-            net.textContent = parseInt((+total_asset + +total_equity) - +total_liability).toFixed(2).toLocaleString();
+            net.textContent = parseInt((+total_asset + +total_equity) - +total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }else{
-            net.textContent = parseInt(+total_asset - +total_liability).toFixed(2).toLocaleString();
+            net.textContent = parseInt(+total_asset - +total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
     }
 </script>

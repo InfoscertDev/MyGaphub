@@ -8,12 +8,25 @@
         if(labelReportValue){
             labelReportValue.getContext('2d');
 
-            const labels =  <?php echo json_encode($labels) ?>;
+            const labels = [];
             const currency = "<?php echo $currency ?>";
-            const budget_values = <?php echo json_encode($budget)  ?>;
-            const actual_values = <?php echo json_encode($actual)  ?>;
+            const data = <?php echo json_encode($label_report)  ?>;
+            let budget_values = [];
+            let actual_values = [];
 
-            // console.log(labels, budget_values, actual_values);
+            console.log(data);
+            for (const key in data) {
+                if (Object.hasOwnProperty.call(data, key)) {
+                    const element = data[key];
+                    console.log(element)
+                    let period = new Date(key).toLocaleString('en-us', { month: 'short' });
+                    labels.push(period) ;
+
+                    budget_values.push(element.budget)
+                    actual_values.push(element.actual)
+                }
+            }
+
             const reportBarChart = new Chart(labelReportValue, {
                 type: 'bar',
                 data: {

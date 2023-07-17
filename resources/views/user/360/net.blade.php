@@ -40,22 +40,16 @@
                                     <a href="{{route('360.'.$link)}}" class="card-link ">
                                         <li class="list-group-item">
                                             <span class="mr-2 bold"> Current {{$equ}}:</span> <span class="mr-2">{{$currency}}{{ number_format($net_detail['values'][$key], 2) }} </span>
+
+                                            @if($equ == 'Home Equity')
+                                                <div class=" switch pull-right">
+                                                    <input class=""  oninput="updateNetWorth()" id="switch_equity" name="analytics" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_equity"></label>
+                                                </div>
+                                            @endif
                                         </li>
                                     </a>
                                 </div>
                             @endforeach
-                            <div>
-                                <a href="{{ route('360.equity') }}">
-                                    <li class="list-group-item mt-5">
-                                        <span class="mr-2 bold"> Add Home Equity:  </span>
-                                        <span class="mr-4">
-                                            <div class=" switch pull-right">
-                                                <input class=""  oninput="updateNetWorth()" id="switch_equity" name="analytics" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_equity"></label>
-                                            </div>
-                                        </span>
-                                    </li>
-                                </a>
-                            </div>
                         </ul>
                     <div class="chart my-3  mr-4">
                         <h5 class="text-underline bold my-2 mb-3">Net Worth Distribution</h5>

@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
+use DB;
 
 class SeedController extends Controller
 {
@@ -232,8 +233,8 @@ class SeedController extends Controller
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
         $category = (in_array($category, $categories)) ? $category: null;
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
-        $budget = []; $actual =[];
         $labels = [];
+        $label_report = array();
         if ($seed == 'expenditure' && !$category){
             $groups = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
@@ -253,20 +254,30 @@ class SeedController extends Controller
 
         } else if(in_array($seed, $seeds)){
             if($label){
-                $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
+                $allocations = SeedBudgetAllocation::where('user_id', $user->id)
+                                ->where('seed_category', strval($seed))
                                 ->where('label', $label)
-                                ->whereBetween('period', [$period, $period_end])->get();
+                                ->whereBetween('period', [$period, $period_end])
+                                ->get();
 
-                $allocation_ids = array_column($allocations->toArray(), 'id');
-                $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                                  ->where('allocation_id', $allocation_ids)
-                                  ->whereBetween('period', [$period, $period_end])->get();
+                foreach($allocations as $allocation){
+                    $label_report[$allocation->period][] = $allocation;
+                }
 
-                $labels = array_column($allocations->toArray(), 'period');
-                // $lables = array_map( function($time){ info($time); return date('F', strtotime($time)); }, $alloccation_labels);
-                // info($labels);
-                $budget = array_column($allocations->toArray(), 'amount');
-                $actual = array_column($record_spend->toArray(), 'amount');
+                $labels = array_keys($label_report);
+
+                foreach($label_report as $key => $value){
+                    $ids =  array_values(array_column($label_report[$key], 'id'));
+                    $amount = array_sum(array_column($label_report[$key], 'amount'));
+
+                    $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                      ->where('allocation_id', $ids)->sum('amount');
+
+                    $label_report[$key] = [
+                        'budget' => $amount,
+                        'actual' => $record_spend,
+                    ];
+                }
 
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
@@ -281,7 +292,7 @@ class SeedController extends Controller
                 }
             }
             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
-                   'allocations', 'periods', 'period', 'seed', 'label', 'budget', 'actual', 'labels'
+                   'allocations', 'periods', 'period', 'seed', 'label', 'label_report', 'labels'
            ));
 
         }else{

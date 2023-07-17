@@ -115,7 +115,7 @@
         // else{
         //     net.textContent = parseInt(+total_asset - +total_liability).toFixed(2).toLocaleString();
         // }
-        net.textContent = parseInt((+asset_worth)).toFixed(2).toLocaleString();
+        net.textContent = parseInt((+asset_worth)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); ;
     }
 
     function initVariable(){

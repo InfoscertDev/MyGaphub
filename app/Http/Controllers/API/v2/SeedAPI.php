@@ -102,7 +102,7 @@ class SeedAPI extends Controller
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
         $category = (in_array($category, $categories)) ? $category: null;
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
-        $budget = []; $actual =[];
+        $label_report = array();
         $labels = [];
 
         if ($seed == 'expenditure' && !$category){
@@ -126,20 +126,30 @@ class SeedAPI extends Controller
             ]);
         } else if(in_array($seed, $seeds)){
             if($label){
-                $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
-                                ->where('label', $label)
-                            ->whereBetween('period', [$period, $period_end])->get();
+                $allocations = SeedBudgetAllocation::where('user_id', $user->id)
+                    ->where('seed_category', strval($seed))
+                    ->where('label', $label)
+                    ->whereBetween('period', [$period, $period_end])
+                    ->get();
 
-                $periods  = array_column($allocations->toArray(), 'period');
+                foreach($allocations as $allocation){
+                    $label_report[$allocation->period][] = $allocation;
+                }
 
-                $allocation_ids = array_column($allocations->toArray(), 'id');
-                $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                                  ->where('allocation_id', $allocation_ids)
-                                  ->whereBetween('period', [$period, $period_end])->get();
+                $labels = array_keys($label_report);
 
-                $labels = array_column($allocations->toArray(), 'period');
-                $budget = array_column($allocations->toArray(), 'amount');
-                $actual = array_column($record_spend->toArray(), 'amount');
+                foreach($label_report as $key => $value){
+                    $ids =  array_values(array_column($label_report[$key], 'id'));
+                    $amount = array_sum(array_column($label_report[$key], 'amount'));
+
+                    $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                    ->where('allocation_id', $ids)->sum('amount');
+
+                    $label_report[$key] = [
+                        'budget' => $amount,
+                        'actual' => $record_spend,
+                    ];
+                }
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                             ->where('user_id', $user->id)->where('period', $period)
@@ -153,7 +163,7 @@ class SeedAPI extends Controller
                 }
             }
 
-            $data = compact('allocations', 'periods', 'period', 'seed', 'label', 'budget', 'actual', 'labels');
+            $data = compact('allocations', 'periods', 'period', 'seed', 'label', 'label_report', 'labels');
 
             return response()->json([
                 'status' => true,

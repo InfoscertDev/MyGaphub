@@ -11,7 +11,7 @@
     let expenditure = [];
     let discretionary = [];
 
-    console.log(data);
+    // console.log(data);
     for (const key in data) {
         if (Object.hasOwnProperty.call(data, key)) {
             const element = data[key];
