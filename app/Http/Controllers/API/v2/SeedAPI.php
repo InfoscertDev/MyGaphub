@@ -156,7 +156,7 @@ class SeedAPI extends Controller
                             ->when($category, function ($query, $category) {
                                 return $query->where('expenditure', $category);
                             })->latest()->get();
-                            // info('1');
+
                 foreach($allocations as $allocation){
                     $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
                     $allocation->actual =  array_sum(  array_column($record_spents->toArray(),'amount')  ) ;
