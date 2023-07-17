@@ -103,19 +103,19 @@
         var equity = document.getElementById('switch_equity'),
             pension = document.getElementById('switch_pension'),
             net = document.getElementById('total_net');
-        var asset_worth =  total_asset;
+        var asset_worth =  parseFloat(total_asset);
 
         if(equity.checked){
-            asset_worth += parseInt(total_equity);
+            asset_worth += parseFloat(total_equity);
         }
 
         if(pension.checked){
-            asset_worth += parseInt(total_pension);
+            asset_worth += parseFloat(total_pension);
         }
         // else{
-        //     net.textContent = parseInt(+total_asset - +total_liability).toFixed(2).toLocaleString();
+        //     net.textContent = parseFloat(+total_asset - +total_liability).toFixed(2).toLocaleString();
         // }
-        net.textContent = parseInt((+asset_worth)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); ;
+        net.textContent = parseFloat((+asset_worth)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); ;
     }
 
     function initVariable(){
