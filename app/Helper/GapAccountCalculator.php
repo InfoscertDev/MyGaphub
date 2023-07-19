@@ -62,7 +62,7 @@ class GapAccountCalculator
             array_push($values,$current);
             // array_push($sum,$current);
         }
-        $sum = array_sum($values); 
+        $sum = array_sum($values);
         $percentages = [];
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
@@ -84,7 +84,7 @@ class GapAccountCalculator
     }
 
     public static function calcAssetAccount($user,$cash, $equity){
-        
+
         $percentages = [];
         $labels = ['Investments', 'Cash', 'Pension','Home Equity'];
         $funds = PortfolioHelper::investmentFunds($user);
@@ -171,7 +171,7 @@ class GapAccountCalculator
             $current = GapExchangeHelper::convert_currency($user, $account->account_currency,$account->current, $account->automated);
             array_push($values, $current);
         }
-        $sum = array_sum($values); 
+        $sum = array_sum($values);
         $percentages = [];
         foreach($values as $money){
                 array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
@@ -265,7 +265,7 @@ class GapAccountCalculator
             array_push($labels, str_limit($account->location, 25));
         }
         $sum = array_sum($values);
-        
+
         $percentages = [];
         foreach($accounts as $account){
             $eq =  $account->market_value - ($account->mortgage ? $account->mortgage->current_balance : 0);
@@ -283,7 +283,7 @@ class GapAccountCalculator
             array_push($premium,  $account->sum_assured);
             array_push($labels, $account->protection_category);
         }
-        $sum = array_sum($premium); 
+        $sum = array_sum($premium);
         $percentages = [];
         $total = array_sum($values);
         foreach($accounts as $account){
@@ -353,7 +353,7 @@ class GapAccountCalculator
         foreach($accounts as $account){
             array_push($labels, $account->name);
         }
-        $sum = array_sum($values); 
+        $sum = array_sum($values);
         $percentages = [];
         foreach($accounts as $account){
             array_push($percentages, round(($account->current / ($sum ? $sum : 1)) * 100));
@@ -384,7 +384,7 @@ class GapAccountCalculator
         foreach($accounts as $account){
             array_push($labels, $account->income_name);
         }
-        $sum = array_sum($values); 
+        $sum = array_sum($values);
         $percentages = [];
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
@@ -564,7 +564,7 @@ class GapAccountCalculator
             }
 
             if(count($wheel) >= 8)  array_pop($wheel);
-            if ((int)$sum != 0) array_unshift($wheel, $tile);
+            if ($sum != 0) array_unshift($wheel, $tile);
 
             $audit->wheel_point_at =  ($wheel);
             $audit->save();

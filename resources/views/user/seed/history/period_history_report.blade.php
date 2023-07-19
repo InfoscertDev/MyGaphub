@@ -110,9 +110,15 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <span class="mr-3 pb-2" id="goback">
-                <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
-                            class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
-                </a>
+                @if(isset($label))
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) }}"
+                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
+                    </a>
+                @else
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed,'category' => $category]) : route('seed.periodic_history', ['period' => $period, ]) }}"
+                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
+                    </a>
+                @endif
             </span>
             <div class="disclaim text-center">
                 <select onchange="window.location.assign('{{ route('seed.history') .'/' }}' + this.value)"
@@ -172,9 +178,15 @@
 
                             <div class="mt-4">
                                 <p class="text-center font-italic">Click
-                                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period]) }}"
-                                                class="text-dark" > here
-                                    </a>
+                                        @if(isset($label))
+                                            <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) }}"
+                                                        class="text-dark" >here
+                                            </a>
+                                        @else
+                                            <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed,'category' => $category]) : route('seed.periodic_history', ['period' => $period, ]) }}"
+                                                        class="text-dark" >here
+                                            </a>
+                                        @endif
                                      to return to the previous page
                                 </p>
                             </div>

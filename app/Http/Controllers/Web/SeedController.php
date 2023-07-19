@@ -292,7 +292,7 @@ class SeedController extends Controller
                 }
             }
             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
-                   'allocations', 'periods', 'period', 'seed', 'label', 'label_report', 'labels'
+                   'allocations', 'periods', 'period', 'seed', 'label', 'label_report', 'labels','category'
            ));
 
         }else{
