@@ -103,6 +103,7 @@ class GapAccountCalculator
         foreach($values as $money){
             array_push($percentages, round(($money / ($sum ? $sum : 1)) * 100));
         }
+
         return compact('sum', 'labels', 'values', 'percentages', 'pension', 'equity' );
     }
 
@@ -210,17 +211,6 @@ class GapAccountCalculator
         ];
     }
 
-    public static function oldCalcNetWorth($user){
-        $networth = GapAccountCalculator::netWorthVariable($user);
-        $liability = (int)$networth['liability'] + (int)$networth['mortgage'];
-        $asset = 0 +  (int)$networth['home'];
-        $sum = ($asset)  - ($liability);
-        $labels = ['Assets', 'Liabilities', 'Home Equity'];
-        $values = [$asset, $liability, $networth['equity']];
-        $equity = (int)$networth['equity'];
-        return compact('sum', 'labels', 'values', 'equity', 'liability', 'asset');
-    }
-
     public static function calcNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
 
@@ -231,7 +221,7 @@ class GapAccountCalculator
         $pension = (int)$networth['pension'];
 
         $asset =  (int)$networth['asset'];
-        $asset += $pension;
+
         $equity = $home - $mortgage;
         $sum = ($asset)  - ($liability);
 
@@ -243,15 +233,18 @@ class GapAccountCalculator
     public static function homeNetWorth($user){
         $networth = GapAccountCalculator::netWorthVariable($user);
         $liability = (int)$networth['liability'];
+        $pension = (int)$networth['pension'];
+        $equity = (int)$networth['equity'];
         $funds = PortfolioHelper::investmentFunds($user); ;
 
-        $asset =  (int)$networth['asset'] + $funds['investment'];
+        $asset =  array_sum([$networth['asset'], $pension, $equity]);
         $sum = ($asset)  - ($liability);
         // var_dump($equity);
         $labels = ['Assets', 'Liabilities'];
         $values = [$asset, $liability];
         return compact('sum','labels', 'values');
     }
+
     public static function calcEquityAccount($accounts){
         $values = []; $labels = [];  $homes = [];
         foreach($accounts as $account){

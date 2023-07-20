@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use App\Helper\AnalyticsClass;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmailReminder;
+use App\Models\Notification;
 
 class DailyReminder extends Command
 {
@@ -44,6 +45,8 @@ class DailyReminder extends Command
      */
     public function handle()
     {
+       $this->monthlyHistoricReport();
+       return;
        $this->validateEmailReminder();
 
        $this->analyticsValidation();
@@ -77,5 +80,18 @@ class DailyReminder extends Command
         }
     }
 
+    public function monthlyHistoricReport(){
+        $today = date('d');
+        echo $today;
+        if($today){
+            $notification = new Notification();
+            $notification->user_id = 2;// $audit->user_id;
+            $notification->action = route('user.single_reap', 2);
+            $notification->title = "SEED (Budget) Report";
+            $notification->category = "seed";
+            $notification->message =  "Your SEED (Budget) report for last month is ready to view";
+            $notification->save();
+        }
+    }
 
 }

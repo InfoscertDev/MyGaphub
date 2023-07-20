@@ -153,6 +153,7 @@ class SeedController extends Controller
       $current_seed = CalculatorClass::getCurrentSeed($user);
       $target_seed = CalculatorClass::getTargetSeed($user);
       $average_seed = CalculatorClass::averageSeedDetail($user);
+
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
       $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
@@ -226,8 +227,7 @@ class SeedController extends Controller
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
         $category = $request->input('category');
-        $period_end = Carbon::createFromFormat('Y-m-d', $period)
-                          ->endOfMonth()->format('Y-m-d');
+        $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
 
         $seeds = ['savings', 'expenditure','education', 'discretionary'];
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];

@@ -20,7 +20,7 @@
                     <a href="#" class="text-dark bold" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i> Back</a>
                 </span>
                 <div class="pl-2 mb-2 gap-center">
-                    <h4 class="bold text-underline">ASSET CLASSEM </h4>
+                    <h4 class="bold text-underline">ASSET CLASSES </h4>
                     <h6 class="">Select which Class you will like to add this asset to:</h6>
                 </div>
                 <div class="asset-list b-rad-20 hand elevation-1 mb-2"  onclick="newPortfolio(this, 'business')">
