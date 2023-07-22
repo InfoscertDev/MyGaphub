@@ -13,6 +13,7 @@ use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
 use DateTime;
 use Illuminate\Support\Facades\Http;
+use App\Models\Notification;
 
 class PersonalAssistance {
 
@@ -31,18 +32,26 @@ class PersonalAssistance {
     }
 
     public function priority(){
+        $today = date('d');
+        $priority = null;
         $reminder = Reminder::where('user_id', $this->user->id)
                     ->where('complete', 0)->whereDate('date', '>=', date('Y-m-d'))
                     ->orderBy('date', 'ASC')
                     ->orderBy('name', 'ASC')
                     ->first();
-
-        if($reminder){
+        if($today){
+            $report = Notification::where('user_id', $this->user->id)
+                        ->where('category','seed_report')
+                        ->first();
+            $priority = $report;
+        } else if($reminder){
             $alert = new DateTime(date('Y-m-d'));
             $reminder->dueday = $alert->diff(new DateTime($reminder->date)) ;
             $reminder->dueday = $reminder->dueday->days;
+            $priority = $reminder;
         }
-        return $reminder;
+
+        return $priority;
     }
 
     public function acqusition(){

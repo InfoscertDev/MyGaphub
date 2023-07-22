@@ -238,7 +238,9 @@ class SeedController extends Controller
         if ($seed == 'expenditure' && !$category){
             $groups = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
-                            ->where('user_id', $user->id)->where('period', $period)->get();
+                            ->where('user_id', $user->id)
+                            ->whereBetween('period', [$period, $period_end])
+                            ->get();
 
             foreach ($allocations->toArray() as $allocation) {
                 array_push($labels, $allocation['expenditure']);
@@ -278,10 +280,10 @@ class SeedController extends Controller
                         'actual' => $record_spend,
                     ];
                 }
-
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
-                            ->where('user_id', $user->id)->where('period', $period)
+                            ->where('user_id', $user->id)
+                            ->whereBetween('period', [$period, $period_end])
                             ->when($category, function ($query, $category) {
                                 return $query->where('expenditure', $category);
                             })->latest()->get();

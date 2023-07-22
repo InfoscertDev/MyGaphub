@@ -82,15 +82,19 @@ class DailyReminder extends Command
 
     public function monthlyHistoricReport(){
         $today = date('d');
-        echo $today;
-        if($today){
-            $notification = new Notification();
-            $notification->user_id = 2;// $audit->user_id;
-            $notification->action = route('user.single_reap', 2);
-            $notification->title = "SEED (Budget) Report";
-            $notification->category = "seed";
-            $notification->message =  "Your SEED (Budget) report for last month is ready to view";
-            $notification->save();
+        $last_period = date("Y-m-d",strtotime("-1 months", strtotime(date('Y-m').'-01')) );
+        $unvalidated_users = User::whereNotNull('email_verified_at')->get();
+
+        foreach($unvalidated_users as $user){
+            if($today == 22){
+                $notification = new Notification();
+                $notification->user_id =  $user->id;
+                $notification->action = route('seed.periodic_history', $last_period);
+                $notification->title = "SEED (Budget) Report";
+                $notification->category = "seed_report";
+                $notification->message =  "Your SEED (Budget) report for last month is ready to view";
+                $notification->save();
+            }
         }
     }
 

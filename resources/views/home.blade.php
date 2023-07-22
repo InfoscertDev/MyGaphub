@@ -422,15 +422,22 @@
                             </span>
                             @if($assistance['priority'])
                                 <span class="small text-light priority-due">
-                                    @if($assistance['priority']->dueday > -1 &&  $assistance['priority']->date >= date('Y-m-d') && $assistance['priority']->due >= $assistance['priority']->dueday )
-                                        <span class="mr-1 fa fa-exclamation-triangle txt-primary" > </span>
-                                        @if ($assistance['priority']->dueday == 0 )
-                                            Today is the Due Date
-                                        @else
-                                        <span class=""> {{ $assistance['priority']->dueday}} {{ ($assistance['priority']->dueday > 1 ) ? ' days' : ' day' }} to Due Date</span>
+                                    @if(isset($assistance['priority']->duedate))
+                                        @if($assistance['priority']->dueday > -1 &&  $assistance['priority']->date >= date('Y-m-d') && $assistance['priority']->due >= $assistance['priority']->dueday )
+                                            <span class="mr-1 fa fa-exclamation-triangle txt-primary" > </span>
+                                            @if ($assistance['priority']->dueday == 0 )
+                                                Today is the Due Date
+                                            @else
+                                            <span class=""> {{ $assistance['priority']->dueday}} {{ ($assistance['priority']->dueday > 1 ) ? ' days' : ' day' }} to Due Date</span>
+                                            @endif
+                                        @elseif(date('Y-m-d') > $assistance['priority']->date )
+                                            <span class="">  <img src="{{ asset('/assets/icon/reminder-info.png')}}" class="img im-responsive" width="21" alt="">This event has passed</span>
                                         @endif
-                                    @elseif(date('Y-m-d') > $assistance['priority']->date )
-                                        <span class="">  <img src="{{ asset('/assets/icon/reminder-info.png')}}" class="img im-responsive" width="21" alt="">This event has passed</span>
+                                    @elseif(isset($assistance['priority']->category))
+                                         <a class="text-white" href="{{ $assistance['priority']->action }}">
+                                            {{ $assistance['priority']->message  }}
+                                            <!-- <span class="mr-1 fa fa-exclamation-triangle txt-primary" > </span> -->
+                                          </a>
                                     @endif
                                 </span>
                             @endif

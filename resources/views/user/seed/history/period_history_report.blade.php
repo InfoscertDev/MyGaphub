@@ -111,11 +111,15 @@
         <div class="col-12">
             <span class="mr-3 pb-2" id="goback">
                 @if(isset($label))
-                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) }}"
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed, 'category' => $category]) : route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) }}"
+                                class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
+                    </a>
+                @elseif(!$category)
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed,'category' => $category]) : route('seed.periodic_history', ['period' => $period] ) }}"
                                 class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                     </a>
                 @else
-                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed,'category' => $category]) : route('seed.periodic_history', ['period' => $period, ]) }}"
+                    <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) : route('seed.periodic_history', ['period' => $period] ) }}"
                                 class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                     </a>
                 @endif
