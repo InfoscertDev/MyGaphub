@@ -40,9 +40,9 @@
   .cash-slice{
     transform-origin: 105% 140%;
   }
-  .cash-slice label{
+  /* .cash-slice label{
     height: 230%;
-  }
+  } */
   /* Cell orientation */
   /* .wheel12 { transform: rotate(13deg) skewX(30deg); } */
   .wheel1 {transform: rotate(60deg) skewX(30deg);}
@@ -70,7 +70,7 @@
   .slice label {
     display: block;
     width: 210%;
-    height: 260%;
+    height: 250%;
     transform: skew(-30deg) rotate(-30deg);
     line-height: 3;
     /* text-align: center; */
