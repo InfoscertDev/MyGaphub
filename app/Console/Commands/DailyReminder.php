@@ -11,6 +11,7 @@ use App\Helper\AnalyticsClass;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmailReminder;
 use App\Models\Notification;
+use App\Models\Asset\SeedBudgetAllocation;
 
 class DailyReminder extends Command
 {
@@ -84,9 +85,12 @@ class DailyReminder extends Command
         $today = date('d');
         $last_period = date("Y-m-d",strtotime("-1 months", strtotime(date('Y-m').'-01')) );
         $unvalidated_users = User::whereNotNull('email_verified_at')->get();
-
+        // echo route('seed.periodic_history', $last_period);
+        // return;
         foreach($unvalidated_users as $user){
-            if($today == 22){
+            $allocations = SeedBudgetAllocation::where('user_id', $user->id)
+                                    ->where('period', $last_period)->count();
+            if($allocations && $today == 1){
                 $notification = new Notification();
                 $notification->user_id =  $user->id;
                 $notification->action = route('seed.periodic_history', $last_period);
