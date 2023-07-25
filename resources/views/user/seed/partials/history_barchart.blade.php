@@ -11,27 +11,21 @@
     let expenditure = [];
     let discretionary = [];
 
-    // console.log(data);
+    let seeds = []
+
     for (const key in data) {
         if (Object.hasOwnProperty.call(data, key)) {
             const element = data[key];
             let period = new Date(key).toLocaleString('en-us', { month: 'short' });
             labels.push(period) ;
-            savings.push(+element.seed.savings);
-            education.push(+element.seed.education);
-            expenditure.push(+element.seed.expenditure);
-            discretionary.push(+element.seed.discretionary);
-
+            seeds.push(element.seed_web);
             savings.push(+element.table.savings);
             education.push(+element.table.education);
             expenditure.push(+element.table.expenditure);
             discretionary.push(+element.table.discretionary);
         }
     }
-
-
-    // console.log(savings, education, expenditure);
-
+    
     if (chart) {
         chart.getContext('2d');
         var historicSeed = new  Chart(chart, {
@@ -42,6 +36,7 @@
                     label: 'Savings',
                     //  fill:false,
                     data: savings,
+                    // seed: seedSavings,
                     backgroundColor: seed_backgrounds[0],
                     borderColor: seed_backgrounds[0],
                         datalabels: {
@@ -53,6 +48,7 @@
                         label: 'Education',
                         //  fill:false,
                         data: education,
+                        // seed: seedEducation,
                         backgroundColor: seed_backgrounds[1],
                         borderColor: seed_backgrounds[1],
                         datalabels: {
@@ -64,6 +60,7 @@
                         label: 'Expenditure',
                         //  fill:false,
                         data: expenditure,
+                        // seed: seedExpenditure,
                         backgroundColor: seed_backgrounds[2],
                         borderColor: seed_backgrounds[2],
                         datalabels: {
@@ -76,6 +73,7 @@
                         label: 'Discretionary',
                         //  fill:false,
                         data: discretionary,
+                        // seed: seedDiscretionary,
                         backgroundColor: seed_backgrounds[3],
                         borderColor: seed_backgrounds[3],
                         datalabels: {
@@ -85,10 +83,7 @@
                         }
                 }]
             },
-
             options: {
-                // responsive: true,
-                // maintainAspectRatio: false,
                 legend: {
                     display: true,
                     position: 'bottom',
@@ -98,17 +93,6 @@
                 },
                 events: [],
                 scales: {
-                    x:{
-                        display:true,
-                    },
-                    x2:{
-                        display:false
-                    },
-                    // xAxes:[{
-                    //     display: true,
-                    //     barThickness: 60,  // number (pixels) or 'flex'
-                    //     maxBarThickness: 70 // number (pixels)
-                    // }],
                     yAxes:[{
                         display: true,
                         ticks: {
@@ -122,7 +106,7 @@
                 plugins: {
                     datalabels: {
                         formatter: function(value, context) {
-                            return  parseInt(value) + '%';
+                            return  parseInt(seeds[context.dataIndex][context.datasetIndex]) + '%';
                         }
                     }
                 }
