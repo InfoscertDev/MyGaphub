@@ -205,9 +205,14 @@ class SeedController extends Controller
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
-      info([$period, $period_end]);
+      $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
+                            ->whereBetween('period', [$period, $period_end])
+                            ->get();
+      $ids =  array_values(array_column($allocations[$key], 'id'));
+
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                                ->whereBetween('period', [$period, $period_end])->get();
+                                //  >whereBetween('period', [$period, $period_end])
+                                 ->where('allocation_id', $ids)->get();
 
       $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
 
