@@ -208,7 +208,7 @@ class SeedController extends Controller
       $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
                             ->whereBetween('period', [$period, $period_end])
                             ->get();
-      $ids =  array_values(array_column($allocations[$key], 'id'));
+      $ids =  array_values(array_column($allocations->toArray(), 'id'));
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                 //  >whereBetween('period', [$period, $period_end])
