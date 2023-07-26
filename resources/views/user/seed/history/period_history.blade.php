@@ -17,6 +17,7 @@
                 </select>
             </div>
         </div>
+        {{ $period }} {{ $period_end }}
         <br> <br>
         <div class="col-md-12 col-sm-12 sm-default mt-3">
             <div class="d-flex">

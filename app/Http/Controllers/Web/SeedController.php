@@ -204,6 +204,8 @@ class SeedController extends Controller
       $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+
+      info([$period, $period_end]);
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                 ->whereBetween('period', [$period, $period_end])->get();
 
@@ -213,7 +215,7 @@ class SeedController extends Controller
 
 
       return view('user.seed.history.period_history', compact('page_title', 'support', 'currency',
-        'monthly_seed', 'periods', 'period', 'record_seed'
+        'monthly_seed', 'periods', 'period', 'period_end','record_seed'
       ));
     }
 
@@ -251,7 +253,7 @@ class SeedController extends Controller
             $allocations = array_values($groups) ;
 
             return view('user.seed.history.period_expenditure_report', compact('page_title', 'support', 'currency',
-                   'allocations', 'periods', 'period', 'seed', 'labels'
+                   'allocations', 'periods', 'period', 'period_end','seed', 'labels'
             ));
 
         } else if(in_array($seed, $seeds)){
@@ -294,7 +296,7 @@ class SeedController extends Controller
                 }
             }
             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
-                   'allocations', 'periods', 'period', 'seed', 'label', 'label_report', 'labels','category'
+                   'allocations', 'periods', 'period', 'period_end','seed', 'label', 'label_report', 'labels','category'
            ));
 
         }else{

@@ -14,7 +14,6 @@
             let budget_values = [];
             let actual_values = [];
 
-            console.log(data);
             for (const key in data) {
                 if (Object.hasOwnProperty.call(data, key)) {
                     const element = data[key];
@@ -152,6 +151,7 @@
                 </div>
                 <div class="summary-card-body">
                     <div class="list-group">
+                        {{ $period }} --- {{ $period_end }}
                         @if(!$label)
                             @foreach($allocations as $allocation)
                                 <a class="list-group-item" href="{{ request()->fullUrlWithQuery([ 'label' => $allocation->label ])  }}" style="color:inherit">
