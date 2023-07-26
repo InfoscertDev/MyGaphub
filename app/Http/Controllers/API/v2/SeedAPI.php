@@ -75,8 +75,15 @@ class SeedAPI extends Controller
 
         $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
         $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
+        
+        $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
+                            ->whereBetween('period', [$period, $period_end])
+                            ->get();
+        $ids =  array_values(array_column($allocations->toArray(), 'id'));
+
         $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                                 ->whereBetween('period', [$period, $period_end])->get();
+                    //  >whereBetween('period', [$period, $period_end])
+                    ->where('allocation_id', $ids)->get();
 
         $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
 
