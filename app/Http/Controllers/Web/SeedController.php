@@ -202,7 +202,7 @@ class SeedController extends Controller
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
 
-      $period_end = date("Y-m-t", strtotime($period));//Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
+      $period_end = date("Y-m-t", strtotime($period));
       info([$period, $period_end]);
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
@@ -239,7 +239,7 @@ class SeedController extends Controller
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
         $category = $request->input('category');
-        $period_end = date("Y-m-t", strtotime($period));//Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
+        $period_end = date("Y-m-t", strtotime($period));
 
         $seeds = ['savings', 'expenditure','education', 'discretionary'];
         $categories = ['accommodation','transportation','family','utilities','debt_repayment'];
