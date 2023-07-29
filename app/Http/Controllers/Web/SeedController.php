@@ -202,12 +202,12 @@ class SeedController extends Controller
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
       $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');
+      info([$period, $period_end]);
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
       $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
-                            ->where('period', $period)
-                            // ->whereBetween('period', [$period, $period_end])
+                            ->whereBetween('period', [$period, $period_end])
                             ->get();
 
       $ids =  (array_column($allocations->toArray(), 'id'));
@@ -250,8 +250,7 @@ class SeedController extends Controller
             $groups = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
                             ->where('user_id', $user->id)
-                            ->where('period', $period)
-                            // ->whereBetween('period', [$period, $period_end])
+                            ->whereBetween('period', [$period, $period_end])
                             ->get();
 
             foreach ($allocations->toArray() as $allocation) {
@@ -295,8 +294,7 @@ class SeedController extends Controller
             }else{
                 $allocations = SeedBudgetAllocation::where('seed_category', strval($seed))
                             ->where('user_id', $user->id)
-                            ->where('period', $period)
-                            // ->whereBetween('period', [$period, $period_end])
+                            ->whereBetween('period', [$period, $period_end])
                             ->when($category, function ($query, $category) {
                                 return $query->where('expenditure', $category);
                             })->latest()->get();
