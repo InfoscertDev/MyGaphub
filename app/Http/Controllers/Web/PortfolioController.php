@@ -273,7 +273,7 @@ class PortfolioController extends Controller
         $user = auth()->user();
 
         $this->validate($request, [
-            'note' => 'max:256',
+            'note' => 'nullable|max:256',
             'amount' => 'required|numeric|min:0|max:10000000000',
             'revenue' => 'required|numeric|min:0|max:10000000000',
             'management' => 'required|numeric|min:0|max:10000000000',

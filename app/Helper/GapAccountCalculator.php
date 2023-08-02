@@ -202,7 +202,7 @@ class GapAccountCalculator
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
         $pension_act = GapAccountCalculator::calcPensionAccount($retirement);
 
-        $current_asset = $cash_act['sum'] +  $funds['investment'];
+        $current_asset = $cash_act['sum'] +  $funds['investment'] ;
 
         return [
                 'mortgage' => $mort_act['sum'], 'liability' => $lia_act['sum'],
@@ -220,7 +220,7 @@ class GapAccountCalculator
         $home = (int)$networth['home'];
         $pension = (int)$networth['pension'];
 
-        $asset =  (int)$networth['asset'];
+        $asset =  (int)$networth['asset'] + $pension;
 
         $equity = $home - $mortgage;
         $sum = ($asset)  - ($liability);

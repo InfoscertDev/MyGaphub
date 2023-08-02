@@ -7,7 +7,8 @@
                 labels: labels,
                 datasets: [{
                         label: 'Investments',
-                        data: existing_values,
+                        data: existing_incomes,
+                        fill: false,
                         backgroundColor: '#E6C069',
                         borderColor: '#E6C069',
                         datalabels: {
@@ -22,7 +23,7 @@
                     display: true,
                     position: 'bottom',
                     onClick: (e) => e.stopPropagation(),
-                    abels: {
+                    labels: {
                         boxHeight: 1, boxWidth: 10
                     }
                 },
@@ -30,9 +31,10 @@
                     yAxes:[{
                         display: true,
                         ticks: {
+                            precision: 0,
                             beginAtZero: true,
                             callback: function(value, index, values) {
-                                return  parseInt(value).toLocaleString();
+                                return  currency + parseInt(value).toLocaleString();
                             }
                         },
                     }]

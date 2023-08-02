@@ -29,9 +29,10 @@
                    yAxes:[{
                        display: true,
                        ticks: {
+                          precision: 0,
                            beginAtZero: true,
                            callback: function(value, index, values) {
-                               return   parseInt(value).toLocaleString();
+                               return currency +  parseInt(value).toLocaleString();
                            }
                        },
                    }]

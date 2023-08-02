@@ -367,13 +367,18 @@
 
 <div class="wheel_account">
   @php
-    $base = last(request()->segments())
+    $base = last(request()->segments());
+    $no_accounts = ['philantropy','philanthropy', 'expenditure', 'net'];
   @endphp
-    @if ($base == '360')
-      <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#addWheelActModal"> Add Account </button>
-    @else
-      <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#{{$base}}ModalAccount"> Add Account </button>
+
+    @if(! in_array($base, $no_accounts) )
+        @if ($base == '360')
+            <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#addWheelActModal"> Add Account </button>
+        @else
+            <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#{{$base}}ModalAccount"> Add Account </button>
+        @endif
     @endif
+
 </div>
 @include('user.360.modals.wheel-modals')
 

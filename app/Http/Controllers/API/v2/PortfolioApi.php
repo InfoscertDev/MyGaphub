@@ -189,9 +189,9 @@ class PortfolioApi extends Controller
         $asset  = Portfolio::where('user_id', $user->id)->where('id',$id)->first();
         $validator = Validator::make($request->all(), [
             'asset_name' => 'required|string',
-            'asset_value' => 'required|integer',
-            'income' => 'integer',
-            'portfolio_type' => 'required|integer',
+            'asset_value' => 'required|numeric',
+            'income' => 'numeric',
+            'portfolio_type' => 'required|numeric',
             'automated_rate' => 'required'
         ]);
 
@@ -220,11 +220,11 @@ class PortfolioApi extends Controller
     {
         $user = $request->user();
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|integer|min:0|max:10000000000',
-            'revenue' => 'required|integer|min:0|max:10000000000',
-            'management' => 'required|integer|min:0|max:10000000000',
-            'maintenance' => 'required|integer|min:0|max:10000000000',
-            'taxes' => 'required|integer|min:0|max:10000000000',
+            'amount' => 'required|numeric|min:0|max:10000000000',
+            'revenue' => 'required|numeric|min:0|max:10000000000',
+            'management' => 'required|numeric|min:0|max:10000000000',
+            'maintenance' => 'required|numeric|min:0|max:10000000000',
+            'taxes' => 'required|numeric|min:0|max:10000000000',
         ]);
         $period  = date('Y-m').'-01';
         if($request->period){
