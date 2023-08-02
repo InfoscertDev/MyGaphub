@@ -47,7 +47,7 @@ class DailyReminder extends Command
     public function handle()
     {
        $this->monthlyHistoricReport();
-       return;
+
        $this->validateEmailReminder();
 
        $this->analyticsValidation();
@@ -65,9 +65,9 @@ class DailyReminder extends Command
     public function analyticsValidation(){
         // $last_week = date("Y-m-d",strtotime("-7 days", strtotime(date('Y-m-d')) ) );
         // Mail::to('dev.kabiruwahab@gmail.com')->send(new SevegValidate($unvalidated_users[0]));
-        $unvalidated_users = User::whereNotNull('email_verified_at')->get();
-        info(['Prperaing to send to  mail to unvalidated users', count($unvalidated_users)]);
-        foreach($unvalidated_users as $user){
+        $validated_users = User::whereNotNull('email_verified_at')->get();
+        info(['Prperaing to send to  mail to unvalidated users', count($validated_users)]);
+        foreach($validated_users as $user){
             $date = strtotime($user->created_at);
             $current_charge = date('l', $date);
             $isToday = date('l') == $current_charge;
@@ -84,10 +84,10 @@ class DailyReminder extends Command
     public function monthlyHistoricReport(){
         $today = date('d');
         $last_period = date("Y-m-d",strtotime("-1 months", strtotime(date('Y-m').'-01')) );
-        $unvalidated_users = User::whereNotNull('email_verified_at')->get();
+        $validated_users = User::whereNotNull('email_verified_at')->get();
         // echo route('seed.periodic_history', $last_period);
         // return;
-        foreach($unvalidated_users as $user){
+        foreach($validated_users as $user){
             $allocations = SeedBudgetAllocation::where('user_id', $user->id)
                                     ->where('period', $last_period)->count();
             if($allocations && $today == 1){
