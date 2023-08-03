@@ -39,7 +39,7 @@ class PersonalAssistance {
                     ->orderBy('date', 'ASC')
                     ->orderBy('name', 'ASC')
                     ->first();
-        if($today == 2){
+        if($today >= 2 && $today <= 5){
             $report = Notification::where('user_id', $this->user->id)
                         ->where('category','seed_report')
                         ->first();

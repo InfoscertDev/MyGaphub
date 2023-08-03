@@ -48,16 +48,15 @@ class DailyReminder extends Command
     {
        $this->monthlyHistoricReport();
 
-       $this->validateEmailReminder();
+    //    $this->validateEmailReminder();
 
-       $this->analyticsValidation();
+    //    $this->analyticsValidation();
     }
 
     public function validateEmailReminder(){
         $unvalidated_users = User::whereNull('email_verified_at')->get();
         // info(['Prperaing to send to  mail to unvalidated users', count($unvalidated_users)]);
         foreach($unvalidated_users as $user){
-            info('Email '.$user->email);
             Mail::to($user->email)->send(new VerifyEmailReminder($user));
         }
     }
@@ -88,6 +87,7 @@ class DailyReminder extends Command
         // echo route('seed.periodic_history', $last_period);
         // return;
         foreach($validated_users as $user){
+            info('Monthly history '. $user->email);
             $allocations = SeedBudgetAllocation::where('user_id', $user->id)
                                     ->where('period', $last_period)->count();
             if($allocations && $today == 1){
