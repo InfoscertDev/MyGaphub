@@ -126,11 +126,11 @@
                     @php
                         $roi_braid = $roi_watch['roi'];
                     @endphp
-                    <td><a href="{{ route('portfolio.braid', ['business'])}}" class="text-dark card-link">{{round($roi_braid[0])}}%</a></td>
-                    <td><a href="{{ route('portfolio.braid', ['risk'])}}" class="text-dark card-link">{{round($roi_braid[1])}}%</a></td>
-                    <td><a href="{{ route('portfolio.braid', ['appreciating'])}}" class="text-dark card-link">{{round($roi_braid[2])}}%</a></td>
-                    <td><a href="{{ route('portfolio.braid', ['intellectual'])}}" class="text-dark card-link">{{round($roi_braid[3])}}%</a></td>
-                    <td><a href="{{ route('portfolio.braid', ['depreciating'])}}" class="text-dark card-link">{{round($roi_braid[4])}}%</a></td>
+                    <td><a href="{{ route('portfolio.braid', ['business'])}}" class="text-dark card-link">{{round($roi_braid[0],2)}}%</a></td>
+                    <td><a href="{{ route('portfolio.braid', ['risk'])}}" class="text-dark card-link">{{round($roi_braid[1],2)}}%</a></td>
+                    <td><a href="{{ route('portfolio.braid', ['appreciating'])}}" class="text-dark card-link">{{round($roi_braid[2],2)}}%</a></td>
+                    <td><a href="{{ route('portfolio.braid', ['intellectual'])}}" class="text-dark card-link">{{round($roi_braid[3], 2)}}%</a></td>
+                    <td><a href="{{ route('portfolio.braid', ['depreciating'])}}" class="text-dark card-link">{{round($roi_braid[4], 2)}}%</a></td>
                 </tr>
             </table>
         </div>
