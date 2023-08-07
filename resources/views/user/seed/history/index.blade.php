@@ -6,7 +6,7 @@
         @if(count($periods))
             <div class="col-sm-12">
                 <div class="disclaim text-center">
-                    <select onchange="window.location.assign('{{ url()->current() .'/' }}' + this.value)"
+                    <select onchange="window.location.assign('{{ url()->current() .'/period?preview=' }}' + this.value)"
                         name="opportunities" class="select-opportunity date-history mt-2 text-center p-2" id="" class="mt-2">
                         <option value="" selected>{{ date('M Y', strtotime( end($periods)  ))}} - {{ date('M Y', strtotime( reset($periods)  ))}}  </option>
                         @foreach($periods as $key => $period)
