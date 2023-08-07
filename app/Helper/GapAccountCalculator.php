@@ -471,6 +471,7 @@ class GapAccountCalculator
         $equity = round((int)$networth['equity'], 2);
         $asset = array_sum([$investment, $cash ]);
         // SEED
+        $savings = 0;
         $expenditure = round($fin['expenditure'],2);
         $education = round($fin['calculator']->education,2);
         $periodic_saving = round($fin['calculator']->periodic_savings, 2);

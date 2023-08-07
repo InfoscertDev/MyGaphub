@@ -70,7 +70,7 @@ class SeedAPI extends Controller
           ], 200);
     }
 
-    public function periodHistory(Request $request, $period){
+    public function periodHistory(Request $request,  $period){
         $user = $request->user();
 
         $period_end = Carbon::createFromFormat('Y-m-d', $period)->endOfMonth()->format('Y-m-d');

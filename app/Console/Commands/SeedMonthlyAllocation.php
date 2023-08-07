@@ -75,7 +75,6 @@ class SeedMonthlyAllocation extends Command
                 $newallocation['period'] = $current_period;
                 SeedBudgetAllocation::create($newallocation);
             }
-
         }
     }
 }

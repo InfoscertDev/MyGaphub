@@ -127,6 +127,7 @@ class PortfolioHelper {
             if($asset->asset_class == 'intellectual' && $asset->asset_category == 'existing') array_push($intellect,$asset) ;
             if($asset->asset_class == 'depreciating' && $asset->asset_category == 'existing') array_push($depreciate,$asset) ;
         }
+
         $total_portfolio = count($bus) + count($risk) + count($appreciate) + count($intellect) + count($depreciate);
         $total_portfolio = $total_portfolio ? $total_portfolio : 1;
         $braid['B'] = round((count($bus) / ($total_portfolio)) * 100);
@@ -177,6 +178,7 @@ class PortfolioHelper {
         $depreciate_roi = [];
         foreach ($depreciate as $b) {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+
             array_push($depreciate_roi, $roi);
         }
         // $depreciate_income = array_sum(array_column($depreciate, 'monthly_roi'));
@@ -287,11 +289,13 @@ class PortfolioHelper {
                         ->where('portfolio_assets.user_id', $user->id)
                         ->where('portfolio_assets.asset_class', $braid)
                         ->orderBy('period', 'ASC')->get();
+
         $labels = [];  $label_asset = [];
         $incomes = []; $values = [];
         $period = [];
         // array_push($period, $existing[0]->period);
         $label = ''; $amount = 0; $income = 0;
+
         for ($i = 1; $i < 6; $i++) {
             array_push($label_asset, date('F Y', strtotime("-$i month"))) ;
         }
