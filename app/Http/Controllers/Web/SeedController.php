@@ -24,6 +24,7 @@ use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
 use DB;
+use \Input;
 
 class SeedController extends Controller
 {
@@ -192,12 +193,11 @@ class SeedController extends Controller
       ));
     }
 
-    public function periodHistory(Request $request,Request $period){
+    public function periodHistory(Request $request, $period){
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true;
       $month =  date('Y-m').'-01';
-      $preview = $request->input('preview');
 
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
