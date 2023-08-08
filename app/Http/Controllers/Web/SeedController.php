@@ -193,7 +193,7 @@ class SeedController extends Controller
       ));
     }
 
-    public function periodHistory(Request $request, $history){
+    public function periodHistory(Request $request, $period){
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true;
@@ -202,7 +202,6 @@ class SeedController extends Controller
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
 
-      $period = $history;
       $period_end = date("Y-m-t", strtotime($period));
       info([$period, $period_end,  url()->current() ]);
 
@@ -211,7 +210,7 @@ class SeedController extends Controller
       $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
                             ->whereBetween('period', [$period, $period_end])
                             ->get();
-
+ 
       $ids =  (array_column($allocations->toArray(), 'id'));
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
