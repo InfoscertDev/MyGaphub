@@ -5,17 +5,17 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="disclaim text-center">
-                <select onchange="window.location.assign('{{ route('seed.history') .'/' }}' + this.value)"
+                <select onchange="window.location.assign(this.value)"
                     name="opportunities" class="select-opportunity date-history mt-2 text-center p-2" id="" class="mt-2">
                     @foreach($periods as $key => $month)
                         @if($period == $month)
-                            <option value="{{$key}}" selected >  {{ date('M Y', strtotime($month))  }}  </option>
+                            <option value="{{ route('seed.periodic_history',[$key] )  }}" selected >  {{ date('M Y', strtotime($month))  }}  </option>
                         @else
-                            <option value="{{$key}}" >  {{ date('M Y', strtotime($month))  }}  </option>
+                            <option value="{{  route('seed.periodic_history',[$key] )}}" >  {{ date('M Y', strtotime($month))  }}  </option>
                         @endif
                     @endforeach
                 </select>
-            </div>
+            </div> 
         </div>
         <br> <br>
         <div class="col-md-12 col-sm-12 sm-default mt-3">
