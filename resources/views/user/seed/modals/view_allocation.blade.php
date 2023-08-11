@@ -33,7 +33,7 @@
                         <div class="col-3">
                             <div class="float-right">
                                 <span class="mr-3"> <i class="hand fs-18 fa fa-pencil" onclick="handleAllocationEdit()"></i> </span>
-                                @if(count($allocation->summary['record_spents']) == 0)
+                                @if(isset($allocation) && count($allocation->summary['record_spents']) == 0)
                                      <span class="mr-1"> <i class="hand fs-18 fa fa-trash" onclick="$('#confirmDeleteAccount').modal('show')"></i> </span>
                                 @endif
                             </div>

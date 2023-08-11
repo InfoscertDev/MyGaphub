@@ -120,6 +120,7 @@ class PortfolioHelper {
 
         $braid = ['B' => 0, 'R' => 0, 'A' => 0, 'I' => 0, 'D' => 0];
         $braid_roi = [];
+
         foreach ($portfolio as  $asset) {
             if($asset->asset_class == 'business' && $asset->asset_category == 'existing') array_push($bus,$asset) ;
             if($asset->asset_class == 'risk' && $asset->asset_category == 'existing') array_push($risk,$asset) ;
@@ -130,30 +131,29 @@ class PortfolioHelper {
 
         $total_portfolio = count($bus) + count($risk) + count($appreciate) + count($intellect) + count($depreciate);
         $total_portfolio = $total_portfolio ? $total_portfolio : 1;
+
         $braid['B'] = round((count($bus) / ($total_portfolio)) * 100);
         $braid['R'] = round((count($risk) / ($total_portfolio)) * 100);
         $braid['A'] = round((count($appreciate) / ($total_portfolio)) * 100);
         $braid['I'] = round((count($intellect) / ($total_portfolio)) * 100);
         $braid['D'] = round((count($depreciate) / ($total_portfolio)) * 100);
+
         $braid_roi = [$braid['B'], $braid['R'], $braid['A'], $braid['I'], $braid['D']];
-        // var_dump($total_portfolio, $braid,count($bus) , count($risk) , count($appreciate) , count($intellect) , count($depreciate));
+
         $bus = PortfolioHelper::convertAssetValue($user,$bus);
         $bus_roi = [];
+
         foreach ($bus as $b) {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
             array_push($bus_roi, $roi);
         }
-        // $bus_income = array_sum(array_column($bus, 'monthly_roi'));
-        // $bus_market = array_sum(array_column($bus, 'projected_market_value'));
-        //
+
         $risk = PortfolioHelper::convertAssetValue($user,$risk);
         $risk_roi = [];
         foreach ($risk as $b) {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
             array_push($risk_roi, $roi);
         }
-        // $risk_income = array_sum(array_column($risk, 'monthly_roi'));
-        // $risk_market = array_sum(array_column($risk, 'projected_market_value'));
 
         //
         $appreciate = PortfolioHelper::convertAssetValue($user,$appreciate);
@@ -162,9 +162,7 @@ class PortfolioHelper {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
             array_push($appreciate_roi, $roi);
         }
-        // $appreciate_income = array_sum(array_column($appreciate, 'monthly_roi'));
-        // $appreciate_market = array_sum(array_column($appreciate, 'projected_market_value'));
-        //
+
         $intellect = PortfolioHelper::convertAssetValue($user,$intellect);
         // $intellect_income = array_sum(array_column($intellect, 'monthly_roi'));
         // $intellect_market = array_sum(array_column($intellect, 'projected_market_value'));
@@ -173,18 +171,15 @@ class PortfolioHelper {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
             array_push($intellect_roi, $roi);
         }
+
         //
         $depreciate = PortfolioHelper::convertAssetValue($user,$depreciate);
         $depreciate_roi = [];
         foreach ($depreciate as $b) {
             $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
-
             array_push($depreciate_roi, $roi);
         }
-        // $depreciate_income = array_sum(array_column($depreciate, 'monthly_roi'));
-        // $depreciate_market = array_sum(array_column($depreciate, 'projected_market_value'));
-        // $total_roi = array_sum([$bus_roi , $risk_roi , $appreciate_roi , $intellect_roi , $depreciate_roi]);
-        // $total_roi = $total_roi ? $total_roi : 1;
+
         $bus_percentage = (array_sum($bus_roi) / (count($bus) ? count($bus) : 1)) ;
         $risk_percentage = (array_sum($risk_roi )/ (count($risk) ? count($risk) : 1)) ;
         $appreciate_percentage = (array_sum($appreciate_roi) / (count($appreciate) ? count($appreciate) : 1)) ;

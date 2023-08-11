@@ -203,14 +203,14 @@ class SeedController extends Controller
       $currency = explode(" ", $calculator->currency)[0];
 
       $period_end = date("Y-m-t", strtotime($period));
-      info([$period, $period_end,  url()->current() ]);
+    //   info([$period, $period_end,  url()->current() ]);
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
       $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
                             ->whereBetween('period', [$period, $period_end])
                             ->get();
- 
+
       $ids =  (array_column($allocations->toArray(), 'id'));
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)

@@ -84,7 +84,7 @@
                                         <div class="form-inline">
                                             <label>Enter rate below: 1 {{explode(" ", $gap_currencies['user_currency'])[1]}} = <span id="sel_currency"></span> </label>
                                             <input type="hidden" form="manualRateForm" value="" id="abhjabgukahjbukahjbuahjbauzjhbz" name="currency">
-                                            <input type="number" form="manualRateForm" name="rate" id="yuabvghbbnbhnghbvhmbvghb" step="any" min="0" style="width:120px;" required class="form-control b-rad-10">
+                                            <input type="number"  step="0.01"form="manualRateForm" name="rate" id="yuabvghbbnbhnghbvhmbvghb" step="any" min="0" style="width:120px;" required class="form-control b-rad-10">
                                             <button type="button" form="manualRateForm" id="submitRateBtn" class="btn btn-sm btn ml-2 px-1 fa fa-save"></button>
                                         </div>
 
@@ -119,28 +119,28 @@
                          <div class="col-md-4 col-sm-6 col-xs-4 px-1">
                              <div class="mb-4 plan-box elevation-2 bg-gray-4 pb-3">
                                  <label for="" class="label">What is your asset worth today?                             </label>
-                                 <input name="asset_value" required type="number"  placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
+                                 <input name="asset_value" required type="number"  step="0.01" placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
                              </div>
                          </div>
                          <div class="col-md-4 col-sm-6 col-xs-4 px-1">
                              <div class="mb-4 plan-box elevation-2 bg-gray-4 pb-3">
                                  <label for="" class="label">How much do you currently earn from this asset monthly?</label>
                                  {{-- <textarea name="" required id="" placeholder="Answer" class="form-control b-rad-10 gap-center-bl px-2" cols="30" rows="4"></textarea> --}}
-                                 <input name="monthly_roi" required type="number"  placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
+                                 <input name="monthly_roi" required type="number"  step="0.01" placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
                              </div>
                          </div>
                          <div class="col-md-4 col-sm-6 col-xs-4 px-1">
                              <div class="mb-4 plan-box elevation-2 bg-gray-4 pb-3">
                                  <label for="" class="label">How much is the debt secured against this asset?                                </label>
                                  {{-- <textarea name="" required  placeholder="Answer" id="" class="form-control b-rad-10 gap-center-bl px-2" cols="30" rows="4"></textarea> --}}
-                                 <input name="credit_value" required type="number"  placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
+                                 <input name="credit_value" required type="number"  step="0.01" placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
                              </div>
                          </div>
                          <div class="col-md-4 col-sm-6 col-xs-4 px-1">
                              <div class="mb-4 plan-box elevation-2 bg-gray-4 pb-3">
                                  <label for="" class="label">What was the total cost of acquiring this asset?                        </label>
                                  {{-- <textarea name="" required  placeholder="Answer" id="" class="form-control b-rad-10 gap-center-bl px-2" cols="30" rows="4"></textarea> --}}
-                                 <input name="projected_value" required type="number"  placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
+                                 <input name="projected_value" required type="number"  step="0.01" placeholder="Answer" id="" step="0.01"  maxlength="12"  class="form-control b-rad-10 gap-center-bl px-2">
                              </div>
                          </div>
                     </div>

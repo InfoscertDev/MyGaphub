@@ -87,10 +87,10 @@ class DailyReminder extends Command
         // echo route('seed.periodic_history', $last_period);
         // return;
         foreach($validated_users as $user){
-            info('Monthly history '. $user->email);
+            // info('Monthly history '. $user->email);
             $allocations = SeedBudgetAllocation::where('user_id', $user->id)
                                     ->where('period', $last_period)->count();
-            if($allocations && $today <= 5){
+            if($allocations && $today == 1){
                 $notification = new Notification();
                 $notification->user_id =  $user->id;
                 $notification->action = route('seed.periodic_history', $last_period);
