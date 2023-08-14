@@ -144,34 +144,31 @@ class PortfolioHelper {
         $bus_roi = [];
 
         foreach ($bus as $b) {
-            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->converted_asset_value  ? $b->converted_asset_value  : 1);
             array_push($bus_roi, $roi);
         }
 
         $risk = PortfolioHelper::convertAssetValue($user,$risk);
         $risk_roi = [];
         foreach ($risk as $b) {
-            $average_income = ($b->converted_monthly_roi * 12);
-            $asset_value = ($b->projected_market_value) ? $b->projected_market_value  : 1;
+            $average_income = $b->converted_monthly_roi * 12;
+            $asset_value = ($b->converted_asset_value) ? $b->converted_asset_value  : 1;
             $roi = ($average_income / $asset_value)  * 100;
-            info([ $average_income, $asset_value, $roi  ]);
             array_push($risk_roi, $roi);
         }
- 
+
         //
         $appreciate = PortfolioHelper::convertAssetValue($user,$appreciate);
         $appreciate_roi = [];
         foreach ($appreciate as $b) {
-            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->converted_asset_value  ? $b->converted_asset_value  : 1);
             array_push($appreciate_roi, $roi);
         }
 
         $intellect = PortfolioHelper::convertAssetValue($user,$intellect);
-        // $intellect_income = array_sum(array_column($intellect, 'monthly_roi'));
-        // $intellect_market = array_sum(array_column($intellect, 'projected_market_value'));
         $intellect_roi = [];
         foreach ($intellect as $b) {
-            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->converted_asset_value  ? $b->converted_asset_value  : 1);
             array_push($intellect_roi, $roi);
         }
 
@@ -179,7 +176,7 @@ class PortfolioHelper {
         $depreciate = PortfolioHelper::convertAssetValue($user,$depreciate);
         $depreciate_roi = [];
         foreach ($depreciate as $b) {
-            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->converted_asset_value  ? $b->converted_asset_value  : 1);
             array_push($depreciate_roi, $roi);
         }
 
