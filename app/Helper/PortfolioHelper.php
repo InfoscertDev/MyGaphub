@@ -151,10 +151,11 @@ class PortfolioHelper {
         $risk = PortfolioHelper::convertAssetValue($user,$risk);
         $risk_roi = [];
         foreach ($risk as $b) {
-            $roi = (($b->converted_monthly_roi * 12) * 100) / ($b->projected_market_value  ? $b->projected_market_value  : 1);
-            array_push($risk_roi, $roi);
+            $average_incomde = ($b->converted_monthly_roi * 12);
+            $roi = $average_incomde / ($b->projected_market_value  ? $b->projected_market_value  : 1);
+            array_push($risk_roi, $roi * 100);
         }
-
+ 
         //
         $appreciate = PortfolioHelper::convertAssetValue($user,$appreciate);
         $appreciate_roi = [];
