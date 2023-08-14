@@ -210,10 +210,12 @@
          </div>
          <div class="col-md-2 col-sm-12 col-xs-12 sm-center">
              @if($current_detail['total'])
-                 <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
+             <button class="btn btn-pry btn-history" data-toggle="modal" data-target="#createRecordSpentModal">Record Spend</button>
              @endif
              <br><br>
              <a class="btn btn-pry btn-history" href="{{ route('seed.history') }}">Historic SEED</a>
+             <br> <br>
+             <a class="btn btn-secondary btn-history" href="{{ route('seed.create', ['preview' =>'cleanup_data' ]) }}">Clean Up</a>
          </div>
      </div>
  </div>

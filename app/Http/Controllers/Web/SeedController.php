@@ -92,7 +92,8 @@ class SeedController extends Controller
     public function create(Request $request){
       $user = auth()->user();
       $page_title = "My Current Month";
-      $support = true; $month =  date('Y-m').'-01';
+      $support = true;
+      $month =  date('Y-m').'-01';
       $preview = $request->input('preview');
 
       $seed_backgrounds = CalculatorClass::accountBackground();
@@ -108,6 +109,12 @@ class SeedController extends Controller
         // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
         $current_seed->save();
+      }
+
+      if($preview == 'cleanup_data'){
+        Budget::firstOrCreate(['user_id' => $user->id, 'period' => $month])->update([ 'budget_amount' => 0 ]);
+        SeedBudgetAllocation::where(['user_id' => $user->id, 'period' => $month])->delete();
+        RecordBudgetSpent::where(['user_id' => $user->id, 'period' => $month])->delete();
       }
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
