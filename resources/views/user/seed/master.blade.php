@@ -31,7 +31,6 @@
      @include('user.seed.modals.view_transactions')
      <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
      <!-- Check for a new user -->
-     <!-- @if($previous_budgets > 2)  @endif -->
      @if(isset($current_seed->priviewed)  && $current_seed->priviewed == 0 && $previous_budgets > 2)
          <div class="modal show" id="monthlyPriviewedMode" tabindex="-1" data-keyboard="false" data-backdrop="static" role="dialog" aria-hidden="true">
              <div class="modal-dialog  modal-dialog-centered" role="document">

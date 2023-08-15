@@ -112,7 +112,7 @@ class SeedController extends Controller
       }
 
       if($preview == 'cleanup_data'){
-        Budget::firstOrCreate(['user_id' => $user->id, 'period' => $month])->update([ 'budget_amount' => 0 ]);
+        Budget::firstOrCreate(['user_id' => $user->id, 'period' => $month])->update([ 'budget_amount' => 0,'priviewed' => 0 ]);
         SeedBudgetAllocation::where(['user_id' => $user->id, 'period' => $month])->delete();
         RecordBudgetSpent::where(['user_id' => $user->id, 'period' => $month])->delete();
       }
