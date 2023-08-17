@@ -210,7 +210,7 @@ class SeedController extends Controller
       $currency = explode(" ", $calculator->currency)[0];
 
       $period_end = date("Y-m-t", strtotime($period));
-      info([$period, $period_end,  url()->current() ]);
+    //   info([$period, $period_end,  url()->current() ]);
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
@@ -227,7 +227,7 @@ class SeedController extends Controller
                                 //  ->whereBetween('period', [$period, $period_end])
                                  ->whereIn('allocation_id', $ids)->get();
 
-      info( [  $record_spend->toArray(), $ids  ] ) ;
+    //   info( [  $record_spend->toArray(), $ids  ] ) ;
 
       $total_actual = array_sum(array_column($record_spend->toArray(), 'amount'));
 
