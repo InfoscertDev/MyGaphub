@@ -81,19 +81,19 @@
             <p class="text-center text-muted font-italic">Click any of the tiles to view details or click here to view <a href="{{ route('seed.chart_history') }}"> charts</a>  </p>
         </div>
         <div class="col-12 mt-5 mx-auto text-center">
-            @if($record_seed > $monthly_seed['total'] )
+            @if($total_actual > $monthly_seed['total'] )
                 <div>
                     <img src="{{  asset('/assets/icon/sad_emoji.png') }}" width="90">
-                    <p>You were <span class="text-danger">{{$currency}}{{ number_format( ($record_seed - $monthly_seed['total']), 2) }}</span> over your budget</p>
+                    <p>You were <span class="text-danger">{{$currency}}{{ number_format( ($total_actual - $monthly_seed['total']), 2) }}</span> over your budget</p>
                 </div>
             @endif
-            @if($monthly_seed['total'] > $record_seed)
+            @if($monthly_seed['total'] > $total_actual)
                 <div class="">
                     <img src="{{  asset('/assets/icon/happy_emoji.png') }}" width="90">
-                     <p>You were <span class="text-success">{{$currency}}{{ number_format( ($monthly_seed['total'] - $record_seed), 2) }}</span> under your budget</p>
+                     <p>You were <span class="text-success">{{$currency}}{{ number_format( ($monthly_seed['total'] - $total_actual), 2) }}</span> under your budget</p>
                 </div>
             @endif
-            @if($monthly_seed['total'] == $record_seed)
+            @if($monthly_seed['total'] == $total_actual)
                 <div class="">
                     <img src="{{  asset('/assets/icon/smile-emoji.png') }}" width="90">
                     <p>You were spot on with your budget</p>

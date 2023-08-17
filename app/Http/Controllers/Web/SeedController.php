@@ -224,14 +224,12 @@ class SeedController extends Controller
 
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                                //  >whereBetween('period', [$period, $period_end])
+                                //  ->whereBetween('period', [$period, $period_end])
                                  ->where('allocation_id', $ids)->get();
 
-      info( [  array_column($record_spend->toArray(), 'amount'), $ids  ] )     ;
+      info( [  $record_spend->toArray(), $ids  ] ) ;
 
       $total_actual = array_sum(array_column($record_spend->toArray(), 'amount'));
-
-
 
 
       return view('user.seed.history.period_history', compact('page_title', 'support', 'currency',
