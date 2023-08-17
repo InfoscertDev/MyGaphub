@@ -200,7 +200,7 @@ class SeedController extends Controller
       ));
     }
 
-    public function periodHistory(Request $request, $period){
+    public function periodHistory($period){
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true;
