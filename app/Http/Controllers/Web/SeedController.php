@@ -219,22 +219,23 @@ class SeedController extends Controller
                             ->get();
 
       $ids =  array_column($allocations->toArray(), 'id');
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
 
-      info([$ids]); 
+
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                 //  >whereBetween('period', [$period, $period_end])
                                  ->where('allocation_id', $ids)->get();
 
-    // info( [  array_column($record_spend->toArray(), 'amount'), $ids  ] )     ;
+      info( [  array_column($record_spend->toArray(), 'amount'), $ids  ] )     ;
 
-      $record_seed = array_sum(array_column($record_spend->toArray(), 'amount'));
+      $total_actual = array_sum(array_column($record_spend->toArray(), 'amount'));
 
-      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
 
 
       return view('user.seed.history.period_history', compact('page_title', 'support', 'currency',
-        'monthly_seed', 'periods', 'period', 'period_end','record_seed'
+        'monthly_seed', 'periods', 'period', 'period_end','total_actual'
       ));
     }
 

@@ -15,7 +15,7 @@
                         @endif
                     @endforeach
                 </select>
-            </div> 
+            </div>
         </div>
         <br> <br>
         <div class="col-md-12 col-sm-12 sm-default mt-3">
@@ -25,7 +25,7 @@
                 </h3>
                 <div class="flex-end">
                     <h3 class="bold mr-2">
-                        Total Actual: {{$currency}}{{ number_format($record_seed, 2) }}
+                        Total Actual: {{$currency}}{{ number_format($total_actual, 2) }}
                     </h3>
                 </div>
             </div>
