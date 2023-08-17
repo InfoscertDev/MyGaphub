@@ -204,7 +204,7 @@ class SeedController extends Controller
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true;
-      $month =  date('Y-m').'-01'; 
+      $month =  date('Y-m').'-01';
 
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
@@ -218,7 +218,9 @@ class SeedController extends Controller
                             ->whereBetween('period', [$period, $period_end])
                             ->get();
 
-      $ids =  (array_column($allocations->toArray(), 'id'));
+      $ids =  array_column($allocations->toArray(), 'id');
+
+      info([$ids]); 
 
       $record_spend = RecordBudgetSpent::where('user_id', $user->id)
                                 //  >whereBetween('period', [$period, $period_end])
