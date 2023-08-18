@@ -434,7 +434,7 @@
                                             <span class="">  <img src="{{ asset('/assets/icon/reminder-info.png')}}" class="img im-responsive" width="21" alt="">This event has passed</span>
                                         @endif
                                     @elseif(isset($assistance['priority']->category))
-                                         <a class="text-white" href="{{ $assistance['priority']->action }}">
+                                         <a class="text-white" href="{{ $assistance['priority']->action . '?priority=' . $assistance['priority']->id }}">
                                             {{ $assistance['priority']->message  }}
                                             <!-- <span class="mr-1 fa fa-exclamation-triangle txt-primary" > </span> -->
                                           </a>

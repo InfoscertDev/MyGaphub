@@ -73,7 +73,6 @@ class DailyReminder extends Command
             if($isToday){
                 $isValid = AnalyticsClass::isSevenGVal($user);
                 if(!$isValid){
-                    info('SevenG Email '.$user->email);
                     Mail::to($user->email)->send(new SevegValidate($user));
                 }
             }

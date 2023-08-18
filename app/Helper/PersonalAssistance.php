@@ -39,10 +39,13 @@ class PersonalAssistance {
                     ->orderBy('date', 'ASC')
                     ->orderBy('name', 'ASC')
                     ->first();
-        if($today == 2 || $today == 15){
-            $report = Notification::where('user_id', $this->user->id)
-                        ->where('category','seed_report')
-                        ->first();
+
+        $report = Notification::where('user_id', $this->user->id)
+                    ->where('category','seed_report')
+                    ->where('seen', 0)
+                    ->latest()->first();
+
+        if(($today == 2 || $today == 18) && $report){
             $priority = $report;
         } else if($reminder){
             $alert = new DateTime(date('Y-m-d'));

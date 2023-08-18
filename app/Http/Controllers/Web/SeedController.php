@@ -9,6 +9,7 @@ use App\Helper\HelperClass;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\AnalyticsClass as SevenG;
 use App\Asset\SeedBudget as Budget;
+use App\Models\Notification;
 
 use App\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator;
@@ -200,17 +201,23 @@ class SeedController extends Controller
       ));
     }
 
-    public function seedPeriodHistory($period){
+    public function seedPeriodHistory(Request $request, $period){
       $user = auth()->user();
       $page_title = "My Historic Seed";
       $support = true;
       $month =  date('Y-m').'-01';
+      $priority = $request->input('priority');
 
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
-
       $period_end = date("Y-m-t", strtotime($period));
-    //   info([$period, $period_end,  url()->current() ]);
+
+      if($priority){
+        Notification::where('user_id', $user->id)
+            ->where('id', $priority)->update(['seen' => 1]);
+      }
+
+        //info([$period, $period_end,  url()->current() ]);
 
       $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
@@ -227,7 +234,7 @@ class SeedController extends Controller
                                 //  ->whereBetween('period', [$period, $period_end])
                                  ->whereIn('allocation_id', $ids)->get();
 
-    //   info( [  $record_spend->toArray(), $ids  ] ) ;
+        // info( [  $record_spend->toArray(), $ids  ] ) ;
 
       $total_actual = array_sum(array_column($record_spend->toArray(), 'amount'));
 
