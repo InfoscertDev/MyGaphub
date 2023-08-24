@@ -220,10 +220,10 @@ class GapAccountCalculator
         $home = (int)$networth['home'];
         $pension = (int)$networth['pension'];
 
-        $asset =  (int)$networth['asset'] + $pension;
-
+        $asset =  (int)$networth['asset'];
+        $worth= array_sum([$asset, $pension] );
         $equity = $home - $mortgage;
-        $sum = ($asset)  - ($liability);
+        $sum =  $worth - ($liability);
 
         $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
         $values = [$asset, $liability, $pension, $equity];
@@ -237,7 +237,7 @@ class GapAccountCalculator
         $equity = (int)$networth['equity'];
         $funds = PortfolioHelper::investmentFunds($user); ;
 
-        $asset =  array_sum([$networth['asset'], $pension, $equity]);
+        $asset =  array_sum([$networth['asset']]);
         $sum = ($asset)  - ($liability);
         // var_dump($equity);
         $labels = ['Assets', 'Liabilities'];
