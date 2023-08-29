@@ -135,7 +135,7 @@ class PortfolioController extends Controller
 
         if($header){
             // Periodical Helper for updating records
-            if($period) return PortfolioHelper::addNewRecordPeriod($user, $asset, $header, $access, $period);
+            if($access) return PortfolioHelper::addNewRecordPeriod($user, $asset, $header, $access, $period);
             // Archive Portfolio
             if($account) return ArchiveAccount::portfolioArchiveAction($user, $header, $access, $account);
         }
@@ -146,7 +146,8 @@ class PortfolioController extends Controller
             $currencies = HelperClass::popularCurrenciens();
             $backgrounds = PortfolioHelper::accountBackground();
             $asset_types = GapAssetType::where('acqusition', $braid)->get();
-            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)->orderBy('period', 'ASC')->get();
+            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
+                                    ->orderBy('period', 'ASC')->get();
             $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$asset_finicial);
 
             return view('user.portfolio.braid_info', compact('page_title','goback','currency', 'braid',

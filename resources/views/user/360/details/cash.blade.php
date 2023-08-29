@@ -169,9 +169,9 @@
                         </div>
                     </div>
 
-                    <div class="d-block text-center">
+                    <!-- <div class="d-block text-center">
                         <button type="button" class="btn btn-pry px-3"> View More</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

@@ -145,7 +145,9 @@
                 $(function(){
                     var asset_records = null;
                     $('#updateRecord').click(function () {
-                        $('#assetDetailTable').hide(); $('#action_lane').hide();
+
+                        $('#assetDetailTable').hide();
+                        $('#action_lane').hide();
                         $('#netIncomeLane').hide(); $('#updateAssetTable').fadeIn();
                         if(!asset_records){
                             var header = "ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn";
@@ -154,7 +156,7 @@
                                 method: 'GET',
                                 url: "<?php echo Request::url() ?>"+`?header=${header}&access=${current}`,
                                 success: function (data, status) {
-                                    // console.log(status, data);
+                                    console.log(status, data);
                                     if(status == "success"){
                                         this.asset_records = data.asset_records;
                                         $('#amount').val(this.asset_records?.amount);
@@ -170,6 +172,7 @@
                             });
                         }
                     });
+
                     $('#editDetails').click(function () {
                         $('#assetDetailTable').hide(); $('#action_lane').hide();
                         $('#netIncomeLane').hide();  $('#editAssetTable').fadeIn();
@@ -211,9 +214,11 @@
                             }
                         });
                     });
+
                     $('#addAccount').on('click', function(){
                         $('#confirmAddAccount').modal('show');
-                    })
+                    });
+
                     $('#confirmAccountAdd').on('click', function(){
                         var header = "pasjknmxjknjzkxnjxnjzhxnxcfdxajknknniojakn";
                         var add = "atyhgujhashgbsxdhgvshgsghfgnbvjbsjkbvjbvjhdx";

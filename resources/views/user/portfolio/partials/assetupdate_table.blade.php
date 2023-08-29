@@ -197,7 +197,6 @@
         $('#record_period').change(function(){
             var period = $('#record_period').val();
             if(period){
-
                 let period_format = new Intl.DateTimeFormat('en', { month: 'long' }).format(new Date(period))
                                         +' ' + new Intl.DateTimeFormat('en', { year: 'numeric' }).format(new Date(period));
                 // console.log(period);
