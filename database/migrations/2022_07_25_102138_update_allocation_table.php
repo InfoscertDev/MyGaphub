@@ -14,13 +14,13 @@ class UpdateAllocationTable extends Migration
     public function up()
     {
         Schema::table('seed_budget_allocations', function (Blueprint $table) {
-            $table->date('period_end')->nullable();
-            $table->string('expenditure')->nullable();
-            $table->integer('status')->default(1);
-            $table->integer('recuring')->default(1);
-        });     
+            // $table->date('period_end')->nullable();
+            // $table->string('expenditure')->nullable();
+            // $table->integer('status')->default(1);
+            // $table->integer('recuring')->default(1);
+        });
     }
- 
+
     /**
      * Reverse the migrations.
      *

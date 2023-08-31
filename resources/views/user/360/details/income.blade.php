@@ -1,16 +1,16 @@
 
 <div class="modal fade" id="editIncomeModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content b-rad-20 wd-c"> 
+        <div class="modal-content b-rad-20 wd-c">
             <div class="modal-body">
                 <div class="d-block wd-f ">
-                    <h2 class="text-center ff-rob"> <span id="income_named"></span>  - <span id="channeled"></span>: Income 
+                    <h2 class="text-center ff-rob"> <span id="income_named"></span>  - <span id="channeled"></span>: Income
                         <button type="button" class="btn btn-sm btn-close  text-right" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="text-white">X</span>
                         </button>
                     </h2>
-                </div> 
-                <p class="wd-7 mx-auto text-center">(view and edit)</p> 
+                </div>
+                <p class="wd-7 mx-auto text-center">(view and edit)</p>
                 <div class="my-2">
                     <div class="d-block text-center" style="height: 34px;">
                         @if(!$archive)
@@ -20,11 +20,11 @@
                             </span>
                         @endif
                     </div>
-                </div> 
+                </div>
 
                 <div id="detailView">
                     <form id="" action="{{ route('360.update.income', 0) }}" method="POST">
-                        
+
                     <input type="hidden" id="ahgjbskjnslkjmd" name="sjnxjknsxkjnxijnsxknixncio">
                         @csrf
                         <div class="my-2">
@@ -34,14 +34,14 @@
                                 $status = ["Target Income","Current Income"];
                                 $frequently = ["Weekly","Monthly", "Quaterly","Annually", "One-Off","Others"];
                                 $channels = ["Wages","Dividends", "Rental","Bonus", "Profit","Commision","Gift","Others"];
-                                $income_type = ("<script>(income_type)</script>" ); 
+                                $income_type = ("<script>(income_type)</script>" );
                                 $income_frequency = ("<script>(income_frequency)</script>" );
                                 $portfolio_asset = ("<script>(portfolio_asset)</script>" );
-                            @endphp 
+                            @endphp
                             <div class="form-group row">
                                 <div class="col-md-6 col-sm-12">
                                     Type of Income:
-                                </div> 
+                                </div>
                                 <div class="col-md-6 col-sm-12">
                                     <select disabled name="income_type" id="income_typed" value="" required  class="form-control" id="">
                                         @foreach ($incomes as $key => $data)
@@ -54,7 +54,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row" id="currencyLaneMode" style="display: none">
                                 <div class="col-md-6 col-sm-12">
                                     Currency Conversion mode
@@ -63,12 +63,12 @@
                                     <div class="form-check d-inline">
                                         <label class="form-check-label ml-3" for="automatic">
                                             Automated <input class="form-check-input ml-2" type="radio"  disabled name="automated_rate" id="rate_automatic" value="1" >
-                                        </label>  
-                                        <label class="form-check-label ml-5" for="manual"> 
+                                        </label>
+                                        <label class="form-check-label ml-5" for="manual">
                                             Manual <input class="form-check-input ml-2" type="radio"  disabled name="automated_rate" id="rate_manual" value="0" >
-                                        </label> 
+                                        </label>
                                     </div>
-                                </div> 
+                                </div>
                             </div>
 
                             <div class="form-group row">
@@ -82,6 +82,43 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 col-sm-12">
+                                 Tithe Paid
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                <div class="price-wrap d-flex ">
+                                        <label for="" class="price-currency mt-3" id="price_target"></label>
+                                        <input type="number"  id="tithe"  name="tithe" required  class="pl-4 form-control b-rad-10">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 col-sm-12">
+                                   Taxes Paid
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                <div class="price-wrap d-flex ">
+                                        <label for="" class="price-currency mt-3" id="price_target"></label>
+                                        <input type="number"  id="taxes"  name="taxes" required  class="pl-4 form-control b-rad-10">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 col-sm-12">
+                                  Others
+                                </div>
+                                <div class="col-md-6 col-sm-12">
+                                <div class="price-wrap d-flex ">
+                                        <label for="" class="price-currency mt-3" id="price_target"></label>
+                                        <input type="number"  id="others"  name="others" required  class="pl-4 form-control b-rad-10">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-6 col-sm-12">
                                     Frequency on Income
@@ -98,13 +135,13 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div> 
-                           
+                            </div>
+
                             <div class="form-group row" id="associated">
                                 <div class="col-md-6 col-sm-12">
                                    Associated Asset
                                 </div>
-                                <div class="col-md-6 col-sm-12"> 
+                                <div class="col-md-6 col-sm-12">
                                     <select disabled name="portfolio_asset"  class="form-control wd-f" id="portfolio_asseted">
                                         <option value="">-- Select --</option>
                                         @foreach ($income_detail['portfolio_asset'] as $portfolio)
@@ -113,15 +150,15 @@
                                             @else
                                                 <option value="{{ $portfolio->id }}" data-info="{{ $portfolio->name }}-{{$portfolio->monthly_roi}}">{{ $portfolio->name }} ({{explode(" ",  $portfolio->asset_currency)[0]}}{{number_format($portfolio->asset_value, 2)}})</option>
                                             @endif
-                                        @endforeach 
+                                        @endforeach
                                     </select>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="form-group row">
                                 <div class="col-md-6 col-sm-12">
                                     Last Date of Income
                                 </div>
-                                <div class="col-md-6 col-sm-12"> 
+                                <div class="col-md-6 col-sm-12">
                                     <input type="date" id="income_date"  disabled name="income_date" max="{{date('Y-m-d')}}" required placeholder="" class="form-control b-rad-10">
                                 </div>
                             </div>
@@ -135,25 +172,25 @@
                             </div>
                         </div>
                     </form>
-                     
+
                     <div class="text-center">
                         <div id="archiveAccount" class="mb-2">
-                            @if($archive)  
+                            @if($archive)
                                 <button type="button" id="addAccount" class="btn btn-gray px-3 mr-3"> Restore Account</button>
                             @else
                                 <button type="button" id="removeAccount" class="btn btn-gray px-3 mr-3"> Remove Account</button>
                             @endif
                         </div>
                         <span class="account-hr"></span>
-                    </div> 
-    
+                    </div>
+
                     <div id="accountDistro" class="text-center mx-auto">
                             <span class="account-hr"></span>
                             @include('user.360.partials.chartbar_options')
-                        <div class="chart mt-3"> 
+                        <div class="chart mt-3">
                             <h5 class="my-3">Historical Balances</h5>
                             <canvas id="myAccountChart" width="400px" style="width: 100%; margin: 0px;"></canvas>
-                                
+
                             <div class="d-block text-center">
                                 <button type="button" class="btn btn-pry px-3" id="historical_chart"> View More</button>
                             </div>
@@ -168,7 +205,7 @@
                         <div class="form-group row">
                             <div class="col-md-6 col-sm-12">
                                 Period Income was Earned:
-                            </div> 
+                            </div>
                             <div class="col-md-6 col-sm-12">
                                 <input type="month"  id="record_period"  name="record_period" max="<?php echo date("Y-m"); ?>" required  class="form-control b-rad-10">
                             </div>
@@ -178,27 +215,27 @@
                                 Amount Earned
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                <div class="price-wrap d-flex "> 
-                                    <label for="" class="price-currency mt-3" id="">$</label>  
+                                <div class="price-wrap d-flex ">
+                                    <label for="" class="price-currency mt-3" id="">$</label>
                                     <input type="number" id="amount_earned"  name="amount" required min="0" class="pl-4 form-control b-rad-10">
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6 col-sm-12">
                                 Additional Comment:
                             </div>
-                            <div class="col-md-6 col-sm-12"> 
+                            <div class="col-md-6 col-sm-12">
                                 <textarea name="note"  id="note" class="form-control b-rad-10" rows="2"></textarea>
                             </div>
-                        </div> 
+                        </div>
                         <div class="form-group row">
-                            <div class="text-center mx-auto col-sm-12"> 
+                            <div class="text-center mx-auto col-sm-12">
                                 <button type="submit" id="update_record" class="btn btn-sm btn-pry px-4">Save</button>
                             </div>
                         </div>
                     </form>
-                     
+
                     <script>
                          $(function () {
                             $('#record_period').change(function(){
@@ -207,13 +244,13 @@
                                     var header = "ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn";
                                     var access = "checkperiod_ajhbxsjnbjsxbnoaklmsikn";
                                     console.log("<?php echo Request::url() ?>"+`?header=${header}&income=${account.id}&access=${access}&period=${period}`)
-                                    $.ajax({ 
+                                    $.ajax({
                                         method: 'GET',
                                         url: "<?php echo Request::url() ?>"+`?header=${header}&income=${account.id}&access=${access}&period=${period}`,
                                         success: function (data, status) {
-                                            console.log(status, data);  
-                                            if(status == "success" && data.asset_records){ 
-                                                loadRecordInfo(data); 
+                                            console.log(status, data);
+                                            if(status == "success" && data.asset_records){
+                                                loadRecordInfo(data);
                                             }else{
                                                 $('#confirmUpdateRecordAddition').modal('show');
                                             }
@@ -221,7 +258,7 @@
                                     });
                                 }
                             });
- 
+
                             $('#confirmAddPeriod').click(function(){
                                 var period = $('#record_period').val();
                                 var header = "ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn";
@@ -230,17 +267,17 @@
                                     method: 'GET',
                                     url: "<?php echo Request::url() ?>"+`?header=${header}&income=${account.id}&access=${access}&period=${period}`,
                                     success: function (data, status) {
-                                        if(status == "success" && data.asset_records){ 
-                                             loadRecordInfo(data); 
+                                        if(status == "success" && data.asset_records){
+                                             loadRecordInfo(data);
                                         }
                                     }
-                                }); 
+                                });
                             });
                         });
 
-                        function loadRecordInfo(data){ 
+                        function loadRecordInfo(data){
                             $('#amount_earned').val(data.asset_records.amount);
-                            $('#note').val(data.asset_records.note); 
+                            $('#note').val(data.asset_records.note);
                             $('#confirmUpdateRecordAddition').modal('hide');
                         }
                     </script>
@@ -267,8 +304,8 @@
             <div class="modal-footer mx-auto">
                 <div class="text-left">
                     <button type="submit" id="confirmAddPeriod"  class="btn btn-pry px-3 mr-3">Yes</button>
-                </div> 
-                <div class="text-right"> 
+                </div>
+                <div class="text-right">
                     <button type="button" onclick="$('#confirmUpdateRecordAddition').modal('hide')" class="btn btn-default px-3 mr-3">No</button>
                 </div>
             </div>
@@ -294,7 +331,7 @@
                 <div class="text-left">
                     <button type="submit" id="confirmAccountRemove"  class="btn btn-pry px-3 mr-3">Yes</button>
                 </div>
-                <div class="text-right"> 
+                <div class="text-right">
                     <button type="button" onclick="$('#confirmRemoveAccount').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
                 </div>
             </div>
@@ -320,7 +357,7 @@
                 <div class="text-left">
                     <button type="submit" id="confirmAccountAdd"  class="btn btn-pry px-3 mr-3">Yes</button>
                 </div>
-                <div class="text-right">  
+                <div class="text-right">
                     <button type="button" onclick="$('#confirmAddAccount').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
                 </div>
             </div>
@@ -352,4 +389,4 @@
             </div>
         </div>
     </div>
-</div>  
+</div>

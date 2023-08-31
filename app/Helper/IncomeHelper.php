@@ -222,6 +222,7 @@ class IncomeHelper{
     public function  addNewNonPorfolioRecord($user, $income_id, $header, $access, $period){
         $income = Income::find($income_id);
         if ($header == 'ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn' &&  isset($income->income_type) == 'non_portfolio') {
+            //
             if($access == 'checkperiod_ajhbxsjnbjsxbnoaklmsikn'){
                 $current = $period.'-01';
                 $asset_records = NonPortfolioRecord::where('user_id', $user->id)
@@ -280,8 +281,10 @@ class IncomeHelper{
             $income->updated_at = now();
             $income->update();
             $asset_records->amount = $request->amount;
-            $asset_records->others = 0;
             $asset_records->note = $request->note;
+            $asset_records->tithe = $request->tithe;
+            $asset_records->taxes = $request->taxes;
+            $asset_records->others = $request->others;
             $asset_records->save();
             return true;
         }else{

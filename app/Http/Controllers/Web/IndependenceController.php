@@ -341,6 +341,7 @@ class IndependenceController extends Controller
 
     public function incomeList(Request $request){
         $user = auth()->user();
+
         $header =  $request->get('header');
         $access =  $request->get('access');
         $account =  $request->get('account');
