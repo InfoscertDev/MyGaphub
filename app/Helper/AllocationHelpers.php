@@ -373,8 +373,8 @@ class AllocationHelpers{
         }
         $amount = ( $allocated->amount ) ? $allocated->amount : 1;
         $total_spent = array_sum($sum);
-        $total_left = round($allocated->amount - $total_spent, 2);
-        $left_percentage = ($total_spent > 0) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
+        $total_left = round($amount - $total_spent, 2);
+        $left_percentage = ($total_spent > 0) ?  round(( $total_spent / $amount ) * 100) : 100;
 
         $spent_percentage = ($left_percentage != 100) ? 100 - $left_percentage : $left_percentage;
         return compact('total_spent', 'total_left', 'spent_percentage', 'left_percentage');
