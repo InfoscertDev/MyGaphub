@@ -168,18 +168,22 @@ class IndependenceController extends Controller
         $user = auth()->user();
         $profile = $user->user_profile;
 
+        $filter =  $request->get('filter');
         $header =  $request->get('header');
         $access =  $request->get('access');
         $account =  $request->get('account');
         $archive =  $request->get('archive');
+
         if($header){
            return ArchiveAccount::pensionArchiveAction($user, $header, $access, $account);
         }
         $isValid = SevenG::isSevenGVal($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
+
         $fin =  Fin::finicial($user);
-        $snap = Fin::snapshot($fin['calculator'], $fin['cost']);
+        $filter_snap = ($filter == 'expensiture')? $fin['expenditure'] : $fin['cost'];
+        $snap = Fin::snapshot($fin['calculator'], $filter_snap);
 
         $monthly_asset = $fin['cost']; $saving = $fin['saving'];
         $portfolio = $fin['portfolio']; $roce = $fin['roce'];

@@ -19,7 +19,7 @@ class AllocationHelpers{
         $current_seed = Budget::where('user_id', $user->id)->where('period', $current_period)->first();
         $last_seed = Budget::where('user_id', $user->id)->where('period', $last_period)->first();
 
-        if(!$current_seed ){
+        if(!$current_seed){
             $seed =  Budget::firstOrCreate(['user_id' => $user->id, 'period' => $current_period]);
             $seed->budget_amount = isset($last_seed) ? $last_seed->budget_amount : 0;
             $seed->priviewed = 0;
@@ -36,6 +36,29 @@ class AllocationHelpers{
                 SeedBudgetAllocation::create($newallocation);
             }
         }
+
+        $seed = ['savings', 'education', 'discretionary'];
+        $expenditures = ['accommodation', 'transportation', 'family', 'utilities', 'debt_repayment'];
+
+        foreach ($seed as $categoty) {
+            SeedBudgetAllocation::firstOrCreate([
+                'user_id' => $user->id,
+                'period' => $current_period,
+                'seed_category' => $categoty,
+                'label' => 'Miscellaneous',
+            ]);
+        }
+
+        foreach ($expenditures as $categoty) {
+            SeedBudgetAllocation::firstOrCreate([
+                'user_id' => $user->id,
+                'period' => $current_period,
+                'seed_category' => 'expenditure',
+                'expenditure' => $categoty,
+                'label' => 'Miscellaneous',
+            ]);
+        }
+
     }
 
     public static function getAllocatedSeedDetail($user, $package =  null){

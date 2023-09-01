@@ -14,7 +14,7 @@
                 <div class="my-2">
                     <div class="d-block text-center" style="height: 34px;">
                         @if(!$archive)
-                            <span class="txt-primary  text-underline" onclick="toggleRecordEdit()"> <i>Record Monthly Income</i> </span>
+                            <span class="txt-primary  text-underline" onclick="toggleRecordEdit()"> <i></i> </span>
                             <span class="pull-right">
                                 <button type="button" class="btn btn-pry fa fa-edit btn-sm" onclick="toggleEdit()"></button>
                             </span>
@@ -25,7 +25,7 @@
                 <div id="detailView">
                     <form id="" action="{{ route('360.update.income', 0) }}" method="POST">
 
-                    <input type="hidden" id="ahgjbskjnslkjmd" name="sjnxjknsxkjnxijnsxknixncio">
+                        <input type="hidden" id="ahgjbskjnslkjmd" name="sjnxjknsxkjnxijnsxknixncio">
                         @csrf
                         <div class="my-2">
                             @php
@@ -88,7 +88,7 @@
                                  Tithe Paid
                                 </div>
                                 <div class="col-md-6 col-sm-12">
-                                <div class="price-wrap d-flex ">
+                                     <div class="price-wrap d-flex ">
                                         <label for="" class="price-currency mt-3" id="price_target"></label>
                                         <input type="number"  id="tithe"  name="tithe" required  class="pl-4 form-control b-rad-10">
                                     </div>

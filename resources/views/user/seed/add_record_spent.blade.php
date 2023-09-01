@@ -77,7 +77,6 @@
                             </div>
                             <div class="col-sm-7">
                                 <select name="allocation" class="form-control" id="allocation" onchange="handleChangeAllocation(this)" required>
-                                    <option value="0">Misscelenous</option>
                                     <option value="">-- Select --</option>
                                 </select>
                                 <div class="mt-2 record_details" style="display: none">
