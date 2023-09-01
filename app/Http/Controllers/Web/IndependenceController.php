@@ -177,6 +177,7 @@ class IndependenceController extends Controller
         if($header){
            return ArchiveAccount::pensionArchiveAction($user, $header, $access, $account);
         }
+
         $isValid = SevenG::isSevenGVal($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];

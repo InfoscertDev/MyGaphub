@@ -57,7 +57,7 @@ class AllocationHelpers{
                 'expenditure' => $categoty,
                 'label' => 'Miscellaneous',
             ]);
-        } 
+        }
 
     }
 
@@ -371,6 +371,7 @@ class AllocationHelpers{
         foreach($records as $account){
             array_push($sum, $account->amount);
         }
+        $amount = ( $allocated->amount ) ? $allocated->amount : 1;
         $total_spent = array_sum($sum);
         $total_left = round($allocated->amount - $total_spent, 2);
         $left_percentage = ($total_spent > 0) ?  round(( $total_spent / $allocated->amount ) * 100) : 100;
