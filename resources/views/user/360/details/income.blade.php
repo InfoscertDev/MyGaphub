@@ -90,7 +90,7 @@
                                 <div class="col-md-6 col-sm-12">
                                      <div class="price-wrap d-flex ">
                                         <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number"  id="tithe"  name="tithe" required  class="pl-4 form-control b-rad-10">
+                                        <input type="number" disabled id="income_tithe"  name="tithe" required  class="pl-4 form-control b-rad-10">
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                 <div class="col-md-6 col-sm-12">
                                 <div class="price-wrap d-flex ">
                                         <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number"  id="taxes"  name="taxes" required  class="pl-4 form-control b-rad-10">
+                                        <input type="number" disabled id="taxes" id="income_taxes"  name="taxes" required  class="pl-4 form-control b-rad-10">
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                                 <div class="col-md-6 col-sm-12">
                                 <div class="price-wrap d-flex ">
                                         <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number"  id="others"  name="others" required  class="pl-4 form-control b-rad-10">
+                                        <input type="number" disabled id="others" id="income_others"  name="others" required  class="pl-4 form-control b-rad-10">
                                     </div>
                                 </div>
                             </div>
