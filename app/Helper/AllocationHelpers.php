@@ -57,7 +57,7 @@ class AllocationHelpers{
                 'expenditure' => $categoty,
                 'label' => 'Miscellaneous',
             ]);
-        }
+        } 
 
     }
 
