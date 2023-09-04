@@ -45,7 +45,7 @@ class PersonalAssistance {
                     ->where('seen', 0)
                     ->latest()->first();
 
-        if(($today == 2 || $today == 18) && $report){
+        if(($today >= 2 && $today <= 15) && $report){
             $priority = $report;
         } else if($reminder){
             $alert = new DateTime(date('Y-m-d'));
@@ -58,7 +58,6 @@ class PersonalAssistance {
     }
 
     public function acqusition(){
-
         $audit = UserAudit::where('user_id', $this->user->id)->first();
         $reaps = json_decode($audit->reap_favourite);
         $ganps = json_decode($audit->ganp_favourite);

@@ -97,6 +97,7 @@
     }
 
     function bindIncome(account){
+        console.log(account);
         var income_typed = document.getElementById('income_typed');
         var channel = document.getElementById('channeled');
         var income_date = document.getElementById('income_date');
