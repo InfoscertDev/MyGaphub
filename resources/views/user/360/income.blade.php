@@ -101,6 +101,9 @@
         var channel = document.getElementById('channeled');
         var income_date = document.getElementById('income_date');
         var income_value = document.getElementById('income_value');
+        var income_tithe = document.getElementById('income_tithe');
+        var income_taxes = document.getElementById('income_taxes');
+        var income_others = document.getElementById('income_others');
         var provider_contact = document.getElementById('provider_contact');
         var income_frequencies = document.getElementById('income_frequencies');
         var income_name = document.getElementById('income_named');
@@ -120,7 +123,6 @@
         income_typed.value = account.income_type;
         income_date.value = account.income_date;
         income_value.value = account.amount;
-        income_tithe.value = account.tithe;
         income_tithe.value = account.tithe;
         income_taxes.value = account.taxes;
         income_others.value = account.others;
