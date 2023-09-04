@@ -14,7 +14,7 @@
                 <div class="my-2">
                     <div class="d-block text-center" style="height: 34px;">
                         @if(!$archive)
-                            <span class="txt-primary  text-underline" onclick="toggleRecordEdit()"> <i></i> </span>
+                            <span class="txt-primary  text-underline" onclick="toggleRecordEdit()"> <i>Record Monthly Income</i> </span>
                             <span class="pull-right">
                                 <button type="button" class="btn btn-pry fa fa-edit btn-sm" onclick="toggleEdit()"></button>
                             </span>
@@ -79,42 +79,6 @@
                                 <div class="price-wrap d-flex ">
                                         <label for="" class="price-currency mt-3" id="price_target"></label>
                                         <input type="number" disabled id="income_value"  name="income_value" required  class="pl-4 form-control b-rad-10">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-6 col-sm-12">
-                                 Tithe Paid
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                     <div class="price-wrap d-flex ">
-                                        <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number" disabled id="income_tithe"  name="tithe" required  class="pl-4 form-control b-rad-10">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-6 col-sm-12">
-                                   Taxes Paid
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                <div class="price-wrap d-flex ">
-                                        <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number" disabled id="taxes" id="income_taxes"  name="taxes" required  class="pl-4 form-control b-rad-10">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-6 col-sm-12">
-                                  Others
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                <div class="price-wrap d-flex ">
-                                        <label for="" class="price-currency mt-3" id="price_target"></label>
-                                        <input type="number" disabled id="others" id="income_others"  name="others" required  class="pl-4 form-control b-rad-10">
                                     </div>
                                 </div>
                             </div>
@@ -285,7 +249,7 @@
                                         method: 'GET',
                                         url: "<?php echo Request::url() ?>"+`?header=${header}&income=${account.id}&access=${access}&period=${period}`,
                                         success: function (data, status) {
-                                            console.log(status, data);
+                                            // console.log(status, data);
                                             if(status == "success" && data.asset_records){
                                                 loadRecordInfo(data);
                                             }else{
@@ -314,6 +278,9 @@
 
                         function loadRecordInfo(data){
                             $('#amount_earned').val(data.asset_records.amount);
+                            $('#tithe').val(data.asset_records.tithe);
+                            $('#taxes').val(data.asset_records.taxes);
+                            $('#others').val(data.asset_records.others);
                             $('#note').val(data.asset_records.note);
                             $('#confirmUpdateRecordAddition').modal('hide');
                         }

@@ -10,8 +10,10 @@ class NonPortfolioRecord extends Model
 {
     use HasFactory;
 
+    protected $table = 'non_portfolio_income';
+
     protected $appends = [
-        'income_currency' 
+        'income_currency'
     ];
 
     protected function getIncomeCurrencyAttribute(){

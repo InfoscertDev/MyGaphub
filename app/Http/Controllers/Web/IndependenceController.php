@@ -294,6 +294,8 @@ class IndependenceController extends Controller
 
     public function improveRoi(Request $request){
         $user = auth()->user();
+        info( $request->all() );
+
         $this->validate($request, [
             'investment'  => 'required|numeric|min:10',
             'roce'  => 'required|integer|min:1'

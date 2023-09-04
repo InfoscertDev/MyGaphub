@@ -97,7 +97,6 @@
     }
 
     function bindIncome(account){
-        console.log(account);
         var income_typed = document.getElementById('income_typed');
         var channel = document.getElementById('channeled');
         var income_date = document.getElementById('income_date');
@@ -124,9 +123,9 @@
         income_typed.value = account.income_type;
         income_date.value = account.income_date;
         income_value.value = account.amount;
-        income_tithe.value = account.tithe;
-        income_taxes.value = account.taxes;
-        income_others.value = account.others;
+        // income_tithe.value = account.tithe;
+        // income_taxes.value = account.taxes;
+        // income_others.value = account.others;
         income_frequencies.value = account.income_frequency;
         status.value = account.status;
         user_act.value = account.id;

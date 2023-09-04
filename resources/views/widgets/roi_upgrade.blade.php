@@ -33,6 +33,25 @@
                         <li class="row mx-0">
                             <div class="col-md-8">
                                 <label for="">Monthly Asset Portfolio Income (APi) needed</label>
+                                <div class="row">
+                                    <div class="col">
+                                        Average SEED Total <input type="radio" name="seed_type" id="">
+                                    </div>
+                                    <div class="col">
+                                        Average MOnthly Expenditure <input type="radio" name="seed_type" id="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="price-wrap">
+                                    <label for="" class="price-currency mt-2">{{ $currency }}</label>
+                                    <input type="text" disabled value="{{ number_format($improve_status['monthly_asset']) }}" class="" name="cost" id="cost" required>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="row mx-0">
+                            <div class="col-md-8">
+                                <label for="">Monthly Asset Portfolio Income (APi) needed</label>
                             </div>
                             <div class="col-md-4">
                                 <div class="price-wrap">
