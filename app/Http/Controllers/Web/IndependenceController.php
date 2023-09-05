@@ -183,13 +183,15 @@ class IndependenceController extends Controller
         $currency = explode(" ", $calculator->currency)[0];
 
         $fin =  Fin::finicial($user);
-        $filter_snap = ($filter == 'expensiture')? $fin['expenditure'] : $fin['cost'];
-        $snap = Fin::snapshot($fin['calculator'], $filter_snap);
+        $snap = Fin::snapshot($fin['calculator'], $fin['cost']);
 
-        $monthly_asset = $fin['cost']; $saving = $fin['saving'];
-        $portfolio = $fin['portfolio']; $roce = $fin['roce'];
+        $monthly_asset = $fin['cost'];
+        $saving = $fin['saving'];
+        $portfolio = $fin['portfolio'];
+        $roce = $fin['roce'];
         $investment = $fin['investment'];
-        $improve_status = compact('monthly_asset', 'saving', 'portfolio', 'roce', 'investment');
+        $seed_type = $fin['seed_type'];
+        $improve_status = compact('seed_type','monthly_asset', 'saving', 'portfolio', 'roce', 'investment');
         $roi_detail = GapAccount::calcRoiInvestment($improve_status);
 
         if($archive){
@@ -294,13 +296,15 @@ class IndependenceController extends Controller
 
     public function improveRoi(Request $request){
         $user = auth()->user();
-        info( $request->all() );
+        // info( $request->all() );
 
         $this->validate($request, [
             'investment'  => 'required|numeric|min:10',
             'roce'  => 'required|integer|min:1'
         ]);
+        
         $calculate = Calculator::where('user_id', $user->id)->first();
+        $calculate->extra = $request->seed_type;
         $calculate->roce = $request->roce;
         $calculate->investment = $request->investment;
         $calculate->save();

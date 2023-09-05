@@ -66,6 +66,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/seed/history/{period}', 'Web\SeedController@seedPeriodHistory')
                 ->where('period', '[0-9]{4}-[0-9]{2}-[0-9]{2}')
                 ->name('seed.periodic_history');
+        Route::get('/seed/monthly/{period}', 'Web\SeedController@monthlySeedReport')->name('seed.monthly_period');
         Route::get('/seed/history/{period}/diffrences', 'Web\SeedController@periodHistoryDiffrences')->name('seed.periodic_history_diffrences');
         Route::get('/seed/history/{period}/{seed}', 'Web\SeedController@periodHistoryReport')->name('seed.periodic_history_report');
         // Route::post('/seed/store', 'Web\SeedController@storeSeed')->name('seed.store');

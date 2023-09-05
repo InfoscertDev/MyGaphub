@@ -21,11 +21,12 @@ class CalculatorClass{
         $allocated = AllocationHelpers::averageSeedDetail($user);
         $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
         $seed = $allocated['average_seed'];
+        $seed_type = ($calculator->extra == 'expenditure') ? 'expenditure' : 'seed';
         $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
 
         // Use Budget if Average Income is available
         if($isBudgetable){
-            $cost = round($seed['total'], 2);
+            $cost =  ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure']);
             $calculator->periodic_savings = $seed['table']['savings'];
             $expenditure = $seed['table']['expenditure'];
             $calculator->charity = $seed['table']['discretionary'];
@@ -67,7 +68,8 @@ class CalculatorClass{
         $investment = $calculator->investment;
         $roce = $calculator->roce;
 
-        return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce',
+
+        return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce', 'seed_type',
                             'expenditure','investment', 'calculator', 'isBudgetable');
     }
 

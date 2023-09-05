@@ -232,7 +232,8 @@ class IndependenceAPI extends Controller
         $monthly_asset = $fin['cost']; $saving = $fin['saving'];
         $portfolio = $fin['portfolio']; $roce = $fin['roce'];
         $investment = $fin['investment'];
-        $improve_status = compact('monthly_asset', 'saving', 'portfolio', 'roce', 'investment');
+        $seed_type = $fin['seed_type'];
+        $improve_status = compact('seed_type','monthly_asset', 'saving', 'portfolio', 'roce', 'investment');
         $roi_detail = GapAccount::calcRoiInvestment($improve_status);
         return response()->json(compact('improve_status','roi_detail'));
     }
@@ -244,6 +245,7 @@ class IndependenceAPI extends Controller
             'roce'  => 'required|integer|min:1'
         ]);
         $calculate = Calculator::where('user_id', $user->id)->first();
+        $calculate->extra = $request->seed_type;
         $calculate->roce = $request->roce;
         $calculate->investment = $request->investment;
         $calculate->save();

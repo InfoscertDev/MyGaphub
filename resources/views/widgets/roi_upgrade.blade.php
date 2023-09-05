@@ -35,10 +35,10 @@
                                 <label for="">Monthly Asset Portfolio Income (APi) needed</label>
                                 <div class="row">
                                     <div class="col">
-                                        Average SEED Total <input type="radio" name="seed_type" id="">
+                                        Average SEED  <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'seed' ? 'checked' : ''}} value="seed" id="">
                                     </div>
                                     <div class="col">
-                                        Average MOnthly Expenditure <input type="radio" name="seed_type" id="">
+                                        Average Expenditure <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'expenditure' ? 'checked' : ''}} value="expenditure" id="">
                                     </div>
                                 </div>
                             </div>
@@ -97,6 +97,12 @@
         </div>
     @endif
 </div>
+<style>
+    .input-seed-type{
+        width: auto;
+         height: auto;
+    }
+</style>
 <script>
         $(function() {
             var investment = document.getElementById('improve_investment');
