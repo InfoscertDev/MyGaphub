@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class NonPortfolioRecord extends Model
 {
     use HasFactory;
-
-    protected $table = 'non_portfolio_income';
+    // protected $table = env('APP_ENV') ? 'non_portfolio_income' :  'non_portfolio_records';
 
     protected $appends = [
         'income_currency'
