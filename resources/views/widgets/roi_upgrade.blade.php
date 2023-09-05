@@ -35,10 +35,10 @@
                                 <label for="">Monthly Asset Portfolio Income (APi) needed</label>
                                 <div class="row">
                                     <div class="col">
-                                        Average SEED  <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'seed' ? 'checked' : ''}} value="seed" id="">
+                                        Average SEED Total  <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'seed' ? 'checked' : ''}} value="seed" id="">
                                     </div>
                                     <div class="col">
-                                        Average Expenditure <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'expenditure' ? 'checked' : ''}} value="expenditure" id="">
+                                        Average Monthly Expenditure <input type="radio" class="w-auto h-auto" name="seed_type" {{ $improve_status['seed_type'] == 'expenditure' ? 'checked' : ''}} value="expenditure" id="">
                                     </div>
                                 </div>
                             </div>
