@@ -84,22 +84,21 @@
             @if($total_actual > $monthly_seed['total'] )
                 <div>
                     <img src="{{  asset('/assets/icon/sad_emoji.png') }}" width="90">
-                    <p>You were <span class="text-danger">{{$currency}}{{ number_format( ($total_actual - $monthly_seed['total']), 2) }}</span> over your budget</p>
+                    <p>You were <a class="text-danger" href="{{ route('seed.periodic_history_diffrences', $period) }}">{{$currency}}{{ number_format( ($total_actual - $monthly_seed['total']), 2) }}</a> over your budget</p>
                 </div>
             @endif
             @if($monthly_seed['total'] > $total_actual)
                 <div class="">
                     <img src="{{  asset('/assets/icon/happy_emoji.png') }}" width="90">
-                     <p>You were <span class="text-success">{{$currency}}{{ number_format( ($monthly_seed['total'] - $total_actual), 2) }}</span> under your budget</p>
+                     <p>You were <a class="text-success" href="{{ route('seed.periodic_history_diffrences', $period) }}">{{$currency}}{{ number_format( ($monthly_seed['total'] - $total_actual), 2) }}</a> under your budget</p>
                 </div>
             @endif
             @if($monthly_seed['total'] == $total_actual)
                 <div class="">
                     <img src="{{  asset('/assets/icon/smile-emoji.png') }}" width="90">
-                    <p>You were spot on with your budget</p>
+                    <p>You were <a class="text-success" href="{{ route('seed.periodic_history_diffrences', $period) }}">spot</a>  on with your budget</p>
                 </div>
             @endif
-
 
 
         </div>

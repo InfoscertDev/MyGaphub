@@ -175,6 +175,7 @@ class SeedController extends Controller
       ));
     }
 
+
    public function chartHistory(Request $request){
       $user = auth()->user();
       $page_title = "My Historic Seed";
@@ -243,6 +244,24 @@ class SeedController extends Controller
         'monthly_seed', 'periods', 'period', 'period_end','total_actual'
       ));
     }
+
+    public function periodHistoryDiffrences(Request $request, $period){
+        $user = auth()->user();
+        $page_title = "My Historic SEED";
+        $support = true; $month =  date('Y-m').'-01';
+        $preview = $request->input('preview');
+
+        $isValid = SevenG::isSevenGVal($user);
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+
+        $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
+        return view('user.seed.history.period_diffrences',
+             compact('page_title', 'support', 'currency','period','periods'
+        ));
+    }
+
 
     public function periodHistoryReport(Request $request, $period, $seed){
         $user = auth()->user();

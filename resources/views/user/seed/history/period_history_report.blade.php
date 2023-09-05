@@ -113,7 +113,7 @@
                     <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed, 'category' => $category]) : route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed]) }}"
                                 class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                     </a>
-                @elseif(!$category)
+                @elseif(!$category) 
                     <a href="{{ str_contains(Request::path(), 'expenditure') ?  route('seed.periodic_history_report', ['period' => $period, 'seed' => $seed,'category' => $category]) : route('seed.periodic_history', ['period' => $period] ) }}"
                                 class="text-dark" ><i class="fa fa-chevron-left mr-1"></i> Back
                     </a>
