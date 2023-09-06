@@ -302,7 +302,7 @@ class IndependenceController extends Controller
             'investment'  => 'required|numeric|min:10',
             'roce'  => 'required|integer|min:1'
         ]);
-        
+
         $calculate = Calculator::where('user_id', $user->id)->first();
         $calculate->extra = $request->seed_type;
         $calculate->roce = $request->roce;

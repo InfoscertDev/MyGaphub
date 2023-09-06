@@ -441,6 +441,10 @@
                                     @endif
                                 </span>
                             @endif
+                            <span class="small text-light priority-due">
+                               <a  class="text-white"href="{{ route('seed.monthly_period', date('Y-m').'-01')  }}"> View the end of the month report here</a>
+                            </span>
+
                         </p>
                         <p>
                             <span class="pane-para"><span class="tile">Recomendations:</span> </span>

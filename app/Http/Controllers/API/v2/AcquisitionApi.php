@@ -60,7 +60,6 @@ class AcquisitionApi extends Controller
             $data =  [ 'list' => $favourite_meta['favourite'], 'token' => $this::$ganp_token]  ;
             $status = Http::post($this::$ganp_link."/ganp/cultivations/list",$data) ;
             $ganp  = json_decode($status);
-            info($ganp);
 
             if($ganp && $ganp->success){
                 $cultivations = $ganp->cultivations;
