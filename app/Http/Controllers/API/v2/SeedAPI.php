@@ -98,6 +98,103 @@ class SeedAPI extends Controller
           ], 200);
     }
 
+    public function periodHistoryDiffrences(Request $request, $period){
+        $user = $request->user();
+        $page_title = "My Historic SEED";
+        $support = true; $month =  date('Y-m').'-01';
+        $preview = $request->input('preview');
+
+        $isValid = SevenG::isSevenGVal($user);
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+
+        $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+        $period_end = date("Y-m-t", strtotime($period));
+
+        $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
+                                ->whereBetween('period', [$period, $period_end])
+                                ->get();
+
+        foreach($allocations->toArray() as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                             ->where('allocation_id', $allocation['id'])->sum('amount');
+            $allocation['actual']  = $actual;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => compact('periods', 'allocations'),
+            'message' => ''
+          ], 200);
+    }
+
+
+    public function monthlySeedReport(Request $request, $period){
+        $user = $request->user();
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+
+        $period_end = date("Y-m-t", strtotime($period));
+        $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
+        $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
+                            ->whereBetween('period', [$period, $period_end])
+                            ->get();
+        $total_budget =  array_sum(array_column($allocations->toArray(), 'amount'));
+
+        $ids =  array_column($allocations->toArray(), 'id');
+        $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                    ->whereIn('allocation_id', $ids)->get();
+
+        $total_actual = array_sum(array_column($record_spend->toArray(), 'amount'));
+
+
+        $savings_allocations = SeedBudgetAllocation::where('seed_category','savings')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])
+                                    ->latest()->limit(3)->get();
+
+        foreach($savings_allocations->toArray() as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                ->where('allocation_id', $allocation['id'])->sum('amount');
+            $allocation['actual']  = $actual;
+        }
+
+        $expenditure_allocations = SeedBudgetAllocation::where('seed_category','expenditure')->where('user_id', $user->id)
+                                        ->whereBetween('period', [$period, $period_end])
+                                        ->latest()->limit(3)->get();
+        foreach($expenditure_allocations->toArray() as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                ->where('allocation_id', $allocation['id'])->sum('amount');
+            $allocation['actual']  = $actual;
+        }
+
+        $education_allocations = SeedBudgetAllocation::where('seed_category','education')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])
+                                    ->latest()->limit(3)->get();
+        foreach($education_allocations->toArray() as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                ->where('allocation_id', $allocation['id'])->sum('amount');
+            $allocation['actual']  = $actual;
+        }
+
+        $discretionary_allocations = SeedBudgetAllocation::where('seed_category','discretionary')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])
+                                    ->latest()->limit(3)->get();
+        foreach($discretionary_allocations->toArray() as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                                ->where('allocation_id', $allocation['id'])->sum('amount');
+            $allocation['actual']  = $actual;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => compact('periods', 'total_budget', 'total_actual',
+                        'savings_allocations', 'expenditure_allocations',
+                        'education_allocations', 'discretionary_allocations'),
+            'message' => ''
+          ], 200);
+    }
+
     public function periodHistoryReport(Request $request, $period, $seed){
         $user = $request->user();
         $month =  date('Y-m').'-01';
