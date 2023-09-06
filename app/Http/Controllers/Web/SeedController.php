@@ -285,7 +285,17 @@ class SeedController extends Controller
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
 
+        $period_end = date("Y-m-t", strtotime($period));
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
+
+        $savings_allocations = SeedBudgetAllocation::where('seed_category','savings')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])->get();
+
+        $education_allocations = SeedBudgetAllocation::where('seed_category','education')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])->get();
+
+        $d_allocations = SeedBudgetAllocation::where('seed_category','savings')->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])->get();
 
         return view('user.seed.monthly_report',
              compact('page_title', 'support', 'currency','period','periods'
@@ -314,9 +324,9 @@ class SeedController extends Controller
         if ($seed == 'expenditure' && !$category){
             $groups = array();
             $allocations = SeedBudgetAllocation::where('seed_category','expenditure')
-                            ->where('user_id', $user->id)
-                            ->whereBetween('period', [$period, $period_end])
-                            ->get();
+                                    ->where('user_id', $user->id)
+                                    ->whereBetween('period', [$period, $period_end])
+                                    ->get();
 
             foreach ($allocations->toArray() as $allocation) {
                 array_push($labels, $allocation['expenditure']);
