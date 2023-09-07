@@ -103,9 +103,6 @@ class SeedAPI extends Controller
         $support = true; $month =  date('Y-m').'-01';
         $preview = $request->input('preview');
 
-        $isValid = SevenG::isSevenGVal($user);
-        $calculator = Calculator::where('user_id', $user->id)->first();
-        $currency = explode(" ", $calculator->currency)[0];
 
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
         $period_end = date("Y-m-t", strtotime($period));
