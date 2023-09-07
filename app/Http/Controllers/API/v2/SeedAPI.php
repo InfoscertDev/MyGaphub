@@ -100,7 +100,6 @@ class SeedAPI extends Controller
 
     public function periodHistoryDiffrences(Request $request, $period){
         $user = $request->user();
-        $page_title = "My Historic SEED";
         $support = true; $month =  date('Y-m').'-01';
         $preview = $request->input('preview');
 
