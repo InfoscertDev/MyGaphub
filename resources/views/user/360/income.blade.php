@@ -197,7 +197,7 @@
     $(function() {
         // Historical Chart Redirection for Portfolio Asset
         $('#historical_chart').on('click', function(){
-            if(account.income_type == 'portfolio')  window.location = account.link_chart ;
+             window.location = account.link_chart ;
         })
         //
         $('#removeAccount').on('click', function(){

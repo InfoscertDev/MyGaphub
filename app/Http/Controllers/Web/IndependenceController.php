@@ -20,6 +20,7 @@ use App\Helper\GapExchangeHelper;
 use App\Helper\IncomeHelper;
 use App\Helper\WheelClass;
 use App\Wheel\IncomeAccount as Income;
+use App\Models\Asset\NonPortfolioRecord;
 
 use App\Helper\ArchiveAccount;
 use App\Helper\CalculatorClass;
@@ -399,12 +400,34 @@ class IndependenceController extends Controller
                 $money->link_chart = route('portfolio.braid.financial', [ strtolower($money->channel), $money->portfolio_asset_id.'_nbxsdklsmoks']);
                 $money->chart = $income_helper->portfolioDetailChart($user,$money);
             }else{
+                $money->link_chart = route('360.income.non_portfolio', [  $money->id.'_'.strtolower($money->income_name) ]);
                 $money->chart = $income_helper->nonPortfolioDetailChart($user,$money);
             }
 
         }
         return view('user.360.income', compact('archive','currencies','currency','incomes','portfolio_asset', 'net','isValid',
                         'net_detail', 'backgrounds','income_detail', 'income_info','equity_info'));
+    }
+
+    public function nonPortfolioDetail(Request $request, $id){
+        $user = auth()->user();
+
+        $period =  $request->get('period');
+
+        $isValid = SevenG::isSevenGVal($user);
+        $currencies = HelperClass::popularCurrenciens();
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = explode(" ", $calculator->currency)[0];
+        $backgrounds = GapAccount::accountBackground();
+
+        $income = Income::where('user_id', $user->id)->where('id', explode("_",$id)[0] )->first();
+
+        $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
+                    ->where('income_id', $income->id)
+                    ->orderBy('period', 'ASC')->limit(6)->get();
+
+
+        return view('user.360.non_portfolio', compact('archive','currencies','currency', 'non_portfolios', 'income' ));
     }
 
     public function storeIncome(Request $request){

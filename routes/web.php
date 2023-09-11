@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth','verified']], function() {
         Route::get('/360/liabilities', 'Web\LiabilitiesController@liability')->name('360.liabilities');
         Route::get('/360/expenditure', 'Web\SeedController@expenditure')->name('360.expenditure');
         Route::get('/360/protection', 'Web\IndependenceController@protection')->name('360.protection');
+        Route::get('/360/non_portfolio/{id}', 'Web\IndependenceController@nonPortfolioDetail')->name('360.income.non_portfolio');
 
         Route::get('/360/retirement', 'Web\IndependenceController@retirement')->name('360.retirement');
         Route::get('/360/investment', 'Web\PortfolioController@investment')->name('360.investment');

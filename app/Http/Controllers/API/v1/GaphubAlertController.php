@@ -136,7 +136,7 @@ class GaphubAlertController extends Controller
         $integrations = new IntegrationParties();
         $sms_reminder = $integrations->send_sendinblue_sms($profile, $message);
         $status = true;
-        info(compact('status', 'sms_reminder'));
+        // info(compact('status', 'sms_reminder'));
         return response()->json(compact('status', 'sms_reminder'));
     }
 }

@@ -49,17 +49,6 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="row mx-0">
-                            <div class="col-md-8">
-                                <label for="">Monthly Asset Portfolio Income (APi) needed</label>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="price-wrap">
-                                    <label for="" class="price-currency mt-2">{{ $currency }}</label>
-                                    <input type="text" disabled value="{{ number_format($improve_status['monthly_asset']) }}" class="" name="cost" id="cost" required>
-                                </div>
-                            </div>
-                        </li>
                         <li class="text-center">
                             <h6 class="lift-top small">How much can you set aside monthly for investment?</h6>
                             <div class="justify-content-center d-flex">

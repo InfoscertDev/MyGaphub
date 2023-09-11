@@ -13,6 +13,7 @@ use App\FinicialCalculator as Calculator;
 use App\Helper\GapExchangeHelper;
 use App\Helper\ArchiveAccount;
 use App\Wheel\IncomeAccount as Income;
+use App\Models\Asset\NonPortfolioRecord;
 use App\Asset\PortfolioAsset;
 use App\Helper\CalculatorClass;
 use App\Helper\GapAccountCalculator as GapAccount;
@@ -21,6 +22,7 @@ use App\Wheel\PensionAccount as Pension;
 use App\Helper\WheelClass as Wheel;
 use App\User;
 use App\UserAudit as Audit;
+
 
 use App\Helper\AllocationHelpers;
 
@@ -301,6 +303,25 @@ class IndependenceAPI extends Controller
         $income_channels = $income_helper->getIncomeChannels($user, $incomes, $income_info['total_portfolio']);
         $income_chart = $income_helper->getIncomeCharacteristics($user);
         return response()->json(compact('incomes','portfolio_asset','income_detail','income_channels', 'income_chart','income_info', 'income_audit'));
+    }
+
+    public function nonPortfolioDetail(Request $request, $id){
+        $user = $request->user();
+        $backgrounds = GapAccount::accountBackground();
+
+        $income = Income::where('user_id', $user->id)->where('id', $id[0] )->firstOrFail();
+
+        $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
+                    ->where('income_id', $income->id)
+                    ->orderBy('period', 'ASC')->limit(6)->get();
+
+        $data  = compact('income','non_portfolios', 'backgrounds');
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => ''
+        ]);
     }
 
     public function storeIncome(Request $request){

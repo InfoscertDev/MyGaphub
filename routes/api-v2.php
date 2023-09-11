@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
         Route::get('/seed/monthly/{period}', 'API\v2\SeedAPI@monthlySeedReport');
-        Route::get('/seed/history/{period}/diffrences', 'API\v2\SeedAPI@periodHistoryDiffrences');
+        Route::get('/seed/history /{period}/diffrences', 'API\v2\SeedAPI@periodHistoryDiffrences');
         Route::get('/seed/history/{period}/{seed}', 'API\v2\SeedAPI@periodHistoryReport');
         Route::get('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@listAllocation');
         // SEED Allocations
@@ -108,6 +108,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::get('/360/retirement', 'API\v2\IndependenceAPI@retirement');
         Route::get('/360/retirement/roi', 'API\v2\IndependenceAPI@roi_status');
         Route::get('/360/investment', 'API\v2\PortfolioApi@investment');
+        Route::get('/360/non_portfolio/{id}', 'API\v2\IndependenceAPI@nonPortfolioDetail');
         // 360 Add Account
         Route::post('/360/ilab', 'API\v2\SeedAPI@storeILab');
         Route::post('/360/net', 'API\v2\WheelController@storeNet');

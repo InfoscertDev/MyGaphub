@@ -119,6 +119,7 @@ class SeedController extends Controller
       }
 
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
+
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
          'available_allocation', 'current_detail'
       ));

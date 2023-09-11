@@ -93,8 +93,7 @@
         <div class="col-md-3">
             @if($current_detail['table']['savings'] == 0)
                 <div class="seed-pane seed-savings tool-pane hand"  onclick="$('#savingsAllocationModal').modal('show')">
-                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
-                    <div class="tool-title">
+                  <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Savings</h3>
                             <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
@@ -103,8 +102,7 @@
                 </div>
             @else
                 <a class="seed-pane seed-savings tool-pane hand" href="{{ route('seed.summary', 'savings') }}">
-                    <!-- <div class="seed-badge br-none"    > {{$currency}}{{ number_format($current_detail['table']['savings'], 2) }} </div> -->
-                    <div class="tool-title">
+                  <div class="tool-title">
                         <div class="center">
                             <h3  class="bold">Savings</h3>
                             <p>{{$currency}}{{ number_format($current_detail['table']['savings'], 2) }}</p>
@@ -146,8 +144,7 @@
                 </div>
             @else
                 <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', 'education') }}">
-                    <!-- <div class="seed-badge br-none"  >{{$currency}}{{ number_format($current_detail['table']['education'], 2) }}</div>
-                    <div class="tool-title"> <h3 class="center">Education</h3></div> -->
+    <div class="tool-title"> <h3 class="center">Education</h3></div> -
                     <div class="tool-title">
                         <div class="center">
                             <h3 class="bold">Education</h3>
@@ -192,7 +189,7 @@
             <div class="float-right">
                 <div class="d-flex">
                     <h3 class="bold ml-3">Remaining Balance: </h3>
-                    <span class="px-2 h3">{{$currency}}{{ number_format($current_seed->budget_amount - $current_detail['total_spent'], 2) }} </span>
+                    <span class="px-2 h3">{{$currency}}{{ number_format($current_detail['total'] - $current_detail['total_spent'], 2) }} </span>
                 </div>
             </div>
         </div>

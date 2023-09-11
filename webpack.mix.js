@@ -11,10 +11,11 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js');
-    // .postCss('resources/css/app.css', '../assets/inertial', [
-    //     //
-    // ]).vue();
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        //
+    ]).vue();
+
 mix.webpackConfig({
     output: { chunkFilename: 'js/[name].js?id=[chunkhash]' },
     resolve: {
@@ -26,4 +27,4 @@ mix.webpackConfig({
     devServer: {
         allowedHosts: 'all',
     },
-    });
+});
