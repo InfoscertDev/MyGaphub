@@ -257,16 +257,18 @@ class SeedController extends Controller
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
         $period_end = date("Y-m-t", strtotime($period));
 
-        $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
+        $allocations = [];
+        $budget =  SeedBudgetAllocation::where('user_id', $user->id)
                                 ->whereBetween('period', [$period, $period_end])
                                 ->get();
 
-        foreach($allocations->toArray() as $allocation){
-            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
-                             ->where('allocation_id', $allocation['id'])->sum('amount');
-            $allocation['actual']  = $actual;
-        }
 
+        foreach($budget as $allocation){
+            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+                             ->where('allocation_id', $allocation->id)->sum('amount');
+            $allocation->actual  = $actual;
+            $allocations[] = $allocation;
+        }
 
         return view('user.seed.history.period_diffrences',
              compact('page_title', 'support', 'currency','period','periods', 'allocations'

@@ -427,7 +427,7 @@ class IndependenceController extends Controller
                     ->orderBy('period', 'ASC')->limit(6)->get();
 
 
-        return view('user.360.non_portfolio', compact('archive','currencies','currency', 'non_portfolios', 'income' ));
+        return view('user.360.non_portfolio', compact('currencies','currency', 'non_portfolios', 'income' ));
     }
 
     public function storeIncome(Request $request){

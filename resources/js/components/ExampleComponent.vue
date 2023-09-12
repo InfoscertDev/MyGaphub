@@ -7,6 +7,7 @@
 
                     <div class="card-body">
                         I'm an example component.
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem, in quia maiores perspiciatis nisi eaque quasi officia? Nisi veniam assumenda tenetur ullam commodi amet recusandae explicabo excepturi dolorem minima. Quaerat!</p>
                     </div>
                 </div>
             </div>

@@ -17,8 +17,7 @@ window.Vue = require('vue');
 
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
-Vue.component('nonportfolio-view', require('./components/ExampleComponent.vue'));
-Vue.component('nonportfolio-component', require('./components/NonPortfolioComponent.vue'));
+Vue.component('nonportfolio-view', require('./pages/NonPortfolio.vue'));
 
 const app = new Vue({
     el: '#app'
