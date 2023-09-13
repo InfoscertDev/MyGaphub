@@ -310,7 +310,7 @@ class IndependenceAPI extends Controller
         $backgrounds = GapAccount::accountBackground();
 
         $income_helper = new IncomeHelper();
-        $income = Income::where('user_id', $user->id)->where('id', $id[0] )->firstOrFail();
+        $income = Income::where('user_id', $user->id)->where('id', $id )->firstOrFail();
 
         $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
                     ->where('income_id', $income->id)
