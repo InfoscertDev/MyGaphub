@@ -314,6 +314,27 @@ class IncomeHelper{
         return compact('labels', 'values', 'target');
     }
 
+    public function nonPortfolioRecordChart($non_portfolio){
+        $labels = []; $label_asset = [];
+
+        $values = [];
+        $tithe_values = [];
+        $taxes_values = [];
+
+        for ($i = 1; $i < 6; $i++) {
+            array_push($label_asset, date('F Y', strtotime("-$i month"))) ;
+        }
+
+        foreach($non_portfolio as $key => $asset){
+            $label  = date('M', strtotime($asset->period) ). ' '. date('Y', strtotime($asset->period));
+            array_push($values,  $asset->amount);
+            array_push($tithe_values,  $asset->tithe);
+            array_push($taxes_values,  $asset->tithe);
+        }
+
+        return compact('labels', 'label_asset','values', 'tithe_values', 'taxes_values');
+    }
+
     /**
      *
      *  Portfolio Detail for each period available

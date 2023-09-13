@@ -420,14 +420,17 @@ class IndependenceController extends Controller
         $currency = explode(" ", $calculator->currency)[0];
         $backgrounds = GapAccount::accountBackground();
 
+        $income_helper = new IncomeHelper();
         $income = Income::where('user_id', $user->id)->where('id', explode("_",$id)[0] )->first();
 
         $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
                     ->where('income_id', $income->id)
                     ->orderBy('period', 'ASC')->limit(6)->get();
 
+        $chart =  $income_helper->nonPortfolioRecordChart($non_portfolios);
 
-        return view('user.360.non_portfolio', compact('currencies','currency', 'non_portfolios', 'income' ));
+
+        return view('user.360.non_portfolio', compact('currencies','currency', 'non_portfolios', 'income', 'chart' ));
     }
 
     public function storeIncome(Request $request){

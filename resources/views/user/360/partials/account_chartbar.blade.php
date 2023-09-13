@@ -34,7 +34,7 @@
                         display: true,
                         ticks: {
                             beginAtZero: true,
-                            max:  values[0] * 1.3,
+                            max:  values[0] * 1.5,
                             callback: function(value, index, values) {
                                 return user_currency + parseInt(value).toLocaleString();
                             },

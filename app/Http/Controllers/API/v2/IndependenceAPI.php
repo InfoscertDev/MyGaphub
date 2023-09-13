@@ -309,13 +309,15 @@ class IndependenceAPI extends Controller
         $user = $request->user();
         $backgrounds = GapAccount::accountBackground();
 
+        $income_helper = new IncomeHelper();
         $income = Income::where('user_id', $user->id)->where('id', $id[0] )->firstOrFail();
 
         $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
                     ->where('income_id', $income->id)
                     ->orderBy('period', 'ASC')->limit(6)->get();
+        $chart =  $income_helper->nonPortfolioRecordChart($non_portfolios);
 
-        $data  = compact('income','non_portfolios', 'backgrounds');
+        $data  = compact('income','non_portfolios', 'chart', 'backgrounds');
 
         return response()->json([
             'status' => true,
