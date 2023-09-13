@@ -1,7 +1,7 @@
 @extends('layouts.user')
 
 @section('script')
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script>
         const nonPortfolioRecord = document.getElementById('nonPortfolioRecord');
         let user_currency = "<?php echo $currency ?>";
@@ -9,6 +9,7 @@
         let income = <?php echo json_encode($chart['values']) ?>;
         let tithe = <?php echo json_encode($chart['tithe_values']) ?>;
         let taxes = <?php echo json_encode($chart['taxes_values']) ?>;
+        let net = <?php echo json_encode($chart['net_values']) ?>;
 
         if(nonPortfolioRecord){
             nonPortfolioRecord.getContext('2d');
@@ -23,7 +24,7 @@
                             borderColor: "#8C8D86",
                             datalabels: {
                                 color: '#fff',
-                                position: 'top'
+                                position: 'top',// anchor: 'end',
                             }
                         },{
                             label: 'Taxes',
@@ -32,7 +33,7 @@
                             borderColor: '#E6C069',
                             datalabels: {
                                 color: '#fff',
-                                position: 'top'
+                                position: 'top',// anchor: 'end',
                             }
                         },{
                             label: 'Tithe',
@@ -41,16 +42,16 @@
                             borderColor: '#897B61',
                             datalabels: {
                                 color: '#fff',
-                                position: 'top'
+                                position: 'top',// anchor: 'end',
                             }
                         },{
                             label: 'Net Income',
-                            data: [],
+                            data: net,
                             backgroundColor: '#9796785',
                             borderColor: '#9796785',
                             datalabels: {
                                 color: '#fff',
-                                position: 'top'
+                                position: 'top',// anchor: 'end',
                             }
                         }
                     ]
@@ -71,9 +72,15 @@
                                 }
                             },
                         }]
-                    }
-                    // onClick: graphClickEvent ,
-                    // onHover: graphClickEvent ,
+                    },
+
+                    plugins: {
+                        datalabels: {
+                            formatter: function(value, context) {
+                                return user_currency + parseInt(value).toLocaleString();
+                            }
+                        }
+                    },
                 }
             });
         }
@@ -86,8 +93,8 @@
         <span class="mr-3 pb-2" id="goback">
             <a href="#" class="text-dark bold" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i>  Back</a>
         </span>
-        <div class="my-3">
-           <h5 class="bold text-center">{{ $income->income_name }}</h5>
+        <div class="mt-2 mb-5">
+           <h4 class="bold text-center">{{ $income->income_name }} Average Income   {{ $currency }}{{ number_format($income->amount, 2) }}</h4>
         </div>
     </div>
 
@@ -100,7 +107,7 @@
                             <span class="gap-card-title accord-title">
                                 {{ date('M Y', strtotime($portfolio->period))  }}
                                 <span class="ml-5 text-center">
-                                    {{ $currency }}{{ number_format($portfolio->amount, 2) }}
+                                    {{ $currency }}{{ number_format( $portfolio->amount -  array_sum([$portfolio->tithe, $portfolio->taxes]), 2) }}
                                 </span>
                             </span>
                             <button class="btn btn-accord" type="button" data-toggle="collapse" data-target="#collapse{{$portfolio->id}}" aria-expanded="true" aria-controls="collapse{{$portfolio->id}}">
