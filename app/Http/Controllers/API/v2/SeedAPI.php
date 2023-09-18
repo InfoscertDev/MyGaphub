@@ -100,9 +100,6 @@ class SeedAPI extends Controller
 
     public function periodHistoryDiffrences(Request $request, $period){
         $user = $request->user();
-        $support = true; $month =  date('Y-m').'-01';
-        $preview = $request->input('preview');
-
 
         $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
         $period_end = date("Y-m-t", strtotime($period));

@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
         Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
         Route::get('/seed/monthly/{period}', 'API\v2\SeedAPI@monthlySeedReport');
-        Route::get('/seed/history /{period}/diffrences', 'API\v2\SeedAPI@periodHistoryDiffrences');
+        Route::get('/seed/history/{period}/diffrences', 'API\v2\SeedAPI@periodHistoryDiffrences');
         Route::get('/seed/history/{period}/{seed}', 'API\v2\SeedAPI@periodHistoryReport');
         Route::get('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@listAllocation');
         // SEED Allocations
