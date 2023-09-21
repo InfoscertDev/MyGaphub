@@ -10,11 +10,12 @@ use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\AnalyticsClass as SevenG;
 use App\Asset\SeedBudget as Budget;
 use App\Models\Notification;
-
 use App\Wheel\CashAccount as Cash;
+use App\Wheel\IncomeAccount as Income;
 use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
+
 use App\Helper\AllocationHelpers;
 use App\Helper\CalculatorClass;
 use App\Helper\GapExchangeHelper;
@@ -106,6 +107,7 @@ class SeedController extends Controller
       $average_seed = CalculatorClass::getAverageSeed($user);
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
+      $incomes = Income::where('user_id', $user->id)->where('isArchive', 0)->orderBy('income_date', 'DESC')->get();
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
@@ -121,7 +123,7 @@ class SeedController extends Controller
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
 
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail'
+         'available_allocation', 'current_detail', 'incomes'
       ));
     }
 

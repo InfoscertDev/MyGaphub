@@ -325,6 +325,7 @@ class IndependenceController extends Controller
                 return redirect('/home/360/income')->with(['error' => 'Error Allocating Portfolio Income']);
             }
         }
+
         $page_title = 'Your Income Universe in 360<sup>o</sup>';
         $currencies = HelperClass::popularCurrenciens();
         $calculator = Calculator::where('user_id', $user->id)->first();
