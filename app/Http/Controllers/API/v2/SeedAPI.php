@@ -47,9 +47,13 @@ class SeedAPI extends Controller
       $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
 
+      $incomes = Income::where('user_id', $user->id)->where('isArchive', 0)->orderBy('income_date', 'DESC')->get();
+      $total_assigned = array_sum(array_column($incomes->toArray(), 'assigned_income'));
       AllocationHelpers::monthlyRecurssionChecker($user);
 
-      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed', 'target_seed', 'periods','historic_seed', 'backgrounds' );
+      $data = compact('average_detail', 'current_detail', 'target_detail','current_seed',
+         'target_seed', 'periods','historic_seed', 'backgrounds','total_assigned'
+         );
       return response()->json([
         'status' => true,
         'data' => $data,
@@ -305,6 +309,38 @@ class SeedAPI extends Controller
             ], 400);
         }
     }
+
+    public function assignSeedIncome(Request $request){
+        $user = $request->user();
+
+        $validator = Validator::make($request->all(),[
+           'seed_income' => 'required',
+          'seed_budget' => 'required|min:0|numeric'
+        ]);
+
+        if($validator->fails()){
+          return response()->json([ 'status' => false, 'errors' => $validator->errors()->toJson()], 400);
+        }
+
+        $current_period = date('Y-m').'-01';
+        $income = Income::where('user_id', $user->id)->where('id', $request->seed_income)->first();
+
+        if($income->income_type == "non_portfolio"){
+            $record = NonPortfolioRecord::where('period', $current_period)
+                            ->where('user_id', $user->id)
+                            ->where('income_id', $income->id)
+                            ->update(['seed_budget' => $request->seed_budget]);
+        }else {
+            $record = PortfoloAssetRecord::where('period', $current_period)
+                            ->where('user_id', $user->id)
+                            ->where('portfolio_asset_id', $income->id)
+                            ->update(['seed_budget' => $request->seed_budget]);
+        }
+
+        return response()->json([
+            'status' => true,
+        ]);
+      }
 
     public function storeSeed(Request $request){
       $user = $request->user();
