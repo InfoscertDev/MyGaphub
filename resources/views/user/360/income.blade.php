@@ -3,8 +3,8 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <script>
-        var user_currency = "<?php echo $currency ?>";
         var ctx = document.getElementById('protectionDetailBar');
+        var user_currency = "<?php echo $currency ?>";
         var incomes =   <?php echo json_encode($incomes) ?>;
         var values =   <?php echo json_encode($income_info['percentages']) ?>;
         var labels =   <?php echo json_encode($income_info['labels']) ?>;

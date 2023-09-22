@@ -99,6 +99,7 @@ class SeedController extends Controller
       $preview = $request->input('preview');
 
       $seed_backgrounds = CalculatorClass::accountBackground();
+      $backgrounds = GapAccount::accountBackground();
       $isValid = SevenG::isSevenGVal($user);
       $calculator = Calculator::where('user_id', $user->id)->first();
       $currency = explode(" ", $calculator->currency)[0];
@@ -123,7 +124,7 @@ class SeedController extends Controller
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
 
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail', 'incomes'
+         'available_allocation', 'current_detail', 'incomes', 'backgrounds'
       ));
     }
 

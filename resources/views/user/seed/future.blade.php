@@ -223,7 +223,6 @@
         }
 
         let budgetForm = document.querySelector('#budgetForm');
-        console.log(budgetForm);
         budgetForm.addEventListener("submit", handleBudgetSubmit);
 
         function handleBudgetSubmit(e){
