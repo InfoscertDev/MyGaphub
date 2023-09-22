@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
+use App\Wheel\IncomeAccount as Income;
 use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
@@ -15,11 +16,14 @@ use App\Wheel\CashAccount as Cash;
 use App\Helper\HelperClass;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\WheelClass as Wheel;
+
 use App\ILab;
 use Carbon\Carbon;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Asset\SeedBudget as Budget;
 use App\Models\Asset\RecordBudgetSpent;
+use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\NonPortfolioRecord;
 
 
 class SeedAPI extends Controller
