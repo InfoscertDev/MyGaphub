@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
+
+use DB;
+use Input;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -25,8 +28,8 @@ use Carbon\Carbon;
 use App\Helper\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
-use DB;
-use \Input;
+use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\NonPortfolioRecord;
 
 class SeedController extends Controller
 {
@@ -91,6 +94,33 @@ class SeedController extends Controller
         }
     }
 
+    public function assignSeedIncome(Request $request){
+        $user = $request->user();
+
+        $request->validate([
+          'seed_income' => 'required',
+          'seed_budget' => 'required|min:0|numeric'
+        ]);
+
+        $current_period = date('Y-m').'-01';
+        $income = Income::where('user_id', $user->id)->where('id', $request->seed_income)->first();
+
+        if($income->income_type == "non_portfolio"){
+            $record = NonPortfolioRecord::where('period', $current_period)
+                            ->where('user_id', $user->id)
+                            ->where('income_id', $income->id)
+                            ->update(['seed_budget' => $request->seed_budget]);
+        }else {
+            $record = PortfoloAssetRecord::where('period', $current_period)
+                            ->where('user_id', $user->id)
+                            ->where('portfolio_asset_id', $income->id)
+                            ->update(['seed_budget' => $request->seed_budget]);
+        }
+
+        return redirect()->route('seed.create',[ 'assigned' => 'w67tsedgfthudbyhbj' ]);
+    }
+
+
     public function create(Request $request){
       $user = auth()->user();
       $page_title = "My Current Month";
@@ -109,6 +139,17 @@ class SeedController extends Controller
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
 
       $incomes = Income::where('user_id', $user->id)->where('isArchive', 0)->orderBy('income_date', 'DESC')->get();
+      $total_assigned = array_sum(array_column($incomes->toArray(), 'assigned_income'));
+
+      $income_helper = new IncomeHelper();
+      foreach ($incomes as $income) {
+        if($income->income_type == 'portfolio') {
+            $income->records = $income_helper->portfolioIncomeRecord($user,$income);
+        }else{
+            $income->records = $income_helper->nonPortfolioIncomeRecord($user,$income);
+        }
+      }
+
       if($preview == '7w6refsgwubjhsdbfgcyuxbhsjwdcfuhghvbqansmdbjhjnhjb'){
         // $current_seed = Budget::where('user_id', $user->id)->where('period', date('Y-m').'-01')->first();
         $current_seed->priviewed = 1 ;
@@ -124,7 +165,7 @@ class SeedController extends Controller
       $available_allocation = $current_seed->budget_amount - $current_detail['total'];
 
       return view('user.seed.create', compact('page_title', 'support','seed_backgrounds', 'currency','isValid','current_seed', 'target_seed',
-         'available_allocation', 'current_detail', 'incomes', 'backgrounds'
+         'available_allocation', 'current_detail', 'incomes','total_assigned', 'backgrounds'
       ));
     }
 

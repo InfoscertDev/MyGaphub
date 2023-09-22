@@ -13,7 +13,7 @@
                         <h5 class="ff-rob"> Budget to assign {{$currency}}{{number_format($current_seed->budget_amount, 2) }} </h5>
                     </div>
                     <div class="col">
-                        <h5 class="ff-rob"> Balance to assign {{$currency}}{{number_format($current_seed->budget_amount, 2)}}
+                        <h5 class="ff-rob"> Balance to assigned {{$currency}}{{number_format($total_assigned, 2)}}
                             <button type="button" class="btn btn-sm btn-close  text-right" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true" class="text-white">X</span>
                             </button>
@@ -31,56 +31,38 @@
                                 <span class="mr-2 bold">{{($equ->income_type == 'portfolio') ? 'Portolio' : 'Non Portfolio'}}:</span>
                                 <span class="mr-2">{{$equ->currency}}{{ number_format($equ->amount, 2) }}</span>
 
-                                <span class="pull-right"><i class="fa fa-chevron-right"></i> </span>
+                                <span class="pull-right">
+                                    @if( $equ->assigned_income )
+                                        <dov class="mr-4">
+                                            <span class="px-3 py-1" style="background: #00B050;" >Assigned</span>
+                                        </dov>
+                                    @endif
+                                    <i class="fa fa-chevron-right"></i>
+                                </span>
                             </li>
                         @endforeach
-                        @if(count($incomes) > 6)
-                            <button class="list-toggle mx-auto btn-sm wd-5 btn px-2 bg-none mt-2">
-                                <span class="expand text-underline">View More</span>
-                                <span class="collapse text-underline">View Less</span>
-                            </button>
-                        @endif
                     </ul>
+                    <div class="text-center my-3">
+                        <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#incomeModalAccount"> Add Account </button>
+                    </div>
                 </div>
 
                 <div class="allocateIncome" style="display: none">
                     <div class="my-3 text-center">
                         <h5 id="income-title"></h5>
                     </div>
-                    <form action="{{ route('seed.store.allocation') }}" method="POST">
+                    <form action="{{ route('seed.assign.income') }}" method="POST">
                         @csrf
+                        <input type="hidden" id="seed_income" name="seed_income">
+
                         <div class="form-gorup row">
                             <div class="col"> <h5 class="bold">Income Period</h5> </div>
                             <div class="col"> <h5 class="bold"> Net Income</h5></div>
                             <div class="col-5"> <h5 class="bold">Assigned Income</h5> </div>
                         </div>
+                        <div id="record-list-container">
 
-                        @for($i = 0; $i  < 1;  $i++)
-                            <div class="form-gorup row my-2">
-                                <div class="col">  <span class="pl-3">September 2023</span></div>
-                                <div class="col">
-                                    <span class="pl-3"> {{$currency}}{{ number_format(5000,2)  }}</span>
-                                </div>
-                                <div class="col-5">
-                                    <div class="d-flex">
-                                        <div class="input-group  col mb-2">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">{{ $currency }}</span>
-                                            </div>
-                                            <input type="text" disabled name="current" id="current" min="0" required  class="bs-none form-control">
-                                        </div>
-                                        <div class="ml-2">
-                                            <button type="button" class="btn btn-sm bg-none px-2" onclick="$('#current').prop('disabled', (i, v) => !v);" >
-                                                    <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-pry"> Submit </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
-
-
+                        </div>
                     </form>
                 </div>
             </div>
@@ -104,10 +86,54 @@
             }
 
             function bindIncome(income){
-                console.log(this.account);
+                $('#seed_income').val(income.id);
                 let currency = income.income_currency.split(' ')[0]
                 let summary = `${income.income_name} Average Income ${currency}${income.amount.toFixed(2)}`
                 $('#income-title').text(summary);
+
+                var recordList = document.getElementById('record-list-container');
+                recordList.innerHTML = '';
+                income.records.forEach(function(item) {
+                    var div = document.createElement('div');
+                    div.className = 'form-group row my-2';
+
+                    if (item.isCurrent) {
+                        div.innerHTML = `
+                            <div class="col">  <span class="pl-3">${item.period}</span></div>
+                            <div class="col">
+                                <span class="pl-3">${currency}${item.amount.toFixed(2)}</span>
+                            </div>
+                            <div class="col-5">
+                                <div class="d-flex">
+                                    <div class="input-group  col mb-2">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">${currency}</span>
+                                        </div>
+                                        <input type="number" step="any" disabled name="seed_budget" value="${item.seed_budget}" id="current" min="0" required class="bs-none form-control">
+                                    </div>
+                                    <div class="ml-2">
+                                        <button type="button" class="btn btn-sm bg-none px-2" onclick="$('#current').prop('disabled', (i, v) => !v);">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-pry">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }else {
+                        div.innerHTML = `
+                            <div class="col">  <span class="pl-3">${item.period}</span></div>
+                            <div class="col">
+                                <span class="pl-3">${currency}${item.amount.toFixed(2)}</span>
+                            </div>
+                            <div class="col-5">
+                                <span class="pl-3">${currency}${item.seed_budget.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }
+
+                    recordList.appendChild(div);
+                });
             }
 
         </script>

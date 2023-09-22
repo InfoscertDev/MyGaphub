@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class RecordBudgetSpent extends Model
 {
-    // ALTER TABLE `record_budget_spents` ADD `recuring` INT(2) NOT NULL DEFAULT '0' AFTER `date`;
     use HasFactory;
 
     protected $fillable = [
