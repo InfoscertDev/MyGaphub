@@ -106,13 +106,11 @@ class SeedController extends Controller
         $income = Income::where('user_id', $user->id)->where('id', $request->seed_income)->first();
 
         if($income->income_type == "non_portfolio"){
-            $record = NonPortfolioRecord::where('period', $current_period)
-                            ->where('user_id', $user->id)
+            $record = NonPortfolioRecord::where('user_id', $user->id)
                             ->where('income_id', $income->id)
                             ->update(['seed_budget' => $request->seed_budget]);
         }else {
-            $record = PortfoloAssetRecord::where('period', $current_period)
-                            ->where('user_id', $user->id)
+            $record = PortfoloAssetRecord::where('user_id', $user->id)
                             ->where('portfolio_asset_id', $income->id)
                             ->update(['seed_budget' => $request->seed_budget]);
         }

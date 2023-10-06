@@ -364,8 +364,13 @@ class IncomeHelper{
                             // ->select(['id', 'period'])
                             ->get();
         $current_period = date('Y-m').'-01';
+        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+
+        $periods = [$current_period, $last_period];
+
+
         foreach($asset_records as $record){
-            $record->isCurrent = ($record->period == $current_period) ? true : false;
+            $record->isCurrent =  in_array($record->period, $periods) ? true : false;
             $record->period = Carbon::parse($record->period)->format('F Y');
         }
 
@@ -377,14 +382,19 @@ class IncomeHelper{
         $asset_records = NonPortfolioRecord::where('user_id', $user->id)
                         ->where('income_id', $account->id)
                         ->orderBy('period', 'DESC')->limit(6)->get();
+
         $current_period = date('Y-m').'-01';
+        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+
+        $periods = [$current_period, $last_period];
         foreach($asset_records as $record){
-            $record->isCurrent = ($record->period == $current_period) ? true : false;
+            $record->isCurrent =  in_array($record->period, $periods) ? true : false;
             $record->period = Carbon::parse($record->period)->format('F Y');
         }
 
         return $asset_records;
     }
+
     //ALTER TABLE `seed_budgets` ADD `priviewed` INT(4) NOT NULL DEFAULT '0' AFTER `budget_amount`;
     // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
     // ALTER TABLE `seed_budget_allocations` ADD `date` DATE NULL DEFAULT NULL AFTER `recuring`;

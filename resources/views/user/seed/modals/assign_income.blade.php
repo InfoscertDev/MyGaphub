@@ -3,21 +3,22 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content wd-c b-rad-20">
             <div class="modal-body">
-                <div class="col allocateIncome" style="display: none">
-                        <a onclick="goBack()" class="text-dark" >
-                            <i class="fa fa-chevron-left mr-1"></i> Back
-                        </a>
+                <div class="d-flex">
+                    <div class="col allocateIncome" style="display: none">
+                            <a onclick="goBack()" class="text-dark" >
+                                <i class="fa fa-chevron-left mr-1"></i> Back
+                            </a>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-close  flex-end" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-white">X</span>
+                    </button>
                 </div>
                 <div class="d-flex mt-3 mb-4">
                     <div class="col">
                         <h5 class="ff-rob"> Budget to assign {{$currency}}{{number_format($current_seed->budget_amount, 2) }} </h5>
                     </div>
                     <div class="col">
-                        <h5 class="ff-rob"> Balance to assigned {{$currency}}{{number_format($total_assigned, 2)}}
-                            <button type="button" class="btn btn-sm btn-close  text-right" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true" class="text-white">X</span>
-                            </button>
-                        </h5>
+                        <h5 class="ff-rob text-right"> Balance to assigned {{$currency}}{{number_format(($current_seed->budget_amount - $total_assigned), 2)}} </h5>
                     </div>
                 </div>
 

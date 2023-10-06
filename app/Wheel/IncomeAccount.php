@@ -27,13 +27,16 @@ class IncomeAccount extends Model
     public function getAssignedIncomeAttribute(){
         $value = false;
         $current_period = date('Y-m').'-01';
+        $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
+
         if($this->income_type  == 'portfolio'){
             $assigned =  PortfoloAssetRecord::where('portfolio_asset_id', $this->id)
-                        ->where('period', $current_period)->value('seed_budget');
+                        ->whereIn('period', [$current_period, $last_period])
+                        ->value('seed_budget');
             $value =  $assigned;//($assigned > 0) ? true : false;
         }else{
             $assigned =  NonPortfolioRecord::where('income_id', $this->id)
-                        ->where('period', $current_period)->value('seed_budget');
+                        ->whereIn('period', [$current_period, $last_period])->value('seed_budget');
             $value =  $assigned;//($assigned > 0) ? true : false;
         }
 
