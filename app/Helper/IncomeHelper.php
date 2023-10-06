@@ -366,7 +366,7 @@ class IncomeHelper{
         $current_period = date('Y-m').'-01';
         $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
 
-        $periods = [$current_period, $last_period];
+        $periods = [$current_period];
 
 
         foreach($asset_records as $record){
@@ -386,7 +386,7 @@ class IncomeHelper{
         $current_period = date('Y-m').'-01';
         $last_period = date("Y-m-d", strtotime ( '-1 month' , strtotime ( $current_period ) )) ;
 
-        $periods = [$current_period, $last_period];
+        $periods = [$current_period];
         foreach($asset_records as $record){
             $record->isCurrent =  in_array($record->period, $periods) ? true : false;
             $record->period = Carbon::parse($record->period)->format('F Y');
