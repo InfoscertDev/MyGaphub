@@ -83,6 +83,7 @@
         var record_url = `{{ route('seed.add.record_spent')  }}`;
 
         function handleAllocationView(e){
+            console.log(e)
             id = e.dataset.allocation;
 
             $('#deleteForm').attr('action', url+'/'+id);
@@ -112,18 +113,24 @@
         function handleAllocationEdit(){
             if(seed){
                 $('#edit_allocation').attr('action', url+'/'+seed.allocated.id)
-
+                console.log( seed.allocated.recuring );
                 $('.seed_category').html(seed.allocated.seed_category);
                 $('#edit_label').val(seed.allocated.label);
                 $('#edit_amount').val(seed.allocated.amount);
                 $('#edit_note').val(seed.allocated.note);
-                $('#allocation_recurring').attr('checked', seed.allocated.recuring);
+                $('#allocation_recurring').attr('checked', seed.allocated.recuring  ? true : false);
+
+                if(seed.allocated?.seed_category == "expenditure"){
+                    $('.record_details').show();
+                } else{
+                    $('.record_details').hide();
+                }
+                $('#editAssetAllocationModal').modal('show');
                 // $('#edit_allocation').attr('action', url+'/'+id)
                 // $('div.seed_category').html(allocation.label);
                 // $('#edit_label').val(allocation.label)
                 // $('#edit_amount').val(allocation.amount)
                 // $('#edit_note').val(allocation.note)
-                $('#editAssetAllocationModal').modal('show');
             }
         }
 

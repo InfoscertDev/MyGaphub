@@ -283,7 +283,7 @@ class PortfolioHelper {
         $existing = PortfolioAsset::join('portfolo_asset_records','portfolio_assets.id', '=','portfolo_asset_records.portfolio_asset_id')
                         ->where('portfolio_assets.user_id', $user->id)
                         ->where('portfolio_assets.asset_class', $braid)
-                        ->orderBy('period', 'ASC')->get();
+                        ->orderBy('period', 'DESC')->get();
 
         $labels = [];  $label_asset = [];
         $incomes = []; $values = [];

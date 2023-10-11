@@ -314,7 +314,7 @@ class IndependenceAPI extends Controller
 
         $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
                     ->where('income_id', $income->id)
-                    ->orderBy('period', 'ASC')->limit(6)->get();
+                    ->orderBy('period', 'DESC')->limit(6)->get();
         $chart =  $income_helper->nonPortfolioRecordChart($non_portfolios);
 
         $data  = compact('income','non_portfolios', 'chart', 'backgrounds');

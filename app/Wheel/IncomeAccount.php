@@ -31,12 +31,12 @@ class IncomeAccount extends Model
 
         if($this->income_type  == 'portfolio'){
             $assigned =  PortfoloAssetRecord::where('portfolio_asset_id', $this->id)
-                        ->whereIn('period', [$current_period, $last_period])
+                        ->whereIn('period', [$last_period])
                         ->value('seed_budget');
             $value =  $assigned;//($assigned > 0) ? true : false;
         }else{
             $assigned =  NonPortfolioRecord::where('income_id', $this->id)
-                        ->whereIn('period', [$current_period, $last_period])->value('seed_budget');
+                        ->whereIn('period', [$last_period])->value('seed_budget');
             $value =  $assigned;//($assigned > 0) ? true : false;
         }
 

@@ -49,7 +49,7 @@
                             </div>
                         </div>
 
-                        <!-- <div class="form-group my-3 row record_details" >
+                        <div class="form-group my-3 row record_details"  style="display: none;">
                             <div class="col-sm-6">
                                Recurring:
                             </div>
@@ -58,7 +58,7 @@
                                    <input class="" id="allocation_recurring" name="recuring" type="checkbox" /><label data-off="OFF" data-on="ON" for="allocation_recurring"></label>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
                         <div class="row mt-4 justify-content-center " id="edit_current" >
                             <button type="submiit" class="btn btn-md btn-pry px-4">Update</button>

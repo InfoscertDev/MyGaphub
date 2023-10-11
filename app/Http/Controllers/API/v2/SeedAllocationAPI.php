@@ -55,32 +55,38 @@ class SeedAllocationAPI extends Controller
         $user = $request->user();
 
         $month =  date('Y-m').'-01';
-        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $cp = date('m')+1;
+        $next_period =  date('Y-'). $cp .'-01';
+
+        $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
+
         if($allocated){
-          $validator = Validator::make($request->all(),[
-            'label' => 'required|between:3,50',
-            'amount' => 'required|numeric|min:10',
-          ]);
+            $validator = Validator::make($request->all(),[
+                'label' => 'required|between:3,50',
+                'amount' => 'required|numeric|min:10',
+            ]);
 
-        //   info($request->recurring);
+            if($validator->fails()){
+                return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+            }
 
-        if($validator->fails()){
-            return response()->json([ 'status' => false, 'errors' =>$validator->errors()->toJson()], 400);
+            $allocated->update($request->all());
+
+            return response()->json(['status' => true, 'data' => $allocated,'message' => 'Seed Allocation has been updated']);
+
+            }else{
+            return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
+            }
         }
-
-         $allocated->update($request->all());
-
-          return response()->json(['status' => true, 'data' => $allocated,'message' => 'Seed Allocation has been updated']);
-
-        }else{
-          return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
-        }
-      }
 
       public function deleteAllocation(Request $request, $id){
         $user = $request->user();
         $month =  date('Y-m').'-01';
-        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $cp = date('m')+1;
+        $next_period =  date('Y-'). $cp .'-01';
+
+        $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
+
         if($allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
             $allocation->delete();
@@ -148,9 +154,12 @@ class SeedAllocationAPI extends Controller
     public function showAlloction(Request $request, $id){
         $user = $request->user();
 
-        $month =  date('Y-m').'-01'; $cp = date('m')-1;
-        $last_period =  date('Y-'). $cp .'-01';
-        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $month)->first();
+        $month =  date('Y-m').'-01';
+        $cp = date('m')+1;
+        $next_period =  date('Y-'). $cp .'-01';
+
+        $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
+
         if($allocated){
             $backgrounds = array_reverse(GapAccount::accountBackground());
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();

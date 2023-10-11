@@ -98,6 +98,14 @@
         </div>
     </div>
 
+    @php
+        $current_period = date('Y-m').'-01';
+
+        function showCurrent($period){
+           return (date('Y-m').'-01' == $period) ? 'show' : '';
+        }
+    @endphp
+
     <div class="col-md-5 col-sm-12">
         <div id="accordion">
             @foreach($non_portfolios as $portfolio)
@@ -116,7 +124,7 @@
                         </div>
                     </div>
 
-                    <div id="collapse{{$portfolio->id}}" class="collapse" aria-labelledby="heading{{$portfolio->id}}" data-parent="#accordion">
+                    <div id="collapse{{$portfolio->id}}" class="collapse {{ showCurrent($portfolio->period) }}" aria-labelledby="heading{{$portfolio->id}}" data-parent="#accordion">
                         <div class="card-body pb-1">
                             <div class="d-flex my-2">
                                 <span class="col"> Gross Income</span>

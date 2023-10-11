@@ -29,7 +29,12 @@ class SeedAllocationController extends Controller
       $user = $request->user();
 
       $period =  date('Y-m').'-01';
-      $allocated = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
+      $next_period = date("Y-m-d", strtotime ('+1 month' , strtotime ( $period ) )) ;
+
+
+      $allocated = SeedBudgetAllocation::whereId($id)
+                    ->whereIn('period', [$period, $next_period])
+                    ->first();
 
       if($allocated){
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
@@ -62,7 +67,6 @@ class SeedAllocationController extends Controller
         return response()->json(['status' => false,'message' => 'Allocation not found'], 404);
       }
     }
-
 
     public function seedSummaryPage(Request $request, $seed){
         $user = $request->user();
@@ -126,8 +130,8 @@ class SeedAllocationController extends Controller
         $budget_allocation =  SeedBudgetAllocation::where('seed_category', $category)
                                     ->when($expenditure, function ($query, $expenditure) {
                                         return $query->where('expenditure', $expenditure);
-                                    })
-                                  ->where('user_id', $user->id)->where('period', $period)->get();
+                                    }) ->where('user_id', $user->id)
+                                    ->where('period', $period)->get();
 
         if($category == 'expenditure'){
             foreach($budget_allocation as $allocation){
@@ -211,9 +215,12 @@ class SeedAllocationController extends Controller
 
     public function updateCategoryAllocation(Request $request, $id){
         $user = $request->user();
+
         $period =  date('Y-m').'-01';
-        $allocated = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
-        // info($request->all());
+        $next_period = date("Y-m-d", strtotime ('+1 month' , strtotime ( $period ) )) ;
+        $allocated = SeedBudgetAllocation::whereId($id)
+                            ->whereIn('period', [$period, $next_period])
+                            ->first();
 
         if($allocated){
             $this->validate($request,[
@@ -243,10 +250,11 @@ class SeedAllocationController extends Controller
     public function deleteAllocation(Request $request, $id){
         $user = $request->user();
         $period =  date('Y-m').'-01';
-        $allocation = SeedBudgetAllocation::whereId($id)->where('period', $period)->first();
+        $next_period = date("Y-m-d", strtotime ('+1 month' , strtotime ( $period ) )) ;
+
+        $allocation = SeedBudgetAllocation::whereId($id)->whereIn('period', [$period, $next_period])->first();
         if($allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
-
             $allocation->delete();
             return redirect()->back()->with('success','Allocation has been deleted');
             // if(count($record_spents) == 0){
