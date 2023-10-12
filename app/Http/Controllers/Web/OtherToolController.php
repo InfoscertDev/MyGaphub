@@ -67,6 +67,12 @@ class OtherToolController extends Controller
     }
 
     public function support(){
+        $page_title = "Gaphub Support";
+
+        return view('user.support.index', compact("page_title"));
+    }
+
+    public function supportGuide(){
         $page_title = "Quick Start Guide";
 
         $gap_supports = [
@@ -94,7 +100,7 @@ class OtherToolController extends Controller
             }
         }
 
-        return view('user.support.index', compact("page_title", 'gap_supports'));
+        return view('user.support.quick-start', compact("page_title", 'gap_supports'));
     }
 
     public function sendFeedback(Request $request)

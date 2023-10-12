@@ -171,7 +171,9 @@ Route::group(['middleware' => ['auth','verified']], function() {
 });
 
 // Acquisition
-Route::get('/home/support', 'Web\OtherToolController@support')->name('support');
+Route::get('/home/tools/support', 'Web\OtherToolController@support')->name('support');
+Route::get('/home/tools/support/guide', 'Web\OtherToolController@supportGuide')->name('support.guide');
+
 Route::get('/acquisition', 'Web\AcquisitionController@index')->name('user.acquisition');
 Route::get('/acquisition/asset/{asset}', 'Web\AcquisitionController@opportunity')->name('user.opportunity');
 Route::get('/acquisition/asset/reap/{sasset}', 'Web\ListedAcquisitionController@singleReap')->name('user.single_reap');
