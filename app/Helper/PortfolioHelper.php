@@ -396,9 +396,14 @@ class PortfolioHelper {
     }
 
     public static function addNewRecordPeriod($user, $asset, $header, $access, $period){
+        $last_asset_record = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
+                                 ->orderBy('period', 'DESC')->first();
+        info([ $last_asset_record ]);
+
         if ($header == 'ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn') {
             if($access == 'current_ajjaknjkxbnjnksxknmcfaz'){
                 $current = date('Y-m').'-01';
+
                 $asset_records = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
                             ->where('period', $current)->first();
                 $success = true;
@@ -409,7 +414,7 @@ class PortfolioHelper {
                     $asset_records->user_id = $user->id;
                     $asset_records->portfolio_asset_id = $asset->id;
                     $asset_records->period = $current;
-                    $asset_records->amount = $asset->asset_value;
+                    $asset_records->amount =  $last_asset_record ?? $asset->asset_value;
                     $asset_records->save();
                     $asset_records->income = $asset->monthly_roi;
                     $asset_records = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
@@ -418,8 +423,9 @@ class PortfolioHelper {
                 }
             }else if($access == 'addperiod_ajhbxsjnbjsxbnoaklmsikn'){
                 $current = $period.'-01';
-                $asset_records = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
-                            ->where('period', $current)->first();
+                $asset_records = PortfoloAssetRecord::where('user_id', $user->id)
+                                        ->where('portfolio_asset_id', $asset->id)
+                                        ->where('period', $current)->first();
                 $success = true;
                 if($asset_records){
                     return response()->json(compact('success','asset_records'));

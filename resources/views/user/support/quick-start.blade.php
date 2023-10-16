@@ -42,7 +42,7 @@
             <div class="modal-content b-rad-20 wd-c">
                 <div class="modal-header">
                     <h5 class="modal-title" id="gaphubSupportLabel">GAPhub Support</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" onclick="closePlayer()" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -56,9 +56,15 @@
     </div>
     <script>
         function playSupport(youtubeId){
-            $('#gaphubSupport').modal('show');
+            $('#gaphubSupport').modal({ backdrop: 'static'},'show');
             $('#ytplayer').attr('src', 'https://www.youtube.com/embed/'+youtubeId+'?autoplay=1');
         }
+
+        function closePlayer(){
+            $("#gaphubSupport").modal().hide();
+            $("#gaphubSupport iframe").attr("src", '');
+        }
+
     </script>
  </div>
 @endsection

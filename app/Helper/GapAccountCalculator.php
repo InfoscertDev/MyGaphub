@@ -223,7 +223,7 @@ class GapAccountCalculator
         $asset =  (int)$networth['asset'];
         $equity = $home - $mortgage;
         $total_asset =  array_sum([$networth['asset'], $pension, $equity]);
-        $sum =  ($asset +  $pension)   - ($liability);
+        $sum =  array_sum([$asset, $pension])   - ($liability);
 
         $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
         $values = [$asset, $liability, $pension, $equity];
