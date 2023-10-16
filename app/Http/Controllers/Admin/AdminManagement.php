@@ -10,7 +10,6 @@ use App\AdminConfiguration as Configration;
 use App\Asset\GapCurrency;
 use App\Helper\HelperClass;
 use App\Models\LoginAttemptLog;
-use App\Models\UserFeedback;
 
 class AdminManagement extends Controller
 {
@@ -29,7 +28,7 @@ class AdminManagement extends Controller
         // return view('admin.coming-soon');
     }
 
-    
+
     public function report()
     {
         return view('admin.coming-soon');
@@ -41,7 +40,7 @@ class AdminManagement extends Controller
 
         return view('admin.people.admins', compact('admins'));
     }
-    
+
     public function reportLogin()
     {
         $logins = LoginAttemptLog::latest()->paginate(10);
@@ -49,9 +48,9 @@ class AdminManagement extends Controller
         return view('admin.reports.logins', compact('logins'));
     }
 
-     
-    public function exchange() 
-    { 
+
+    public function exchange()
+    {
         $currency = "€ EUR";
         $system_currencies = GapCurrency::where('user_id', 0)->first();
         $currencies = HelperClass::popularCurrenciensInfo();
@@ -61,13 +60,6 @@ class AdminManagement extends Controller
         return view('admin.reports.exchange', compact('system_currencies', 'currencies','currency', 'configrations'));
     }
 
-    public function feedbacks() 
-    {  
-        $feedbacks = UserFeedback::latest()->paginate(10);
-        // var_dump($feedbacks[0]->user);
-        return view('admin.reports.feedbacks', compact('feedbacks'));
-    }
- 
 
     public function preferenceEmail(Request $request){
         $this->validate($request, [
@@ -76,7 +68,7 @@ class AdminManagement extends Controller
         $configrations = Configration::first();
         $configrations->exchange_email = $request->preference_email;
         $configrations->save();
-        
+
         return redirect()->back()->with(['success' => "Prefeence Email updated"]);
     }
 }

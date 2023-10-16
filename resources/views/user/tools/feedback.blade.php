@@ -38,7 +38,34 @@
                   </div>
                 </div>
             </form>
-          </div>
+
+        </div>
+    </div>
+    <hr>
+    <div class="my-3">
+        <h5 class="text-center pb-3">Other Feedbacks</h5>
+        <div class="row">
+            @foreach ($feedbacks as $feedback)
+                <div class="col-md-4">
+                    <div class="card bg-light elevation-3 my-2  pb-2" style="height: 320px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">
+                                <span class=" txt-primary bold">{{$feedback->user->surname}} {{$feedback->user->firstname}}</span>
+                                <br><small class="">{{$feedback->user->email}}</small>
+                            </h5>
+                            <p class="mb-1">
+                                <span class="bold mr-4">Subject:</span>
+                                <span class="h5">  {{$feedback->subject}}</span>
+                            </p>
+                            <p class="mb-1">
+                                <span class="bold">Message</span> <br>
+                                {{$feedback->message}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     </div>
  </div>
 @endsection

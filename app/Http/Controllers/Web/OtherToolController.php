@@ -54,7 +54,8 @@ class OtherToolController extends Controller
 
     public function feedback()
     {
-        return view('user.tools.feedback');
+        $feedbacks = UserFeedback::latest()->paginate(6);
+        return view('user.tools.feedback', compact('feedbacks'));
     }
 
     public function compliance(){

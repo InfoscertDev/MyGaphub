@@ -208,7 +208,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
 
         Route::post('/preference/email', 'Admin\AdminManagement@preferenceEmail')->name('preference.email');
         Route::get('/preference/exchange', 'Admin\AdminManagement@exchange')->name('gap.exchange');
-        Route::get('/feedbacks', 'Admin\AdminManagement@feedbacks')->name('gap.feedbacks');
+        Route::get('/feedbacks', 'Admin\SupportController@feedbacks')->name('gap.support.feedbacks');
 
         Route::get('/products', 'Admin\SevenGComment@products' )->name('gap.products');
         Route::post('/products/{asset}', 'Admin\SevenGComment@storeProducts' )->name('gap.store.products');

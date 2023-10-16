@@ -344,7 +344,8 @@ class SeedAPI extends Controller
         ]);
       }
 
-    public function storeSeed(Request $request){
+
+      public function storeSeed(Request $request){
       $user = $request->user();
 
       $validator = Validator::make($request->all(),[
