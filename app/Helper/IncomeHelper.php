@@ -395,14 +395,4 @@ class IncomeHelper{
         return $asset_records;
     }
 
-    //ALTER TABLE `seed_budgets` ADD `priviewed` INT(4) NOT NULL DEFAULT '0' AFTER `budget_amount`;
-    // ALTER TABLE `seed_budgets` CHANGE `budget_amount` `budget_amount` DOUBLE NULL DEFAULT '0', CHANGE `priviewed` `priviewed` INT(4) NULL DEFAULT '0';
-    // ALTER TABLE `seed_budget_allocations` ADD `date` DATE NULL DEFAULT NULL AFTER `recuring`;
-    // ALTER TABLE `non_portfolio_records`
-	// ADD `tithe` DOUBLE NULL DEFAULT 0,
-	// ADD `taxes` DOUBLE NULL DEFAULT 0 AFTER `others`;
-    // ALTER TABLE `record_budget_spents` ADD `recuring` INT(2) NOT NULL DEFAULT '0' AFTER `date`;
-
-    //  ALTER TABLE `portfolo_asset_records`  ADD `seed_budget` DOUBLE NULL DEFAULT '0'  AFTER `note2`;
-    // ALTER TABLE `non_portfolio_income`  ADD `seed_budget` DOUBLE NULL DEFAULT '0'  AFTER `note2`;
 }

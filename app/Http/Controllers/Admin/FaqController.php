@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\GapAssetType;
+use App\Models\GaphubFAQ;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,13 +16,9 @@ class FaqController extends Controller
      */
     public function index()
     {
-        $asset_types = GapAssetType::latest()->paginate(20);
+        $faqs = GaphubFAQ::latest()->paginate(20);
 
-        foreach($asset_types as $asset){
-            $asset->acqusition = "$asset->acqusition asset";
-        }
-
-        return view('admin.support.faq', compact('asset_types'));
+        return view('admin.support.faq', compact('faqs'));
     }
 
     /**
@@ -44,16 +40,14 @@ class FaqController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'asset_class' => 'required|in:business,risk,appreciating,intellectual,depreciating',
-            'asset_name' => 'required',
-            'describtion' => 'nullable|max:512'
+            'title' => 'required',
+            'describtion' => 'nullable|max:1024'
         ]);
 
-        $asset_type = new GapAssetType();
-        $asset_type->acqusition = $request->asset_class;
-        $asset_type->name = $request->asset_name;
-        $asset_type->description = $request->description;
-        $asset_type->save();
+        $faq = new GaphubFAQ();
+        $faq->title = $request->title;
+        $faq->description = $request->description;
+        $faq->save();
 
         return redirect()->back()->with('success', 'New Asset Type has been added succesfully');
     }
@@ -66,9 +60,9 @@ class FaqController extends Controller
      */
     public function show($id)
     {
-        $asset_type = GapAssetType::find($id);
+        $faq = GaphubFAQ::find($id);
         $success = true;
-        return response()->json(compact('success', 'asset_type'));
+        return response()->json(compact('success', 'faq'));
     }
 
     /**
@@ -92,19 +86,18 @@ class FaqController extends Controller
     public function update(Request $request, $id)
     {
 
-        $gap =  GapAssetType::find($id);
+        $gap =  GaphubFAQ::find($id);
 
         $this->validate($request, [
-            'acqusition' => 'required|in:business,risk,appreciating,intellectual,depreciating',
-            'asset_name' => 'required',
-            'describtion' => 'nullable|max:512'
+            'title' => 'required',
+            'describtion' => 'nullable|max:1024'
         ]);
+
         $request['status'] = ($request->status == "on") ? 1 : false;
-        $request['name'] = $request->asset_name;
 
         $gap->update($request->all());
 
-        return redirect()->back()->with('success', 'Asset Type has been updated succesfully');
+        return redirect()->back()->with('success', "FAQ's has been updated succesfully");
     }
 
     /**

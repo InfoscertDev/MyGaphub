@@ -24,7 +24,7 @@
                             <div class="mb-1">
                                 <h5 class="bold">Response</h5>
                                 <p  class="ml-3">  {{$feedback->extra}}</p>
-                                <textarea name="" id="" cols="10" rows="3"></textarea>
+                                <!-- <textarea name="" id="" cols="10" rows="3"></textarea> -->
                             </div>
                         </div>
                     </div>
