@@ -208,11 +208,16 @@ Route::group(['prefix' => 'gapadmin'], function () {
 
         Route::post('/preference/email', 'Admin\AdminManagement@preferenceEmail')->name('preference.email');
         Route::get('/preference/exchange', 'Admin\AdminManagement@exchange')->name('gap.exchange');
-        Route::get('/feedbacks', 'Admin\SupportController@feedbacks')->name('gap.support.feedbacks');
-
         Route::get('/products', 'Admin\SevenGComment@products' )->name('gap.products');
         Route::post('/products/{asset}', 'Admin\SevenGComment@storeProducts' )->name('gap.store.products');
-        Route::get('/support', function(){  return view('admin.coming-soon'); })->name('gap.support');
+
+        Route::get('/support',  'Admin\SupportController@index')->name('gap.support');
+        Route::get('/support/quickstart',  'Admin\SupportController@quickstart')->name('gap.support.guide');
+        Route::post('/support/quickstart',  'Admin\SupportController@storeQuickstart')->name('gap.store.guide');
+
+        Route::get('/support/faqs',  'Admin\FaqController@index')->name('gap.faq.index');
+        Route::get('/feedbacks', 'Admin\SupportController@feedbacks')->name('gap.support.feedbacks');
+        Route::post('/feedbacks/reply', 'Admin\SupportController@replyFeedback')->name('gap.reply.feedbacks');
         // Route::get('/reap', function(){  return view('admin.coming-soon'); })->name('gap.reap');
         // Route::get('/ganp', function(){  return view('admin.coming-soon'); })->name('gap.ganp');
 

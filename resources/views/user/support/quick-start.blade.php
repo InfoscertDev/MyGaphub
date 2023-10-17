@@ -12,7 +12,7 @@
                 </span>
             </div>
              @foreach($gap_supports as $support)
-                 <div class="col-md-6 col-12-sm-12">
+                 <div class="col-md-6 col-sm-12">
                      <div class="mb-5 mx-2">
                          <picture onclick="playSupport(`{{$support['id']}}`)">
                              <source media="(max-width: 560px)" srcset="{{ 'https://i.ytimg.com/vi_webp/'. $support['id'] .'/mqdefault.webp' }}">
