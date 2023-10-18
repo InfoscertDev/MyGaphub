@@ -23,7 +23,7 @@ class SupportController extends Controller
             'reply' => 'required|max:512'
         ]);
 
-        $feedback = UserFeedback::find($id)->update([ 'reply' => $request->reply ]);
+        $feedback = UserFeedback::find($id)->update([ 'extra' => $request->reply ]);
 
         return redirect()->back();
     }

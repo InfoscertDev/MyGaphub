@@ -218,7 +218,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
         // Route::get('/support/faqs',  'Admin\FaqController@index')->name('gap.faq.index');
         Route::resource('/support/faqs','Admin\FaqController');
         Route::get('/feedbacks', 'Admin\SupportController@feedbacks')->name('gap.support.feedbacks');
-        Route::post('/feedbacks/reply', 'Admin\SupportController@replyFeedback')->name('gap.reply.feedbacks');
+        Route::post('/feedbacks/{id}', 'Admin\SupportController@replyFeedback')->name('gap.reply.feedback');
         // Route::get('/reap', function(){  return view('admin.coming-soon'); })->name('gap.reap');
         // Route::get('/ganp', function(){  return view('admin.coming-soon'); })->name('gap.ganp');
 

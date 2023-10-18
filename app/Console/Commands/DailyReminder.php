@@ -48,9 +48,9 @@ class DailyReminder extends Command
     {
        $this->monthlyHistoricReport();
 
-    //    $this->validateEmailReminder();
+       $this->validateEmailReminder();
 
-    //    $this->analyticsValidation();
+       $this->analyticsValidation();
     }
 
     public function validateEmailReminder(){
