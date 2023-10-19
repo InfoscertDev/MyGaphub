@@ -52,4 +52,28 @@ class SupportController extends Controller
         return redirect()->back()->with('success', 'New Quickguide  support has been added to Library ');
     }
 
+    public function showGuide($id)
+    {
+        $guide = GaphubGuide::find($id);
+        $success = true;
+        return response()->json(compact('success', 'guide'));
+    }
+
+    public function updateQuickStart(Request $request, $id)
+    {
+        $guide =  GaphubGuide::find($id);
+
+        $this->validate($request, [
+            'title' => 'required',
+            'video_link' => 'nullable|max:1024'
+        ]);
+
+        // $request['status'] = ($request->status == "on") ? 1 : false;
+
+        $guide->update($request->all());
+
+        return redirect()->back()->with('success', "Quickguide support has been updated succesfully");
+    }
+
+
 }

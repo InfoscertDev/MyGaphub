@@ -4,17 +4,20 @@
 @section('content')
   <div class="wd-f my-5">
 
-    <div class="col-12 my-3">
-        <span class="mr-3 pb-2" id="goback">
-            <a href="#" class="text-dark bold" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i>  Back</a>
-        </span>
-    </div>
+        <div class="col-12 my-4">
+            <span class="mr-3 pb-2" id="goback">
+                <a href="#" class="text-dark bold" onclick="window.history.go(-1); return false;" ><i class="fa fa-chevron-left mr-1"></i>  Back</a>
+            </span>
+
+            <button class="btn btn-pry px-2 pull-right " data-toggle="modal" data-target="#faqSupportModal">New</button>
+        </div>
+        <br>
       <div class="card">
           <div class="card-header d-flex">
               <h4 class="col-9">Gaphub FAQ's</h4>
-              <div class="col-3">
-                  <button class="btn btn-pry px-2 pull-right" data-toggle="modal" data-target="#assetTypeModal">New</button>
-              </div>
+
+              <div class="col-5">
+                </div>
           </div>
           <div class="card-body">
             @if (count($faqs))
@@ -47,8 +50,13 @@
                         @endif
                       </td>
                       <td>
-                        <button class="btn btn-sm bg-none px-2" onclick='editFAQ("{{$asset->id}}")' >
+                        <button class="btn btn-sm bg-none px-2 mr-3" onclick='editFAQ("{{$asset->id}}")' >
                           <i class="fa fa-edit"></i>
+                        </button>
+
+
+                        <button class="btn btn-sm bg-none px-2" onclick='deleteFAQ("{{$asset->id}}")' >
+                          <i class="fa fa-trash"></i>
                         </button>
                       </td>
                       <td>
@@ -75,32 +83,30 @@
 
   <script>
     function editFAQ(id){
-    var href = window.location.href+'/'+id;
-    console.log('ID', id, href)
-      $.ajax({
-        type: 'GET',
-        url: href,
-        success: function(data, status){
-          var asset = data.faq;
-          // console.log(asset.description);
-          if(asset){
-            $('#editTypeModal').modal('show');
-            $('#title').val(asset.title);
-            $('#description').val(asset.description);
-            $('#status').prop('checked', asset.status);
-            $('#update_faq').attr('action',  href);
-          }
-        }
-      });
-
+        var href = window.location.href+'/'+id;
+        $.ajax({
+            type: 'GET',
+            url: href,
+            success: function(data, status){
+            var asset = data.faq;
+            // console.log(asset.description);
+            if(asset){
+                $('#editTypeModal').modal('show');
+                $('#title').val(asset.title);
+                $('#description').val(asset.description);
+                $('#status').prop('checked', asset.status);
+                $('#update_faq').attr('action',  href);
+            }
+            }
+        });
     }
   </script>
 
-  <div class="modal fade" id="assetTypeModal" tabindex="-1" role="dialog" aria-labelledby="assetTypeModalLabel" aria-hidden="true">
+  <div class="modal fade" id="faqSupportModal" tabindex="-1" role="dialog" aria-labelledby="faqSupportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialoged-center" role="document">
         <div class="modal-content wd-c sm-wd-c">
             <div class="modal-header">
-              <h5 class="modal-title" id="assetTypeModalLabel">Create New FAQ</h5>
+              <h5 class="modal-title" id="faqSupportModalLabel">Create New FAQ</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>

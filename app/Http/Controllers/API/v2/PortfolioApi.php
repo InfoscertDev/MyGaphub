@@ -143,7 +143,9 @@ class PortfolioApi extends Controller
         }
         if($asset){
             $status = true;
-            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)->orderBy('period', 'DESC')->get();
+            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
+                        ->where('portfolio_asset_id', $asset->id)
+                        ->orderBy('period', 'ASC')->get();
             $asset_finicial_record = PortfolioHelper::assetFinancialChart($asset_finicial);
             $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user, $asset,$asset_finicial);
            return  response()->json(compact('status','asset', 'archive','asset_finicial','asset_finicial_detail','asset_finicial_record'));

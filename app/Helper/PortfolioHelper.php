@@ -228,7 +228,8 @@ class PortfolioHelper {
     }
 
     public static function assetFinancialDetail($user, $asset, $financials, $convert = true){
-        $expenditure_labels = []; $asset_values = [];
+        $expenditure_labels = [];
+        $asset_values = [];
         $revenue = [];
         $expenditure = [];
         $net = [];

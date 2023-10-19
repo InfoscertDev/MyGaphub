@@ -147,7 +147,7 @@ class PortfolioController extends Controller
             $backgrounds = PortfolioHelper::accountBackground();
             $asset_types = GapAssetType::where('acqusition', $braid)->get();
             $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
-                                    ->orderBy('period', 'DESC')->get();
+                                    ->orderBy('period', 'ASC')->get();
             $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$asset_finicial);
 
             return view('user.portfolio.braid_info', compact('page_title','goback','currency', 'braid',
@@ -169,7 +169,9 @@ class PortfolioController extends Controller
         if($asset){
             $page_title = "$asset->name";
             $currencies = HelperClass::popularCurrenciens();
-            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)->orderBy('period', 'DESC')->get();
+            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
+                                ->where('portfolio_asset_id', $asset->id)
+                                ->orderBy('period', 'ASC')->get();
             $asset_finicial_record = PortfolioHelper::assetFinancialChart($asset_finicial);
 
             $backgrounds = PortfolioHelper::accountBackground();

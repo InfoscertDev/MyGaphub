@@ -9,7 +9,7 @@
         var backgrounds =   <?php echo json_encode($backgrounds) ?>;
         var total_equity = <?php echo $net_detail['equity'] ?>;
         var total_liability = <?php echo $net_detail['liability'] ?>;
-        var total_asset = <?php echo $net_detail['asset'] ?>;
+        var total_asset = <?php echo $net_detail['networth_asset'] ?>;
 
     </script>
      @include('user.360.partials.account_chartbar')
@@ -40,7 +40,6 @@
                                     <a href="{{route('360.'.$link)}}" class="card-link ">
                                         <li class="list-group-item">
                                             <span class="mr-2 bold"> Current {{$equ}}:</span> <span class="mr-2">{{$currency}}{{ number_format($net_detail['values'][$key], 2) }} </span>
-
                                             @if($equ == 'Home Equity')
                                                 <div class=" switch pull-right">
                                                     <input class=""  oninput="updateNetWorth()" id="switch_equity" name="analytics" type="checkbox" /><label data-off="OFF" data-on="ON" for="switch_equity"></label>

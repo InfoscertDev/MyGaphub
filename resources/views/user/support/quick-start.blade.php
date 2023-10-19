@@ -54,6 +54,7 @@
             </div>
         </div>
     </div>
+
     <script>
         function playSupport(youtubeId){
             $('#gaphubSupport').modal({ backdrop: 'static'},'show');

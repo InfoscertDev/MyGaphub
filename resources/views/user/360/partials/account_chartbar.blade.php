@@ -56,7 +56,6 @@
 
     function graphClickEvent(event, elements) {
         if(elements[0]){
-        //   console.log(index);
           var index = elements[0]["_index"];
           if (index == 0) window.location = "<?php echo route('360.asset') ?>"
           if (index == 1) window.location = "<?php echo route('360.liability') ?>"
@@ -67,11 +66,13 @@
     function updateNetWorth(){
         var equity = document.getElementById('switch_equity'),
             net = document.getElementById('total_net');
-
+            total_asset = parseFloat(total_asset)
+            total_equity = parseFloat(total_equity);
+            total_liability = parseFloat(total_liability);
         if(equity.checked){
-            net.textContent = parseFloat((+total_asset + +total_equity) - +total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            net.textContent = parseFloat((total_asset + total_equity) - total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }else{
-            net.textContent = parseFloat(+total_asset - +total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            net.textContent = parseFloat(total_asset - total_liability).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
     }
 </script>
