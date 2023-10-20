@@ -150,8 +150,8 @@ class PortfolioController extends Controller
                                     ->orderBy('period', 'ASC')->get();
             $chart_assets = PortfoloAssetRecord::where('user_id', $user->id)
                                 ->where('portfolio_asset_id', $asset->id)
-                                ->orderBy('period', 'ASC')->take(4)->get();
-            $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$chart_assets);
+                                ->orderBy('period', 'DESC')->take(4)->get();
+            $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$chart_assets->reverse());
 
             return view('user.portfolio.braid_info', compact('page_title','goback','currency', 'braid',
                      'backgrounds','currencies','asset', 'archive',  'asset_finicial_detail', 'asset_types'));
@@ -175,11 +175,12 @@ class PortfolioController extends Controller
             $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
                                 ->where('portfolio_asset_id', $asset->id)
                                 ->orderBy('period', 'ASC')->get();
+
             $chart_assets = PortfoloAssetRecord::where('user_id', $user->id)
                             ->where('portfolio_asset_id', $asset->id)
-                            ->orderBy('period', 'ASC')->take(4)->get();
+                            ->orderBy('period', 'DESC')->take(4)->get();
 
-            $asset_finicial_record = PortfolioHelper::assetFinancialChart($chart_assets);
+            $asset_finicial_record = PortfolioHelper::assetFinancialChart($chart_assets->reverse());
 
             $backgrounds = PortfolioHelper::accountBackground();
 
