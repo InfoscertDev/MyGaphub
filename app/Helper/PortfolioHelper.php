@@ -233,7 +233,10 @@ class PortfolioHelper {
         $revenue = [];
         $expenditure = [];
         $net = [];
-        foreach($financials as $key => $finicial) {
+
+        $chart_assets = array_slice($financials, -4);
+
+        foreach($chart_assets as $key => $finicial) {
             if($key <= 3){
                 array_push($expenditure_labels, date('M', strtotime($finicial->period) ). ' '. date('Y', strtotime($finicial->period)) );
                 if($convert){
@@ -263,7 +266,7 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
-        $chart_assets = array_slice($asset, -4);
+        $chart_assets = array_slice($assets, -4);
 
         foreach($chart_assets as $key => $finicial) {
             if($key <= 3){
