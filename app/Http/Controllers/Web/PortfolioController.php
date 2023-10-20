@@ -148,7 +148,10 @@ class PortfolioController extends Controller
             $asset_types = GapAssetType::where('acqusition', $braid)->get();
             $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
                                     ->orderBy('period', 'ASC')->get();
-            $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$asset_finicial);
+            $chart_assets = PortfoloAssetRecord::where('user_id', $user->id)
+                                ->where('portfolio_asset_id', $asset->id)
+                                ->orderBy('period', 'ASC')->take(4)->get();
+            $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user,$asset,$chart_assets);
 
             return view('user.portfolio.braid_info', compact('page_title','goback','currency', 'braid',
                      'backgrounds','currencies','asset', 'archive',  'asset_finicial_detail', 'asset_types'));
@@ -172,7 +175,11 @@ class PortfolioController extends Controller
             $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
                                 ->where('portfolio_asset_id', $asset->id)
                                 ->orderBy('period', 'ASC')->get();
-            $asset_finicial_record = PortfolioHelper::assetFinancialChart($asset_finicial);
+            $chart_assets = PortfoloAssetRecord::where('user_id', $user->id)
+                            ->where('portfolio_asset_id', $asset->id)
+                            ->orderBy('period', 'ASC')->take(4)->get();
+
+            $asset_finicial_record = PortfolioHelper::assetFinancialChart($chart_assets);
 
             $backgrounds = PortfolioHelper::accountBackground();
 
