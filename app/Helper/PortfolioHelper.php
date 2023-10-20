@@ -263,7 +263,9 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
-        foreach($assets as $key => $finicial) {
+        $chart_assets = array_slice($asset, -4);
+
+        foreach($chart_assets as $key => $finicial) {
             if($key <= 3){
                 array_push($expenditure_labels, date('M', strtotime($finicial->period) ). ' '. date('Y', strtotime($finicial->period)) );
                 array_push($management, $finicial->management);
