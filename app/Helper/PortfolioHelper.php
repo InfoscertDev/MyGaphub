@@ -234,7 +234,7 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
-        $chart_assets = array_slice($financials, -4);
+        $chart_assets = array_slice($financials->toArray(), -4);
 
         foreach($chart_assets as $key => $finicial) {
             if($key <= 3){
@@ -266,7 +266,7 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
-        $chart_assets = array_slice($assets, -4);
+        $chart_assets = array_slice($assets->toArray(), -4);
 
         foreach($chart_assets as $key => $finicial) {
             if($key <= 3){
