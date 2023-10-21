@@ -108,7 +108,7 @@ class FaqController extends Controller
      */
     public function destroy($id)
     {
-        $gap =  GaphubFAQ::delete($id);
+        $gap =  GaphubFAQ::find($id)->delete();
 
         return redirect()->back()->with('success', "FAQ's has been deleted succesfully");
     }

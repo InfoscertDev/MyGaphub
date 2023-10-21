@@ -56,7 +56,7 @@
 
 
                         <button class="btn btn-sm bg-none px-2" onclick='deleteFAQ("{{$asset->id}}")' >
-                          <i class="fa fa-trash"></i>
+                          <i class="fa fa-trash" style="font-size:16px" ></i>
                         </button>
                       </td>
                       <td>
@@ -80,6 +80,36 @@
           </div>
       </div>
   </div>
+  <!--  -->
+    <div class="modal fade" id="confirmDeleteFAQ" tabindex="-1" role="dialog" aria-labelledby="confirmKpi" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Confirm Delete </h5>
+                    <button type="button" class="close" onclick="$('#confirmDeleteFAQ').modal('hide');"  aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Are you sure you want to delete this FAQ?</h5>
+                </div>
+
+                <form id="delete_faq" action="{{ route('seed.delete.record_spent', 3) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="modal-footer justify-content-center">
+                        <div class="text-left">
+                            <button type="submit" id="confirmAccountRemove"  class="btn btn-pry px-3 mr-3">Yes</button>
+                        </div>
+                        <div class="text-right">
+                            <button type="button" onclick="$('#confirmDeleteFAQ').modal('hide');" class="btn btn-default px-3 mr-3">No</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
   <script>
     function editFAQ(id){
@@ -90,16 +120,23 @@
             success: function(data, status){
             var asset = data.faq;
             // console.log(asset.description);
-            if(asset){
-                $('#editTypeModal').modal('show');
-                $('#title').val(asset.title);
-                $('#description').val(asset.description);
-                $('#status').prop('checked', asset.status);
-                $('#update_faq').attr('action',  href);
-            }
+                if(asset){
+                    $('#editTypeModal').modal('show');
+                    $('#title').val(asset.title);
+                    $('#description').val(asset.description);
+                    $('#status').prop('checked', asset.status);
+                    $('#update_faq').attr('action',  href);
+                }
             }
         });
     }
+
+    function deleteFAQ(id){
+        $('#confirmDeleteFAQ').modal('show');
+        var href = window.location.href+'/'+id;
+        $('#delete_faq').attr('action',  href);
+    }
+
   </script>
 
   <div class="modal fade" id="faqSupportModal" tabindex="-1" role="dialog" aria-labelledby="faqSupportModalLabel" aria-hidden="true">

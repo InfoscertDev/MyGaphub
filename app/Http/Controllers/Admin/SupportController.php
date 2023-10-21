@@ -35,7 +35,15 @@ class SupportController extends Controller
 
     public function quickstart()
     {
+
         $guides = GaphubGuide::latest()->paginate(10);
+        $pattern = '/youtu\.be\/([a-zA-Z0-9_-]{11})/';
+
+
+        foreach($guides as $guide){
+            $stable = preg_match($pattern, $guide->video_link, $matches);
+            $guide->video_id = $matches[1] ?? '';
+        }
 
         return view('admin.support.guide', compact('guides'));
     }
@@ -75,5 +83,9 @@ class SupportController extends Controller
         return redirect()->back()->with('success', "Quickguide support has been updated succesfully");
     }
 
+    public function deleteQuickstart($id){
+        $guide = GaphubGuide::find($id)->delete();
+        return redirect()->back()->with('success', "Quickstart guide has been deleted succesfully");
+    }
 
 }

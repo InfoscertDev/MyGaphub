@@ -216,6 +216,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::get('/support/quickstart/{id}',  'Admin\SupportController@showGuide')->name('gap.view.guide');
         Route::post('/support/quickstart',  'Admin\SupportController@storeQuickstart')->name('gap.store.guide');
         Route::put('/support/quickstart/{id}',  'Admin\SupportController@updateQuickstart')->name('gap.update.guide');
+        Route::delete('/support/quickstart/{id}',  'Admin\SupportController@deleteQuickstart')->name('gap.delete.guide');
 
         // Route::get('/support/faqs',  'Admin\FaqController@index')->name('gap.faq.index');
         Route::resource('/support/faqs','Admin\FaqController');
