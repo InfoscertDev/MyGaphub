@@ -16,7 +16,7 @@ class NonPortfolioRecord extends Model
     {
         parent::__construct($attributes);
 
-        $this->table = (env('APP_ENV') == 'production') ? 'non_portfolio_records' : 'non_portfolio_income';
+        $this->table = (env('APP_ENV') == 'local') ?  'non_portfolio_income' : 'non_portfolio_records';
     }
 
     protected $appends = [
