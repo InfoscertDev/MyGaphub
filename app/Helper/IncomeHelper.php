@@ -320,6 +320,7 @@ class IncomeHelper{
         $values = [];
         $tithe_values = [];
         $taxes_values = [];
+        $other_values = [];
         $net_values = [];
 
         foreach($non_portfolio as $key => $asset){
@@ -328,10 +329,11 @@ class IncomeHelper{
             array_push($values,  $asset->amount);
             array_push($tithe_values,  $asset->tithe);
             array_push($taxes_values,  $asset->taxes);
-            array_push($net_values, ( $asset->amount -  array_sum([$asset->tithe, $asset->taxes])));
+            array_push($other_values,  $asset->others);
+            array_push($net_values, ( $asset->amount -  array_sum([$asset->tithe, $asset->taxes,  $asset->others])));
         }
 
-        return compact('labels', 'label_asset','values', 'tithe_values', 'taxes_values','net_values');
+        return compact('labels', 'label_asset','values', 'tithe_values', 'taxes_values','net_values', 'other_values');
     }
 
     /**
@@ -370,6 +372,7 @@ class IncomeHelper{
 
 
         foreach($asset_records as $record){
+
             $record->isCurrent =  in_array($record->period, $periods) ? true : false;
             $record->period = Carbon::parse($record->period)->format('F Y');
         }
@@ -388,6 +391,7 @@ class IncomeHelper{
 
         $periods = [$last_period];
         foreach($asset_records as $record){
+            $record->net_income =   $record->amount -  array_sum([$record->tithe, $record->taxes, $record->others]);
             $record->isCurrent =  in_array($record->period, $periods) ? true : false;
             $record->period = Carbon::parse($record->period)->format('F Y');
         }

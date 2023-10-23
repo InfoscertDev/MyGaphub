@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/acquisition/investment/reap/{sasset}', 'API\v2\AcquisitionApi@reserveReapInvestment');
         Route::post('/acquisition/investment/ganp/{sasset}', 'API\v2\AcquisitionApi@reserveGanpInvestment');
         // Profiles
+        Route::get('/support', 'API\v2\ToolAPI@support');
         Route::get('/profile', 'API\v2\ToolAPI@profile');
         Route::post('/tools/preference/exchange', 'API\v2\ToolAPI@updateExchange');
         Route::post('/default/picture', 'API\v2\ToolAPI@defaultpicture');

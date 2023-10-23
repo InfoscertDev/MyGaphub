@@ -102,7 +102,7 @@
                         div.innerHTML = `
                             <div class="col">  <span class="pl-3">${item.period}</span></div>
                             <div class="col">
-                                <span class="pl-3">${currency}${item.amount.toFixed(2)}</span>
+                                <span class="pl-3">${currency}${item.net_income.toFixed(2)}</span>
                             </div>
                             <div class="col-5">
                                 <div class="d-flex">
@@ -125,7 +125,7 @@
                         div.innerHTML = `
                             <div class="col">  <span class="pl-3">${item.period}</span></div>
                             <div class="col">
-                                <span class="pl-3">${currency}${item.amount.toFixed(2)}</span>
+                                <span class="pl-3">${currency}${item.net_income.toFixed(2)}</span>
                             </div>
                             <div class="col-5">
                                 <span class="pl-3">${currency}${item.seed_budget.toFixed(2)}</span>

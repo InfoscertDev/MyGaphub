@@ -24,6 +24,7 @@ use App\Mail\UserFeedback as MailUserFeedback;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Notification;
 
+
 class ToolAPI extends Controller
 {
     public function dashboard(Request $request){
@@ -251,5 +252,20 @@ class ToolAPI extends Controller
 
     }
 
+    public function support()
+    {
+        $user = $request->user();
+
+        $feedbacks = UserFeedback::latest()->paginate(6);
+
+
+        $data = compact('feedbacks');
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => 'Support'
+        ]);
+    }
 
 }

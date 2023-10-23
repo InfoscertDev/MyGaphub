@@ -10,6 +10,7 @@
         let tithe = <?php echo json_encode($chart['tithe_values']) ?>;
         let taxes = <?php echo json_encode($chart['taxes_values']) ?>;
         let net = <?php echo json_encode($chart['net_values']) ?>;
+        let others = <?php echo json_encode($chart['other_values']) ?>;
 
         if(nonPortfolioRecord){
             nonPortfolioRecord.getContext('2d');
@@ -20,8 +21,8 @@
                     datasets: [{
                             label: 'Gross Income',
                             data: income,
-                            backgroundColor: "#8C8D86",
-                            borderColor: "#8C8D86",
+                            backgroundColor: "#7D6608",
+                            borderColor: "#7D6608",
                             datalabels: {
                                 color: '#fff',
                                 position: 'top',// anchor: 'end',
@@ -45,6 +46,15 @@
                                 position: 'top',// anchor: 'end',
                             }
                         },{
+                            label: 'Others',
+                            data: others,
+                            backgroundColor: '#DAF7A6',
+                            borderColor: '#DAF7A6',
+                            datalabels: {
+                                color: '#fff',
+                                position: 'top',// anchor: 'end',
+                            }
+                        },{
                             label: 'Net Income',
                             data: net,
                             backgroundColor: '#9796785',
@@ -59,8 +69,7 @@
                 options: {
                     legend: {
                         display: true,
-                        position: 'bottom',
-                        onClick: (e) => e.stopPropagation()
+                        position: 'bottom'
                     },
                     scales: {
                         yAxes:[{
@@ -115,7 +124,7 @@
                             <span class="gap-card-title accord-title">
                                 {{ date('M Y', strtotime($portfolio->period))  }}
                                 <span class="ml-5 text-center">
-                                    {{ $currency }}{{ number_format( $portfolio->amount -  array_sum([$portfolio->tithe, $portfolio->taxes]), 2) }}
+                                    {{ $currency }}{{ number_format( $portfolio->net_income, 2) }}
                                 </span>
                             </span>
                             <button class="btn btn-accord" type="button" data-toggle="collapse" data-target="#collapse{{$portfolio->id}}" aria-expanded="true" aria-controls="collapse{{$portfolio->id}}">
@@ -142,6 +151,12 @@
                                 <span class="col"> Taxes Paid</span>
                                 <span class="col">
                                     {{ $currency }}{{ number_format($portfolio->taxes, 2) }}
+                                </span>
+                            </div>
+                            <div class="d-flex my-2">
+                                <span class="col"> Others</span>
+                                <span class="col">
+                                    {{ $currency }}{{ number_format($portfolio->others, 2) }}
                                 </span>
                             </div>
 

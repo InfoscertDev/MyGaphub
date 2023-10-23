@@ -28,9 +28,7 @@
                 <div id="view_budget_amount"   onclick="toggleBudgetMode()">
                     <span class="px-2 h3">{{$currency}}<span id="budget_amount">{{ number_format($current_seed->budget_amount, 2) }}</span>  </span>
                     <span class="account_info info"  data-toggle="tooltip" data-placement="right" title="Click to edit"><i class="fa fa-info mx-2 "></i></span>
-
                     <img class="img img-responsive" id="warning-icon" style="display: none; position: relative; top: -10px; width: 25px;" src="{{ asset('/assets/icon/warning.svg')}}" alt="">
-
                 </div>
                 <div id="edit_budget_amount" style="display: none;">
                     <form action="{{ route('seed.store.set_budget')  }}" method="post" id="budgetForm">

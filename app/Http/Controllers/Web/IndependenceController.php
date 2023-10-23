@@ -429,6 +429,10 @@ class IndependenceController extends Controller
                     ->orderBy('period', 'DESC')
                     ->limit(6)->get();
 
+       foreach($non_portfolios as $portfolio) {
+            $portfolio->net_income =   $portfolio->amount -  array_sum([$portfolio->tithe, $portfolio->taxes, $portfolio->others]);
+       }
+
         $chart =  $income_helper->nonPortfolioRecordChart($non_portfolios);
 
 
