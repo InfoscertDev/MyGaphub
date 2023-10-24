@@ -258,6 +258,9 @@ class ToolAPI extends Controller
 
         $feedbacks = UserFeedback::latest()->paginate(6);
 
+        foreach($feedbacks as $feedback){
+            $feedback->user;
+        }
 
         $data = compact('feedbacks');
 
