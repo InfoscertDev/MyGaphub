@@ -252,7 +252,7 @@ class ToolAPI extends Controller
 
     }
 
-    public function support()
+    public function support(Request $request){
     {
         $user = $request->user();
 
