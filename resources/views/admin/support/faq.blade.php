@@ -125,7 +125,7 @@
 
   <script>
     function editFAQ(id){
-        var href = window.location.href+'/'+id;
+        var href = window.location.pathname+'/'+id;
         $.ajax({
             type: 'GET',
             url: href,
@@ -145,7 +145,7 @@
 
     function deleteFAQ(id){
         $('#confirmDeleteFAQ').modal('show');
-        var href = window.location.href+'/'+id;
+        var href = window.location.pathname+'/'+id;
         $('#delete_faq').attr('action',  href);
     }
 

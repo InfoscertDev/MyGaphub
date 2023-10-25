@@ -10,9 +10,9 @@ use App\AdminConfiguration as Configration;
 class IntegrationParties{
 
     private static $fixer_key = "fc3db8b71bc7539e66f35dc137bff97d";
-    private static $sendinblue_key = "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";
+    private static $sendinblue_key = "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";
     private $sender = 'MyGaphub';
-
+    #key = "";
     public static function import_details_to_crm(){
         $data1 = 'NAME;SURNAME;EMAIL\n"Kabiru";"Wahab";"versatilekaywize94@gmail.com"\n"Samuel";"Johnson";"dev.kabiruwahab@gmail.com';
         $data = '\EMAIL;SURNAME;FIRSTNAME\\n#versatilekaywize94@gmail.com;Kabiru;Wahab';
@@ -89,7 +89,7 @@ class IntegrationParties{
         CURLOPT_TIMEOUT => 30,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[25],\"updateEnabled\":false,\"email\":\"$user->email\"}",
+        CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[26],\"updateEnabled\":false,\"email\":\"$user->email\"}",
         CURLOPT_HTTPHEADER => [
           "Accept: application/json",
           "Content-Type: application/json",
