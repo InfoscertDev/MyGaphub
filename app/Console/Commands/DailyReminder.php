@@ -65,9 +65,9 @@ class DailyReminder extends Command
         // $last_week = date("Y-m-d",strtotime("-7 days", strtotime(date('Y-m-d')) ) );
         // Mail::to('dev.kabiruwahab@gmail.com')->send(new SevegValidate($unvalidated_users[0]));
         $validated_users = User::whereNotNull('email_verified_at')->get();
-        info(['Prperaing to send to  mail to unvalidated users', count($validated_users)]);
+        info([' Prperaing to send to  mail to unvalidated users ', count($validated_users)]);
         foreach($validated_users as $user){
-            $date = strtotime($user->created_at);
+            $date = strtotime($user->email_verified_at);
             $current_charge = date('l', $date);
             $isToday = date('l') == $current_charge;
             if($isToday){

@@ -154,7 +154,7 @@ class RegisterController extends Controller
         RegisterController::createCalculator($user->id);
         RegisterController::createQuestion($user->id);
         GapAccount::initUserChartity($user);
-        IntegrationParties::join_sendinblue_leads($user);
+        // IntegrationParties::join_sendinblue_leads($user);
 
         $profile = new Profile();
         $profile->save();

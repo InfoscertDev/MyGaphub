@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use App\Helper\IntegrationParties;
 
 class VerificationController extends Controller
 {
@@ -74,6 +75,7 @@ class VerificationController extends Controller
                 event(new Verified($user));
             }
 
+            IntegrationParties::join_sendinblue_leads($user);
             auth()->login($user);
 
             return redirect($this->redirectPath())->with('verified', true);
