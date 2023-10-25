@@ -14,10 +14,24 @@ class FaqController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $faqs = GaphubFAQ::latest()->paginate(20);
+        // $faqs = GaphubFAQ::latest()->paginate(20);
+        $query = GaphubFAQ::query();
 
+        // Search
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'LIKE', "%$search%")
+                    ->orWhere('description', 'LIKE', "%$search%");
+        }
+
+        // Sort
+        $sortColumn = $request->input('sortColumn', 'id');
+        $sortDirection = $request->input('sortDirection', 'asc');
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $faqs = $query->paginate(10);
         return view('admin.support.faq', compact('faqs'));
     }
 

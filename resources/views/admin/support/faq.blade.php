@@ -14,18 +14,30 @@
         <br>
       <div class="card">
           <div class="card-header d-flex">
-              <h4 class="col-9">Gaphub FAQ's</h4>
+              <h4 class="col-8">Gaphub FAQ's</h4>
 
-              <div class="col-5">
+              <div class="col-4">
+                <div class="input-group col-12">
+                    <input id="searchInput" placeholder="Search..." value="{{ request('search') }}"  class="form-control py-2 border-right-0 border" type="search" >
+                    <span class="input-group-append">
+                        <a id="searchButton" href="{{ route('faqs.index') }}" onclick="searchFAQ()" class="btn btn-outline-secondary border-left-0 border" type="button">
+                                <i class="fa fa-search"></i>
+                        </a>
+                    </span>
                 </div>
+            </div>
           </div>
           <div class="card-body">
             @if (count($faqs))
               <table class="table table-striped">
                 <thead class="thead-light">
                   <tr>
-                    <th></th>
-                    <th scope="col">Title</th>
+                    <th><a class="card-link text-underline text-dark" href="{{ route('faqs.index', ['sortColumn' => 'id', 'sortDirection' => 'asc']) }}">
+                        S/N
+                    </a></th>
+                    <th scope="col">
+                         <a class="card-link text-underline text-dark" href="{{ route('faqs.index', ['sortColumn' => 'title', 'sortDirection' => 'asc']) }}">Title</a>
+                    </th>
                     <th scope="col">Description</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
@@ -135,6 +147,15 @@
         $('#confirmDeleteFAQ').modal('show');
         var href = window.location.href+'/'+id;
         $('#delete_faq').attr('action',  href);
+    }
+
+    function searchFAQ(){
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value;
+        const searchButton = document.getElementById('searchButton');
+
+        // Update the link's href with the search term
+        searchButton.href = "{{ route('faqs.index') }}?search=" + encodeURIComponent(searchTerm);
     }
 
   </script>
