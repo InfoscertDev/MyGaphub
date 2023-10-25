@@ -8,6 +8,8 @@ use App\Models\GaphubGuide;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Rules\YoutubeUrl;
+
 class SupportController extends Controller
 {
     public function feedbacks()
@@ -52,7 +54,7 @@ class SupportController extends Controller
 
         $this->validate($request, [
             'title' => 'required',
-            'video_link' => 'required'
+            'video_link' => ['required', new YoutubeUrl]
         ]);
 
         $guide =  GaphubGuide::create($request->all());
@@ -73,7 +75,7 @@ class SupportController extends Controller
 
         $this->validate($request, [
             'title' => 'required',
-            'video_link' => 'nullable|max:1024'
+            'video_link' => ['required', new YoutubeUrl]
         ]);
 
         // $request['status'] = ($request->status == "on") ? 1 : false;

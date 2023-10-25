@@ -14,9 +14,9 @@
              @foreach($gap_supports as $support)
                  <div class="col-md-6 col-sm-12">
                      <div class="mb-5 mx-2">
-                         <picture onclick="playSupport(`{{$support['id']}}`)">
-                             <source media="(max-width: 560px)" srcset="{{ 'https://i.ytimg.com/vi_webp/'. $support['id'] .'/mqdefault.webp' }}">
-                             <img src="{{'https://i.ytimg.com/vi_webp/'. $support['id'].'/mqdefault.webp' }}" alt=""
+                         <picture onclick="playSupport(`{{$support['video_id']}}`)">
+                             <source media="(max-width: 560px)" srcset="{{ 'https://i.ytimg.com/vi_webp/'. $support['video_id'] .'/mqdefault.webp' }}">
+                             <img src="{{'https://i.ytimg.com/vi_webp/'. $support['video_id'].'/mqdefault.webp' }}" alt=""
                                 style="position: relative;
                                     width: 90%; height: 90%;
                                     top: 0px; left: 0px; cursor:  pointer;

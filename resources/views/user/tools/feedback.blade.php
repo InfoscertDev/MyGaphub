@@ -47,20 +47,25 @@
         <div class="row">
             @foreach ($feedbacks as $feedback)
                 <div class="col-md-4">
-                    <div class="card bg-light elevation-3 my-2  pb-2" style="height: 320px;">
+                    <div class="card bg-light elevation-3 my-2  pb-2" style="height: 250px;">
                         <div class="card-body">
                             <h5 class="card-title text-center">
-                                <span class=" txt-primary bold">{{$feedback->user->surname}} {{$feedback->user->firstname}}</span>
-                                <br><small class="">{{$feedback->user->email}}</small>
+                                <span class=" txt-primary bold"> {{$feedback->subject}}</span>
+                                <br><small class="">{{$feedback->user->surname}} </small>
                             </h5>
-                            <p class="mb-1">
-                                <span class="bold mr-4">Subject:</span>
-                                <span class="h5">  {{$feedback->subject}}</span>
-                            </p>
-                            <p class="mb-1">
-                                <span class="bold">Message</span> <br>
-                                {{$feedback->message}}
-                            </p>
+
+                            <div class="mb-1">
+                                <h5 class="bold">Message</h5>
+                               <p  class="ml-3">  {{$feedback->message}}</p>
+                            </div>
+
+                            @if($feedback->extra)
+                                 <div class="mb-1">
+                                    <h5 class="bold">Response</h5>
+                                     <p  class="ml-3">  {{$feedback->extra}}</p>
+                                     <!-- <textarea name="" id="" cols="10" rows="3"></textarea> -->
+                                 </div>
+                            @endif
                         </div>
                     </div>
                 </div>

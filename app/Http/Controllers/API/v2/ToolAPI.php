@@ -23,6 +23,8 @@ use App\Models\UserFeedback;
 use App\Mail\UserFeedback as MailUserFeedback;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Notification;
+use App\Models\GaphubGuide;
+
 
 
 class ToolAPI extends Controller
@@ -257,12 +259,20 @@ class ToolAPI extends Controller
         $user = $request->user();
 
         $feedbacks = UserFeedback::latest()->paginate(6);
+        $gap_supports =  GaphubGuide::latest()->paginate(10);;
+        $pattern = '/youtu\.be\/([a-zA-Z0-9_-]{11})/';
 
         foreach($feedbacks as $feedback){
             $feedback->user;
         }
 
-        $data = compact('feedbacks');
+        foreach($gap_supports as $guide){
+            $stable = preg_match($pattern, $guide->video_link, $matches);
+            $guide->video_id = $matches[1] ?? '';
+        }
+
+
+        $data = compact('feedbacks', 'gap_supports');
 
         return response()->json([
             'status' => true,

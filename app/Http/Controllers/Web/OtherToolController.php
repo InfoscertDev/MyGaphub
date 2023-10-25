@@ -12,6 +12,8 @@ use App\Helper\GapExchangeHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\UserFeedback as MailUserFeedback;
 use App\Models\UserFeedback;
+use App\Models\GaphubGuide;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -69,21 +71,19 @@ class OtherToolController extends Controller
 
     public function support(){
         $page_title = "Gaphub Support";
-
         return view('user.support.index', compact("page_title"));
     }
 
     public function supportGuide(){
         $page_title = "Quick Start Guide";
 
-        $gap_supports = [
-            ['title' => 'How to Register on GAPhub', 'id' => 'F09LFhTcXTM', 'video' => 'https://youtu.be/F09LFhTcXTM'],
-            ['title' => 'How to validate 7G Assumptions', 'id' => 'UUhvK8xWl4g', 'video' => 'https://youtu.be/UUhvK8xWl4g'],
-            ['title' => 'How to reserve an asset', 'id' => 'SJF_r22JWLg', 'video' => 'https://youtu.be/SJF_r22JWLg'],
-            ['title' => 'How to onboard/add an existing asse', 'id' => 'VhynUYrpH9o', 'video' => 'https://youtu.be/VhynUYrpH9o'],
-            ['title' => 'How to set up your budget', 'id' => 'ZJ7TOsVYBRg', 'video' => 'https://youtu.be/ZJ7TOsVYBRg'],
-            ['title' => 'How to calculate financial independence', 'id' => 'fiXy1T8sbik', 'video' => 'https://youtu.be/fiXy1T8sbik']
-        ];
+        $gap_supports =  GaphubGuide::latest()->paginate(10);;
+        $pattern = '/youtu\.be\/([a-zA-Z0-9_-]{11})/';
+
+        foreach($gap_supports as $guide){
+            $stable = preg_match($pattern, $guide->video_link, $matches);
+            $guide->video_id = $matches[1] ?? '';
+        }
 
         $testimonials = [
             ["id"=>"1","author_name"=>"Craig Jones","author_details"=>"a:7:{s:15:\"author_position\";s:0:\"\";s:14:\"author_company\";s:0:\"\";s:18:\"author_company_url\";s:0:\"\";s:12:\"author_email\";s:0:\"\";s:18:\"author_rating_type\";i:5;s:17:\"author_image_path\";s:76:\"http:\/\/prismcheck.com\/releaseb\/wp-content\/uploads\/2016\/03\/testimonials-3.jpg\";s:18:\"author_description\";s:164:\"It was awesome to work with you guys: all my questions were answered immediately, and I was able to launch my site easily. Hope to continue doing business with you!\";}","date"=>"2020-09-29","testimonial_status"=>""],
@@ -93,6 +93,7 @@ class OtherToolController extends Controller
             ["id"=>"5","author_name"=>"Moriano Sami","author_details"=>"a:9:{s:17:\"author_image_path\";s:75:\"http:\/\/prismcheck.com\/releaseb\/wp-content\/uploads\/2020\/11\/New-Project-8.png\";s:15:\"author_position\";s:0:\"\";s:14:\"author_company\";s:10:\"Prismcheck\";s:18:\"author_company_url\";s:0:\"\";s:12:\"author_email\";s:0:\"\";s:18:\"author_rating_type\";i:0;s:27:\"author_featured_image_video\";s:5:\"image\";s:18:\"author_description\";s:165:\"GAPhub Investment Advisor theme contains everything for a successful financial and business website! Multiple options turn the design int a powerful tool for owners.\";s:18:\"author_social_link\";i:0;}","date"=>"2022-01-21","testimonial_status"=>"approved"],
             ["id"=>"6","author_name"=>"Smith Daniel","author_details"=>"a:10:{s:17:\"author_image_path\";s:71:\"http:\/\/prismcheck.com\/releaseb\/wp-content\/uploads\/2020\/11\/Debt_Free.png\";s:15:\"author_position\";s:0:\"\";s:14:\"author_company\";s:4:\"ZOya\";s:18:\"author_company_url\";s:0:\"\";s:12:\"author_email\";s:0:\"\";s:18:\"author_rating_type\";i:0;s:27:\"author_featured_image_video\";s:5:\"image\";s:18:\"author_description\";s:54:\"Thanks to your efficient help and support my business.\";s:18:\"author_social_link\";i:0;s:12:\"publish_date\";s:10:\"2022-01-21\";}","date"=>"2022-01-21","testimonial_status"=>"approved"]
         ];
+
         $group_testimonial = array_chunk($testimonials, 3);
 
         foreach($group_testimonial as $testimonial){
