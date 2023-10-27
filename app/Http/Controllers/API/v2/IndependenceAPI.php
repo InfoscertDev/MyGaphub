@@ -294,8 +294,9 @@ class IndependenceAPI extends Controller
                 $money->chart = $income_helper->nonPortfolioDetailChart($user,$money);
             }
         }
-        $fin = Fin::finicial($user);
 
+
+        $fin = Fin::finicial($user);
         $income_info = IncomeHelper::analyseIncome($user, $fin['portfolio']);
         $income_detail = GapAccount::calcIncomeAccount($user,$incomes);
         $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
@@ -315,6 +316,11 @@ class IndependenceAPI extends Controller
         $non_portfolios = NonPortfolioRecord::where('user_id', $user->id)
                     ->where('income_id', $income->id)
                     ->orderBy('period', 'DESC')->limit(6)->get();
+
+        foreach($non_portfolios as $portfolio) {
+            $portfolio->net_income =   $portfolio->amount -  array_sum([$portfolio->tithe, $portfolio->taxes, $portfolio->others]);
+        }
+
         $chart =  $income_helper->nonPortfolioRecordChart($non_portfolios);
 
         $data  = compact('income','non_portfolios', 'chart', 'backgrounds');
