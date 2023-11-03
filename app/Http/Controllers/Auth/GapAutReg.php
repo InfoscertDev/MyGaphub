@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Helper\GapAccountCalculator;
 use App\Helper\IntegrationParties;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -21,22 +21,22 @@ use App\UserAudit as Audit;
 // use \Validator;
 
 class GapAutReg extends Controller
-{ 
+{
     public function __construct()
     {
         // $this->middleware(['auth','verified'], ['except' => ['login', 'registeration']]);
-    } 
+    }
 
     use RegistersUsers;
- 
+
     /**
      * Gaphub Registeration
-     * 
+     *
      * @bodyParam firstname string required User Firstname
      * @bodyParam surname string required User surname.
      * @bodyParam email email required  User unique email. Example: john@yahoo.com
-     * @bodyParam password string required password_confirmation must be the same and more than 7 characters. 
-     * @bodyParam password_confirmation string required 
+     * @bodyParam password string required password_confirmation must be the same and more than 7 characters.
+     * @bodyParam password_confirmation string required
      * @response {
      *  "success": true,
      *    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYXBpLnBvc3RiaXJkLmNvbS5uZ1wvYXBpXC9sb2dpbiIs...",
@@ -46,8 +46,8 @@ class GapAutReg extends Controller
      *    "email": "olatech101@gmail.com"
      *    "mobile": null
      *   }
-     * } 
-     */  
+     * }
+     */
     public function registeration(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -67,28 +67,28 @@ class GapAutReg extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
-        
-         // Save 
+
+         // Save
         RegisterController::createCalculator($user->id);
         RegisterController::createQuestion($user->id);
         GapAccountCalculator::initUserChartity($user);
-        IntegrationParties::join_sendinblue_leads($user);
+        IntegrationParties::create_contact_to_sendinblue($user->email);
         // GapExchangeHelper::gapCurrencies($user);
-  
+
         $profile = new Profile();
         $profile->save();
         $user->profile_id  = $profile->id;
-        $user->save(); 
+        $user->save();
 
         $tiles = HelperClass::dashboardTiles();
-        $audit = new Audit();  
-        $audit->user_id = $user->id; 
+        $audit = new Audit();
+        $audit->user_id = $user->id;
         $audit->dashboard = json_encode($tiles);
         $audit->save();
 
         $user->sendEmailVerificationNotification();
 
-        $token = JWTAuth::fromUser($user); 
+        $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('user','token'),201);
     }
@@ -120,11 +120,11 @@ class GapAutReg extends Controller
 
     protected function respondWithToken($token)
     {
-        return response()->json([ 
+        return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60 * 60 * 24
-        ]); 
+        ]);
     }
 
     /**
@@ -139,16 +139,16 @@ class GapAutReg extends Controller
 
     /**
      * Logout
-     * 
+     *
      * Log user out and make token invalid
      * @response {
      *  "success": true,
      *  'message' : 'You have successfully logged out',
-     * } 
-     */ 
+     * }
+     */
     public function logout(Request $request) {
         $this->validate($request, ['token' => 'required']);
-         
+
         try {
             JWTAuth::invalidate($request->input('token'));
             return response()->json(['success' => true, 'message'=> "You have successfully logged out."]);
@@ -157,12 +157,12 @@ class GapAutReg extends Controller
             return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
         }
     }
- 
+
      /**
      * Refresh a token.
      *
      * @return \Illuminate\Http\JsonResponse
-     */  
+     */
     public function refresh()
     {
         return $this->respondWithToken($this->guard()->refresh());

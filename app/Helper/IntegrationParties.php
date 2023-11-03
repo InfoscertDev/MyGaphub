@@ -48,6 +48,7 @@ class IntegrationParties{
         }
     }
 
+    //  Load new Gaphuber too Suspect Contact List
     public static function create_contact_to_sendinblue($email){
         $curl = curl_init();
 
@@ -59,7 +60,7 @@ class IntegrationParties{
           CURLOPT_TIMEOUT => 30,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\".\"},\"listIds\":[26],\"updateEnabled\":false,\"email\":\"$email\"}",
+          CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\".\"},\"listIds\":[25],\"updateEnabled\":false,\"email\":\"$email\"}",
           CURLOPT_HTTPHEADER => [
             "Accept: application/json",
             "Content-Type: application/json",
@@ -78,34 +79,57 @@ class IntegrationParties{
         }
     }
 
+    // GSB 10  MOve Gaphuber to Lead contact after verification
     public static function join_sendinblue_leads($user){
-      $curl = curl_init();
+        $remove_curl = curl_init();
+        curl_setopt_array($remove_curl, [
+          CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "DELETE",
+          CURLOPT_HTTPHEADER => [
+            "Accept: application/json",
+            "api-key: ".IntegrationParties::$sendinblue_key
+          ],
+        ]);
 
-      curl_setopt_array($curl, [
-        CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[26],\"updateEnabled\":false,\"email\":\"$user->email\"}",
-        CURLOPT_HTTPHEADER => [
-          "Accept: application/json",
-          "Content-Type: application/json",
-          "api-key: ".IntegrationParties::$sendinblue_key
-        ],
-      ]);
+        $response = curl_exec($remove_curl);
 
-      $response = curl_exec($curl);
-      $err = curl_error($curl);
-      curl_close($curl);
+        $err = curl_error($remove_curl);
+        curl_close($remove_curl);
 
-      if ($err) {
-        return false;
-      } else {
-        return $response;
-      }
+        if (!$err) {
+          $curl = curl_init();
+          curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[26],\"updateEnabled\":false,\"email\":\"$user->email\"}",
+            CURLOPT_HTTPHEADER => [
+              "Accept: application/json",
+              "Content-Type: application/json",
+              "api-key: ".IntegrationParties::$sendinblue_key
+            ],
+          ]);
+
+          $lead = curl_exec($curl);
+          $lead_err = curl_error($curl);
+          curl_close($curl);
+
+          if ($lead_err) {
+            return false;
+          } else {
+            return $lead;
+          }
+        }
+
     }
 
     public static function join_sendinblue_contact($user, $contact){
@@ -130,7 +154,7 @@ class IntegrationParties{
       $response = curl_exec($curl);
       $err = curl_error($curl);
       curl_close($curl);
-      info([$err, $response, "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[$contact],\"updateEnabled\":false,\"email\":\"$user->email\"}"]);
+    //   info([$err, $response, "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[$contact],\"updateEnabled\":false,\"email\":\"$user->email\"}"]);
 
       if ($err) {
         return false;
@@ -151,7 +175,7 @@ class IntegrationParties{
         CURLOPT_CUSTOMREQUEST => "DELETE",
         CURLOPT_HTTPHEADER => [
           "Accept: application/json",
-          "api-key: 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"
+          "api-key: ".IntegrationParties::$sendinblue_key
         ],
       ]);
       $response = curl_exec($lead_curl);
@@ -162,8 +186,6 @@ class IntegrationParties{
       if ($err) {
         return false;
       } else {
-        // info($user->email);
-        // info('Deleted'.$response);
         $prospect_curl = curl_init();
 
         curl_setopt_array($prospect_curl, [

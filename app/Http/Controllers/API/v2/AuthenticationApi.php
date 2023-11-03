@@ -58,7 +58,6 @@ class AuthenticationApi extends Controller
         AuthHelper::createCalculator($user->id);
         AuthHelper::createQuestion($user->id);
         GapAccountCalculator::initUserChartity($user);
-        // IntegrationParties::join_sendinblue_leads($user);
         // GapExchangeHelper::gapCurrencies($user);
 
         $profile = new Profile();
