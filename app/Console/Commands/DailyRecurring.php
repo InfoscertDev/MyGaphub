@@ -65,17 +65,19 @@ class DailyRecurring extends Command
                          ->where('recuring', 1)->get()->toArray();
 
         foreach($allocations as $new_spent){
-            $payload = [
-                'user_id' => $new_spent->user_id,
-                'recuring' => $new_spent->recuring,
-                'allocation_id' => $new_spent->allocation_id,
-                'period' =>   $current_period,
-                'date' =>  date('Y-m-d'),
-                'label' => $new_spent->label,
-                'amount' => $new_spent->amount,
-            ];
-
-            RecordBudgetSpent::create($payload);
+            if($new_spent){
+                $payload = [
+                    'user_id' => $new_spent->user_id,
+                    'recuring' => $new_spent->recuring,
+                    'allocation_id' => $new_spent->allocation_id,
+                    'period' =>   $current_period,
+                    'date' =>  date('Y-m-d'),
+                    'label' => $new_spent->label,
+                    'amount' => $new_spent->amount,
+                ];
+    
+                RecordBudgetSpent::create($payload);
+            }
         }
     }
 }

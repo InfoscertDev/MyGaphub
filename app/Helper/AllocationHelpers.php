@@ -72,7 +72,8 @@ class AllocationHelpers{
         $discretionary_allocation = SeedBudgetAllocation::where('seed_category', 'discretionary')
                          ->where('user_id', $user->id)->where('period', $period)->get();
 
-        $record_spent = RecordBudgetSpent::where('user_id', $user->id)->where('period', $period)->pluck('amount');
+        $record_spent = RecordBudgetSpent::where('user_id', $user->id)
+                            ->where('period', $period)->pluck('amount');
 
         $total_spent = array_sum($record_spent->toArray());
 
