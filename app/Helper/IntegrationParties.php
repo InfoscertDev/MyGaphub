@@ -32,7 +32,7 @@ class IntegrationParties{
           CURLOPT_HTTPHEADER => [
             "Accept: application/json",
             "Content-Type: application/json",
-            "api-key: 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"
+            "api-key: ".IntegrationParties::$sendinblue_key
           ],
         ]);
 
@@ -64,7 +64,7 @@ class IntegrationParties{
           CURLOPT_HTTPHEADER => [
             "Accept: application/json",
             "Content-Type: application/json",
-            "api-key: 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"
+            "api-key: ".IntegrationParties::$sendinblue_key
           ],
         ]);
 
@@ -292,7 +292,7 @@ class IntegrationParties{
         CURLOPT_HTTPHEADER => [
           "Accept: application/json",
           "Content-Type: application/json",
-          "api-key: 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"
+          "api-key: ".IntegrationParties::$sendinblue_key
         ],
       ]);
 
