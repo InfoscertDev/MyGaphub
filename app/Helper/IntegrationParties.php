@@ -50,8 +50,8 @@ class IntegrationParties{
 
     //  Load new Gaphuber too Suspect Contact List
     public static function create_contact_to_sendinblue($email){
+        
         $curl = curl_init();
-
         curl_setopt_array($curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
           CURLOPT_RETURNTRANSFER => true,
@@ -71,6 +71,8 @@ class IntegrationParties{
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
+
+        info([  'Sendiblue REsponse', $email, $err, $response ]);
 
         if ($err) {
           return false;
