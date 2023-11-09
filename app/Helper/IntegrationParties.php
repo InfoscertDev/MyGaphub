@@ -50,7 +50,7 @@ class IntegrationParties{
 
     //  Load new Gaphuber too Suspect Contact List
     public static function create_contact_to_sendinblue($email){
-        
+
         $curl = curl_init();
         curl_setopt_array($curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
@@ -166,51 +166,98 @@ class IntegrationParties{
     }
 
     public static function migrate_sendinblue_to_prospect($user){
-      $lead_curl = curl_init();
-      curl_setopt_array($lead_curl, [
-        CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "DELETE",
-        CURLOPT_HTTPHEADER => [
-          "Accept: application/json",
-          "api-key: ".IntegrationParties::$sendinblue_key
-        ],
-      ]);
-      $response = curl_exec($lead_curl);
-      $err = curl_error($lead_curl);
-
-      curl_close($lead_curl);
-
-      if ($err) {
-        return false;
-      } else {
-        $prospect_curl = curl_init();
-
-        curl_setopt_array($prospect_curl, [
-          CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
+        $lead_curl = curl_init();
+        curl_setopt_array($lead_curl, [
+          CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[27],\"updateEnabled\":false,\"email\":\"$user->email\"}",
+          CURLOPT_CUSTOMREQUEST => "DELETE",
           CURLOPT_HTTPHEADER => [
             "Accept: application/json",
-            "Content-Type: application/json",
             "api-key: ".IntegrationParties::$sendinblue_key
           ],
         ]);
+        $response = curl_exec($lead_curl);
+        $err = curl_error($lead_curl);
 
-        $prospect = curl_exec($prospect_curl);
+        curl_close($lead_curl);
 
-        return $prospect;
-      }
+        if ($err) {
+          return false;
+        } else {
+          $prospect_curl = curl_init();
+
+          curl_setopt_array($prospect_curl, [
+            CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[27],\"updateEnabled\":false,\"email\":\"$user->email\"}",
+            CURLOPT_HTTPHEADER => [
+              "Accept: application/json",
+              "Content-Type: application/json",
+              "api-key: ".IntegrationParties::$sendinblue_key
+            ],
+          ]);
+
+          $prospect = curl_exec($prospect_curl);
+
+          return $prospect;
+        }
     }
+
+    public static function migrate_sendinblue_to_customer($user){
+        $lead_curl = curl_init();
+        curl_setopt_array($lead_curl, [
+          CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "DELETE",
+          CURLOPT_HTTPHEADER => [
+            "Accept: application/json",
+            "api-key: ".IntegrationParties::$sendinblue_key
+          ],
+        ]);
+        $response = curl_exec($lead_curl);
+        $err = curl_error($lead_curl);
+
+        curl_close($lead_curl);
+
+        if ($err) {
+          return false;
+        } else {
+          $prospect_curl = curl_init();
+
+          curl_setopt_array($prospect_curl, [
+            CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "{\"attributes\":{\"Firstname\":\"$user->firstname\"},\"listIds\":[28],\"updateEnabled\":false,\"email\":\"$user->email\"}",
+            CURLOPT_HTTPHEADER => [
+              "Accept: application/json",
+              "Content-Type: application/json",
+              "api-key: ".IntegrationParties::$sendinblue_key
+            ],
+          ]);
+
+          $prospect = curl_exec($prospect_curl);
+
+          return $prospect;
+        }
+      }
 
     public function update_currency_converter($base='EUR'){
         $url = "http://data.fixer.io/api/latest?base=$base&access_key=".IntegrationParties::$fixer_key;
