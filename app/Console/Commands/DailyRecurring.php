@@ -42,7 +42,7 @@ class DailyRecurring extends Command
      */
     public function handle()
     {
-        $this->recurringRecordSpend();
+        // $this->recurringRecordSpend();
     }
 
     public function recurringRecordSpend(){
@@ -75,7 +75,7 @@ class DailyRecurring extends Command
                     'label' => $new_spent->label,
                     'amount' => $new_spent->amount,
                 ];
-    
+
                 RecordBudgetSpent::create($payload);
             }
         }
