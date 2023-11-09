@@ -307,7 +307,7 @@ class SeedController extends Controller
 
 
         foreach($budget as $allocation){
-            $actual =  $record_spend = RecordBudgetSpent::where('user_id', $user->id)
+            $actual =  RecordBudgetSpent::where('user_id', $user->id)
                              ->where('allocation_id', $allocation->id)->sum('amount');
             $allocation->actual  = $actual;
             $allocations[] = $allocation;
@@ -460,8 +460,8 @@ class SeedController extends Controller
                             })->latest()->get();
 
                 foreach($allocations as $allocation){
-                    $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
-                    $allocation->actual =  array_sum(  array_column($record_spents->toArray(),'amount')  ) ;
+                    $spents = RecordBudgetSpent::whereAllocationId($allocation->id)->get();
+                    $allocation->actual =  array_sum(  array_column($spents->toArray(),'amount')  ) ;
                 }
             }
             return view('user.seed.history.period_history_report', compact('page_title', 'support', 'currency',
