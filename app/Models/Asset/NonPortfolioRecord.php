@@ -10,14 +10,14 @@ class NonPortfolioRecord extends Model
 {
     use HasFactory;
 
-    // protected $table;
+    protected $table;
 
-    // public function __construct(array $attributes = [])
-    // {
-    //     parent::__construct($attributes);
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
 
-    //     $this->table = (env('APP_ENV') == 'local') ?  'non_portfolio_income' : 'non_portfolio_records';
-    // }
+        $this->table = (env('APP_ENV') == 'local') ?  'non_portfolio_income' : 'non_portfolio_records';
+    }
 
     protected $appends = [
         'income_currency'

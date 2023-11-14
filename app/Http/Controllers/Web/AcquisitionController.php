@@ -145,27 +145,29 @@ class AcquisitionController extends Controller
         $sasset = $request->get('sasset');
         $set = $asset; $id = $asset;
 
-        try {     
+        try {
             if($prop || $sort){
                 // Track Property Listing
                 if($prop && $user){
                     $tracker = new GaphubTracker($user);
                     $tracker->reapPropertyTracker($prop);
                 }
-    
+
                 $status = Http::get($this::$link."/search?ct_property_type=$prop&ct_sort=$sort&page=$page&token=".$this::$token) ;
                 $reap  = json_decode($status);
                 $total = $reap->total;
-    
+
                 $assets = json_decode(json_encode($reap->result), false);
                 if(!$sort) $sort = 1;
                 $isAcquisiton = true;
                 return view('user.acquisition.opportunity.reap_gap_asset',
                                     compact('set',  'isAcquisiton',  'total', 'sasset', 'sort','prop' , 'assets'));
             }else{
+                // Listing page
                 if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
                          strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
-                     $isListAsset = true;
+                    $isListAsset = true;
+
                     return view('user.acquisition.opportunity.reap_asset', compact('isListAsset','sasset', 'asset', 'set'));
                 }else{
                     return   redirect('404');
@@ -197,7 +199,7 @@ class AcquisitionController extends Controller
             }else{
                 if(strtolower($asset) == 'business' || strtolower($asset) == 'risk' || strtolower($asset) == 'appreciating' ||
                             strtolower($asset) == 'intellectual' || strtolower($asset) == 'depreciating'){
-    
+
                     $status = Http::get($this::$ganp_link."/ganp/countries?token=".$this::$ganp_token) ;
                     $ganp  = json_decode($status);
                     $countries = $ganp->countries;

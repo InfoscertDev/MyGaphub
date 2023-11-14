@@ -59,8 +59,6 @@ class SevenGSnapshotController extends Controller
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
 
-        // info($calculator);
-
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
                     ,'step3'=>$credit->main,'step2'=> $beta->main, 'step1'=> $alpha->main ];
         $isValid = AnalyticsClass::isSevenGVal($user);

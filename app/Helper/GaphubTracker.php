@@ -12,18 +12,21 @@ class GaphubTracker{
         $this->user = $user;
         $tracker = GaphubSectionTracker::where('user_id', $user->id)->first();
         if(!$tracker) {
-            $tracker = new GaphubSectionTracker(); 
+            $tracker = new GaphubSectionTracker();
             $tracker->user_id = $user->id;
-            $tracker->save(); 
+            $tracker->save();
         }
         $this->tracker = $tracker;
     }
- 
-    public function reapPropertyTracker($listing){ 
+
+    public function reapPropertyTracker($listing){
         // info($listing);
         if(strtolower($listing) == "reap uk"){
             if ($this->tracker->reap_uk == 2) {
-                IntegrationParties::join_sendinblue_contact($this->user, 30);
+                // IntegrationParties::join_sendinblue_contact($this->user, 30);
+                IntegrationParties::join_sendinblue_contact($this->user, 33);
+                $this->tracker->reap_uk = $this->tracker->reap_uk + 1;
+                $this->tracker->save();
             }else if($this->tracker->reap_uk <= 3){
                 $this->tracker->reap_uk = $this->tracker->reap_uk + 1;
                 $this->tracker->save();
@@ -32,19 +35,26 @@ class GaphubTracker{
 
         if(strtolower($listing) == "reap us"){
             if ($this->tracker->reap_us == 3) {
-               IntegrationParties::join_sendinblue_contact($this->user, 31);
+               info([$this->tracker->reap_us]);
+            //    IntegrationParties::join_sendinblue_contact($this->user, 31);
+                IntegrationParties::join_sendinblue_contact($this->user, 33);
+                $this->tracker->reap_us = $this->tracker->reap_us + 1;
+                $this->tracker->save();
             }else if($this->tracker->reap_us <= 3){
                 $this->tracker->reap_us = $this->tracker->reap_us + 1;
                 $this->tracker->save();
             }
         }
-        
+
         if(strtolower($listing) == "reap nigeria"){
             if ($this->tracker->reap_nigeria == 2) {
-               IntegrationParties::join_sendinblue_contact($this->user, 32);
+            //    IntegrationParties::join_sendinblue_contact($this->user, 32);
+                IntegrationParties::join_sendinblue_contact($this->user, 33);
+                $this->tracker->reap_nigeria = $this->tracker->reap_nigeria + 1;
+                $this->tracker->save();
             }else if($this->tracker->reap_nigeria <= 3){
                 $this->tracker->reap_nigeria = $this->tracker->reap_nigeria + 1;
-                $this->tracker->save(); 
+                $this->tracker->save();
             }
         }
     }

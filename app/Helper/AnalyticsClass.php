@@ -11,32 +11,39 @@ use App\SevenG\GrandFin as Grand;
 use App\FinicialQuestion as Question;
 use App\Asset\SeedBudget as Budget;
 
-
 use App\Wheel\MortgageAccount as Mortgage;
 use App\Wheel\LiabilityAccount as Liability;
 use App\Helper\CalculatorClass as Fin;
 use App\Helper\GapAccountCalculator as GapAccount;
+
+use App\UserAudit;
+use App\Helper\IntegrationParties;
 use App\Helper\HelperClass as Helper;
 use App\Helper\AllocationHelpers;
-use App\UserAudit;
 use App\Models\Asset\SeedBudgetAllocation;
 
 class AnalyticsClass {
 
     public static function isSevenGVal($user){
-        $alpha = Alpha::where('user_id', $user->id)->first();
-        $beta = Beta::where('user_id', $user->id)->first();
-        $credit = Credit::where('user_id', $user->id)->first();
-        $dept = Dept::where('user_id', $user->id)->first();
-        $education = Education::where('user_id', $user->id)->first();
-        $freedom = Freedom::where('user_id', $user->id)->first();
-        $grand = Grand::where('user_id', $user->id)->first();
+        $audit = UserAudit::where('user_id', $user->id)->first();
+        if(!$audit->seveng_active){
+            $alpha = Alpha::where('user_id', $user->id)->first();
+            $beta = Beta::where('user_id', $user->id)->first();
+            $credit = Credit::where('user_id', $user->id)->first();
+            $dept = Dept::where('user_id', $user->id)->first();
+            $education = Education::where('user_id', $user->id)->first();
+            $freedom = Freedom::where('user_id', $user->id)->first();
+            $grand = Grand::where('user_id', $user->id)->first();
 
-        if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main
-            || !$education->main || !$freedom->main  || !$grand->main){
-            return false;
-        }else{
-            return true;
+            if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main
+                || !$education->main || !$freedom->main  || !$grand->main){
+                return false;
+            }else{
+                IntegrationParties::migrate_sendinblue_to_active_prospect($user);
+                $audit->seveng_active = 1;
+                $audit->save();
+                return true;
+            }
         }
     }
 

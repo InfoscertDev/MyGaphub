@@ -139,6 +139,7 @@ class HomeController extends Controller
 
     public function questions(Request $request){
         $user = auth()->user();
+
         $this->validate($request, [
             'step1' => 'required',
             'step2' => 'required',
@@ -158,6 +159,7 @@ class HomeController extends Controller
         $question->step6 =  $request->step6;
         $question->step7 =  $request->step7;
         $question->save();
+
         IntegrationParties::migrate_sendinblue_to_prospect($user);
         return redirect('/home/7g');
     }
