@@ -35,7 +35,6 @@ class GaphubTracker{
 
         if(strtolower($listing) == "reap us"){
             if ($this->tracker->reap_us == 3) {
-               info([$this->tracker->reap_us]);
             //    IntegrationParties::join_sendinblue_contact($this->user, 31);
                 IntegrationParties::join_sendinblue_contact($this->user, 33);
                 $this->tracker->reap_us = $this->tracker->reap_us + 1;

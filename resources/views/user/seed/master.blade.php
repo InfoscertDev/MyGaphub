@@ -213,8 +213,8 @@
              @endif
              <br><br>
              <a class="btn btn-pry btn-history" href="{{ route('seed.history') }}">Historic SEED</a>
-             <br> <br>
-             <a class="btn btn-secondary btn-history" href="{{ route('seed.create', ['preview' =>'cleanup_data' ]) }}">Clean Up</a>
+             <!-- <br> <br> -->
+             <!-- <a class="btn btn-secondary btn-history" href="{{ route('seed.create', ['preview' =>'cleanup_data' ]) }}">Clean Up</a> -->
          </div>
      </div>
  </div>
