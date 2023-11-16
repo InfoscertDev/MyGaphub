@@ -85,7 +85,7 @@ class SeedAPI extends Controller
         $monthly_seed = AllocationHelpers::monthlySeedDetail($user, $period);
 
         $allocations =  SeedBudgetAllocation::where('user_id', $user->id)
-                            ->whereNotNUll('seed_category')
+                            // ->whereNotNUll('seed_category')
                             ->whereBetween('period', [$period, $period_end])
                             ->get();
 
