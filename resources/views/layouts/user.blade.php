@@ -42,7 +42,7 @@
             (function() {
                 window.sib = {
                     equeue: [],
-                    client_key: "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";
+                    client_key: '{{env("BREVO_KEY")}}'
                 };
                 /* OPTIONAL: email for identify request*/
                 window.sib.email_id = "{{ auth()->user()->email }}";
