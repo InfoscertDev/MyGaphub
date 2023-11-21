@@ -52,7 +52,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'fixer_key' => env('FIXER_KEY', null),
+    'brevo_key' => env('BREVO_KEY', null),
 
     'asset_url' => env('ASSET_URL', null),
 
@@ -231,10 +232,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Input' => Illuminate\Support\Facades\Request::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class, 
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
- 
+
 ];
- 

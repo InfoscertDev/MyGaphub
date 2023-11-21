@@ -13,10 +13,10 @@ class IntegrationParties{
     private static $fixer_key;
     private static $sendinblue_key;
 
-    public static function initializeKeys()
+    public static  function initializeKeys()
     {
-        self::$fixer_key = env("FIXER_KEY");
-        self::$sendinblue_key = env("BREVO_KEY");
+        self::$fixer_key = config("app.fixer_key");
+        self::$sendinblue_key = config("app.brevo_key");
     }
 
 
@@ -79,8 +79,6 @@ class IntegrationParties{
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
-
-        info([  'Sendiblue REsponse', $email, $err, $response ]);
 
         if ($err) {
           return false;
@@ -184,7 +182,8 @@ class IntegrationParties{
             $contact = curl_exec($curl);
             $err = curl_error($curl);
             curl_close($curl);
-            info([$err, $contact]);
+
+            info([  IntegrationParties::$sendinblue_key,' Sendiblue REsponse', $err, $contact ]);
             return $contact;
         }
 
@@ -398,7 +397,7 @@ class IntegrationParties{
     }
 
     public function send_sendinblue_sms($user, $message){
-      IntegrationParties::initializeKeys();
+    //   IntegrationParties::initializeKeys();
       $curl = curl_init();
       $post_data = [
         'type' => 'transactional',

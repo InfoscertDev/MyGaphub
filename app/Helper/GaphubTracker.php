@@ -22,7 +22,7 @@ class GaphubTracker{
     public function reapPropertyTracker($listing){
         // info($listing);
         if(strtolower($listing) == "reap uk"){
-            if ($this->tracker->reap_uk == 2) {
+            if ($this->tracker->reap_uk >= 2) {
                 // IntegrationParties::join_sendinblue_contact($this->user, 30);
                 IntegrationParties::join_sendinblue_contact($this->user, 33);
                 $this->tracker->reap_uk = $this->tracker->reap_uk + 1;
