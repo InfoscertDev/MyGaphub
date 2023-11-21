@@ -9,11 +9,19 @@ use App\AdminConfiguration as Configration;
 
 class IntegrationParties{
 
-    private static $fixer_key = "fc3db8b71bc7539e66f35dc137bff97d";
-    private static $sendinblue_key = "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";
     private $sender = 'MyGaphub';
-    #key = "";
+    private static $fixer_key;
+    private static $sendinblue_key;
+
+    public static function initializeKeys()
+    {
+        self::$fixer_key = env("FIXER_KEY");
+        self::$sendinblue_key = env("BREVO_KEY");
+    }
+
+
     public static function import_details_to_crm(){
+        IntegrationParties::initializeKeys();
         $data1 = 'NAME;SURNAME;EMAIL\n"Kabiru";"Wahab";"versatilekaywize94@gmail.com"\n"Samuel";"Johnson";"dev.kabiruwahab@gmail.com';
         $data = '\EMAIL;SURNAME;FIRSTNAME\\n#versatilekaywize94@gmail.com;Kabiru;Wahab';
         // $data = '\EMAIL;SURNAME;FIRSTNAME\\\\n#versatilekaywize94@gmail.com;Kabiru;Wahab';
@@ -50,7 +58,7 @@ class IntegrationParties{
 
     //  Load new Gaphuber too Suspect Contact List
     public static function create_contact_to_sendinblue($email){
-
+        IntegrationParties::initializeKeys();
         $curl = curl_init();
         curl_setopt_array($curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts",
@@ -83,6 +91,7 @@ class IntegrationParties{
 
     // GSB 10  MOve Gaphuber to Lead contact after verification
     public static function join_sendinblue_leads($user){
+        IntegrationParties::initializeKeys();
         $remove_curl = curl_init();
         curl_setopt_array($remove_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
@@ -135,6 +144,7 @@ class IntegrationParties{
     }
 
     public static function join_sendinblue_contact($user, $contact){
+        IntegrationParties::initializeKeys();
         $contact_curl = curl_init();
         curl_setopt_array($contact_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
@@ -182,6 +192,7 @@ class IntegrationParties{
     }
 
     public static function migrate_sendinblue_to_prospect($user){
+        IntegrationParties::initializeKeys();
         $lead_curl = curl_init();
         curl_setopt_array($lead_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
@@ -223,11 +234,11 @@ class IntegrationParties{
           $prospect = curl_exec($prospect_curl);
           return $prospect;
         }
-
         return false;
     }
 
     public static function migrate_sendinblue_to_active_prospect($user){
+        IntegrationParties::initializeKeys();
         $lead_curl = curl_init();
         curl_setopt_array($lead_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
@@ -275,6 +286,7 @@ class IntegrationParties{
     }
 
     public static function migrate_sendinblue_to_reap_prospect($user){
+        IntegrationParties::initializeKeys();
         $prospect_curl = curl_init();
         curl_setopt_array($prospect_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
@@ -323,6 +335,7 @@ class IntegrationParties{
 
 
     public function update_currency_converter($base='EUR'){
+        IntegrationParties::initializeKeys();
         $url = "http://data.fixer.io/api/latest?base=$base&access_key=".IntegrationParties::$fixer_key;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -341,6 +354,7 @@ class IntegrationParties{
     }
 
     public  function user_currency_converter($user){
+        IntegrationParties::initializeKeys();
         $system_currencies = GapCurrency::where('user_id', $user->id)->first();
         if($system_currencies && ($system_currencies->last_update) == date('Y-m-d')){
             // var_dump("Good");
@@ -365,6 +379,7 @@ class IntegrationParties{
     }
 
     public  function load_currency_converter(){
+        IntegrationParties::initializeKeys();
         $system_currencies = GapCurrency::where('user_id', 0)->first();
         $converter = $this->update_currency_converter();
 
@@ -383,6 +398,7 @@ class IntegrationParties{
     }
 
     public function send_sendinblue_sms($user, $message){
+      IntegrationParties::initializeKeys();
       $curl = curl_init();
       $post_data = [
         'type' => 'transactional',

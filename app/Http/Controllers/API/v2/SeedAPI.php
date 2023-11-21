@@ -57,7 +57,7 @@ class SeedAPI extends Controller
 
       $data = compact('average_detail', 'current_detail', 'target_detail','current_seed',
          'target_seed', 'periods','historic_seed', 'backgrounds','total_assigned'
-         );
+      );
       return response()->json([
         'status' => true,
         'data' => $data,
