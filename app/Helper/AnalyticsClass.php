@@ -34,9 +34,15 @@ class AnalyticsClass {
             $education = Education::where('user_id', $user->id)->first();
             $freedom = Freedom::where('user_id', $user->id)->first();
             $grand = Grand::where('user_id', $user->id)->first();
-
-            if(!$alpha?->main  || !$beta?->main || !$credit?->main || !$dept?->main
-                || !$education?->main || !$freedom?->main  || !$grand?->main){
+            if (
+                !($alpha && $alpha->main) ||
+                !($beta && $beta->main) ||
+                !($credit && $credit->main) ||
+                !($dept && $dept->main) ||
+                !($education && $education->main) ||
+                !($freedom && $freedom->main) ||
+                !($grand && $grand->main)
+            ) {
                 return false;
             }else{
                 IntegrationParties::migrate_sendinblue_to_active_prospect($user);
