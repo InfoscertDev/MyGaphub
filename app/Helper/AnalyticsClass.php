@@ -26,7 +26,7 @@ class AnalyticsClass {
 
     public static function isSevenGVal($user){
         $audit = UserAudit::where('user_id', $user->id)->first();
-        if(!$audit->seveng_active){
+        if($audit && !$audit->seveng_active){
             $alpha = Alpha::where('user_id', $user->id)->first();
             $beta = Beta::where('user_id', $user->id)->first();
             $credit = Credit::where('user_id', $user->id)->first();
@@ -35,8 +35,8 @@ class AnalyticsClass {
             $freedom = Freedom::where('user_id', $user->id)->first();
             $grand = Grand::where('user_id', $user->id)->first();
 
-            if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main
-                || !$education->main || !$freedom->main  || !$grand->main){
+            if(!$alpha?->main  || !$beta?->main || !$credit?->main || !$dept?->main
+                || !$education?->main || !$freedom?->main  || !$grand?->main){
                 return false;
             }else{
                 IntegrationParties::migrate_sendinblue_to_active_prospect($user);
@@ -45,6 +45,8 @@ class AnalyticsClass {
                 return true;
             }
         }
+
+        return false;
     }
 
     public static function initBudgetValue($user, $credit, $debt,$freedom, $grand){

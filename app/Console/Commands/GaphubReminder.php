@@ -44,26 +44,26 @@ class GaphubReminder extends Command
     public function handle()
     {
         $today = date('Y-m-d');
-        // $from = date('Y-m-d', strtotime($to. '-20 days')); 
-        $reminders = Reminder::where('alerted', 0) 
+        // $from = date('Y-m-d', strtotime($to. '-20 days'));
+        $reminders = Reminder::where('alerted', 0)
                         ->whereDate('alert', '<=', $today)
                         ->whereDate('date', '>=', $today)
                         ->get();
-        
+
         // st
-        $subject = 'Today Reminder'; 
+        $subject = 'Today Reminder';
         foreach ($reminders as $index => $reminder) {
-            $reminder->user; 
-            if($reminder->user){ 
+            $reminder->user;
+            if($reminder->user){
                 // SMS Reminder
                 if($reminder->sms){
                     echo "SMS \n";
-                   $integrations = new IntegrationParties(); 
+                   $integrations = new IntegrationParties();
                    $profile = $reminder->user->profile;
                    if($profile->phone){
                        $message = "This is a reminder on your $reminder->name which is $reminder->amount bill";
                        $sms_reminder = $integrations->send_sendinblue_sms($profile, $message);
-                       info($sms_reminder); 
+                    //    info($sms_reminder);
                    }
                 }
                 // Push Notification Reminder
@@ -74,22 +74,22 @@ class GaphubReminder extends Command
                     $options = array(
                         'cluster' => env('PUSHER_APP_CLUSTER', 'eu'),
                         'encrypted' => true
-                    ); 
+                    );
                     $pusher = new Pusher(
                         env('PUSHER_APP_KEY', '68b4813f8472fce44d8f'),
                         env('PUSHER_APP_SECRET', 'b2e47a793c6eb9bd3401'),
-                        env('PUSHER_APP_ID', '1254739'), 
+                        env('PUSHER_APP_ID', '1254739'),
                         $options
                     );
-                    
+
                     $message = "This is a reminder on your $reminder->name which is $reminder->amount bill";
                     $data = compact('message');
                     $pusher->trigger('reminder-channel', 'App\Events\Reminder', $data);
-                    // 
+                    //
                     if($reminder->amount){
                         $notification = new Notification();
                         $notification->user_id = $reminder->user_id;
-                        $notification->action = '/home/reminder';   
+                        $notification->action = '/home/reminder';
                         $notification->title = "Payment Alert";
                         $notification->category = "payment";
                         $notification->message =  "Payment alert details";
@@ -97,19 +97,19 @@ class GaphubReminder extends Command
                     }else{
                         $notification = new Notification();
                         $notification->user_id = $reminder->user_id;
-                        $notification->action = '/home/reminder';  
+                        $notification->action = '/home/reminder';
                         $notification->title = "Reminder Alert";
-                        $notification->category = "reminder"; 
+                        $notification->category = "reminder";
                         $notification->message =  "Reminder alert details";
                         $notification->save();
-                    } 
+                    }
                 }
-                
+
             }
-        }  
+        }
         echo strval('Completed '. count($reminders));
-    } 
+    }
 
 
-    
+
 }

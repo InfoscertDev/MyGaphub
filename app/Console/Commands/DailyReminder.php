@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Helper\IntegrationParties;
 use App\Mail\SevegValidate;
 use App\User;
-use App\Models\Asset\RecordBudgetSpent;
 use Illuminate\Console\Command;
 use App\Helper\AnalyticsClass;
 use Illuminate\Support\Facades\Mail;
@@ -62,17 +61,17 @@ class DailyReminder extends Command
     }
 
     public function analyticsValidation(){
-        // $last_week = date("Y-m-d",strtotime("-7 days", strtotime(date('Y-m-d')) ) );
-        // Mail::to('dev.kabiruwahab@gmail.com')->send(new SevegValidate($unvalidated_users[0]));
         $validated_users = User::whereNotNull('email_verified_at')->get();
-        info([' Prperaing to send to  mail to unvalidated users ', count($validated_users)]);
+        // info([' Prperaing to send to  mail to unvalidated users ', count($validated_users)]);
         foreach($validated_users as $user){
-            $date = strtotime($user->email_verified_at);
+            $date = strtotime($user->created_at);
             $current_charge = date('l', $date);
             $isToday = date('l') == $current_charge;
+            // echo( $isToday . '    Date ' . $current_charge  . $user->created_at . "\r\n");
             if($isToday){
                 $isValid = AnalyticsClass::isSevenGVal($user);
                 if(!$isValid){
+                    echo('Sending Validation Email to '.$user->email ."\r\n");
                     Mail::to($user->email)->send(new SevegValidate($user));
                 }
             }
