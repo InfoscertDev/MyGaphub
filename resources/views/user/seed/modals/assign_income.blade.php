@@ -44,7 +44,7 @@
                         @endforeach
                     </ul>
                     <div class="text-center my-3">
-                        <button class="btn btn-pry px-2" id="wheel_btn" data-toggle="modal" data-target="#incomeModalAccount"> Add Account </button>
+                        <a  href="{{ route('360.income.list')  }}"   class="btn btn-pry px-2" > Add Account </a>
                     </div>
                 </div>
 

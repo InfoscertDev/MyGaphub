@@ -152,6 +152,7 @@
             @endif
         </div>
         <div class="col-md-3">
+
             @if($current_detail['table']['education'] == 0)
                 <div class="seed-pane seed-education tool-pane hand"  onclick="$('#educationAllocationModal').modal('show')">
                     <div class="tool-title">
@@ -163,7 +164,6 @@
                 </div>
             @else
                 <a class="seed-pane seed-education tool-pane hand"   href="{{ route('seed.summary', 'education') }}">
-    <div class="tool-title"> <h3 class="center">Education</h3></div> -
                     <div class="tool-title">
                         <div class="center">
                             <h3 class="bold">Education</h3>

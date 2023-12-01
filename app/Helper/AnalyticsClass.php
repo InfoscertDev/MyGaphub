@@ -25,6 +25,23 @@ use App\Models\Asset\SeedBudgetAllocation;
 class AnalyticsClass {
 
     public static function isSevenGVal($user){
+        $alpha = Alpha::where('user_id', $user->id)->first();
+        $beta = Beta::where('user_id', $user->id)->first();
+        $credit = Credit::where('user_id', $user->id)->first();
+        $dept = Dept::where('user_id', $user->id)->first();
+        $education = Education::where('user_id', $user->id)->first();
+        $freedom = Freedom::where('user_id', $user->id)->first();
+        $grand = Grand::where('user_id', $user->id)->first();
+
+        if(!$alpha->main  || !$beta->main || !$credit->main || !$dept->main
+            || !$education->main || !$freedom->main  || !$grand->main){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public static function isSevenGVal_New($user){
         $audit = UserAudit::where('user_id', $user->id)->first();
         if($audit && !$audit->seveng_active){
             $alpha = Alpha::where('user_id', $user->id)->first();

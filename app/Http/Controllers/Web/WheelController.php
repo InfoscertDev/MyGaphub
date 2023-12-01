@@ -44,7 +44,6 @@ class WheelController extends Controller
         $currency = explode(" ", $calculator->currency)[0];
         $audit = Audit::where('user_id', $user->id)->select('is_allocated')->first();
 
-
         $currencies = HelperClass::popularCurrenciens();
         $equity_info = GapExchangeHelper::availabeleMortgages($user);
         $fin = CalculatorClass::finicial($user);
