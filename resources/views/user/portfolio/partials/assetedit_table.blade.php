@@ -51,7 +51,7 @@
                         <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                         <input type="number" disabled step="0.01" min="0" value="{{$asset->asset_value}}" name="asset_value" id="asset_value"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                     </div>
-                    <small class="text-info">Update value in the edit record section!</small>
+                    <small class="text-danger">Update value in the edit record section!</small>
                 </td>
             </tr>
             <tr>
@@ -61,7 +61,7 @@
                         <label for="" class="price-currency mt-2">{{ $asset_currency }}</label>
                         <input type="number" disabled  step="0.01" min="0" value="{{$asset->monthly_roi}}" name="income" id="income"  class="input-money bs-none bg-light wd-7 sm-wdf form-control b-rad-10 mx-0">
                     </div>
-                    <small class="text-info">Update value in the edit record section!</small>
+                    <small class="text-danger">Update value in the edit record section!</small>
                 </td>
             </tr>
             <tr>

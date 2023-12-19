@@ -252,8 +252,8 @@ class PortfolioController extends Controller
 
         $this->validate($request, [
             'asset_name' => 'required|string',
-            'asset_value' => 'required|numeric',
-            'income' => 'numeric',
+            // 'asset_value' => 'required|numeric',ss
+            // 'income' => 'numeric',
             'portfolio_type' => 'required|integer',
             'automated_rate' => 'required'
         ]);
