@@ -404,18 +404,18 @@ class SeedAPI extends Controller
         $fin = CalculatorClass::finicial($user);
         $expenditure =  $fin['calculator'];
         // $expenditure_detail = GapAccount::calcExpenditure($user,$expenditure);
-        $values = array();
-        $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
+        // $values = array();
+        // $labels = array('accommodation', 'transportation', 'family', 'utilities', 'debt_repayment');
 
 
-        foreach($labels as $key => $label){
-            $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
-                                            ->where('expenditure',$label) ->sum('amount');
-            $labels[$key] = SeedAPI::filterExpenditure($label);
-            array_push($values, $amount);
-        }
+        // foreach($labels as $key => $label){
+        //     $amount =  SeedBudgetAllocation::where('period', $month)->where('user_id', $user->id)
+        //                                     ->where('expenditure',$label) ->sum('amount');
+        //     $labels[$key] = SeedAPI::filterExpenditure($label);
+        //     array_push($values, $amount);
+        // }
 
-        $expenditure_detail = compact('labels','values') ;
+        $expenditure_detail = AllocationHelpers::averageSeedExpenditure($user);
         $data = compact('expenditure','expenditure_detail');
 
         return response()->json([
@@ -466,7 +466,7 @@ class SeedAPI extends Controller
         }
 
         // $philantrophy_detail = GapAccount::calcPhilantrophy($user);
-        $philantrophy_detail = AllocationHelpers::averageSeedPhilantrophy($user);
+        $philantrophy_detail =  AllocationHelpers::averageSeedPhilantrophy($user);
         $data = compact( 'philantrophy', 'grand','philantrophy_detail');
 
         return response()->json([
