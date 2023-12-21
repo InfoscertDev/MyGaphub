@@ -158,8 +158,8 @@ class SeedAllocationAPI extends Controller
         $cp = date('m')+1;
         $next_period =  date('Y-'). $cp .'-01';
 
-        $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
-
+        $allocated = SeedBudgetAllocation::whereId($id)->first();
+        // ->whereIn('period', [$month, $next_period])
         if($allocated){
             $backgrounds = array_reverse(GapAccount::accountBackground());
             $spents = RecordBudgetSpent::whereAllocationId($id)->get();
