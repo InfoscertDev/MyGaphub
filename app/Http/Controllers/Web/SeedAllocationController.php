@@ -270,7 +270,8 @@ class SeedAllocationController extends Controller
 
       public function showRecordSpend(Request $request, $id){
         $user = $request->user();
-        $period =  date('Y-m').'-01'; $cp = date('m')-1;
+        $period =  date('Y-m').'-01';
+        $cp = date('m')-1;
         $last_period =  date('Y-'). $cp .'-01';
         $record = RecordBudgetSpent::whereId($id)->where('period', $period)->first();
         if($record){

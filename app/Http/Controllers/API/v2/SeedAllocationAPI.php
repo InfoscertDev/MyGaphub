@@ -157,6 +157,8 @@ class SeedAllocationAPI extends Controller
         $month =  date('Y-m').'-01';
         $cp = date('m')+1;
         $next_period =  date('Y-'). $cp .'-01';
+        $lp = date('m')-1;
+        $last_period =  date('Y-'). $lp .'-01';
 
         $allocated = SeedBudgetAllocation::whereId($id)->first();
         // ->whereIn('period', [$month, $next_period])
