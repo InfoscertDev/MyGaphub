@@ -1,7 +1,7 @@
-name: Deploy Gaphub Stagging
+name: Deploy Gaphub Production
 on:
   push:
-    branches: ["main"]
+    branches: ["gaphub_prod"]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,8 +17,8 @@ jobs:
 
           script: |
             cd /var/www
-            cd mygaphub.com/web/appstaging/core
+            cd mygaphub.com/web/app/core
             git fetch --all
-            git pull origin main
+            git pull origin gaphub_prod
             echo 'Updates successfully pulled from MAIN branch'
 
