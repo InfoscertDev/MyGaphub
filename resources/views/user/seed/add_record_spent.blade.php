@@ -178,7 +178,6 @@
                             $('#expenditure option:gt(0)').remove();
                             allocations = expenditure_labels
                         }
-                        // console.log(allocations, expenditure_labels)
 
                         if (allocations) {
                             // remove old options
