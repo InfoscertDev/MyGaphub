@@ -169,7 +169,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: `/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
+                    url: `/app/home/seed/list/allocate?category=${category.toLowerCase()}&expenditure=${expenditure.toLowerCase()}`,
                     success: function(data, status){
                         let listings = data.data;
                         allocations = listings.budget_allocation
