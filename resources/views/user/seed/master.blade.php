@@ -86,7 +86,7 @@
                  // console.log(id);
                  $.ajax({
                      type: 'GET',
-                     url: '/home/seed/record/'+id,
+                     url: '/app/home/seed/record/'+id,
                      success: function(data, status){
                          record = data.data;
                          $('.ico').text(record.label.charAt(0))

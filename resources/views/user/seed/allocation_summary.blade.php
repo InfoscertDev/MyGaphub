@@ -58,7 +58,7 @@
                             </div>
                         @endforeach
                     </div>
-                    <?php echo Request::url() ?>
+
                     @if($seed == 'savings')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#savingsAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
                     @if($seed == 'expenditure')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#expenditureAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
                     @if($seed == 'education')   <p class="my-3 ff-rob text-center" data-toggle="modal" data-target="#educationAllocationModal" onclick="$('#savingsSummaryModal').modal('hide')">Add more</p> @endif
@@ -91,7 +91,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/home/seed/allocate/'+id,
+                url: '/app/home/seed/allocate/'+id,
                 success: function(data, status){
                     seed = data.data;
                     if(seed){
@@ -175,7 +175,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/home/seed/record/'+id,
+                url: '/app/home/seed/record/'+id,
                 success: function(data, status){
                     record = data.data;
                     $('#deleteRecordForm').attr('action', record_url+'/'+record.id)
