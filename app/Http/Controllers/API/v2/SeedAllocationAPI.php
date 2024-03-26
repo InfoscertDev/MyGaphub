@@ -85,7 +85,7 @@ class SeedAllocationAPI extends Controller
         $cp = date('m')+1;
         $next_period =  date('Y-'). $cp .'-01';
 
-        $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
+        $allocation = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
 
         if($allocation){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
