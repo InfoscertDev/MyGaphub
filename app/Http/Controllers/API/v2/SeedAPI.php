@@ -47,6 +47,7 @@ class SeedAPI extends Controller
       $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
       $backgrounds = array_reverse(GapAccount::accountBackground());
 
+      $previous_budgets = Budget::where('user_id', $user->id)->count();
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);
       $target_detail = AllocationHelpers::getAllocatedSeedDetail($user, 'target');
       $average_detail = AllocationHelpers::averageSeedDetail($user)['average_seed'];
@@ -56,7 +57,7 @@ class SeedAPI extends Controller
       AllocationHelpers::monthlyRecurssionChecker($user);
 
       $data = compact('average_detail', 'current_detail', 'target_detail','current_seed',
-         'target_seed', 'periods','historic_seed', 'backgrounds','total_assigned'
+         'target_seed', 'periods','historic_seed', 'backgrounds','total_assigned', 'previous_budgets'
       );
       return response()->json([
         'status' => true,
