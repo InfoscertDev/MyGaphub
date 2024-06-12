@@ -15,7 +15,7 @@ use App\Helper\GapExchangeHelper as Exchange;
 use App\SevenG\BespokeKPI;
 use App\SevenG\AlphaFin as Alpha;
 use App\SevenG\BetaFin as Beta;
-use App\SevenG\EducationFin as Education; 
+use App\SevenG\EducationFin as Education;
 use App\Wheel\BespokeWheel;
 use App\Wheel\HomeEquity;
 use App\Wheel\MortgageAccount as Mortgage;
@@ -28,9 +28,9 @@ class WheelController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function tiles(Request $request){ 
+    public function tiles(Request $request){
         $user = $request->user();
-        $tiles = GapAccount::updatedTiles($user); 
+        $tiles = GapAccount::updatedTiles($user);
 
         return response()->json(compact('tiles'));
     }
@@ -47,7 +47,7 @@ class WheelController extends Controller
             $audit = new Audit();
             $audit->user_id = $user->id;
             $audit->save();
-        } 
+        }
         $isNet = Audit::where('user_id', $user->id)->select('net_confirm')->first();
         return response()->json(compact('currency','isNet', 'net_detail','net', 'backgrounds'));
     }
@@ -57,7 +57,7 @@ class WheelController extends Controller
         $isNet = Audit::where('user_id', $user->id)->first();
 
         $isNet->net_confirm = 1;
-        $isNet->save(); 
+        $isNet->save();
         $success = true;
         return response()->json(compact('success'));
     }
@@ -73,7 +73,7 @@ class WheelController extends Controller
             'target' => 'required|integer|min:0',
             'current' => 'required|integer|min:0',
             'target_date' => 'date|after:today'
-        ]); 
+        ]);
 
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
@@ -105,14 +105,14 @@ class WheelController extends Controller
     public function updateCash(Request $request, $id){
         $user = $request->user();
         $validator = Validator::make($request->all(),[
-            'details' => '',  
+            'details' => '',
             'target' => 'required', 'current' => 'required',
             'type' => 'required',  'target_date' => 'nullable|date'
         ]);
-        if($validator->fails()){ 
+        if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
         }
-        $cash = null; 
+        $cash = null;
         if($request->seveng){
             if($request->seveng == 'alpcaksnksnkndkkmkdnkandnsmjmn'){
                 $seveng = Alpha::where('user_id', $user->id)->first();
@@ -138,7 +138,7 @@ class WheelController extends Controller
             if($request->account = "tahbhzjbhvaghvxghavgysvxtysghzvxstyghxgyxvsgyzvxghsbvsyuh"){
                 $bespoke = BespokeKPI::where('user_id', $user->id)->where('id', $request->bespoke)->first();
                 $wheel = BespokeWheel::where('bespoke_id', $bespoke->id)->first();
-                if($bespoke){ 
+                if($bespoke){
                     $bespoke->kpi_details = $request->details;
                     $bespoke->target = $request->target;
                     $bespoke->current = $request->current;
@@ -151,7 +151,7 @@ class WheelController extends Controller
                     $wheel->save();
                 }
             }
-        }else{ 
+        }else{
             $cash = Cash::where('user_id', $user->id)->where('id', $id)->first();
             $cash->account_details = $request->details;
             $cash->automated = $request->automated_rate;
@@ -159,18 +159,18 @@ class WheelController extends Controller
             $cash->current = $request->current;
             $cash->target_date = $request->target_date;
             $cash->account_location = $request->account_location;
-            $cash->account_type = $request->type; 
+            $cash->account_type = $request->type;
             $cash->account_alias = $request->alias;
             $cash->isAnalytics = ($request->analytics == 'true') ? 1 : 0;
             $cash->save();
-        } 
-         
+        }
+
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
         }
- 
+
         $success = 'Cash Information updated successfully';
- 
+
         $mycash = Cash::where('user_id', $user->id)->latest()->get();
         $cash_items = Cash::where('user_id', $user->id)->count();
         $cash_detail = GapAccount::calcCashAccount($mycash, $user);
@@ -178,20 +178,20 @@ class WheelController extends Controller
 
         return response()->json(compact('success', 'cash'));
     }
-    
+
     public function cash(Request $request){
         $user = $request->user();
-        
+
         $header =  $request->get('header');
         $access =  $request->get('access');
         $account =  $request->get('account');
         $archive =  $request->get('archive');
         $kpi =  $request->get('kpi');
-        
+
         if($header){
            return ArchiveAccount::cashArchiveAction($user, $header, $access, $account, $kpi);
         }
-        
+
         $cash = Cash::where('user_id', $user->id)->latest()->get();
         $cash_items = Cash::where('user_id', $user->id)->count();
         $calculator = Calculator::where('user_id', $user->id)->first();
@@ -203,40 +203,40 @@ class WheelController extends Controller
         if($archive){
             $seveng = []; $bespokes = [];
             $bespokes = Exchange::wheelKPIAccount($user, $calculator->currency, $archive)['cash'];
-        }else{ 
+        }else{
             $alpha = Alpha::where('user_id', $user->id)->first();
             $beta = Beta::where('user_id', $user->id)->first();
             $education = Education::where('user_id', $user->id)->first();
             $alpha = Exchange::switchToCashAccount($alpha, 'Alpha', $calculator->currency);
             $beta = Exchange::switchToCashAccount($beta, 'Beta', $calculator->currency);
             $education = Exchange::switchToCashAccount($education, 'Education', $calculator->currency);
-            
+
             $seveng = [$alpha, $beta, $education];
             $bespokes = Exchange::wheelKPIAccount($user, $calculator->currency)['cash'];
         }
         $cash_detail = GapAccount::calcCashAccount($cash, $user, $archive);
         foreach($seveng as $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
+            $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::cashDetailChart($money);
-        }  
+        }
         foreach($cash as $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
+            $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::cashDetailChart($money);
-        } 
+        }
         foreach($bespokes as $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
+            $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::cashDetailChart($money);
-        }  
+        }
         return response()->json(compact('cash','bespokes','cash_detail','seveng'));
     }
 
-    
+
     public function equityInfo(Request $request){
         $user = $request->user();
         $equity_info = Exchange::availabeleMortgages($user);
         return response()->json($equity_info);
     }
-    
+
     public function storeEquity(Request $request){
         $user = $request->user();
         $validator = Validator::make($request->all(), [
@@ -247,8 +247,8 @@ class WheelController extends Controller
         ], [
             'ismortgage.integer' => 'Please choose a Mortgage'
         ]);
-  
-        if($request->ismortgage){ 
+
+        if($request->ismortgage){
             $validator = Validator::make($request->all(), [
                 'mortgage' => 'required|integer'
             ]);
@@ -261,13 +261,13 @@ class WheelController extends Controller
         $equity = new HomeEquity();
         $equity->user_id = $user->id;
         $equity->location = $request->location;
-        $equity->zip_code = $request->zip_code; 
+        $equity->zip_code = $request->zip_code;
         $equity->market_value = $request->market_value;
         $equity->ismortgage = $request->ismortgage;
         $equity->country = $request->country;
-        $equity->mortgage_id = $request->mortgage; 
-        $equity->save(); 
-        
+        $equity->mortgage_id = $request->mortgage;
+        $equity->save();
+
         if((int)$request->mortgage == -1 && $request->ismortgage){
             $debt = Debt::where('user_id', $user->id)->first();
             $debt->equity_id = $equity->id;
@@ -282,10 +282,18 @@ class WheelController extends Controller
 
         return response()->json(compact('success', 'equity'));
     }
-    
+
     public function equity(Request $request){
-        $user = $request->user(); 
+        $user = $request->user();
         $archive =  $request->get('archive');
+
+        $header =  $request->get('header');
+        $access =  $request->get('access');
+        $account =  $request->get('account');
+        $archive =  $request->get('archive');
+        if($header){
+           return ArchiveAccount::equityArchiveAction($user, $header, $access, $account);
+        }
 
         if($archive){
             $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 1)->latest()->get();
@@ -296,36 +304,36 @@ class WheelController extends Controller
         $equity_items = HomeEquity::where('user_id', $user->id)->count();
         $equity_detail = GapAccount::calcEquityAccount($equity);
         foreach ($equity as $eq) {
-            $eq->mortgage; 
+            $eq->mortgage;
             $eq->equity =  $eq->market_value -  ($eq->mortgage ? $eq->mortgage->current_balance : 0);
             $eq->ownership = round($eq->equity * 100 / (($eq->market_value  > 0) ? $eq->market_value : 1)) ;
-            $total = $eq->equity + $eq->market_value;  
+            $total = $eq->equity + $eq->market_value;
             $eq->per_mortgage = round((($eq->mortgage ? $eq->mortgage->current_balance : 0) / (($eq->market_value  > 0) ? $eq->market_value : 1)) * 100);
-            $eq->chart = [ 
-                    'labels' => ['Mortgage', 'Home Equity'], 
+            $eq->chart = [
+                    'labels' => ['Mortgage', 'Home Equity'],
                     'values' => [($eq->mortgage ? $eq->mortgage->current_balance : 0), $eq->equity ],
-                    'percentages' => [$eq->per_mortgage, $eq->ownership] 
-            ]; 
+                    'percentages' => [$eq->per_mortgage, $eq->ownership]
+            ];
          }
         return response()->json(compact('equity','equity_detail'));
-    } 
-    
+    }
+
     public function updateEquity(Request $request, $id){
         $user = $request->user();
         $validator = Validator::make($request->all(),[
            'market_value' => 'required|numeric|min:10'
         ]);
- 
+
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
         }
 
         $equity = HomeEquity::where('user_id', $user->id)->where('id', $id)->first();
 
-        // $equity->location = $request->location; 
+        // $equity->location = $request->location;
         $equity->market_value = $request->market_value;
         $equity->date_acquired = $request->date_acquired;
-        $equity->save(); 
+        $equity->save();
         $success = 'Equity Information updated successfully';
         return response()->json(compact('success', 'equity'));
     }
