@@ -132,7 +132,7 @@
         var view_document = document.getElementById('view_document');
         user_act.value = account.id; 
         view_document.href = location.origin + '/app/assets/'+documented.replace('public',"storage");
-        view_document.href = location.origin + '/assets/'+documented.replace('public',"storage");
+        // view_document.href = location.origin + '/assets/'+documented.replace('public',"storage");
     }
 
     var editmode = false;
