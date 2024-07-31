@@ -33,6 +33,7 @@ Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@t
 Route::post('/gaphubers/non_member/sms', 'API\v2\GaphubAlertController@nonMemberSMS');
 
 // Release C
+Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability');
 Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration');
 Route::post('/mygap/login', 'Auth\GapAutAPI@login');
 
@@ -42,8 +43,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::group(['prefix' => 'app'], function () {
-        // Analytics
+        //
         Route::post('/calculator', 'API\v2\SevenGAPI@createCalculator');
+        Route::post('/calculator/budget', 'API\v2\SevenGAPI@createBudget');
+        Route::post('/calculator/portfolio', 'API\v2\SevenGAPI@createPortfolio');
+        Route::post('/calculator/investment', 'API\v2\SevenGAPI@createInvestment');
+        // Analytics
         Route::post('/stepquestions', 'API\v2\SevenGAPI@questions');
         Route::post('/seveng', 'API\v2\SevenGAPI@store');
         Route::get('/seveng', 'API\v2\SevenGAPI@index');

@@ -30,6 +30,37 @@ class AuthenticationApi extends Controller
 
     use RegistersUsers;
 
+
+    public function checkEmailAvailability(Request $request)
+    {
+        $email = $request->input('email');
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $isEmail = User::where('email', strtolower($email))->first();
+
+        if($isEmail){
+            return response()->json([
+                'status' => false,
+                'message' => 'Email is not available'
+            ],200);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Email available'
+        ],200);
+    }
+
     public function registeration(Request $request)
     {
         // Validate Input
@@ -50,7 +81,7 @@ class AuthenticationApi extends Controller
         $user = User::create([
             'firstname' => $request->get('firstname'),
             'surname' => $request->get('surname'),
-            'email' => $request->get('email'),
+            'email' => strtolower($request->get('email')),
             'password' => Hash::make($request->get('password')),
         ]);
 

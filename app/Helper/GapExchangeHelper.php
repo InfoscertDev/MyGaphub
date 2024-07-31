@@ -176,7 +176,7 @@ class GapExchangeHelper
         $system_currencies = GapCurrency::where('user_id', 0)->first();
         $calculator = Calculator::where('user_id', $user->id)->first();
         $user_currency = $calculator->currency;
-        info($calculator);
+        // info($calculator);
         $bcurrency = explode(" ",$user_currency)[1];
         // $user_currency = explode(" ",$calculator->currency)[0];
 

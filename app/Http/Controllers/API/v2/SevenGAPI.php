@@ -17,7 +17,7 @@ use App\SevenG\BespokeKPI;
 use App\SevenG\BetaFin as Beta;
 use App\SevenG\CreditFin as Credit;
 use App\SevenG\DeptFin as Dept;
-use App\SevenG\EducationFin as Education; 
+use App\SevenG\EducationFin as Education;
 use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
 
@@ -31,24 +31,24 @@ use App\Wheel\LiabilityAccount;
 class SevenGAPI extends Controller
 {
 
-    
+
     /**
      * SevenG Information
-     * 
+     *
      * Get all Seveng details and Information
      * @response {
-     *      
-     *  
-     * } 
-     */ 
-    public function index(Request $request) 
-    { 
+     *
+     *
+     * }
+     */
+    public function index(Request $request)
+    {
         $user = $request->user();
         AnalyticsClass::initSevenG($user);
         $questions = Question::where('user_id', $user->id)->first();
         $calculator = Calculator::where('user_id', $user->id)->first();
         $quest = Helper::convertToSnapshot($questions);
-     
+
         $seveng = AnalyticsClass::valSevenG($user);
         $steps = []; $backgrounds = [];
         $alpha = Alpha::where('user_id', $user->id)->first();
@@ -58,10 +58,10 @@ class SevenGAPI extends Controller
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
-        
+
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
-                    ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ]; 
-        
+                    ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ];
+
         AnalyticsClass::initBudgetValue($user,$credit,$dept,$freedom, $grand);
 
         foreach ($quest as $key => $val) {
@@ -71,8 +71,8 @@ class SevenGAPI extends Controller
                 $val = 1;
             }else{
                 $step = $quest[$key];
-                $val = 0;  
-            } 
+                $val = 0;
+            }
             $bg = ($val)  ? Helper::numPercentageColor($step) : '#494949';
             array_push($steps, $step);
             array_push($backgrounds, $bg);
@@ -82,71 +82,71 @@ class SevenGAPI extends Controller
         $total_bespoke = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->count();
         $user_bespokes = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->latest()->limit(7)->get();
         $wheel_bespoke = GapExchangeHelper::bespokeInWheel($user, $total_bespoke);
-        foreach($wheel_bespoke as $bespoke){ 
+        foreach($wheel_bespoke as $bespoke){
             if(count($user_bespokes) < 7){
                 $user_bespokes->push($bespoke);
-            } 
-        } 
- 
+            }
+        }
+
         $total_bespoke = count($user_bespokes);
         $bespokes = AnalyticsClass::valBespoke($user_bespokes);
 
         return response()->json(compact('steps', 'backgrounds', 'bespokes', 'total_bespoke', 'questions'));
     }
 
-    
+
     /**
      * Bespoke Information
-     * 
+     *
      * Get all bespoke details and Information
      * @response {
-     *      
-     *  
-     * } 
-     */ 
-    public function showBespoke(Request $request) 
+     *
+     *
+     * }
+     */
+    public function showBespoke(Request $request)
     {
          $user = $request->user();
          $total_bespoke = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->count();
          $user_bespokes = BespokeKPI::where('user_id', $user->id)->where('isAnalytics', 1)->latest()->limit(7)->get();
          $wheel_bespoke = GapExchangeHelper::bespokeInWheel($user, $total_bespoke);
-         foreach($wheel_bespoke as $bespoke){ 
+         foreach($wheel_bespoke as $bespoke){
              if(count($user_bespokes) < 7){
                  $user_bespokes->push($bespoke);
-             } 
+             }
          }
-    
+
          $total_bespoke = count($user_bespokes);
          $bespokes = AnalyticsClass::valBespoke($user_bespokes);
 
          return response()->json(compact('user_bespokes', 'total_bespoke', 'bespokes'));
     }
 
-    public function snapshot(Request $request) 
-    { 
+    public function snapshot(Request $request)
+    {
         $user =  $request->user();
         if($user){
             $profile = $user->profile;
-            if (!$profile) { 
+            if (!$profile) {
                 $profile = new Profile(); $profile->save();
                 $user->profile_id  = $profile->id;
-                $user->save(); 
-            } 
+                $user->save();
+            }
         }
- 
+
         $financial =  Fin::finicial($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
         $snapshot = Fin::snapshot($financial['calculator'], $financial['cost']);
         $currency = explode(" ", $calculator->currency)[0];
-        
-        return response()->json([ 
+
+        return response()->json([
             'status' => true,
             'data' => compact('currency','financial', 'snapshot'),
             'message' => ''
         ]);
     }
 
-    public function create(Request $request) 
+    public function create(Request $request)
     {
         $user =  $request->user();
         $currency = Calculator::where('user_id', $user->id )->first();
@@ -159,16 +159,16 @@ class SevenGAPI extends Controller
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
-                    ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ]; 
+                    ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ];
 
         AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
         $stepBack = $this->stepBack($user, $mains);
         $steps = $stepBack['steps'];
-        $backgrounds = $stepBack['backgrounds'];        
+        $backgrounds = $stepBack['backgrounds'];
         $data = compact('alpha','beta','credit','dept','education', 'freedom',
                         'grand','symbol', 'steps', 'backgrounds');
-        
-        return response()->json([ 
+
+        return response()->json([
             'status' => true,'data' => $data,
             'message' => ''
         ]);
@@ -187,8 +187,8 @@ class SevenGAPI extends Controller
                 $val = 1;
             }else{
                 $step = $quest[$key];
-                $val = 0; 
-            }  
+                $val = 0;
+            }
             $bg = ($val)  ? Helper::numPercentageColor($step) : '#494949';
             array_push($steps, $step);
             array_push($backgrounds, $bg);
@@ -213,7 +213,7 @@ class SevenGAPI extends Controller
         if($validator->fails()){
             return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
         }
-        
+
         if($request->seveng == "jahgxhnbszjhbxhbhbshsvb"){
             $validator = Validator::make($request->all(), [
                 'current' => 'required|numeric',
@@ -230,7 +230,7 @@ class SevenGAPI extends Controller
             $alpha->strategy = $request->strategy;
             // $alpha->baseline = $request->baseline;
             $alpha->main = 1;
-            $alpha->save(); 
+            $alpha->save();
             $calculator->extra_save = $request->current;
             $calculator->save();
             Wheel::updateCashTile($user);
@@ -248,7 +248,7 @@ class SevenGAPI extends Controller
             $beta = Beta::where('user_id', $user->id)->first();
             $beta->current = $request->current;
             $beta->target = $request->target;
-            $beta->strategy = $request->strategy; 
+            $beta->strategy = $request->strategy;
             $beta->is_purchased = ($request->purchase) ? 1 : 0;
             $beta->main = 1;
             $beta->save();
@@ -264,7 +264,7 @@ class SevenGAPI extends Controller
             if($validator->fails()){
                 return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
-             
+
             $credit = Credit::where('user_id', $user->id)->first();
             $credit->current = $request->current;
             $credit->strategy = $request->strategy;
@@ -322,20 +322,20 @@ class SevenGAPI extends Controller
             }
             $freedom = Freedom::where('user_id', $user->id)->first();
             $calculator->other_income = $request->current;
-            $freedom->current = $request->current; 
-            $calculator->save(); 
-            $freedom->target = $fin['cost']; 
+            $freedom->current = $request->current;
+            $calculator->save();
+            $freedom->target = $fin['cost'];
             $freedom->strategy = $request->strategy;
             $freedom->main = 1;
-            $freedom->save();  
+            $freedom->save();
             return response()->json(['status' => true, 'data' => $freedom]);
         }
 
         if($request->seveng == "ggs5dbwexsxgxbxjzgjabajzxhsgzah"){
             $validator = Validator::make($request->all(), [
                 'current' => 'required|numeric',
-                // 'target' => 'required|numeric', 
-            ]); 
+                // 'target' => 'required|numeric',
+            ]);
             if($validator->fails()){
                 return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
@@ -355,7 +355,7 @@ class SevenGAPI extends Controller
         $user =  $request->user();
         $bespokes = BespokeKPI::where('user_id', $user->id)->latest()->limit(7)->get();
         $validator = Validator::make($request->all(),  [ 'bespoke' => 'required']);
-        
+
         if($validator->fails()){
             return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
         }
@@ -383,7 +383,7 @@ class SevenGAPI extends Controller
             $saveup->current = $request->current;
             $saveup->save();
             return response()->json(['status' => true, 'data' => $saveup]);
-        } 
+        }
         if($request->bespoke == "dejhiojdnoijdnsnvhbnvxjhxnvsjhsvnxshyg"){
              $validator = Validator::make($request->all(),  [
                 'kpi_name' => 'required',
@@ -404,10 +404,10 @@ class SevenGAPI extends Controller
             $dept->current = $request->current;
             $dept->save();
             return response()->json(['status' => true, 'data' => $dept]);
-        } 
+        }
         return response()->json(['error' => 'Can not Save Bespoke' ]);
     }
- 
+
     public function updateBespoke(Request $request, $id){
         $user =  $request->user();
         $bespoke = BespokeKPI::where('user_id',$user->id)->where('id', $id)->first();
@@ -429,7 +429,7 @@ class SevenGAPI extends Controller
             elseif($bespoke->bespoke_type =='dept'){
                 $validator = Validator::make($request->all(),[
                     'baseline' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 if($validator->fails()){
                     return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
@@ -444,7 +444,7 @@ class SevenGAPI extends Controller
             if($request->account == "aznjzbhxjnsxjbnxhsjgczbhzbvcjhbxvnbjhjzcb"){
                 $this->validate($request,  [
                     'target' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 $cash = CashAccount::where('user_id',$user->id)->where('id', $id)->first();
                 $cash->current = $request->current;
@@ -455,27 +455,114 @@ class SevenGAPI extends Controller
             if($request->account == "skjnaznkszxjnszjnzjnzjnmhjzbnhjxvgyzbjhbxc"){
                 $this->validate($request,  [
                     'baseline' => 'required',
-                    'current' => 'required', 
+                    'current' => 'required',
                 ]);
                 $liability = LiabilityAccount::where('user_id',$user->id)->where('id', $id)->first();
                 $liability->current = $request->current;
                 $liability->baseline = $request->baseline;
                 $liability->extra = $request->strategy;
                 $liability->save();
-            } 
-             
+            }
+
             return  response()->json(['success' => 'Bespoke KPI saved successfully']);
         }else{
              return response()->json(['error' => 'Bespoke is not found']);
-        } 
+        }
         return $bespoke;
     }
- 
+
+    public function createBudget(Request $request)
+    {
+        $user =  $request->user();
+        $calculate = Calculator::where('user_id', $user->id)->first();
+
+        $validator = Validator::make($request->all(), [
+            'currency' => 'required',
+            'mortgage' => 'required|numeric|min:0',
+            'periodic_savings' => 'required|numeric|min:0',
+            'education' => 'required|numeric|min:0',
+            'charity' => 'required|numeric|min:0',
+            'mobility' => 'required|numeric|min:0',
+            'utility' => 'required|numeric|min:0',
+            'expenses' => 'required|numeric|min:0',
+            'dept_repay' => 'required|numeric|min:0'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toJson()
+            ], 400);
+        }
+
+        $calculate->currency = $request->currency;
+        $calculate->mortgage = $request->mortgage;
+        $calculate->periodic_savings = $request->periodic_savings;
+        $calculate->expenses = $request->expenses;
+        $calculate->charity = $request->charity;
+        $calculate->education = $request->education;
+        $calculate->utility = $request->utility;
+        $calculate->mobility = $request->mobility;
+        $calculate->dept_repay = $request->dept_repay;
+        $calculate->save();
+
+        return response()->json(['status' => true, 'data' => $calculate]);
+    }
+
+    public function createPortfolio(Request $request)
+    {
+        $user =  $request->user();
+        $calculate = Calculator::where('user_id', $user->id)->first();
+
+        $validator = Validator::make($request->all(), [
+            'other_income' => 'required|numeric|min:0',
+            'extra_save' => 'required|numeric|min:0'
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toJson()
+            ], 400);
+        }
+
+        $calculate->other_income = $request->other_income;
+        $calculate->extra_save = $request->extra_save;
+        $calculate->save();
+
+        return response()->json(['status' => true, 'data' => $calculate]);
+    }
+
+    public function createInvestment(Request $request)
+    {
+        $user =  $request->user();
+        $calculate = Calculator::where('user_id', $user->id)->first();
+
+        $validator = Validator::make($request->all(), [
+            'roce' => 'required|numeric|min:0',
+            'investment' => 'required|numeric|min:0',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toJson()
+            ], 400);
+        }
+
+        $calculate->roce = $request->roce;
+        $calculate->investment = $request->investment;
+        $calculate->save();
+
+        return response()->json(['status' => true, 'data' => $calculate]);
+    }
+
+
     public function createCalculator(Request $request)
     {
-        $user =  $request->user(); 
+        $user =  $request->user();
         $calculate = Calculator::where('user_id', $user->id)->first();
-        
+
         $validator = Validator::make($request->all(), [
             'currency' => 'required',
             'mortgage' => 'required|numeric|min:0',
@@ -491,7 +578,7 @@ class SevenGAPI extends Controller
             'roce' => 'required|numeric|min:0',
             'investment' => 'required|numeric|min:0',
         ]);
- 
+
         if($validator->fails()){
             return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
         }
@@ -510,8 +597,8 @@ class SevenGAPI extends Controller
         $calculate->roce = $request->roce;
         $calculate->investment = $request->investment;
         $calculate->save();
- 
-        return response()->json(['status' => true, 'data' => $calculate]); 
+
+        return response()->json(['status' => true, 'data' => $calculate]);
     }
 
     public function questions(Request $request){
@@ -519,8 +606,8 @@ class SevenGAPI extends Controller
 
         $validator = Validator::make($request->all(), [
             'step1' => 'required',
-            'step2' => 'required', 
-            'step3' => 'required',  
+            'step2' => 'required',
+            'step3' => 'required',
             'step4' => 'required',
             'step5' => 'required',
             'step6' => 'required',
@@ -540,7 +627,7 @@ class SevenGAPI extends Controller
         $question->step5 =  $request->step5;
         $question->step6 =  $request->step6;
         $question->step7 =  $request->step7;
-        $question->save(); 
+        $question->save();
         IntegrationParties::migrate_sendinblue_to_prospect($user);
         return response()->json(['status' => true, 'data' => $question]);
     }
