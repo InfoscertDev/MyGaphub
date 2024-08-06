@@ -557,6 +557,16 @@ class SevenGAPI extends Controller
         return response()->json(['status' => true, 'data' => $calculate]);
     }
 
+    public function calculator(Request $request)
+    {
+        $user =  $request->user();
+        $calculator = Calculator::where('user_id', $user->id)->first();
+
+        return response()->json([
+            'status' => true,
+            'data' => $calculator
+        ]);
+    }
 
     public function createCalculator(Request $request)
     {
