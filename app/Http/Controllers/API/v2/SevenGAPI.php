@@ -557,6 +557,32 @@ class SevenGAPI extends Controller
         return response()->json(['status' => true, 'data' => $calculate]);
     }
 
+
+    public function recommendations(Request $request)
+    {
+        $user = $request->user();
+
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $financial =  Fin::finicial($user); // Financial Information
+
+        $expenditure = ($financial['cost'] * 12) * 100 ;
+        $shortfall = $financial['cost'] - $calculate->other_income;
+        $average = (($shortfall * 12) * 100) / $calculator->roce ;
+        $invest = $expenditure / $request->roce;
+
+        if($calculator->investment){
+            $time_finiancial = ($avr / $calculator->investment ) / 12 ;
+            $time_finiancial_chart = (int)$time_finiancial;
+            $time_finiancial = number_format((int)$time_finiancial, 0);
+        } else{
+             $time_finiancial = 'N/A';
+        }
+
+        $data = compact('calculator', 'expenditure','shortfall','average', 'invest', 'time_finiancial_chart', 'time_finiancial');
+
+        return response()->json(['status' => true, 'data' => $data]);
+    }
+
     public function calculator(Request $request)
     {
         $user =  $request->user();

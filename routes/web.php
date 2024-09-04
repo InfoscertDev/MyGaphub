@@ -41,8 +41,6 @@ Route::get('/email/reminder', 'Auth\VerificationController@reminder')->name('ema
 Auth::routes(['verify' => 'true']);
 Route::post('/questions', 'HomeController@questions' )->name('register.questions');
 
-
-
 Route::group(['middleware' => ['auth','verified']], function() {
     //  Acquisition
     Route::get('/actionplan', 'Web\AcquisitionController@action')->name('user.actionplan');

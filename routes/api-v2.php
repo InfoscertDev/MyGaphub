@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::group(['prefix' => 'app'], function () {
         //
         Route::get('/calculator', 'API\v2\SevenGAPI@calculator');
+        Route::get('/financial/recommendations', 'API\v2\SevenGAPI@recommendations');
         Route::post('/calculator', 'API\v2\SevenGAPI@createCalculator');
         Route::post('/calculator/budget', 'API\v2\SevenGAPI@createBudget');
         Route::post('/calculator/portfolio', 'API\v2\SevenGAPI@createPortfolio');
