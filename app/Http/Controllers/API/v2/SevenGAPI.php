@@ -565,20 +565,23 @@ class SevenGAPI extends Controller
         $calculator = Calculator::where('user_id', $user->id)->first();
         $financial =  Fin::finicial($user); // Financial Information
 
-        $expenditure = ($financial['cost'] * 12) * 100 ;
-        $shortfall = $financial['cost'] - $calculate->other_income;
+        $income = $calculator->other_income;
+        $seed_cost = $financial['cost'];
+        $expenditure = ($seed_cost * 12) * 100 ;
+        $shortfall = $seed_cost - $income;
         $average = (($shortfall * 12) * 100) / $calculator->roce ;
-        $invest = $expenditure / $request->roce;
+        $suggested_investment = $calculator->roce ? ($expenditure / $calculator->roce) : $calculator->roce;
 
         if($calculator->investment){
-            $time_finiancial = ($avr / $calculator->investment ) / 12 ;
-            $time_finiancial_chart = (int)$time_finiancial;
-            $time_finiancial = number_format((int)$time_finiancial, 0);
+            $time_finiancial = ($average / $calculator->investment ) / 12 ;
+            $time_finiancial = ceil((int)$time_finiancial);
+            $time_finiancial_chart =($time_finiancial);
+            $time_finiancial = number_format($time_finiancial, 2);
         } else{
              $time_finiancial = 'N/A';
         }
 
-        $data = compact('calculator', 'expenditure','shortfall','average', 'invest', 'time_finiancial_chart', 'time_finiancial');
+        $data = compact('calculator', 'income', 'seed_cost','expenditure','shortfall','average', 'suggested_investment', 'time_finiancial_chart', 'time_finiancial');
 
         return response()->json(['status' => true, 'data' => $data]);
     }

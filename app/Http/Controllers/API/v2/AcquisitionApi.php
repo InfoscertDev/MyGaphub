@@ -117,6 +117,7 @@ class AcquisitionApi extends Controller
             $validator = Validator::make($request->all(), [
                 'mobile' => 'required|numeric'
             ]);
+
             if($validator->fails()){
                 return response()->json($validator->errors()->toJson(), 400);
             }

@@ -146,15 +146,16 @@ class OtherToolController extends Controller
 
         if($request->hasFile('photo')){
             $request->validate(['photo'=>'min: 5|max:5000|mimes:jfif,jpeg,jpg,png']);
-            $fileType = $request->file('photo')->getClientMimeType();
             $ext = $request->file('photo')->getClientOriginalExtension();
             $fileNameStore = sha1(time()). rand(100000, 999999) . '.'.$ext;
-            $photo = $request->file('photo')->storeAs('public/user', $fileNameStore);
+            $photo = $request->file('photo')->storeAs('public/profile', $fileNameStore);
+            $user->image =  $photo;
+            $user->save();
+            $msg = "Profile Picture has been updated";
+            return redirect()->back()->with('success', $msg);
+        }else{
+            return redirect()->back()->with('error', 'Image Cannot be uploaded');
         }
-        $user->image =  $photo;
-        $user->save();
-        $msg = "Profile Picture has been updated";
-        return redirect()->back()->with('success', $msg);
     }
 
     public function defaultpicture(Request $request){

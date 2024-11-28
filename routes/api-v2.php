@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
         Route::resource('reminder','API\v2\ReminderAPI');
         // Acquisition
+        Route::resource('property/favourite','API\v2\SavePropertyApi');
         Route::get('/acquisition/favourite/', 'API\v2\AcquisitionApi@favourite');
         Route::get('/acquisition/favourite/ganp', 'API\v2\AcquisitionApi@favouriteGanp');
         Route::get('/acquisition/favourite/{asset}', 'API\v2\AcquisitionApi@favouriteAsset');
