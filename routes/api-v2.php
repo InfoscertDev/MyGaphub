@@ -143,10 +143,12 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/360/income/records/{id}', 'API\v2\IndependenceAPI@updateIncomeRecord');
         // Portfolio
         Route::get('/portfolio', 'API\v2\PortfolioApi@index');
+        Route::get('/portfolio/asset/types', 'API\v2\PortfolioApi@portfolioAssetTypes');
         Route::get('/portfolio/information', 'API\v2\PortfolioApi@information');
         Route::post('/portfolio/asset', 'API\v2\PortfolioApi@store');
         Route::get('/portfolio/{braid}', 'API\v2\PortfolioApi@braid');
         Route::get('/portfolio/{braid}/{id}', 'API\v2\PortfolioApi@braidInformation');
+        Route::delete('/portfolio/{id}', 'API\v2\PortfolioApi@destroy');
 
         Route::post('/portfolio/update/note/{id}', 'API\v2\PortfolioApi@updateAssetNote');
         Route::post('/portfolio/update/photo/{id}', 'API\v2\PortfolioApi@updateAssetPhoto');

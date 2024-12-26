@@ -191,6 +191,57 @@ class PortfolioHelper {
         return compact('total_portfolio', 'braid', 'braid_roi', 'roi');
     }
 
+    public static function roiTrend($currentRoi, $previousRoi) {
+        $trend = [];
+
+        foreach ($currentRoi as $index => $value) {
+            if (!isset($previousRoi[$index])) {
+                $trend[] = ['change' => 0, 'direction' => 'neutral'];
+                continue;
+            }
+
+            $difference = $value - $previousRoi[$index];
+            $direction = $difference > 0 ? 'increasing' : ($difference < 0 ? 'decreasing' : 'neutral');
+
+            $trend[] = [
+                'change' => round($difference, 2),
+                'direction' => $direction
+            ];
+        }
+
+        return $trend;
+    }
+
+    public static function getCurrentRoi($user, $portfolio) {
+        $roiData = self::roiWatch($user, $portfolio);
+        return $roiData['roi'];
+    }
+
+    public static function getPreviousRoi($user, $from, $to) {
+        $previousPortfolio = PortfolioAsset::where('user_id', $user->id)
+            ->where('isArchive', 0)
+            ->whereBetween('created_at', [$from, $to])
+            ->get();
+
+        $roiData = self::roiWatch($user, $previousPortfolio);
+        return $roiData['roi'];
+    }
+
+
+
+    private static function calculateROI($asset) {
+        $monthly_income = $asset->converted_monthly_roi ?? 0;
+        $asset_value = $asset->converted_asset_value ?? 1; // Avoid division by zero
+        return (($monthly_income * 12) / $asset_value) * 100;
+    }
+
+    private static function calculatePercentageChange($previous, $current) {
+        if ($previous == 0) {
+            return $current > 0 ? 100 : ($current < 0 ? -100 : 0);
+        }
+        return (($current - $previous) / $previous) * 100;
+    }
+
     public static function groupPortfolio($user, $type, $archive){
         $existing = []; $desired = [];
         if ($archive) {

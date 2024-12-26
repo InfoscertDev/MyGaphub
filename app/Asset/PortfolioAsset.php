@@ -155,7 +155,7 @@ class PortfolioAsset extends Model
 
     public function getAverageAmountAttribute($value){
         $period = date('Y-m',strtotime($this->created_at));
-       $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
+        $period = date("Y-m-d",strtotime("-1 months", strtotime( $period.'-01')) );
         $asset =  PortfoloAssetRecord::where('portfolio_asset_id',$this->id)
                         ->whereDate('period', '>=', $period)
                         ->orderBy('period', 'DESC')->limit(6)->get();

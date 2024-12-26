@@ -25,19 +25,77 @@ class PortfolioApi extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $period = $request->input('period');
+        $current_period = strtotime(date('Y-m') . '-01');
+        $from = $request->input('period_from');
+        $to = $request->input('period_to');
 
-        $portfolio = PortfolioAsset::where('user_id', $user->id)->where('isArchive', 0)->get();
+        if ($period == '3 Months') {
+            $from = date('Y-m-d', strtotime("-4 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
+
+        if ($period == '6 Months') {
+            $from = date('Y-m-d', strtotime("-7 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
+
+        if ($period == '1 Year') {
+            $from = date('Y-m-d', strtotime("-13 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
+
+        $portfolio = PortfolioAsset::where('user_id', $user->id)
+                        ->when($from && $to, function ($query) use ($from, $to) {
+                            return $query->whereBetween('period', [$from, $to]);
+                        })
+                        ->where('isArchive', 0)
+                        ->get();
+
+        $portfolio_asset =  PortfolioAsset::where('user_id', $user->id)->where('income_id', 0)
+                                    ->where('isArchive', 0)->where('asset_category', 'existing')->get();
 
         $global = PortfolioHelper::globalPortfolio($user);
         $existing_report = PortfolioHelper::activateBRAID($user, 'existing', $portfolio);
         $desired_report = PortfolioHelper::activateBRAID($user, 'desired', $portfolio);
         $roi_watch = PortfolioHelper::roiWatch($user, $portfolio);
-        $portfolio_asset =  PortfolioAsset::where('user_id', $user->id)->where('income_id', 0)
-                                    ->where('isArchive', 0)->where('asset_category', 'existing')->get();
 
-        return response()->json(compact('roi_watch','existing_report','desired_report','global','portfolio_asset'));
+        $current_from = date('Y-m-d', strtotime("-2 months", $current_period));
+        $current_to = date('Y-m-d', strtotime("-1 months", $current_period));
+        $previous_from = date('Y-m-d', strtotime("-3 months", $current_period));
+        $previous_to = date('Y-m-d', strtotime("-2 months", $current_period));
+        $currentRoi = PortfolioHelper::getPreviousRoi($user, $current_from, $current_to);
+        $previousRoi = PortfolioHelper::getPreviousRoi($user, $current_from, $current_to);
+
+        $roi_trend = PortfolioHelper::roiTrend($currentRoi, $previousRoi);
+        $data = compact('roi_watch', 'roi_trend','existing_report','desired_report','global','portfolio_asset');
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => 'Portfolios retrieved successfully',
+        ]);
     }
 
+    public function portfolioAssetTypes(Request $request)
+    {
+        $user = $request->user();
+
+        $business     = GapAssetType::where('acqusition', 'business')->whereStatus(1)->get();
+        $risk         = GapAssetType::where('acqusition', 'risk')->whereStatus(1)->get();
+        $appreciating = GapAssetType::where('acqusition', 'appreciating')->whereStatus(1)->get();
+        $intellectual = GapAssetType::where('acqusition', 'intellectual')->whereStatus(1)->get();
+        $depreciating = GapAssetType::where('acqusition', 'depreciating')->whereStatus(1)->get();
+
+        $data = compact('business', 'risk', 'appreciating', 'intellectual', 'depreciating');
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+            'message' => 'Portfolio Asset Type retrieved successfully',
+        ]);
+
+    }
 
     public function information(Request $request)
     {
@@ -134,6 +192,25 @@ class PortfolioApi extends Controller
         $period =  $request->get('period');
         $account =  $request->get('account');
         $archive =  $request->get('archive');
+        $period = $request->input('period');
+        $current_period = strtotime(date('Y-m') . '-01');
+        $from = $request->input('period_from');
+        $to = $request->input('period_to');
+
+        if ($period == '3 Months') {
+            $from = date('Y-m-d', strtotime("-4 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
+
+        if ($period == '6 Months') {
+            $from = date('Y-m-d', strtotime("-7 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
+
+        if ($period == '1 Year') {
+            $from = date('Y-m-d', strtotime("-13 months", $current_period));
+            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        }
 
         if($header){
             // Periodical Helper for updating records
@@ -141,14 +218,21 @@ class PortfolioApi extends Controller
             // Archive Portfolio
             if($account) return ArchiveAccount::portfolioArchiveAction($user, $header, $access, $account);
         }
+
         if($asset){
             $status = true;
             $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
-                        ->where('portfolio_asset_id', $asset->id)
-                        ->orderBy('period', 'ASC')->get();
+                                ->when($from && $to, function ($query) use ($from, $to) {
+                                    return $query->whereBetween('period', [$from, $to]);
+                                })
+                                ->where('portfolio_asset_id', $asset->id)
+                                ->orderBy('period', 'ASC')->get();
+
             $asset_finicial_record = PortfolioHelper::assetFinancialChart($asset_finicial);
             $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user, $asset,$asset_finicial);
+
            return  response()->json(compact('status','asset', 'archive','asset_finicial','asset_finicial_detail','asset_finicial_record'));
+
         }else{
            return  response()->json(['status'=> false, 'message' => 'Asset Type Not found']);
         }
@@ -228,6 +312,7 @@ class PortfolioApi extends Controller
             'maintenance' => 'required|numeric|min:0|max:10000000000',
             'taxes' => 'required|numeric|min:0|max:10000000000',
         ]);
+
         $period  = date('Y-m').'-01';
         if($request->period){
             $request->period = $request->period.'-01';
@@ -268,9 +353,43 @@ class PortfolioApi extends Controller
         $status = PortfolioHelper::updateNoteRecord($user, $period, $id, $request);
         if($status){
             $message = 'Asset Updated successfully';
-            return  response()->json(compact('status', 'message')); ;
+            return  response()->json(compact('status', 'message'));
         }else{
             return  response()->json(['status'=> false, 'message' => 'Asset Not found']);
         }
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $portfolio = PortfolioAsset::where('user_id', $user->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$portfolio) {
+            return response()->json([
+                'status' => false,
+                'message' => "Portfolio asset not found"
+            ], 404);
+        }
+
+        $name = $portfolio->name;
+        $relatedRecordsCount = PortfoloAssetRecord::where('user_id', $user->id)
+                            ->where('portfolio_asset_id', $portfolio->id)->count();
+
+        if ($relatedRecordsCount <= 0) {
+            $portfolio->delete();
+            return response()->json([
+                'status' => true,
+                'message' => "Portfolio deleted successfully.",
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "The \"{$name}\" record cannot be deleted because it is associated with {$relatedRecordsCount} other record(s). You can archive it instead.",
+            ], 400);
+        }
+    }
+
 }
