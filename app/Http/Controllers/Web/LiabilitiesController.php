@@ -36,10 +36,10 @@ class LiabilitiesController extends Controller
         $kpi =  $request->get('kpi');
         $crd =  $request->get('crd');
         $alo =  $request->get('alo');
-        
+
         $audit = Audit::where('user_id', $user->id)->select('is_allocated')->first();
 
-        if($header){ 
+        if($header){
            return ArchiveAccount::liabilityArchiveAction($user, $header, $access, $account,$kpi);
         }
         if($crd && $alo){
@@ -50,18 +50,18 @@ class LiabilitiesController extends Controller
                return redirect('/home/360/liability')->with(['error' => 'Error Allocating Credit']);
            }
         }
-        
+
         $seveng = [];
         $isValid = SevenG::isSevenGVal($user);
-       
+
         if($archive){
             $liabilities = Liability::where('user_id', $user->id)->where('isArchive', 1)->latest()->get();
-            // $seveng = Liability::where('user_id', $user->id)->where('isArchive', 1)->where('credit_id', 1)->latest()->get(); 
+            // $seveng = Liability::where('user_id', $user->id)->where('isArchive', 1)->where('credit_id', 1)->latest()->get();
         }else{
             $liabilities = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 0)->latest()->get();
-            $seveng = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get(); 
+            $seveng = Liability::where('user_id', $user->id)->where('isArchive', 0)->where('credit_id', 1)->latest()->get();
         }
-        
+
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[0];
         $user_currency = $calculator->currency;
@@ -76,34 +76,34 @@ class LiabilitiesController extends Controller
         $liabilities_items = Liability::where('user_id', $user->id)->count();
         $credit = Credit::where('user_id', $user->id)->first();
         $credit = Exchange::switchToCreditAccount($credit, 'Credit', $calculator->currency);
-        
-        if($archive){            
+
+        if($archive){
             $bespokes = Exchange::wheelKPIAccount($user, $calculator->currency, $archive)['liabilities'];
         }else{
             $bespokes = Exchange::wheelKPIAccount($user, $calculator->currency, $archive)['liabilities'];
         }
-        $liabilities_detail = GapAccount::calcLiabilitiesAccount($liabilities, $user, $archive, $seveng);
-         // var_dump($seveng); return; 
+        $liabilities_detail = GapAccount::calcLiabilitiesAccount($liabilities, $user, $archive);
+         // var_dump($seveng); return;
         $allocated = GapAccount::creditAllocated($user)['allocate'];
         $total_credit =  $credit->current - (int)$allocated;
-        if($total_credit <= 0) $total_credit = 0;
+        // if($total_credit <= 0) $total_credit = 0;
         foreach($seveng as $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
-            $money->chart = GapAccount::liabilityDetailChart($money); 
-        } 
-        foreach($liabilities as $key => $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
-            $money->chart = GapAccount::liabilityDetailChart($money);
-        } 
-        foreach($bespokes as $money){
-            $money->currency = explode(' ',$money->account_currency)[0]; 
+            $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::liabilityDetailChart($money);
         }
-        
-        return view('user.360.liabilities', compact('isValid','currency' , 'currencies','net_detail' ,'net','backgrounds','equity_info','income_detail','liabilities', 
+        foreach($liabilities as $key => $money){
+            $money->currency = explode(' ',$money->account_currency)[0];
+            $money->chart = GapAccount::liabilityDetailChart($money);
+        }
+        foreach($bespokes as $money){
+            $money->currency = explode(' ',$money->account_currency)[0];
+            $money->chart = GapAccount::liabilityDetailChart($money);
+        }
+
+        return view('user.360.liabilities', compact('isValid','currency' , 'currencies','net_detail' ,'net','backgrounds','equity_info','income_detail','liabilities',
             'bespokes', 'total_credit','seveng','credit','liabilities_detail', 'audit','archive','user_currency'));
     }
-    
+
     /**
      * Display the specified resource.
      * @param  int  $id
@@ -119,7 +119,7 @@ class LiabilitiesController extends Controller
             'baseline' => 'required|integer|min:0',
             'current' => 'required|integer|min:0',
             'target_date' => 'nullable|date|after:today'
-        ]);   
+        ]);
 
         // return $request;
 
@@ -139,26 +139,26 @@ class LiabilitiesController extends Controller
             $liability->periodical_pay = $request->period_pay;
             $liability->target_date = $request->target_date;
             $liability->isAnalytics = ($request->analytics == 'on') ? 1 : 0;
-            if(strtolower($request->credit_type) == 'secured loans' 
+            if(strtolower($request->credit_type) == 'secured loans'
                     || strtolower($request->credit_type) == 'others'){
-                        $liability->credit_id = 0; 
+                        $liability->credit_id = 0;
             }else{
-                $liability->credit_id = 1; 
-            } 
-            $liability->save();  
+                $liability->credit_id = 1;
+            }
+            $liability->save();
             // if($request->snioj2isjdmniondcjnfc == "ajknsjkndjckndcjknjksdncjmdnc"){
             //     $credit = Credit::where('user_id', $user->id)->first();
             // $allocated = GapAccount::creditAllocated($user)['allocate'];
             //     $liability->isAnalytics = 0;
             //     $liability->account_currency = $calculator->currency;
             //     $total =  $credit->current - ((int)$allocated + (int)$request->current);
-                
+
             //     if($total < 0){
             //        return redirect()->back()->with('error', 'You can not allocate more than your Credit Balance');
             //     }
-            // } 
-            
-            
+            // }
+
+
             $myaccount = Liability::where('user_id', $user->id)->latest()->get();
             $account_items = Liability::where('user_id', $user->id)->count();
             $account_detail = GapAccount::calcLiabilitiesAccount($myaccount, $user);
@@ -168,8 +168,8 @@ class LiabilitiesController extends Controller
         }else{
             return redirect('/home/360/liability')->with(['error' => "You can't add more than 12 Liability Account"]);
         }
-    } 
-    
+    }
+
     public function updateLiability(Request $request, $id)
     {
         $user = auth()->user();
@@ -181,7 +181,7 @@ class LiabilitiesController extends Controller
             'target_date' => 'nullable|date'
         ],[
             'sjnxjknsxkjnxijnsxknixncio.required' => 'Token required'
-        ]);  
+        ]);
         // if($request->pakmamkanknmjkmnzkmnjmnd  ){
         if($request->pakmamkank){
             $credit = Credit::where('user_id', $user->id)->first();
@@ -192,10 +192,10 @@ class LiabilitiesController extends Controller
             // $credit->current = $request->current;
             $credit->interest_rate = $request->interest;
             $credit->periodical_pay = $request->period_pay;
-            $credit->extra = $request->pay_strategy; 
+            $credit->extra = $request->pay_strategy;
             $credit->target_date = $request->target_date;
-            $credit->save(); 
-        }elseif($request->aksnjknsjnsjnsxjxn){ 
+            $credit->save();
+        }elseif($request->aksnjknsjnsjnsxjxn){
             if($request->aksnjknsjnsjnsxjxn = "lapakoihangbshjbsxhgbxuhxbshxbxujahnzoazjmsozklnsz"){
                 $bespoke = BespokeKPI::where('user_id', $user->id)->where('id', $request->sjnxjknsxkjnxijnsxknixncio)->first();
                 $wheel = BespokeWheel::where('bespoke_id', $bespoke->id)->first();
@@ -205,9 +205,9 @@ class LiabilitiesController extends Controller
                     $bespoke->baseline = $request->baseline;
                     $bespoke->current = $request->current;
                     if($request->paid_off) $bespoke->current = 0;
-                    $bespoke->dept_interest = $request->interest; 
-                    $bespoke->extra = $request->pay_strategy; 
-                     
+                    $bespoke->dept_interest = $request->interest;
+                    $bespoke->extra = $request->pay_strategy;
+
                     $bespoke->isAnalytics = ($request->analytics == 'on') ? 1 : 0;
                     $wheel->account_alias = $request->alias;
                     $wheel->target_date = $request->target_date;
@@ -224,15 +224,15 @@ class LiabilitiesController extends Controller
                 $liability->account_details = $request->lia_detail;
                 $liability->automated = $request->automated_rate;
                 $liability->baseline = $request->baseline;
-                $liability->current = $request->current; 
+                $liability->current = $request->current;
                 if($request->paid_off) $liability->current = 0;
                 $liability->interest_rate = $request->interest;
                 $liability->periodical_pay = $request->period_pay;
-                $liability->extra = $request->pay_strategy; 
+                $liability->extra = $request->pay_strategy;
                 $liability->target_date = $request->target_date;
                 $liability->isAnalytics = ($request->analytics == 'on') ? 1 : 0;
-                $liability->save(); 
-            } 
+                $liability->save();
+            }
         }
         $myaccount = Liability::where('user_id', $user->id)->latest()->get();
         $account_items = Liability::where('user_id', $user->id)->count();
@@ -241,11 +241,11 @@ class LiabilitiesController extends Controller
         return redirect('/home/360/liability')->with(['success' => 'Liability Information updated successfully']);
     }
 
-    // Mortgage 
+    // Mortgage
     public function mortgage(Request $request){
         $user = auth()->user();
         $isValid = SevenG::isSevenGVal($user);
-        
+
         $header =  $request->get('header');
         $access =  $request->get('access');
         $account =  $request->get('account');
@@ -256,10 +256,10 @@ class LiabilitiesController extends Controller
         $fin = CalculatorClass::finicial($user);
         $income_detail = IncomeHelper::analyseIncome($user, $fin['portfolio']);
         $calculator = Calculator::where('user_id', $user->id)->first();
-        $currency = explode(" ", $calculator->currency)[0]; 
-        $currencies = HelperClass::popularCurrenciens(); 
+        $currency = explode(" ", $calculator->currency)[0];
+        $currencies = HelperClass::popularCurrenciens();
         $equity_info = GapExchangeHelper::availabeleMortgages($user);
-        
+
         if($archive){
             $mortgages = Mortgage::where('user_id', $user->id)->where('isArchive', 1)->latest()->get();
             $debt = Debt::where('user_id', $user->id)->where('isArchive', 1)->first();
@@ -267,28 +267,27 @@ class LiabilitiesController extends Controller
             $mortgages = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
             $debt = null;
         }
-        
+
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
         $backgrounds = GapAccount::accountBackground();
         $mortgages_items = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->count();
-        
+
         // Include SevenG
         $primary_resident = Mortgage::where('user_id', $user->id)->where('secured_against','Primary Residential Home')
                                 ->where('isArchive', 0)->first();
         $primary_debt = Debt::where('user_id', $user->id)->first();
-        
+
         if($primary_resident && $primary_debt->isArchive){
             $debt = null;
-        }else{ 
+        }else{
             $debt = ($primary_debt->isArchive) ? $debt : $primary_debt;
             if($primary_debt->isArchive == 0 || isset($debt)) $debt = Exchange::switchToDebtAccount($debt, 'Debt', $calculator->currency);
-        } 
-        $seveng = ($debt) ? [$debt]: []; 
+        }
+        $seveng = ($debt) ? [$debt]: [];
 
-        
         $mortgages_detail = GapAccount::calcMortgagesAccount($mortgages, $user, $archive);
-        
+
         foreach($mortgages as $money){
             $money->chart = GapAccount::mortgageDetailChart($money);
         }
@@ -297,12 +296,12 @@ class LiabilitiesController extends Controller
         }
         return view('user.360.mortgage', compact('isValid','currency','archive' , 'currencies','net_detail' ,'net','backgrounds',
                                     'mortgages','equity_info','income_detail', 'seveng', 'mortgages_detail'));
-    } 
+    }
 
-    public function storeMortgage(Request $request) 
+    public function storeMortgage(Request $request)
     {
         $user = auth()->user();
-        $this->validate($request, [ 
+        $this->validate($request, [
             // 'repay' => 'integer|min:0',
             'mor_creditor' => 'required|max:20',
             'mor_description' => 'required',
@@ -310,13 +309,13 @@ class LiabilitiesController extends Controller
             'open_bal' => 'required|integer|min:0',
             'cur_bal' => 'required|integer|min:0',
             'month_pay' => 'required|integer|min:0'
-        ]);  
+        ]);
         $mortgages_items = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->count();
 
         if($mortgages_items <= 11){
             if ($request->secure_against == 'Primary Residential Home') {
                 $primary_resident = Mortgage::where('user_id', $user->id)->where('secured_against','Primary Residential Home')
-                                        ->where('isArchive', 0)->first(); 
+                                        ->where('isArchive', 0)->first();
                 if($primary_resident)  return redirect('/home/360/mortgage')->with(['error' => "You can not have multiple Primary Residential Home"]);
             }
             $mortgage = new Mortgage();
@@ -330,13 +329,13 @@ class LiabilitiesController extends Controller
             $mortgage->monthly_pay = $request->month_pay;
             $mortgage->interest_rate = $request->interest;
             $mortgage->repayment_plan = $request->repay;
-                
+
             $mortgage->isResidecial = $request->residential;
             $mortgage->isAnalytics = ($request->analytics == 'on') ? 1 : 0;
             // $mortgage->target_date = $request->target_date;
             // $mortgage->mortgage_paid = $request->repay;
             // $mortgage->repayment_plan = $request->repay;
-            $mortgage->save(); 
+            $mortgage->save();
             $myaccount = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
             $account_items = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->count();
             $account_detail = GapAccount::calcMortgagesAccount($myaccount, $user);
@@ -360,12 +359,12 @@ class LiabilitiesController extends Controller
         ]);
 
         if($request->pakmamkanknmjkmnzkmnjmnd  ){
-            $this->validate($request, ['creditor' => 'required|max:20']); 
+            $this->validate($request, ['creditor' => 'required|max:20']);
             $dept = Debt::where('user_id', $user->id)->first();
             $dept->details = $request->detail;
             $dept->baseline = $request->open_balance;
             $dept->current = $request->current;
-            $dept->monthly_pay = $request->repayment; 
+            $dept->monthly_pay = $request->repayment;
             $dept->interest_rate = $request->interest;
             $dept->extra = $request->pay_strategy;
             $dept->target_date = $request->target_date;
@@ -374,8 +373,8 @@ class LiabilitiesController extends Controller
             $dept->creditor_name = $request->creditor;
             $dept->description = $request->description;
             $dept->secured_against = $request->secure_against;
-            $dept->save(); 
-        }else{ 
+            $dept->save();
+        }else{
             $mortgage = Mortgage::where('user_id', $user->id)->where('id', $request->sjnxjknsxkjnxijnsxknixncio)->first();
             $mortgage->details = $request->detail;
             $mortgage->open_balance = $request->open_balance;
@@ -385,7 +384,7 @@ class LiabilitiesController extends Controller
             $mortgage->interest_rate = $request->interest;
             $mortgage->extra = $request->pay_strategy;
             $mortgage->target_date = $request->target_date;
-            $mortgage->save(); 
+            $mortgage->save();
         }
         $myaccount = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $account_items = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->count();

@@ -37,6 +37,11 @@ Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailabilit
 Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration');
 Route::post('/mygap/login', 'Auth\GapAutAPI@login');
 
+// Password Reset Routes
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

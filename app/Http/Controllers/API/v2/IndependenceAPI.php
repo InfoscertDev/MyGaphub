@@ -356,32 +356,55 @@ class IndependenceAPI extends Controller
     }
 
 
-    public function updateIncome(Request $request, $id){
-        $user = $request->user();
-        $validator = Validator::make($request->all(), [
-            // 'income_type' => 'required|in:portfolio,non_portfolio',
-            'income_date' => 'nullable|date|before:today'
-        ]);
+    public function updateIncome(Request $request, $id)
+    {
+       try {
+           // Validate request and find income record
+           $user = $request->user();
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-        // if($request->income_type == 'non_portfolio'){
-        //     $validator = Validator::make($request->all(),['income_value' => 'required|numeric']);
-        // }else{
-        //     $validator = Validator::make($request->all(),['portfolio_asset' => 'required|integer']);
-        // }
-        $success = true;
-        $income =  Income::where('user_id', $user->id)->where('id', $id)->first();
-        $income->automated = $request->automated_rate;
-        $income->income_date = $request->income_date;
-        $income->income_frequency = $request->income_frequency;
+           $validator = Validator::make($request->all(), [
+               'income_date' => 'nullable|date|before:today'
+           ]);
 
-        $income->update();
-        Wheel::updateIncomeTile($user);
-        return response()->json(compact('success', 'income'));
+           if ($validator->fails()) {
+               return response()->json($validator->errors()->toJson(), 400);
+           }
+
+           // Find income record
+           $income = Income::where('user_id', $user->id)
+                          ->where('id', $id)
+                          ->firstOrFail();
+
+           // Update only provided fields
+           if ($request->has('automated')) {
+               $income->automated = $request->automated_rate ?? false;
+           }
+
+           if ($request->has('income_date')) {
+               $income->income_date = $request->income_date;
+           }
+
+           if ($request->has('income_frequency')) {
+               $income->income_frequency = $request->income_frequency;
+           }
+
+           $income->save();
+
+           // Update wheel tile
+           Wheel::updateIncomeTile($user);
+
+           return response()->json([
+               'success' => true,
+               'income' => $income
+           ]);
+
+       } catch (\Exception $e) {
+           return response()->json([
+               'success' => false,
+               'message' => 'Failed to update income'
+           ], 500);
+       }
     }
-
     /**
      * Update Non Asset Porrtfolio Income
      *

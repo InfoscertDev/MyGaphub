@@ -25,29 +25,39 @@ class PortfolioApi extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $period = $request->input('period');
+        $timeframe = $request->input('timeframe');
         $current_period = strtotime(date('Y-m') . '-01');
         $from = $request->input('period_from');
         $to = $request->input('period_to');
+        $selected_month = $request->input('month');
 
-        if ($period == '3 Months') {
-            $from = date('Y-m-d', strtotime("-4 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
-        }
+        if ($selected_month) {
+            $month_date = strtotime($selected_month . '-01');
+            $from = date('Y-m-d', $month_date);
+            $to = date('Y-m-t', $month_date);
+        } else {
+            if ($timeframe == '3 Months') {
+                $from = date('Y-m-d', strtotime("-4 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
 
-        if ($period == '6 Months') {
-            $from = date('Y-m-d', strtotime("-7 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
-        }
+            if ($timeframe == '6 Months') {
+                $from = date('Y-m-d', strtotime("-7 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
 
-        if ($period == '1 Year') {
-            $from = date('Y-m-d', strtotime("-13 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            if ($timeframe == '1 Year') {
+                $from = date('Y-m-d', strtotime("-13 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if($from && $to) $from = date('Y-m-d', strtotime($from . '-01'));
+            if($from && $to) $to = date('Y-m-t', strtotime($to . '-01'));
         }
 
         $portfolio = PortfolioAsset::where('user_id', $user->id)
                         ->when($from && $to, function ($query) use ($from, $to) {
-                            return $query->whereBetween('period', [$from, $to]);
+                            return $query->whereBetween('created_at', [$from, $to]);
                         })
                         ->where('isArchive', 0)
                         ->get();
@@ -65,9 +75,10 @@ class PortfolioApi extends Controller
         $previous_from = date('Y-m-d', strtotime("-3 months", $current_period));
         $previous_to = date('Y-m-d', strtotime("-2 months", $current_period));
         $currentRoi = PortfolioHelper::getPreviousRoi($user, $current_from, $current_to);
-        $previousRoi = PortfolioHelper::getPreviousRoi($user, $current_from, $current_to);
+        $previousRoi = PortfolioHelper::getPreviousRoi($user, $previous_from, $previous_to);
 
         $roi_trend = PortfolioHelper::roiTrend($currentRoi, $previousRoi);
+
         $data = compact('roi_watch', 'roi_trend','existing_report','desired_report','global','portfolio_asset');
 
         return response()->json([
@@ -170,12 +181,45 @@ class PortfolioApi extends Controller
     {
         $user = $request->user();
         $archive =  $request->get('archive');
+        $period = $request->input('period');
+        $timeframe = $request->input('timeframe');
+        $current_period = strtotime(date('Y-m') . '-01');
+        $from = $request->input('period_from');
+        $to = $request->input('period_to');
+        $selected_month = $request->input('month');
+
+        if ($selected_month) {
+            $month_date = strtotime($selected_month . '-01');
+            $from = date('Y-m-d', $month_date);
+            $to = date('Y-m-t', $month_date);
+        } else {
+            if ($timeframe == '3 Months') {
+                $from = date('Y-m-d', strtotime("-4 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if ($timeframe == '6 Months') {
+                $from = date('Y-m-d', strtotime("-7 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if ($timeframe == '1 Year') {
+                $from = date('Y-m-d', strtotime("-13 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if($from && $to) $from = date('Y-m-d', strtotime($from . '-01'));
+            if($from && $to) $to = date('Y-m-t', strtotime($to . '-01'));
+        }
+
+        $periods = compact('from', 'to');
 
         if(strtolower($braid) == 'business' || strtolower($braid) == 'risk' || strtolower($braid) == 'appreciating'
             || strtolower($braid) == 'intellectual' || strtolower($braid) == 'depreciating'){
-            $existing = PortfolioHelper::groupPortfolio($user, $braid, $archive)["existing"];
-            $desired = PortfolioHelper::groupPortfolio($user, $braid, $archive)["desired"];
-            $existing_details = PortfolioHelper::existingDetailChart($user, $braid);
+            $existing = PortfolioHelper::groupPortfolio($user, $braid, $archive, $periods)["existing"];
+            $desired = PortfolioHelper::groupPortfolio($user, $braid, $archive, $periods)["desired"];
+            $existing_details = PortfolioHelper::existingDetailChart($user, $braid, $periods);
+
            return  response()->json(compact('existing',  'archive','desired','existing_details'));
         }else{
            return  response()->json(['status'=> false, 'message' => 'Asset Type Not found']);
@@ -190,27 +234,39 @@ class PortfolioApi extends Controller
         $header =  $request->get('header');
         $access =  $request->get('access');
         $period =  $request->get('period');
+        $timeframe =  $request->get('timeframe');
         $account =  $request->get('account');
         $archive =  $request->get('archive');
-        $period = $request->input('period');
         $current_period = strtotime(date('Y-m') . '-01');
         $from = $request->input('period_from');
         $to = $request->input('period_to');
+        $selected_month = $request->input('month');
 
-        if ($period == '3 Months') {
-            $from = date('Y-m-d', strtotime("-4 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
+        if ($selected_month) {
+            $month_date = strtotime($selected_month . '-01');
+            $from = date('Y-m-d', $month_date);
+            $to = date('Y-m-t', $month_date);
+        } else {
+            if ($timeframe == '3 Months') {
+                $from = date('Y-m-d', strtotime("-4 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if ($timeframe == '6 Months') {
+                $from = date('Y-m-d', strtotime("-7 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if ($timeframe == '1 Year') {
+                $from = date('Y-m-d', strtotime("-13 months", $current_period));
+                $to = date('Y-m-d', strtotime("-1 months", $current_period));
+            }
+
+            if($from && $to) $from = date('Y-m-d', strtotime($from . '-01'));
+            if($from && $to) $to = date('Y-m-t', strtotime($to . '-01'));
         }
 
-        if ($period == '6 Months') {
-            $from = date('Y-m-d', strtotime("-7 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
-        }
-
-        if ($period == '1 Year') {
-            $from = date('Y-m-d', strtotime("-13 months", $current_period));
-            $to = date('Y-m-d', strtotime("-1 months", $current_period));
-        }
+        $periods = compact('from', 'to');
 
         if($header){
             // Periodical Helper for updating records
@@ -220,18 +276,22 @@ class PortfolioApi extends Controller
         }
 
         if($asset){
-            $status = true;
-            $asset_finicial = PortfoloAssetRecord::where('user_id', $user->id)
+            $asset_financial = PortfoloAssetRecord::where('user_id', $user->id)
                                 ->when($from && $to, function ($query) use ($from, $to) {
                                     return $query->whereBetween('period', [$from, $to]);
                                 })
                                 ->where('portfolio_asset_id', $asset->id)
                                 ->orderBy('period', 'ASC')->get();
 
-            $asset_finicial_record = PortfolioHelper::assetFinancialChart($asset_finicial);
-            $asset_finicial_detail = PortfolioHelper::assetFinancialDetail($user, $asset,$asset_finicial);
+            $asset_financial_record = PortfolioHelper::assetFinancialChart($asset_financial);
+            $asset_financial_detail = PortfolioHelper::assetFinancialDetail($user, $asset,$asset_financial);
+            $data = compact('asset', 'archive','asset_financial','asset_financial_detail','asset_financial_record');
 
-           return  response()->json(compact('status','asset', 'archive','asset_finicial','asset_finicial_detail','asset_finicial_record'));
+           return  response()->json([
+                'status' => true,
+                'data' => $data,
+             'message' => 'Asset retrievesuccesfully'
+           ], 200);
 
         }else{
            return  response()->json(['status'=> false, 'message' => 'Asset Type Not found']);
@@ -363,6 +423,7 @@ class PortfolioApi extends Controller
     {
         $user = $request->user();
 
+        // Retrieve the portfolio for the authenticated user
         $portfolio = PortfolioAsset::where('user_id', $user->id)
             ->where('id', $id)
             ->first();
@@ -370,26 +431,29 @@ class PortfolioApi extends Controller
         if (!$portfolio) {
             return response()->json([
                 'status' => false,
-                'message' => "Portfolio asset not found"
+                'message' => "Portfolio asset not found",
             ], 404);
         }
 
         $name = $portfolio->name;
-        $relatedRecordsCount = PortfoloAssetRecord::where('user_id', $user->id)
-                            ->where('portfolio_asset_id', $portfolio->id)->count();
 
-        if ($relatedRecordsCount <= 0) {
-            $portfolio->delete();
-            return response()->json([
-                'status' => true,
-                'message' => "Portfolio deleted successfully.",
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => "The \"{$name}\" record cannot be deleted because it is associated with {$relatedRecordsCount} other record(s). You can archive it instead.",
-            ], 400);
-        }
+        // Count and delete related records
+        $relatedRecordsCount = PortfoloAssetRecord::where('user_id', $user->id)
+            ->where('portfolio_asset_id', $portfolio->id)
+            ->count();
+
+        PortfoloAssetRecord::where('user_id', $user->id)
+            ->where('portfolio_asset_id', $portfolio->id)
+            ->delete();
+
+        // Delete the portfolio
+        $portfolio->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => "Portfolio and {$relatedRecordsCount} related record(s) deleted successfully.",
+        ], 200);
     }
+
 
 }

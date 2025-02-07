@@ -12,9 +12,16 @@ class IncomeAccount extends Model
     protected $table = 'income_accounts';
 
 
-    // protected $fillable = [
-    //     'amount', 'income_currency', 'income_name'
-    // ];
+    protected $fillable = [
+        'amount', 'income_currency', 'income_name',
+        'automated',
+        'income_date',
+        'income_frequency',
+    ];
+
+    protected $attributes = [
+        'automated' => false
+    ];
 
     protected $appends = [
         'assigned_income'

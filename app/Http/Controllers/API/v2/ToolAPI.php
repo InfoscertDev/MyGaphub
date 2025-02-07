@@ -21,6 +21,7 @@ use App\Asset\GapCurrency;
 use App\Helper\PersonalAssistance;
 use App\Models\UserFeedback;
 use App\Mail\UserFeedback as MailUserFeedback;
+use App\Models\Enquiry;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Notification;
 use App\Models\GaphubGuide;
@@ -99,6 +100,43 @@ class ToolAPI extends Controller
         $msg = "Your Feedback has been submitted";
         return response()->json([
             'success', $msg, 'feedback' => $feedback
+        ], 201);
+    }
+
+    public function sendHelpEnquiry(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'    => 'required',
+            'email'   => 'required|email',
+            'phone'   => [
+                'required',
+                'regex:/^\+?[0-9]{7,15}$/'
+            ],
+            'subject' => 'nullable',
+            'message' => 'required|min:10|max:512'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toJson()
+            ], 400);
+        }
+
+        $user = new \stdClass();
+        $user->name  = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->phone;
+
+        $enquiry = Enquiry::create($request->all());
+
+        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $enquiry));
+
+        $msg = "Your enquiry has been submitted";
+        return response()->json([
+            'status'  => 'success',
+            'message' => $msg,
+            'enquiry' => $enquiry
         ], 201);
     }
 

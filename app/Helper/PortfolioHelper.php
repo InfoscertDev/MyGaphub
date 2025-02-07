@@ -68,7 +68,7 @@ class PortfolioHelper {
         return compact('investment');
     }
 
-    public static function activateBRAID($user, $type,$portfolio){
+    public static function activateBRAID($user, $type, $portfolio){
         // BRAID
         $business = []; $risk = []; $appreciate = [];
         $intellect = []; $depreciate = [];
@@ -83,7 +83,6 @@ class PortfolioHelper {
             if($asset->asset_class == 'intellectual' && $asset->asset_category == $type) array_push($intellect,$asset) ;
             if($asset->asset_class == 'depreciating' && $asset->asset_category == $type) array_push($depreciate,$asset) ;
         }
-        // info(array_column($business, 'asset_value'));
         // Bussiness
         $business = PortfolioHelper::convertAssetValue($user,$business);
         $business_value = array_sum(array_column($business, 'converted_asset_value'));
@@ -93,7 +92,6 @@ class PortfolioHelper {
         $risk = PortfolioHelper::convertAssetValue($user,$risk);
         $risk_value = array_sum(array_column($risk, 'converted_asset_value'));
         $risk_income = array_sum(array_column($risk, 'converted_monthly_roi'));
-        // var_dump($risk_income);
         // Appreciating
         $appreciate = PortfolioHelper::convertAssetValue($user,$appreciate);
         $appreciate_value = array_sum(array_column($appreciate, 'converted_asset_value'));
@@ -242,12 +240,22 @@ class PortfolioHelper {
         return (($current - $previous) / $previous) * 100;
     }
 
-    public static function groupPortfolio($user, $type, $archive){
+    public static function groupPortfolio($user, $type, $archive, $period=[]){
         $existing = []; $desired = [];
         if ($archive) {
-            $portfolio_assets = PortfolioAsset::where('user_id', $user->id)->where('asset_category', 'existing')->where('isArchive', 1)->where('asset_class', $type)->latest()->get();
+            $portfolio_assets = PortfolioAsset::where('user_id', $user->id)->where('asset_category', 'existing')
+                    ->where('isArchive', 1)->where('asset_class', $type)
+                    ->when( isset($period['from']) && isset($period['to']), function ($query) use ($period) {
+                        return $query->whereBetween('created_at', [$period['from'], $period['to']]);
+                    })
+                    ->latest()->get();
         }else{
-            $portfolio_assets = PortfolioAsset::where('user_id', $user->id)->where('isArchive', 0)->where('asset_class', $type)->latest()->get();
+            $portfolio_assets = PortfolioAsset::where('user_id', $user->id)->where('isArchive', 0)
+                    ->where('asset_class', $type)
+                    ->when( isset($period['from']) && isset($period['to']), function ($query) use ($period) {
+                        return $query->whereBetween('created_at', [$period['from'], $period['to']]);
+                    })
+                    ->latest()->get();
         }
         foreach($portfolio_assets as $asset){
             if($asset->asset_category == 'existing') array_push($existing, $asset);
@@ -285,106 +293,116 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
-        // $chart_assets = array_slice($financials->toArray(), -4);
+        // Get the last 6 records
+        $latest_financials = array_slice($financials->toArray(), -6);
 
-        foreach($financials as $key => $finicial) {
-            if($key <= 3){
-                array_push($expenditure_labels, date('M', strtotime($finicial->period) ). ' '. date('Y', strtotime($finicial->period)) );
-                if($convert){
-                    // info([$asset->asset_currency,$finicial->revenue, $asset->automated, GapExchangeHelper::convert_currency($user, $asset->asset_currency,$finicial->revenue, $asset->automated)]);
-                    array_push($revenue,GapExchangeHelper::convert_currency($user, $asset->asset_currency,$finicial->revenue, $asset->automated));
-                    array_push($expenditure, GapExchangeHelper::convert_currency($user, $asset->asset_currency,$finicial->expenditure, $asset->automated) );
-                    array_push($net,GapExchangeHelper::convert_currency($user, $asset->asset_currency,$finicial->net_income, $asset->automated));
-                    array_push($asset_values, GapExchangeHelper::convert_currency($user, $asset->asset_currency,$finicial->amount, $asset->automated));
-                }else{
-                    array_push($revenue, $finicial->revenue);
-                    array_push($expenditure, $finicial->expenditure);
-                    array_push($net, $finicial->net_income);
-                    array_push($asset_values, $finicial->amount);
-                }
+        foreach($latest_financials as $finicial) {
+            array_push($expenditure_labels, date('M', strtotime($finicial['period']) ). ' '. date('Y', strtotime($finicial['period'])) );
+            if($convert){
+                array_push($revenue, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['revenue'], $asset->automated));
+                array_push($expenditure, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['expenditure'], $asset->automated));
+                array_push($net, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['net_income'], $asset->automated));
+                array_push($asset_values, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['amount'], $asset->automated));
+            } else {
+                array_push($revenue, $finicial['revenue']);
+                array_push($expenditure, $finicial['expenditure']);
+                array_push($net, $finicial['net_income']);
+                array_push($asset_values, $finicial['amount']);
             }
-        };
+        }
 
-        return compact('expenditure_labels', 'asset_values', 'revenue', 'expenditure','net');
+        return compact('expenditure_labels', 'asset_values', 'revenue', 'expenditure', 'net');
     }
 
+
     public static function assetFinancialChart($assets){
-        $expenditure_labels = [];$management = [];
-        $management = []; $taxes = [];
+        $expenditure_labels = [];
+        $management = [];
+        $taxes = [];
         $maintenance = [];
         $others = [];
         $revenue = [];
         $expenditure = [];
         $net = [];
 
-        // $chart_assets = array_slice($assets->toArray(), -4);
+        // Get the last 6 records
+        $latest_assets = array_slice($assets->toArray(), -6);
 
-        foreach($assets as $key => $finicial) {
-            if($key <= 3){
-                array_push($expenditure_labels, date('M', strtotime($finicial->period) ). ' '. date('Y', strtotime($finicial->period)) );
-                array_push($management, $finicial->management);
-                array_push($taxes, $finicial->taxes);
-                array_push($maintenance, $finicial->maintenance);
-                array_push($others, $finicial->others);
-            }
-            array_push($revenue, $finicial->revenue);
-            array_push($expenditure, $finicial->expenditure);
-            array_push($net, $finicial->net_income);
-        };
+        foreach($latest_assets as $finicial) {
+            array_push($expenditure_labels, date('M', strtotime($finicial['period']) ). ' '. date('Y', strtotime($finicial['period'])) );
+            array_push($management, $finicial['management']);
+            array_push($taxes, $finicial['taxes']);
+            array_push($maintenance, $finicial['maintenance']);
+            array_push($others, $finicial['others']);
+
+            array_push($revenue, $finicial['revenue']);
+            array_push($expenditure, $finicial['expenditure']);
+            array_push($net, $finicial['net_income']);
+        }
+
         $curriculum = [array_sum($revenue), array_sum($expenditure), array_sum($net)];
 
-        return compact('expenditure_labels', 'management', 'taxes', 'maintenance','others','curriculum');
+        return compact('expenditure_labels', 'management', 'taxes', 'maintenance', 'others', 'curriculum');
     }
 
-    public static function existingDetailChart($user, $braid = ''){
+
+    public static function existingDetailChart($user, $braid = '', $periods = [])
+    {
         $existing = PortfolioAsset::join('portfolo_asset_records','portfolio_assets.id', '=','portfolo_asset_records.portfolio_asset_id')
                         ->where('portfolio_assets.user_id', $user->id)
                         ->where('portfolio_assets.asset_class', $braid)
+                        ->when(isset($periods['from']) && isset($periods['to']), function ($query) use ($periods) {
+                            return $query->whereBetween('period', [$periods['from'], $periods['to']]);
+                        })
                         ->orderBy('period', 'DESC')->get();
 
-        $labels = [];  $label_asset = [];
-        $incomes = []; $values = [];
+        $labels = [];
+        $label_asset = [];
+        $incomes = [];
+        $values = [];
         $period = [];
-        // array_push($period, $existing[0]->period);
-        $label = ''; $amount = 0; $income = 0;
-
-        for ($i = 1; $i < 6; $i++) {
-            array_push($label_asset, date('F Y', strtotime("-$i month"))) ;
-        }
+        $current_period_amount = 0;
+        $current_period_income = 0;
 
         foreach($existing as $key => $asset){
-            $expenditure = $asset->management + $asset->taxes + $asset->maintenance +  $asset->others;
-            $net_income = $asset->revenue - $expenditure;
-            // info([$asset->id, $asset->net_income]);
-            if($net_income == 0 && $asset->net_income) $net_income = $asset->net_income;
+            if(count($period) < 6){
+                $period_date = strtotime($asset->period);
 
-            $current_amount = GapExchangeHelper::convert_currency($user, $asset->asset_currency,$asset->amount, $asset->automated);
-            $current_net_income = GapExchangeHelper::convert_currency($user, $asset->asset_currency,$net_income, $asset->automated);
-            if(end($period) == $asset->period){
-                $amount = $amount + $current_amount;
-                $income = $income + $current_net_income;
-                $values[count( $values ) - 1] = $amount;
-                $incomes[count( $incomes ) - 1] = $income;
-            }else{
-                if(count($period) < 5){
-                    $label = ''; $amount = 0; $income = 0;
-                    $amount = $amount + $current_amount;
-                    $income = $income + $current_net_income;
-                    $label  = date('M', strtotime($asset->period) ). ' '. date('Y', strtotime($asset->period));
+                if(end($period) != $asset->period) {
+                    if($current_period_amount > 0) {
+                        $values[] = $current_period_amount;
+                        $incomes[] = $current_period_income;
+                    }
 
-                    array_push($values,  $amount);
-                    array_push($labels, $label);
-                    array_push($incomes,  $income);
+                    array_push($label_asset, date('F Y', $period_date));
+                    array_push($labels, date('M Y', $period_date));
                     array_push($period, $asset->period);
+
+                    $current_period_amount = 0;
+                    $current_period_income = 0;
                 }
+
+                $expenditure = $asset->management + $asset->taxes + $asset->maintenance + $asset->others;
+                $net_income = $asset->revenue - $expenditure;
+                if($net_income == 0 && $asset->net_income) $net_income = $asset->net_income;
+
+                $current_amount = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->amount, $asset->automated);
+                $current_net_income = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $net_income, $asset->automated);
+
+                $current_period_amount += $current_amount;
+                $current_period_income += $current_net_income;
             }
         }
 
+        if($current_period_amount > 0) {
+            $values[] = $current_period_amount;
+            $incomes[] = $current_period_income;
+        }
 
         $asset_incomes = $incomes;
         $asset_values = $values;
 
-        return compact('labels', 'label_asset','asset_incomes', 'asset_values');
+        return compact('labels', 'label_asset', 'asset_incomes', 'asset_values');
     }
 
     public static function accountBackground(){
@@ -455,7 +473,7 @@ class PortfolioHelper {
     public static function addNewRecordPeriod($user, $asset, $header, $access, $period){
         $last_asset_record = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
                                  ->orderBy('period', 'DESC')->first();
-        info([ $last_asset_record ]);
+        // info([ $last_asset_record ]);
 
         if ($header == 'ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn') {
             if($access == 'current_ajjaknjkxbnjnksxknmcfaz'){
