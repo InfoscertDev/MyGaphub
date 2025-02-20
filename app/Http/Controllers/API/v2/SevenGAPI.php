@@ -158,11 +158,14 @@ class SevenGAPI extends Controller
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
+
+        // List Validated SevenG
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
                     ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ];
 
         AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
         $stepBack = $this->stepBack($user, $mains);
+
         $steps = $stepBack['steps'];
         $backgrounds = $stepBack['backgrounds'];
         $data = compact('alpha','beta','credit','dept','education', 'freedom',
@@ -408,68 +411,117 @@ class SevenGAPI extends Controller
         return response()->json(['error' => 'Can not Save Bespoke' ]);
     }
 
-    public function updateBespoke(Request $request, $id){
-        $user =  $request->user();
-        $bespoke = BespokeKPI::where('user_id',$user->id)->where('id', $id)->first();
-        if($bespoke && !$request->account){
-            if($bespoke->bespoke_type =='saveup'){
-                $validator = Validator::make($request->all(), [
-                    'target' => 'required',
-                    'current' => 'required',
-                ]);
-                if($validator->fails()){
-                    return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
-                }
-                $bespoke->current = $request->current;
-                $bespoke->target = $request->target;
-                $bespoke->extra = $request->strategy;
-                $bespoke->save();
-                 return response()->json(['success' => 'Bespoke saved succesfully']);
-            }
-            elseif($bespoke->bespoke_type =='dept'){
-                $validator = Validator::make($request->all(),[
-                    'baseline' => 'required',
-                    'current' => 'required',
-                ]);
-                if($validator->fails()){
-                    return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
-                }
-                $bespoke->current = $request->current;
-                $bespoke->baseline = $request->baseline;
-                $bespoke->extra = $request->strategy;
-                $bespoke->save();
-                 return response()->json(['success' => 'Bespoke saved succesfully']);
-            }
-        }elseif($request->account){
-            if($request->account == "aznjzbhxjnsxjbnxhsjgczbhzbvcjhbxvnbjhjzcb"){
-                $this->validate($request,  [
-                    'target' => 'required',
-                    'current' => 'required',
-                ]);
-                $cash = CashAccount::where('user_id',$user->id)->where('id', $id)->first();
-                $cash->current = $request->current;
-                $cash->target = $request->target;
-                $cash->extra = $request->strategy;
-                $cash->save();
-            }
-            if($request->account == "skjnaznkszxjnszjnzjnzjnmhjzbnhjxvgyzbjhbxc"){
-                $this->validate($request,  [
-                    'baseline' => 'required',
-                    'current' => 'required',
-                ]);
-                $liability = LiabilityAccount::where('user_id',$user->id)->where('id', $id)->first();
-                $liability->current = $request->current;
-                $liability->baseline = $request->baseline;
-                $liability->extra = $request->strategy;
-                $liability->save();
+    public function updateBespoke(Request $request, $id)
+    {
+        $user = $request->user();
+
+        // If no account parameter is provided, update a BespokeKPI record.
+        if (!$request->account) {
+            $bespoke = BespokeKPI::where('user_id', $user->id)
+                                  ->where('id', $id)
+                                  ->first();
+            // info(['Upfate Bespoke', $bespoke->id,$bespoke->current , $bespoke->bespoke_type, $request->all()]);
+            if (!$bespoke) {
+                return response()->json(['error' => 'Bespoke not found'], 404);
             }
 
-            return  response()->json(['success' => 'Bespoke KPI saved successfully']);
-        }else{
-             return response()->json(['error' => 'Bespoke is not found']);
+            if ($bespoke->bespoke_type == 'saveup') {
+                $validator = Validator::make($request->all(), [
+                    'target'  => 'required',
+                    'current' => 'required',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors()->toJson()
+                    ], 400);
+                }
+
+                $bespoke->current = $request->current;
+                $bespoke->target  = $request->target;
+                $bespoke->extra   = $request->strategy;
+                $bespoke->kpi_details   = $request->details;
+                $bespoke->save();
+
+                // info($bespoke);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Bespoke saved successfully',
+                    'data' => $bespoke
+                ]);
+            } elseif ($bespoke->bespoke_type == 'dept') {
+                $validator = Validator::make($request->all(), [
+                    'baseline' => 'required',
+                    'current'  => 'required',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors()->toJson()
+                    ], 400);
+                }
+
+                $bespoke->current   = $request->current;
+                $bespoke->baseline  = $request->baseline;
+                $bespoke->extra     = $request->strategy;
+                $bespoke->kpi_details   = $request->details;
+                $bespoke->save();
+
+                return response()->json(['message' => 'Bespoke saved successfully']);
+            }
         }
-        return $bespoke;
+        // Otherwise, update an account record based on the account code.
+        else {
+            if ($request->account == "aznjzbhxjnsxjbnxhsjgczbhzbvcjhbxvnbjhjzcb") {
+                $this->validate($request, [
+                    'target'  => 'required',
+                    'current' => 'required',
+                ]);
+
+                $cash = CashAccount::where('user_id', $user->id)
+                                   ->where('id', $id)
+                                   ->first();
+
+                if (!$cash) {
+                    return response()->json(['error' => 'Cash account not found'], 404);
+                }
+
+                $cash->current = $request->current;
+                $cash->target  = $request->target;
+                $cash->extra   = $request->strategy;
+                $cash->save();
+
+                return response()->json(['message' => 'Bespoke KPI saved successfully']);
+            }
+
+            if ($request->account == "skjnaznkszxjnszjnzjnzjnmhjzbnhjxvgyzbjhbxc") {
+                $this->validate($request, [
+                    'baseline' => 'required',
+                    'current'  => 'required',
+                ]);
+
+                $liability = LiabilityAccount::where('user_id', $user->id)
+                                             ->where('id', $id)
+                                             ->first();
+
+                if (!$liability) {
+                    return response()->json(['error' => 'Liability account not found'], 404);
+                }
+
+                $liability->current   = $request->current;
+                $liability->baseline  = $request->baseline;
+                $liability->extra     = $request->strategy;
+                $liability->save();
+
+                return response()->json(['message' => 'Bespoke KPI saved successfully']);
+            }
+        }
+
+        return response()->json(['error' => 'Bespoke is not found'], 404);
     }
+
 
     public function createBudget(Request $request)
     {
@@ -567,10 +619,12 @@ class SevenGAPI extends Controller
 
         $income = $calculator->other_income;
         $seed_cost = $financial['cost'];
-        $expenditure = ($seed_cost * 12) * 100 ;
+        $expenditure = ($seed_cost * 12) * 100;
         $shortfall = $seed_cost - $income;
-        $average = (($shortfall * 12) * 100) / $calculator->roce ;
-        $suggested_investment = $calculator->roce ? ($expenditure / $calculator->roce) : $calculator->roce;
+
+        // Avoid division by zero
+        $average = ($calculator->roce != 0) ? (($shortfall * 12) * 100) / $calculator->roce : 0;
+        $suggested_investment = ($calculator->roce != 0) ? ($expenditure / $calculator->roce) : 0;
 
         if($calculator->investment){
             $time_finiancial = ($average / $calculator->investment ) / 12 ;

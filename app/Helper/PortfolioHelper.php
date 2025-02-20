@@ -293,11 +293,19 @@ class PortfolioHelper {
         $expenditure = [];
         $net = [];
 
+        // Initialize percentage changes array
+        $percentage_changes = [
+            'revenue' => 0,
+            'expenditure' => 0,
+            'net' => 0
+        ];
+
         // Get the last 6 records
         $latest_financials = array_slice($financials->toArray(), -6);
 
         foreach($latest_financials as $finicial) {
             array_push($expenditure_labels, date('M', strtotime($finicial['period']) ). ' '. date('Y', strtotime($finicial['period'])) );
+
             if($convert){
                 array_push($revenue, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['revenue'], $asset->automated));
                 array_push($expenditure, GapExchangeHelper::convert_currency($user, $asset->asset_currency, $finicial['expenditure'], $asset->automated));
@@ -311,9 +319,29 @@ class PortfolioHelper {
             }
         }
 
-        return compact('expenditure_labels', 'asset_values', 'revenue', 'expenditure', 'net');
-    }
+        // Calculate percentage changes if we have at least 2 records
+        if (count($revenue) >= 2) {
+            $latest_idx = count($revenue) - 1;
+            $previous_idx = $latest_idx - 1;
 
+            // Calculate percentage change for revenue
+            if ($revenue[$previous_idx] != 0) {
+                $percentage_changes['revenue'] = (($revenue[$latest_idx] - $revenue[$previous_idx]) / abs($revenue[$previous_idx])) * 100;
+            }
+
+            // Calculate percentage change for expenditure
+            if ($expenditure[$previous_idx] != 0) {
+                $percentage_changes['expenditure'] = (($expenditure[$latest_idx] - $expenditure[$previous_idx]) / abs($expenditure[$previous_idx])) * 100;
+            }
+
+            // Calculate percentage change for net
+            if ($net[$previous_idx] != 0) {
+                $percentage_changes['net'] = (($net[$latest_idx] - $net[$previous_idx]) / abs($net[$previous_idx])) * 100;
+            }
+        }
+
+        return compact('expenditure_labels', 'asset_values', 'revenue', 'expenditure', 'net', 'percentage_changes');
+    }
 
     public static function assetFinancialChart($assets){
         $expenditure_labels = [];

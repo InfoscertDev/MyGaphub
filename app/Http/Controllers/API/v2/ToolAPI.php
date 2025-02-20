@@ -124,7 +124,7 @@ class ToolAPI extends Controller
         }
 
         $user = new \stdClass();
-        $user->name  = $request->name;
+        $user->firstname  = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
 

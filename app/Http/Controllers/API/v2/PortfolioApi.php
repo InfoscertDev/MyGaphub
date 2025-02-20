@@ -284,7 +284,7 @@ class PortfolioApi extends Controller
                                 ->orderBy('period', 'ASC')->get();
 
             $asset_financial_record = PortfolioHelper::assetFinancialChart($asset_financial);
-            $asset_financial_detail = PortfolioHelper::assetFinancialDetail($user, $asset,$asset_financial);
+            $asset_financial_detail = PortfolioHelper::assetFinancialDetail($user, $asset, $asset_financial);
             $data = compact('asset', 'archive','asset_financial','asset_financial_detail','asset_financial_record');
 
            return  response()->json([
