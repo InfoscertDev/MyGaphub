@@ -11,6 +11,8 @@
 |
 */
 // {!! Form::open(['route' => ['contact_us'], 'method' => 'POST', 'role'=>"form", 'class'=>"contact", 'name'=>"contact"]) !!}
+
+use Admin\MarketOpportunityController;
 use App\Models\Asset\SeedBudgetAllocation;
 
 Route::get('/', function () { return  redirect('/login');  });
@@ -234,6 +236,13 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::get('/emails/welcome', 'Admin\SevenGComment@welcome')->name('gap.emails.welcome');
         Route::get('/emails/recommendation', 'Admin\SevenGComment@recommendation')->name('gap.emails.recommendation');
         Route::post('/emails', 'Admin\SevenGComment@store_emails')->name('store.emails');
+
+        // Market Oppourtunity
+        Route::resource('market-opportunities', 'Admin\MarketOpportunityController');
+        Route::put('market-opportunities/{marketOpportunity}/toggle-publish', ['Admin\MarketOpportunityController', 'togglePublish'])
+            ->name('market-opportunities.toggle-publish');
+        Route::post('market-opportunities/update-order', ['Admin\MarketOpportunityController', 'updateOrder'])
+            ->name('market-opportunities.update-order');
     });
 });
 

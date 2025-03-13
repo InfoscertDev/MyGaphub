@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class MarketOpportunity extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'banner_image',
+        'button_text',
+        'destination_link',
+        'is_published',
+        'display_order'
+    ];
+
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+}

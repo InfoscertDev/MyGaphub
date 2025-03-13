@@ -45,7 +45,7 @@ class IndependenceAPI extends Controller
             'pay_type' => 'required',
             'cover_start' => 'required|date|before:yesterday|before_or_equal:cover_end',
             'cover_end' => 'required|date',
-            'document'=>'required',
+            'document'=>'nullable|file',
         ]);
 
         if($validator->fails()){

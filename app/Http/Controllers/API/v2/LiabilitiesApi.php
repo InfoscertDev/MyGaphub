@@ -263,10 +263,10 @@ class LiabilitiesApi extends Controller
             'creditor' => 'required|max:50',
             'description' => 'required',
             'secure_against' => 'required',
-            'open_bal' => 'required|integer|min:0',
-            'current_bal' => 'required|integer|min:0',
-            'interest' => 'required|integer',
-            'month_pay' => 'required|integer|min:0'
+            'open_bal' => 'required|numeric|min:0',
+            'current_bal' => 'required|numeric|min:0',
+            'interest' => 'required|numeric',
+            'month_pay' => 'required|numeric|min:0'
         ]);
 
         if($validator->fails()){

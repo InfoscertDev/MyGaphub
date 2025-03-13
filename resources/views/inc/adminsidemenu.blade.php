@@ -26,11 +26,21 @@
         </li>
         <div class="seperate"></div>
          <h6 class="list-group-head">GAPhub Projects</h6>
-        <li class="list-item {{ Request::is('gapadmin/products') ? 'active' : '' }}">
-            <a href="{{ route('gap.products') }}" class="{{ Request::is('gapadmin/products') ? 'txt-primary' : '' }}">
-               <span  class="bold">Products</span>
-            </a>
-        </li>
+         <li class="list-item {{ Request::is('gapadmin/products') ? 'active' : '' }}">
+             <a href="{{ route('gap.products') }}" class="{{ Request::is('gapadmin/products') ? 'txt-primary' : '' }}">
+                <span  class="bold">Products</span>
+             </a>
+         </li>
+         <li class="list-item {{ Request::is('gapadmin/market-opportunities') ? 'active' : '' }}">
+             <a href="{{ route('market-opportunities.index') }}" class="{{ Request::is('gapadmin/market-opportunities') ? 'txt-primary' : '' }}">
+                <span  class="bold">Market Opportunities</span>
+             </a>
+         </li>
+         <li class="list-item {{ Request::is('gapadmin/products') ? 'active' : '' }}">
+             <a href="{{ route('gap.products') }}" class="{{ Request::is('gapadmin/products') ? 'txt-primary' : '' }}">
+                <span  class="bold">Financial Intelligent</span>
+             </a>
+         </li>
         <div class="seperate"></div>
         <h6 class="list-group-head">Site Options</h6>
         <li class="list-item {{ Request::is('gapadmin/preference/exchange') ? 'active' : '' }}">

@@ -59,14 +59,16 @@ class LoginController extends Controller
         'email'   => 'required|email',
         'password' => 'required|min:6'
       ]);
-       
+
       // Attempt to log the user in
       if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+        info('Success');
         // if successful, then redirect to their intended location
          return redirect()->intended($this->redirectTo);
-      }  
+      }
+      info('Failed');
       // if unsuccessful, then redirect back to the login with the form data
-      return redirect('/gapadmin')->withInput($request->only('email', 'remember'));
+      return redirect('/gapadmin', 422)->withInput($request->only('email', 'remember'));
     }
     /**
      * Get the guard to be used during authentication.
@@ -82,5 +84,5 @@ class LoginController extends Controller
     {
         Auth::guard('admin')->logout();
         return redirect('/login');
-    } 
+    }
 }
