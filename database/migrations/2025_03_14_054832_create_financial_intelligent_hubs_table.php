@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMarketOpportunitiesTable extends Migration
+class CreateFinancialIntelligentHubsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateMarketOpportunitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('market_opportunities', function (Blueprint $table) {
+        Schema::create('financial_intelligent_hubs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('category');
             $table->string('banner_image');
-            $table->string('button_text');
-            $table->string('destination_link');
+            $table->string('video_link');
             $table->boolean('is_published')->default(false);
             $table->integer('display_order')->nullable();
             $table->timestamps();
@@ -33,6 +33,6 @@ class CreateMarketOpportunitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('market_opportunities');
+        Schema::dropIfExists('financial_intelligent_hubs');
     }
 }

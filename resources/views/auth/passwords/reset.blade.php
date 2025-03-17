@@ -4,23 +4,23 @@
 <div class="wd-f log-overlay hg-f">
     <div class="py-4">
         <div class="gap-center-sm">
-            <div class="form-log form-reg card"> 
+            <div class="form-log form-reg card">
                 <div class="gap-header mb-3">
                     <h3 class="mx-1"><b>{{ __('Reset Password') }}</b></h3>
                     <span class="line-step" style="width: 30%"></span>
                     {{-- <span class="line-step2"></span> --}}
-                </div> 
+                </div>
                 <div class="gap-body px-2">
                     <form method="POST" id="reset_form" action="{{ route('password.update') }}">
                         @csrf
 
                         <input type="hidden" name="token" value="{{ $token }}">
-                        
+
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
-                        @endif 
+                        @endif
                         <div class="form-group">
                             {{-- <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label> --}}
                             <div class="">
@@ -61,7 +61,7 @@
                         </div>
                         <div class="form-group mb-4">
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary">  {{ __('Reset Password') }} </button>
+                                <button type="submit" class="btn btn-pry">  {{ __('Reset Password') }} </button>
                             </div>
                         </div>
                     </form>
@@ -91,16 +91,16 @@
 
             let passwordVal = document.getElementById('password'),
                 valide = document.getElementsByClassName('passwordStrength')[0];
-           
+
             if(passwordVal.value.length == 0){
                 valide.innerHTML = 'Your password should have a mixture of numbers, letters (uppercase and lowercase) with a special character.';
             }else if(!lowerPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One lowercase letter is required';
             }else if(!upperPattern.test(passwordVal.value)){
-                valide.innerHTML = 'One uppercase letter is required'; 
+                valide.innerHTML = 'One uppercase letter is required';
             }else if(!numPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One number is required';
-            }else if(!nonCharPattern.test(passwordVal.value)){ 
+            }else if(!nonCharPattern.test(passwordVal.value)){
                 valide.innerHTML = 'One special character is required';
             }else if(passwordVal.value.length < 8){
                 valide.innerHTML = 'Minimum of 8 characters is required';
@@ -118,9 +118,8 @@
             }
             return valPassword();
         });
-        
+
     });
 
 </script>
 @endsection
- 
