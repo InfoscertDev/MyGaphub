@@ -62,4 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail,JWTSubject
     {
         $this->notify(new VerifyEmail); // my notification
     }
+
+
 }

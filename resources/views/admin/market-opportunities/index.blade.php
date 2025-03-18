@@ -56,7 +56,7 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group">
+                                <div class="btn-group" style="display: flex; gap: 8px;">
                                     <a href="{{ route('market-opportunities.edit', $opportunity) }}"
                                     class="btn btn-sm btn-outline-primary">
                                         Edit

@@ -167,15 +167,22 @@ class ToolAPI extends Controller
         }
 
         if($request->hasFile('photo')){
-             $validator = Validator::make($request->all(),['photo'=>'min: 5|max:5000|mimes:jfif,jpeg,jpg,png']);
+             $validator = Validator::make($request->all(),
+             [
+                'photo'=>'min: 5|max:5000|mimes:jfif,jpeg,jpg,png'
+            ]);
+
             if($validator->fails()){
                 return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
+
             $fileType = $request->file('photo')->getClientMimeType();
             $ext = $request->file('photo')->getClientOriginalExtension();
             $fileNameStore = sha1(time()). rand(100000, 999999) . '.'.$ext;
             $photo = $request->file('photo')->storeAs('public/user', $fileNameStore);
+            
         }
+
         $user->image =  $photo;
         $user->save();
         return response()->json($user);

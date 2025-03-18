@@ -21,4 +21,12 @@ class MarketOpportunity extends Model
     protected $casts = [
         'is_published' => 'boolean',
     ];
+
+    protected $appends = [
+        'banner_url'
+    ];
+
+    public function getBannerUrlAttribute(){
+        return asset('/product/banners/'. str_replace('public', 'storage', $this->banner_image));
+    }
 }

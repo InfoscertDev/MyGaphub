@@ -23,6 +23,15 @@ class FinancialIntelligentHub extends Model
         'is_published' => 'boolean',
     ];
 
+    protected $appends = [
+        'banner_url'
+    ];
+
+
+    public function getBannerUrlAttribute(){
+        return asset('/assets/'. str_replace('public', 'storage', $this->banner_image));
+    }
+
     /**
      * Extract video ID from YouTube link
      */

@@ -53,7 +53,7 @@ class FinancialIntelligentHubController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'banner_image' => 'required|image|mimes:jpeg,png,jpg',
+            'banner_image' => 'required|image|mimes:jpeg,png,jpg|dimensions:width=253,height=142',
             'video_link' => 'required|url',
             'is_published' => 'boolean',
         ]);
@@ -68,7 +68,7 @@ class FinancialIntelligentHubController extends Controller
             //     ->encode('jpg', 90);
 
             $filename = 'video-hub-' . time() . '.jpg';
-            Storage::disk('public')->put('videos/' . $filename, (string) $image);
+            Storage::disk('public/product/')->put('videos/' . $filename, (string) $image);
 
             $validated['banner_image'] = 'videos/' . $filename;
         }
@@ -154,8 +154,8 @@ class FinancialIntelligentHubController extends Controller
         // Handle image upload
         if ($request->hasFile('banner_image')) {
             // Delete old image
-            if ($video->banner_image && Storage::disk('public')->exists($video->banner_image)) {
-                Storage::disk('public')->delete($video->banner_image);
+            if ($video->banner_image && Storage::disk('public/product/')->exists($video->banner_image)) {
+                Storage::disk('public/product/')->delete($video->banner_image);
             }
 
             $image = $request->file('banner_image');
@@ -166,7 +166,7 @@ class FinancialIntelligentHubController extends Controller
                 ->encode('jpg', 90);
 
             $filename = 'video-hub-' . time() . '.jpg';
-            Storage::disk('public')->put('videos/' . $filename, (string) $processedImage);
+            Storage::disk('public/product/')->put('videos/' . $filename, (string) $processedImage);
 
             $validated['banner_image'] = 'videos/' . $filename;
         }
@@ -192,8 +192,8 @@ class FinancialIntelligentHubController extends Controller
         }
 
         // Delete the banner image
-        if ($video->banner_image && Storage::disk('public')->exists($video->banner_image)) {
-            Storage::disk('public')->delete($video->banner_image);
+        if ($video->banner_image && Storage::disk('public/product/')->exists($video->banner_image)) {
+            Storage::disk('public/product/')->delete($video->banner_image);
         }
 
         $video->delete();

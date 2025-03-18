@@ -161,6 +161,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/portfolio/update/records/{id}', 'API\v2\PortfolioApi@updateAssetRecords');
 
         Route::post('/feedback', 'API\v2\ToolAPI@sendFeedback');
+        Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
+        Route::get('/product/finacial-hub', 'API\v2\GapProductController@market');
     });
     // Relesea B Security
     Route::post('/mygap/logout', 'Auth\GapAutAPI@logout');
@@ -169,3 +171,6 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::post('/mygap/securemobile', 'API\v2\MobileAuth@store');
     Route::post('/confirm/passcode', 'API\v2\MobileAuth@confirmPassCode');
 });
+
+// Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
+// Route::get('/product/finacial-hub', 'API\v2\GapProductController@market');
