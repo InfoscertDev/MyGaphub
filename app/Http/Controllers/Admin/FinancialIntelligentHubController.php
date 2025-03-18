@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\FinancialIntelligentHub;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FinancialIntelligentHubController extends Controller
 {
@@ -22,7 +23,7 @@ class FinancialIntelligentHubController extends Controller
         $publishedCount = FinancialIntelligentHub::where('is_published', true)->count();
         $youtubePlaylistLink = config('app.youtube_playlist_link', 'https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID');
 
-        return view('admin.videos.index', compact('videos', 'publishedCount', 'youtubePlaylistLink'));
+        return view('admin.financial-hub.index', compact('videos', 'publishedCount', 'youtubePlaylistLink'));
     }
 
     /**
@@ -41,7 +42,7 @@ class FinancialIntelligentHubController extends Controller
             'Banking Tips'
         ];
 
-        return view('admin.videos.create', compact('categories'));
+        return view('admin.financial-hub.create', compact('categories'));
     }
 
     /**
@@ -52,7 +53,7 @@ class FinancialIntelligentHubController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:255',
-            'banner_image' => 'required|image|mimes:jpeg,png,jpg|dimensions:width=253,height=142',
+            'banner_image' => 'required|image|mimes:jpeg,png,jpg',
             'video_link' => 'required|url',
             'is_published' => 'boolean',
         ]);
@@ -62,12 +63,12 @@ class FinancialIntelligentHubController extends Controller
             $image = $request->file('banner_image');
 
             // Process image with Intervention Image
-            $processedImage = Image::make($image)
-                ->resize(253, 142)
-                ->encode('jpg', 90);
+            // $processedImage = Image::make($image)
+            //     ->resize(253, 142)
+            //     ->encode('jpg', 90);
 
             $filename = 'video-hub-' . time() . '.jpg';
-            Storage::disk('public')->put('videos/' . $filename, (string) $processedImage);
+            Storage::disk('public')->put('videos/' . $filename, (string) $image);
 
             $validated['banner_image'] = 'videos/' . $filename;
         }
@@ -87,7 +88,7 @@ class FinancialIntelligentHubController extends Controller
 
         FinancialIntelligentHub::create($validated);
 
-        return redirect()->route('admin.videos.index')
+        return redirect()->route('financial-hub.index')
             ->with('success', 'Video banner created successfully.');
     }
 
@@ -96,7 +97,7 @@ class FinancialIntelligentHubController extends Controller
      */
     public function show(FinancialIntelligentHub $video)
     {
-        return view('admin.videos.show', compact('video'));
+        return view('admin.financial-hub.show', compact('video'));
     }
 
     /**
@@ -115,7 +116,7 @@ class FinancialIntelligentHubController extends Controller
             'Banking Tips'
         ];
 
-        return view('admin.videos.edit', compact('video', 'categories'));
+        return view('admin.financial-hub.edit', compact('video', 'categories'));
     }
 
     /**
@@ -172,7 +173,7 @@ class FinancialIntelligentHubController extends Controller
 
         $video->update($validated);
 
-        return redirect()->route('admin.videos.index')
+        return redirect()->route('financial-hub.index')
             ->with('success', 'Video banner updated successfully.');
     }
 
@@ -197,7 +198,7 @@ class FinancialIntelligentHubController extends Controller
 
         $video->delete();
 
-        return redirect()->route('admin.videos.index')
+        return redirect()->route('financial-hub.index')
             ->with('success', 'Video banner deleted successfully.');
     }
 
@@ -272,7 +273,7 @@ class FinancialIntelligentHubController extends Controller
             file_put_contents($envFile, $content);
         }
 
-        return redirect()->route('admin.videos.index')
+        return redirect()->route('financial-hub.index')
             ->with('success', 'YouTube playlist link updated successfully.');
     }
 }

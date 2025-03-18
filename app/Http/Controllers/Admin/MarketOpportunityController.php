@@ -149,12 +149,12 @@ class MarketOpportunityController extends Controller
             $image = $request->file('banner_image');
 
             // Process image with Intervention Image if needed
-            $processedImage = Image::make($image)
-                ->resize(343, 142)
-                ->encode('jpg', 90);
+            // $processedImage = Image::make($image)
+            //     ->resize(343, 142)
+            //     ->encode('jpg', 90);
 
             $filename = 'market-opportunity-' . time() . '.jpg';
-            Storage::disk('public')->put('banners/' . $filename, (string) $processedImage);
+            Storage::disk('public')->put('banners/' . $filename, (string) $image);
 
             $validated['banner_image'] = 'banners/' . $filename;
         }
@@ -179,7 +179,6 @@ class MarketOpportunityController extends Controller
             }
         }
 
-        // Delete the banner image
         if ($marketOpportunity->banner_image && Storage::disk('public')->exists($marketOpportunity->banner_image)) {
             Storage::disk('public')->delete($marketOpportunity->banner_image);
         }

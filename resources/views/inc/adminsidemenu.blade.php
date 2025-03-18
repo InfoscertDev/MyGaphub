@@ -36,8 +36,8 @@
                 <span  class="bold">Market Opportunities</span>
              </a>
          </li>
-         <li class="list-item {{ Request::is('gapadmin/products') ? 'active' : '' }}">
-             <a href="{{ route('gap.products') }}" class="{{ Request::is('gapadmin/products') ? 'txt-primary' : '' }}">
+         <li class="list-item {{ Request::is('gapadmin/financial-hub') ? 'active' : '' }}">
+             <a href="{{ route('financial-hub.index') }}" class="{{ Request::is('gapadmin/financial-hub') ? 'txt-primary' : '' }}">
                 <span  class="bold">Financial Intelligent</span>
              </a>
          </li>

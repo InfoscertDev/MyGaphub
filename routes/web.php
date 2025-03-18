@@ -243,6 +243,14 @@ Route::group(['prefix' => 'gapadmin'], function () {
             ->name('market-opportunities.toggle-publish');
         Route::post('market-opportunities/update-order', ['Admin\MarketOpportunityController', 'updateOrder'])
             ->name('market-opportunities.update-order');
+        // financial-hub
+        Route::resource('financial-hub', 'Admin\FinancialIntelligentHubController');
+        Route::put('financial-hub/{marketOpportunity}/toggle-publish', ['Admin\FinancialIntelligentHubController', 'togglePublish'])
+            ->name('financial-hub.toggle-publish');
+        Route::post('financial-hub/update-order', ['Admin\FinancialIntelligentHubController', 'updateOrder'])
+            ->name('financial-hub.update-order');
+        Route::post('financial-hub/update-playlist-link', ['Admin\FinancialIntelligentHubController', 'updatePlaylistLink'])
+            ->name('financial-hub.update-playlist-link');
     });
 });
 

@@ -5,20 +5,20 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Create New Market Opportunity</div>
+                    <div class="card-header">Add New Video</div>
 
                     <div class="card-body">
                         @if(session('error'))
                             <div class="alert alert-danger">{{ session('error') }}</div>
                         @endif
 
-                        <form action="{{ route('market-opportunities.store') }}"
+                        <form action="{{ route('financial-hub.store') }}"
                             method="POST"
                             enctype="multipart/form-data">
                             @csrf
 
                             <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
+                                <label for="title" class="form-label">Video Title</label>
                                 <input type="text"
                                     class="form-control @error('title') is-invalid @enderror"
                                     id="title"
@@ -31,9 +31,27 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="banner_image" class="form-label">Banner Image</label>
+                                <label for="category" class="form-label">Video Category</label>
+                                <select class="form-select @error('category') is-invalid @enderror"
+                                        id="category"
+                                        name="category"
+                                        required>
+                                    <option value="">Select Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category }}" {{ old('category') == $category ? 'selected' : '' }}>
+                                            {{ $category }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="banner_image" class="form-label">Video Banner Image</label>
                                 <div class="small text-muted mb-2">
-                                    Required dimensions: 343px × 142px with 18px corner radius
+                                    Required dimensions: 253px × 142px with 8px corner radius
                                 </div>
                                 <input type="file"
                                     class="form-control @error('banner_image') is-invalid @enderror"
@@ -47,32 +65,16 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="button_text" class="form-label">Button Text</label>
-                                <select class="form-control form-select @error('button_text') is-invalid @enderror"
-                                        id="button_text"
-                                        name="button_text"
-                                        required>
-                                    <option value="">Select Button Text</option>
-                                    @foreach($buttonOptions as $option)
-                                        <option value="{{ $option }}" {{ old('button_text') == $option ? 'selected' : '' }}>
-                                            {{ $option }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('button_text')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="destination_link" class="form-label">Destination Link</label>
+                                <label for="video_link" class="form-label">Video Link</label>
                                 <input type="url"
-                                    class="form-control @error('destination_link') is-invalid @enderror"
-                                    id="destination_link"
-                                    name="destination_link"
-                                    value="{{ old('destination_link') }}"
+                                    class="form-control @error('video_link') is-invalid @enderror"
+                                    id="video_link"
+                                    name="video_link"
+                                    value="{{ old('video_link') }}"
+                                    placeholder="https://www.youtube.com/watch?v=VIDEO_ID"
                                     required>
-                                @error('destination_link')
+                                <div class="form-text">YouTube links are recommended for best in-app playback experience.</div>
+                                @error('video_link')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -88,10 +90,10 @@
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('market-opportunities.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('financial-hub.index') }}" class="btn btn-secondary">
                                     Cancel
                                 </a>
-                                <button type="submit" class="btn btn-pry">Create Banner</button>
+                                <button type="submit" class="btn btn-pry">Add Video</button>
                             </div>
                         </form>
                     </div>
