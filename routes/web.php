@@ -20,7 +20,7 @@ Route::get('/', function () { return  redirect('/login');  });
 Route::get('/fxt', function() {
 
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
-    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
+    // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
 
     return '<h1>Cache facade value cleared</h1>';
 });
@@ -239,17 +239,17 @@ Route::group(['prefix' => 'gapadmin'], function () {
 
         // Market Oppourtunity
         Route::resource('market-opportunities', 'Admin\MarketOpportunityController');
-        Route::put('market-opportunities/{marketOpportunity}/toggle-publish', ['Admin\MarketOpportunityController', 'togglePublish'])
+        Route::put('market-opportunities/{marketOpportunity}/toggle-publish', ['App\Http\Controllers\Admin\MarketOpportunityController', 'togglePublish'])
             ->name('market-opportunities.toggle-publish');
-        Route::post('market-opportunities/update-order', ['Admin\MarketOpportunityController', 'updateOrder'])
+        Route::post('market-opportunities/update-order', ['App\Http\Controllers\Admin\MarketOpportunityController', 'updateOrder'])
             ->name('market-opportunities.update-order');
         // financial-hub
         Route::resource('financial-hub', 'Admin\FinancialIntelligentHubController');
-        Route::put('financial-hub/{marketOpportunity}/toggle-publish', ['Admin\FinancialIntelligentHubController', 'togglePublish'])
+        Route::put('financial-hub/{marketOpportunity}/toggle-publish', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'togglePublish'])
             ->name('financial-hub.toggle-publish');
-        Route::post('financial-hub/update-order', ['Admin\FinancialIntelligentHubController', 'updateOrder'])
+        Route::post('financial-hub/update-order', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'updateOrder'])
             ->name('financial-hub.update-order');
-        Route::post('financial-hub/update-playlist-link', ['Admin\FinancialIntelligentHubController', 'updatePlaylistLink'])
+        Route::post('financial-hub/update-playlist-link', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'updatePlaylistLink'])
             ->name('financial-hub.update-playlist-link');
     });
 });

@@ -9,14 +9,6 @@
             </a>
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
         <div class="card mb-4">
             <div class="card-header bg-light">
                 <strong>Banner Status: </strong>
@@ -44,7 +36,7 @@
                             <td>{{ $opportunity->display_order }}</td>
                             <td>{{ $opportunity->title }}</td>
                             <td>
-                                <img src="{{ asset('storage/' . $opportunity->banner_image) }}"
+                                <img src="{{ $opportunity->banner_url }}"
                                     alt="{{ $opportunity->title }}"
                                     class="img-thumbnail"
                                     style="max-width: 120px;">

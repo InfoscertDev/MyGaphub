@@ -58,10 +58,9 @@ class MarketOpportunityController extends Controller
             //     ->resize(343, 142)
             //     ->encode('jpg', 90);
 
-            $filename = 'market-opportunity-' . time() . '.jpg';
-            Storage::disk('public/product')->put('banners/' . $filename, (string) $image);
-
-            $validated['banner_image'] = 'banners/' . $filename;
+            $filename = 'opportunity-' . time() . '.jpg';
+            $path = $request->file('banner_image')->storeAs('product/banners', $filename, 'public');
+            $validated['banner_image'] = $path;
         }
 
         // Handle the maximum number of published banners
@@ -142,8 +141,8 @@ class MarketOpportunityController extends Controller
         // Handle image upload
         if ($request->hasFile('banner_image')) {
             // Delete old image
-            if ($marketOpportunity->banner_image && Storage::disk('public/product')->exists($marketOpportunity->banner_image)) {
-                Storage::disk('public/product')->delete($marketOpportunity->banner_image);
+            if ($marketOpportunity->banner_image && Storage::disk('public')->exists($marketOpportunity->banner_image)) {
+                Storage::disk('public')->delete($marketOpportunity->banner_image);
             }
 
             $image = $request->file('banner_image');
@@ -153,10 +152,9 @@ class MarketOpportunityController extends Controller
             //     ->resize(343, 142)
             //     ->encode('jpg', 90);
 
-            $filename = 'market-opportunity-' . time() . '.jpg';
-            Storage::disk('public/product')->put('banners/' . $filename, (string) $image);
-
-            $validated['banner_image'] = 'banners/' . $filename;
+            $filename = 'opportunity-' . time() . '.jpg';
+            $path = $request->file('banner_image')->storeAs('product/banners', $filename, 'public');
+            $validated['banner_image'] = $path;
         }
 
         $marketOpportunity->update($validated);
@@ -179,8 +177,8 @@ class MarketOpportunityController extends Controller
             }
         }
 
-        if ($marketOpportunity->banner_image && Storage::disk('public/product')->exists($marketOpportunity->banner_image)) {
-            Storage::disk('public/product')->delete($marketOpportunity->banner_image);
+        if ($marketOpportunity->banner_image && Storage::disk('public')->exists($marketOpportunity->banner_image)) {
+            Storage::disk('public')->delete($marketOpportunity->banner_image);
         }
 
         $marketOpportunity->delete();

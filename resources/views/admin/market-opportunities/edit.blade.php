@@ -8,9 +8,6 @@
                     <div class="card-header">Edit Market Opportunity</div>
 
                     <div class="card-body">
-                        @if(session('error'))
-                            <div class="alert alert-danger">{{ session('error') }}</div>
-                        @endif
 
                         <form action="{{ route('market-opportunities.update', $marketOpportunity) }}"
                               method="POST"
@@ -38,10 +35,10 @@
                                 </div>
                                 @if($marketOpportunity->banner_image)
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $marketOpportunity->banner_image) }}"
+                                        <img src="{{ $marketOpportunity->banner_url }}"
                                              alt="{{ $marketOpportunity->title }}"
-                                             class="img-thumbnail"
-                                             style="max-width: 200px;">
+                                             class="img-thumbnail" tyle="max-width: 200px;"
+                                        />
                                     </div>
                                 @endif
                                 <input type="file"

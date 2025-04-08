@@ -505,7 +505,7 @@ class PortfolioHelper {
 
         if ($header == 'ajnjxbnuhjsbxnhujbxncujhbxdcbhjnasuhjbn') {
             if($access == 'current_ajjaknjkxbnjnksxknmcfaz'){
-                $current = date('Y-m').'-01';
+                $current = date('Y-m-d', strtotime(date('Y-m') . '-01'));
 
                 $asset_records = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
                             ->where('period', $current)->first();
@@ -525,7 +525,7 @@ class PortfolioHelper {
                     return response()->json(compact('success','asset_records'));
                 }
             }else if($access == 'addperiod_ajhbxsjnbjsxbnoaklmsikn'){
-                $current = $period.'-01';
+                $current = date('Y-m-d', strtotime($period . '-01'));
                 $asset_records = PortfoloAssetRecord::where('user_id', $user->id)
                                         ->where('portfolio_asset_id', $asset->id)
                                         ->where('period', $current)->first();
@@ -536,7 +536,7 @@ class PortfolioHelper {
                     return response()->json(compact('success','asset_records'));
                 }
             }else if($access == 'addnewperiodadd_ajhbxsjbhnsjhbjbnsxjk'){
-                $current = $period.'-01';
+                $current = date('Y-m-d', strtotime($period . '-01'));
                 $asset_records = PortfoloAssetRecord::where('user_id', $user->id)->where('portfolio_asset_id', $asset->id)
                         ->where('period', $current)->first();
                         $success = true;

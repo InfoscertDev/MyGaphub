@@ -27,6 +27,6 @@ class MarketOpportunity extends Model
     ];
 
     public function getBannerUrlAttribute(){
-        return asset('/product/banners/'. str_replace('public', 'storage', $this->banner_image));
+        return  asset('/assets/storage/'. str_replace('public', 'storage', $this->banner_image));
     }
 }

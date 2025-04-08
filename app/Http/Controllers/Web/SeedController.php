@@ -570,6 +570,7 @@ class SeedController extends Controller
         $net_detail = GapAccount::calcNetWorth($user);
         $grand = Grand::where('user_id', $user->id)->first();
         $philantrophy = Philantrophy::where('user_id', $user->id)->first();
+
         if (!$philantrophy) {
           $philantrophy = GapAccount::initUserChartity($user);
           $philantrophy = Philantrophy::where('user_id', $user->id)->first();
@@ -600,6 +601,7 @@ class SeedController extends Controller
         $user = auth()->user();
 
         $grand = Grand::where('user_id', $user->id)->first();
+
         $this->validate($request, [
           'charity' => 'required|numeric|min:0',
           'family_support' => 'required|numeric|min:0',

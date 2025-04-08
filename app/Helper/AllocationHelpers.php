@@ -218,11 +218,9 @@ class AllocationHelpers{
                         ->whereBetween('period', [$from, $to])
                         ->latest()->get()->toArray();
 
-        $total_seeds = Budget::where('user_id', $user->id)
-                    ->whereBetween('period', [$from, $to])
-                    ->selectRaw('count(*) as total, period')
-                    ->groupBy('period')->get();
-        $total_seeds = count($total_seeds);
+                        $total_seeds = Budget::where('user_id', $user->id)
+                        ->whereBetween('period', [$from, $to])
+                        ->count();
 
         $values = array();
         $labels = array('Charitable Giving', 'Extended Family Support', 'Personal Conviction Commitments', 'Others');

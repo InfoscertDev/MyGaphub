@@ -9,14 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
     <div class="card mb-4">
         <div class="card-header bg-light">
             <div class="d-flex justify-content-between align-items-center">
@@ -71,7 +63,7 @@
                         <td>{{ $video->category }}</td>
                         <td>
                             <div style="position: relative; width: 120px; height: 67px; border-radius: 8px; overflow: hidden;">
-                                <img src="{{ asset('storage/' . $video->banner_image) }}"
+                                <img src="{{ $video->banner_url }}"
                                      alt="{{ $video->title }}"
                                      style="width: 100%; height: 100%; object-fit: cover;">
                                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">

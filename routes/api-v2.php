@@ -75,12 +75,14 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::resource('reminder','API\v2\ReminderAPI');
         // Acquisition
         Route::resource('property/favourite','API\v2\SavePropertyApi');
-        Route::get('/acquisition/favourite/', 'API\v2\AcquisitionApi@favourite');
-        Route::get('/acquisition/favourite/ganp', 'API\v2\AcquisitionApi@favouriteGanp');
-        Route::get('/acquisition/favourite/{asset}', 'API\v2\AcquisitionApi@favouriteAsset');
-        Route::post('/acquisition/interest/reap/{sasset}', 'API\v2\AcquisitionApi@interestReapInvestment');
-        Route::post('/acquisition/investment/reap/{sasset}', 'API\v2\AcquisitionApi@reserveReapInvestment');
-        Route::post('/acquisition/investment/ganp/{sasset}', 'API\v2\AcquisitionApi@reserveGanpInvestment');
+
+        // Route::get('/acquisition/favourite/', 'API\v2\AcquisitionApi@favourite');
+        // Route::get('/acquisition/favourite/ganp', 'API\v2\AcquisitionApi@favouriteGanp');
+        // Route::get('/acquisition/favourite/{asset}', 'API\v2\AcquisitionApi@favouriteAsset');
+        // Route::post('/acquisition/interest/reap/{sasset}', 'API\v2\AcquisitionApi@interestReapInvestment');
+        // Route::post('/acquisition/investment/reap/{sasset}', 'API\v2\AcquisitionApi@reserveReapInvestment');
+        // Route::post('/acquisition/investment/ganp/{sasset}', 'API\v2\AcquisitionApi@reserveGanpInvestment');
+
         // Profiles
         Route::get('/support', 'API\v2\ToolAPI@support');
         Route::get('/profile', 'API\v2\ToolAPI@profile');
@@ -162,7 +164,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
 
         Route::post('/feedback', 'API\v2\ToolAPI@sendFeedback');
         Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
-        Route::get('/product/finacial-hub', 'API\v2\GapProductController@market');
+        Route::get('/product/finacial-hub', 'API\v2\GapProductController@financialHub');
     });
     // Relesea B Security
     Route::post('/mygap/logout', 'Auth\GapAutAPI@logout');

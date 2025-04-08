@@ -8,9 +8,6 @@
                     <div class="card-header">Edit Video</div>
 
                     <div class="card-body">
-                        @if(session('error'))
-                            <div class="alert alert-danger">{{ session('error') }}</div>
-                        @endif
 
                         <form action="{{ route('financial-hub.update', $video) }}"
                             method="POST"
@@ -57,7 +54,7 @@
                                 @if($video->banner_image)
                                     <div class="mb-3">
                                         <div style="position: relative; width: 253px; height: 142px; border-radius: 8px; overflow: hidden;">
-                                            <img src="{{ asset('storage/' . $video->banner_image) }}"
+                                            <img src="{{ $video->banner_url}}"
                                                 alt="{{ $video->title }}"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">

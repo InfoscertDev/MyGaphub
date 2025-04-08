@@ -67,10 +67,9 @@ class FinancialIntelligentHubController extends Controller
             //     ->resize(253, 142)
             //     ->encode('jpg', 90);
 
-            $filename = 'video-hub-' . time() . '.jpg';
-            Storage::disk('public/product/')->put('videos/' . $filename, (string) $image);
-
-            $validated['banner_image'] = 'videos/' . $filename;
+            $filename = 'financial-hub-' . time() . '.jpg';
+            $path = $request->file('banner_image')->storeAs('product/videos', $filename, 'public');
+            $validated['banner_image'] = $path;
         }
 
         // Handle the maximum number of published videos
@@ -154,21 +153,20 @@ class FinancialIntelligentHubController extends Controller
         // Handle image upload
         if ($request->hasFile('banner_image')) {
             // Delete old image
-            if ($video->banner_image && Storage::disk('public/product/')->exists($video->banner_image)) {
-                Storage::disk('public/product/')->delete($video->banner_image);
+            if ($video->banner_image && Storage::disk('public')->exists($video->banner_image)) {
+                Storage::disk('public')->delete($video->banner_image);
             }
 
             $image = $request->file('banner_image');
 
             // Process image with Intervention Image
-            $processedImage = Image::make($image)
-                ->resize(253, 142)
-                ->encode('jpg', 90);
+            // $processedImage = Image::make($image)
+            //     ->resize(253, 142)
+            //     ->encode('jpg', 90);
 
-            $filename = 'video-hub-' . time() . '.jpg';
-            Storage::disk('public/product/')->put('videos/' . $filename, (string) $processedImage);
-
-            $validated['banner_image'] = 'videos/' . $filename;
+            $filename = 'financial-hub-' . time() . '.jpg';
+            $path = $request->file('banner_image')->storeAs('product/videos', $filename, 'public');
+            $validated['banner_image'] = $path;
         }
 
         $video->update($validated);
@@ -192,8 +190,8 @@ class FinancialIntelligentHubController extends Controller
         }
 
         // Delete the banner image
-        if ($video->banner_image && Storage::disk('public/product/')->exists($video->banner_image)) {
-            Storage::disk('public/product/')->delete($video->banner_image);
+        if ($video->banner_image && Storage::disk('public')->exists($video->banner_image)) {
+            Storage::disk('public')->delete($video->banner_image);
         }
 
         $video->delete();

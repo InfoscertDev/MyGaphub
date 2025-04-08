@@ -8,9 +8,6 @@
                     <div class="card-header">Create New Market Opportunity</div>
 
                     <div class="card-body">
-                        @if(session('error'))
-                            <div class="alert alert-danger">{{ session('error') }}</div>
-                        @endif
 
                         <form action="{{ route('market-opportunities.store') }}"
                             method="POST"
