@@ -116,7 +116,7 @@ class GaphubAlertController extends Controller
     }
 
     public function nonMemberSMS(Request $request){
-        info($request->all());
+        // info($request->all());
         $validator = Validator::make($request->all(), [
             'country_code' => 'required',
             'phone_number' => 'required'

@@ -222,6 +222,7 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::resource('/support/faqs','Admin\FaqController');
         Route::get('/feedbacks', 'Admin\SupportController@feedbacks')->name('gap.support.feedbacks');
         Route::post('/feedbacks/{id}', 'Admin\SupportController@replyFeedback')->name('gap.reply.feedback');
+        Route::get('/enquiries', 'Admin\SupportController@enquiries')->name('gap.support.enquiries');
         // Route::get('/reap', function(){  return view('admin.coming-soon'); })->name('gap.reap');
         // Route::get('/ganp', function(){  return view('admin.coming-soon'); })->name('gap.ganp');
 
@@ -244,8 +245,9 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::post('market-opportunities/update-order', ['App\Http\Controllers\Admin\MarketOpportunityController', 'updateOrder'])
             ->name('market-opportunities.update-order');
         // financial-hub
-        Route::resource('financial-hub', 'Admin\FinancialIntelligentHubController');
-        Route::put('financial-hub/{marketOpportunity}/toggle-publish', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'togglePublish'])
+        Route::resource('financial-hub', 'Admin\FinancialIntelligentHubController')
+                ->parameters(['financial-hub' => 'video']);
+        Route::put('financial-hub/{video}/toggle-publish', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'togglePublish'])
             ->name('financial-hub.toggle-publish');
         Route::post('financial-hub/update-order', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'updateOrder'])
             ->name('financial-hub.update-order');

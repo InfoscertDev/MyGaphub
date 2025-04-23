@@ -73,6 +73,12 @@
                     <span  class="bold">Feedbacks</span>
             </a>
         </li>
+        <li class="list-item {{ Request::is('gapadmin/enquiries') ? 'active' : '' }}">
+            <a href="{{ route('gap.support.enquiries') }}" class="{{ Request::is('gapadmin/enquiries') ? 'txt-primary' : '' }}">
+                {{-- <img src="{{ asset('/assets/icon/portfolio.png') }}" class="icon" alt=""> --}}
+                    <span  class="bold">Enquiries</span>
+            </a>
+        </li>
         <div class="seperate"></div>
         <li class="list-item bg-none">
             <a href="{{ route('logout') }}" class="d-flex"

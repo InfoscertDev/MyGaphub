@@ -183,7 +183,7 @@ class IntegrationParties{
             $err = curl_error($curl);
             curl_close($curl);
 
-            info([  IntegrationParties::$sendinblue_key,' Sendiblue REsponse', $err, $contact ]);
+            // info([  IntegrationParties::$sendinblue_key,' Sendiblue REsponse', $err, $contact ]);
             return $contact;
         }
 

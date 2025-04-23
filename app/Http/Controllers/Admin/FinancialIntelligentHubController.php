@@ -203,11 +203,10 @@ class FinancialIntelligentHubController extends Controller
     /**
      * Toggle the published status of a video.
      */
-    public function togglePublish(FinancialIntelligentHub $video)
+    public function togglePublish( FinancialIntelligentHub $video)
     {
         $newStatus = !$video->is_published;
         $publishedCount = FinancialIntelligentHub::where('is_published', true)->count();
-
         // Check publishing constraints
         if ($newStatus && $publishedCount >= 8) {
             return redirect()->back()->with('error', 'Maximum of 8 published video banners allowed.');

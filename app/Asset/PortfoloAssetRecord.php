@@ -10,6 +10,10 @@ class PortfoloAssetRecord extends Model
         'expenditure'
     ];
 
+    protected $casts = [
+        'amount' => 'float',
+    ];
+
     public function getExpenditureAttribute($value){
         return $this->management + $this->taxes + $this->maintenance + $this->others;
     }

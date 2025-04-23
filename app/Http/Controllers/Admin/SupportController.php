@@ -6,12 +6,19 @@ use App\Models\UserFeedback;
 use App\Models\GaphubGuide;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enquiry;
 use Illuminate\Http\Request;
 
 use App\Rules\YoutubeUrl;
 
 class SupportController extends Controller
 {
+
+    public function index()
+    {
+        return view('admin.support.index');
+    }
+
     public function feedbacks()
     {
         $feedbacks = UserFeedback::latest()->paginate(10);
@@ -30,10 +37,13 @@ class SupportController extends Controller
         return redirect()->back();
     }
 
-    public function index()
+    public function enquiries()
     {
-        return view('admin.support.index');
+        $enquiries = Enquiry::latest()->paginate(10);
+        // var_dump($enquiry[0]->user);
+        return view('admin.reports.enquiries', compact('enquiries'));
     }
+
 
     public function quickstart()
     {

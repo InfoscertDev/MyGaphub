@@ -471,6 +471,7 @@ class PortfolioHelper {
         $last_period = date("Y-m-d",strtotime("-1 months", strtotime(date('Y-m').'-01')) );
         if($request->asset_category) $request->ahbjjshbjsnmbnmsbxdnvsxbv = $request->asset_category;
         if($request->asset_class) $request->ajnsjxnjsnxbjnbajknsjnds = $request->asset_class;
+
         $portfolio = new PortfolioAsset();
         $portfolio->user_id = $user->id;
         $portfolio->asset_category = $request->ahbjjshbjsnmbnmsbxdnvsxbv;
@@ -491,7 +492,8 @@ class PortfolioHelper {
         $asset_records->user_id = $user->id;
         $asset_records->portfolio_asset_id = $portfolio->id;
         $asset_records->period = $last_period;
-        $asset_records->amount = $portfolio->asset_value;
+        $asset_records->amount = (float)$portfolio->asset_value; // Explicit casting
+        // $asset_records->net_income = (float)$portfolio->monthly_roi;
         $asset_records->net_income = $portfolio->monthly_roi;
         $asset_records->save();
         $success = true;

@@ -30,7 +30,7 @@
 
                             <div class="mb-3">
                                 <label for="category" class="form-label">Video Category</label>
-                                <select class="form-select @error('category') is-invalid @enderror"
+                                <select class="form-control form-select @error('category') is-invalid @enderror"
                                         id="category"
                                         name="category"
                                         required>
@@ -58,7 +58,7 @@
                                                 alt="{{ $video->title }}"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                             <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
-                                                <span class="material-icons text-white">play_circle</span>
+                                                <span class="material-icons text-white"></span>
                                             </div>
                                         </div>
                                     </div>

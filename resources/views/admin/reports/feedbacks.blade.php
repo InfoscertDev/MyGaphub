@@ -2,44 +2,61 @@
 @section('content')
 <div class="container-fluid">
     <div class="wd-f my-5">
-        <h5 class="gap-title text-center pb-3">Feedbacks</h5>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+             <h5 class="gap-title text-center pb-3">Feedbacks</h5>
+             <div class="text-muted">
+                {{ now()->format('l, j M Y') }}
+            </div>
+        </div>
         <div class="row">
             @foreach ($feedbacks as $feedback)
                 <div class="col-md-6">
-                    <div class="card bg-light elevation-3 my-2  pb-2" style="height: 320px;">
+                    <div class="card bg-light elevation-3 my-2 pb-2" style="height: 320px;">
                         <div class="card-body">
-                            <h5 class="card-title text-center">
-                                <span class=" txt-primary bold">{{$feedback->user->surname}} {{$feedback->user->firstname}}</span>
-                                <br><small class="">{{$feedback->user->email}}</small>
-                            </h5>
-                            <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">
+                                        <span class="txt-primary bold">{{$feedback->user->surname}} {{$feedback->user->firstname}}</span>
+                                        <br><small class="">{{$feedback->user->email}}</small>
+                                    </h5>
+                                </div>
+                                <small class="text-muted">{{ $feedback->created_at->format('D, j M y') }}</small>
+                            </div>
+
+                            <div class="mb-1 mt-2">
                                 <h5 class="bold mr-4">Subject:</h5>
-                                <p class="ml-3">  {{$feedback->subject}}</p>
+                                <p class="ml-3">{{$feedback->subject}}</p>
                             </div>
                             <div class="mb-1">
                                 <h5 class="bold">Message</h5>
-                               <p  class="ml-3">  {{$feedback->message}}</p>
+                                <p class="ml-3">{{$feedback->message}}</p>
                             </div>
 
                             <div class="mb-1">
                                 <h5 class="bold">Response</h5>
                                 @if($feedback->extra)
-                                     <p  class="ml-3">  {{$feedback->extra}}</p>
+                                    <p class="ml-3">{{$feedback->extra}}</p>
                                 @else
-                                     <p class="ml-3">
+                                    <p class="ml-3">
                                         <a class="text-underline" onclick='replyFeedback("{{$feedback->id}}")'>Create response</a>
-                                     </p>
+                                    </p>
                                 @endif
-                                <!-- <textarea name="" id="" cols="10" rows="3"></textarea> -->
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-        <div class="row mt-2">
-            <div class="mx-auto text-center">
-            {{ $feedbacks->onEachSide(1)->links() }}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-center">
+                    <nav aria-label="Page navigation">
+                        {{ $feedbacks->onEachSide(1)->links('pagination::bootstrap-4') }}
+                    </nav>
+                </div>
+                <div class="text-center text-muted mt-2">
+                    Showing {{ $feedbacks->firstItem() }} to {{ $feedbacks->lastItem() }} of {{ $feedbacks->total() }} entries
+                </div>
             </div>
         </div>
 
