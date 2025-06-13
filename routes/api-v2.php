@@ -38,8 +38,10 @@ Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration');
 Route::post('/mygap/login', 'Auth\GapAutAPI@login');
 
 // Password Reset Routes
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+Route::post('password/send-otp', 'Auth\Api\ForgotPasswordController@sendOTP');
+Route::post('password/verify-otp', 'Auth\Api\ResetPasswordController@verifyOTP');
+Route::post('password/reset-with-otp', 'Auth\Api\ResetPasswordController@resetWithOTP');
+
 Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

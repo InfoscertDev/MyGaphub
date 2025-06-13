@@ -65,7 +65,7 @@ class VerificationController extends Controller
             $user = \App\User::find($request->route('id'));
 
             if ($user->hasVerifiedEmail()) {
-                return redirect($this->redirectPath());
+                return redirect('https://mygaphub.com/account/verification?verified=true');
             }
 
             $user->email_verified_at = now();
@@ -76,11 +76,11 @@ class VerificationController extends Controller
             }
 
             IntegrationParties::join_sendinblue_leads($user);
-            auth()->login($user);
+            // auth()->login($user);
 
-            return redirect($this->redirectPath())->with('verified', true);
-        }else{
-            return redirect('/login');
+            return redirect('https://mygaphub.com/account/verification?verified=true');
+        } else {
+            return redirect('https://mygaphub.com/account/verification?verified=false');
         }
     }
 }

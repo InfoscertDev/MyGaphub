@@ -43,18 +43,23 @@
          </li>
         <div class="seperate"></div>
         <h6 class="list-group-head">Site Options</h6>
+        {{-- <li class="list-item {{ Request::is('gapadmin/blog') ? 'active' : '' }}">
+            <a href="{{ route('gap.blog') }}" class="{{ Request::is('gapadmin/blog') ? 'txt-primary' : '' }}">
+                    <span  class="bold">Blog</span>
+            </a>
+        </li> --}}
         <li class="list-item {{ Request::is('gapadmin/preference/exchange') ? 'active' : '' }}">
             <a href="{{ route('gap.exchange') }}" class="{{ Request::is('gapadmin/preference/exchange') ? 'txt-primary' : '' }}">
                     <span  class="bold">Preference</span>
             </a>
         </li>
-        <li class="list-item {{ Request::is('gapadmin//pereference/exchange') ? 'active' : '' }}">
-            <a href="{{ route('gap.acqusition') }}" class="{{ Request::is('gapadmin/analytics') ? 'txt-primary' : '' }}">
+        <li class="list-item {{ Request::is('gapadmin/acqusition') ? 'active' : '' }}">
+            <a href="{{ route('gap.acqusition') }}" class="{{ Request::is('gapadmin/acqusition') ? 'txt-primary' : '' }}">
                     <span  class="bold">Acquisition CMS</span>
             </a>
         </li>
-        <li class="list-item {{ Request::is('gapadmin//pereference/exchange') ? 'active' : '' }}">
-            <a href="{{ route('gap.asset_type') }}" class="{{ Request::is('gapadmin/analytics') ? 'txt-primary' : '' }}">
+        <li class="list-item {{ Request::is('gapadmin/asset/type') ? 'active' : '' }}">
+            <a href="{{ route('gap.asset_type') }}" class="{{ Request::is('gapadmin/asset/type') ? 'txt-primary' : '' }}">
                 <span  class="bold">Asset Type</span>
             </a>
         </li>
