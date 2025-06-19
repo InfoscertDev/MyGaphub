@@ -3,170 +3,155 @@
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Financial Intelligence Hub Videos</h1>
-        <a href="{{ route('financial-hub.create') }}" class="btn btn-pry">
-            Add New Video
+        <h1 class="h3 mb-0">Posts Management</h1>
+        <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Create New Post
         </a>
     </div>
 
+    <!-- Filters -->
     <div class="card mb-4">
-        <div class="card-header bg-light">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>Video Status: </strong>
-                    <span class="badge bg-primary">{{ $publishedCount }} Published</span>
-                    <span class="badge bg-secondary">{{ $videos->count() - $publishedCount }} Unpublished</span>
-                    <small class="text-muted ms-2">(Min: 4, Max: 8 published videos)</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <strong>YouTube Playlist Link</strong> <small>(For "View All" button)</small>
-        </div>
         <div class="card-body">
-            <form action="{{ route('financial-hub.update-playlist-link') }}" method="POST" class="d-flex align-items-center">
-                @csrf
-                <div class="flex-grow-1 me-2">
-                    <input type="url"
-                           name="youtube_playlist_link"
-                           class="form-control"
-                           value="{{ $youtubePlaylistLink }}"
-                           placeholder="https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID"
-                           required>
+            <form method="GET" action="{{ route('admin.posts.index') }}" class="row g-3">
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" class="form-control" id="search" name="search"
+                           value="{{ request('search') }}" placeholder="Search posts...">
                 </div>
-                <button type="submit" class="btn btn-pry">Update Link</button>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                        <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
+                        <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="fas fa-search me-1"></i>Filter
+                        </button>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Clear
+                        </a>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Banner</th>
-                    <th>Video Link</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="videos-table-body">
-                @foreach($videos as $video)
-                    <tr data-id="{{ $video->id }}">
-                        <td>{{ $video->display_order }}</td>
-                        <td>{{ $video->title }}</td>
-                        <td>{{ $video->category }}</td>
-                        <td>
-                            <div style="position: relative; width: 120px; height: 67px; border-radius: 8px; overflow: hidden;">
-                                <img src="{{ $video->banner_url }}"
-                                     alt="{{ $video->title }}"
-                                     style="width: 100%; height: 100%; object-fit: cover;">
-                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
-                                    <span class="material-icons text-white"></span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <a href="{{ $video->video_link }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 150px;">
-                                {{ $video->video_link }}
-                            </a>
-                        </td>
-                        <td>
-                            <span class="badge {{ $video->is_published ? 'bg-success' : 'bg-warning' }}">
-                                {{ $video->is_published ? 'Published' : 'Unpublished' }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="btn-group" style="display: flex; gap: 8px;">
-                                <a href="{{ route('financial-hub.edit', $video) }}"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Edit
-                                </a>
+    <!-- Posts Table -->
+    <div class="card">
+        <div class="card-body">
+            @if($posts->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Featured Image</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Views</th>
+                                <th>Published At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($posts as $post)
+                            <tr>
+                                <td>
+                                    @if($post->featured_image)
+                                        <img src="{{ asset('storage/' . $post->featured_image) }}"
+                                             alt="Featured Image" class="rounded"
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                    @else
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                             style="width: 60px; height: 60px;">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong>{{ $post->title }}</strong>
+                                        @if($post->is_featured)
+                                            <span class="badge bg-warning ms-1">Featured</span>
+                                        @endif
+                                    </div>
+                                    <small class="text-muted">By {{ $post->author->name }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ $post->category->name }}</span>
+                                </td>
+                                <td>
+                                    <span class="post-status status-{{ $post->status }}">
+                                        {{ ucfirst($post->status) }}
+                                    </span>
+                                </td>
+                                <td>{{ number_format($post->views) }}</td>
+                                <td>
+                                    @if($post->published_at)
+                                        {{ $post->published_at->format('M d, Y') }}
+                                    @else
+                                        <span class="text-muted">Not published</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('admin.posts.show', $post) }}"
+                                           class="btn btn-sm btn-outline-info" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('admin.posts.edit', $post) }}"
+                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST" action="{{ route('admin.posts.destroy', $post) }}"
+                                              style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    onclick="confirmDelete(this.form)" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                                <form action="{{ route('financial-hub.toggle-publish', $video) }}"
-                                      method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-{{ $video->is_published ? 'warning' : 'success' }}">
-                                        {{ $video->is_published ? 'Unpublish' : 'Publish' }}
-                                    </button>
-                                </form>
-
-                                <form action="{{ route('financial-hub.destroy', $video) }}"
-                                      method="POST" class="d-inline delete-form">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $posts->appends(request()->query())->links() }}
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No posts found</h5>
+                    <p class="text-muted">Create your first post to get started.</p>
+                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Create New Post
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
-
-<!-- Add link to Material Icons -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
-<script>
-    // Initialize drag and drop for reordering
-    document.addEventListener('DOMContentLoaded', function() {
-        const tableBody = document.getElementById('videos-table-body');
-
-        if (tableBody) {
-            new Sortable(tableBody, {
-                animation: 150,
-                handle: 'tr',
-                onEnd: function() {
-                    updateOrder();
-                }
-            });
-        }
-
-        // Handle delete confirmation
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                if (!confirm('Are you sure you want to delete this video banner?')) {
-                    e.preventDefault();
-                }
-            });
-        });
-
-        // Update order after drag and drop
-        function updateOrder() {
-            const rows = document.querySelectorAll('#videos-table-body tr');
-            const ids = Array.from(rows).map(row => row.dataset.id);
-
-            fetch('{{ route("financial-hub.update-order") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ orders: ids })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Refresh the order numbers
-                    rows.forEach((row, index) => {
-                        row.querySelector('td:first-child').textContent = index + 1;
-                    });
-                }
-            });
-        }
-    });
-</script>
-@endpush
 @endsection

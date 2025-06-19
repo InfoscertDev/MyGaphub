@@ -254,8 +254,10 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::post('financial-hub/update-playlist-link', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'updatePlaylistLink'])
             ->name('financial-hub.update-playlist-link');
         // Blog
-        // Route::resource('blog', 'Admin\BlogPostController')
-        //     ->names(['gap.blog']);
+        Route::resource('blog', 'Admin\BlogPostController')
+            ->names(['gapadmin.blog']);
+        Route::resource('blog', 'Admin\BlogPostController')
+            ->names(['gapadmin.categories']);
     });
 });
 

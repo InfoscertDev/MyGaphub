@@ -10,6 +10,7 @@ class PasswordReset extends Model
 {
     protected $fillable = ['email', 'token', 'is_otp', 'created_at'];
 
+    public $incrementing = false;
     public $timestamps = false;
 
     protected $casts = [
@@ -50,7 +51,7 @@ class PasswordReset extends Model
         ]);
     }
 
-    public static function verifyOTP($email, $otp, $expireMinutes = 15)
+    public static function verifyOTP($email, $otp, $expireMinutes = 30)
     {
         return self::where('email', $email)
                   ->where('token', $otp)

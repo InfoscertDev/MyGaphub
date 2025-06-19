@@ -18,13 +18,20 @@ class CreateBlogPostsTable extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('author');
-            $table->date('published_date')->default(now());
+            // $table->date('published_date')->default(now());
             $table->integer('reading_time')->default(3); // in minutes
             $table->text('excerpt');
             $table->longText('content');
             $table->string('featured_image')->nullable();
-            $table->string('category')->nullable();
+            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->timestamp('published_at')->nullable();
+            // $table->string('category')->nullable();
+            $table->unsignedBigInteger('category_id');
+            $table->json('meta_data')->nullable(); // For SEO meta tags
+            $table->integer('views')->default(0);
             $table->boolean('is_featured')->default(false);
+
+            $table->index(['status', 'published_at']);
             $table->timestamps();
         });
     }
