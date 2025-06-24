@@ -43,11 +43,11 @@
          </li>
         <div class="seperate"></div>
         <h6 class="list-group-head">Site Options</h6>
-        {{-- <li class="list-item {{ Request::is('gapadmin/blog') ? 'active' : '' }}">
-            <a href="{{ route('gap.blog') }}" class="{{ Request::is('gapadmin/blog') ? 'txt-primary' : '' }}">
+        <li class="list-item {{ Request::is('gapadmin/post') ? 'active' : '' }}">
+            <a href="{{ route('admin.post.index') }}" class="{{ Request::is('gapadmin/post') ? 'txt-primary' : '' }}">
                     <span  class="bold">Blog</span>
             </a>
-        </li> --}}
+        </li>
         <li class="list-item {{ Request::is('gapadmin/preference/exchange') ? 'active' : '' }}">
             <a href="{{ route('gap.exchange') }}" class="{{ Request::is('gapadmin/preference/exchange') ? 'txt-primary' : '' }}">
                     <span  class="bold">Preference</span>

@@ -18,7 +18,7 @@ class PasswordReset extends Model
         'created_at' => 'datetime',
     ];
 
-    public static function generateOTP($email, $expireMinutes = 15)
+    public static function generateOTP($email, $expireMinutes = 45)
     {
         // Delete existing tokens for this email
         self::where('email', $email)->delete();
@@ -51,7 +51,7 @@ class PasswordReset extends Model
         ]);
     }
 
-    public static function verifyOTP($email, $otp, $expireMinutes = 30)
+    public static function verifyOTP($email, $otp, $expireMinutes = 45)
     {
         return self::where('email', $email)
                   ->where('token', $otp)

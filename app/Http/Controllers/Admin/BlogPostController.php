@@ -50,7 +50,7 @@ class BlogPostController extends Controller
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published,archived',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:blog_categories,id',
             'tags' => 'nullable|array',
             'tags.*' => 'string',
             'is_featured' => 'boolean',
@@ -60,8 +60,9 @@ class BlogPostController extends Controller
         ]);
 
         $data = $request->all();
-        $data['author_id'] = Auth::id();
+        // $data['author_id'] = Auth::id();
 
+        $data['author'] = "Prismcheck";
         if ($request->hasFile('featured_image')) {
             $data['featured_image'] = $request->file('featured_image')->store('posts', 'public');
         }
@@ -80,14 +81,14 @@ class BlogPostController extends Controller
         $post = Post::create($data);
 
         // Handle tags
-        if ($request->filled('tags')) {
-            $tagIds = [];
-            foreach ($request->tags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => $tagName]);
-                $tagIds[] = $tag->id;
-            }
-            $post->tags()->sync($tagIds);
-        }
+        // if ($request->filled('tags')) {
+        //     $tagIds = [];
+        //     foreach ($request->tags as $tagName) {
+        //         $tag = Tag::firstOrCreate(['name' => $tagName]);
+        //         $tagIds[] = $tag->id;
+        //     }
+        //     $post->tags()->sync($tagIds);
+        // }
 
         return redirect()->route('admin.blog.index')
                         ->with('success', 'Post created successfully.');
@@ -101,8 +102,8 @@ class BlogPostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::active()->get();
-        $tags = Tag::all();
-        return view('admin.blog.edit', compact('post', 'categories', 'tags'));
+        // $tags = Tag::all();
+        return view('admin.blog.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, Post $post)
@@ -136,25 +137,25 @@ class BlogPostController extends Controller
         }
 
         // Handle meta data
-        $data['meta_data'] = [
-            'title' => $request->meta_title,
-            'description' => $request->meta_description,
-            'keywords' => $request->meta_keywords,
-        ];
+        // $data['meta_data'] = [
+        //     'title' => $request->meta_title,
+        //     'description' => $request->meta_description,
+        //     'keywords' => $request->meta_keywords,
+        // ];
 
         $post->update($data);
 
         // Handle tags
-        if ($request->filled('tags')) {
-            $tagIds = [];
-            foreach ($request->tags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => $tagName]);
-                $tagIds[] = $tag->id;
-            }
-            $post->tags()->sync($tagIds);
-        } else {
-            $post->tags()->detach();
-        }
+        // if ($request->filled('tags')) {
+        //     $tagIds = [];
+        //     foreach ($request->tags as $tagName) {
+        //         $tag = Tag::firstOrCreate(['name' => $tagName]);
+        //         $tagIds[] = $tag->id;
+        //     }
+        //     $post->tags()->sync($tagIds);
+        // } else {
+        //     $post->tags()->detach();
+        // }
 
         return redirect()->route('admin.blog.index')
                         ->with('success', 'Post updated successfully.');

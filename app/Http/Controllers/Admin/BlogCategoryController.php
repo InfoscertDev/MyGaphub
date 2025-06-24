@@ -25,20 +25,24 @@ class BlogCategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean'
         ]);
 
         $data = $request->all();
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
-        }
+        // if ($request->hasFile('image')) {
+        //     $data['image'] = $request->file('image')->store('categories', 'public');
+        // }
 
-        Category::create($data);
+        $category = Category::create($data);
 
-        return redirect()->route('admin.categories.index')
-                        ->with('success', 'Category created successfully.');
+        return response()->json([
+            'message' => 'Category created successfully.',
+            'category' => $category
+        ], 201); 
+
+        // return redirect()->route('admin.categories.index')
+        //          ->with('success', 'Category created successfully.');
     }
 
     public function show(Category $category)

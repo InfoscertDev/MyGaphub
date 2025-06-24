@@ -68,7 +68,7 @@ class ForgotPasswordController extends Controller
             Mail::send('email.reset-otp', [
                 'user' => $user,
                 'otp' => $otpRecord->token, // token field contains the OTP
-                'expires_at' => $otpRecord->created_at->addMinutes(30),
+                'expires_at' => $otpRecord->created_at->addMinutes(45),
             ], function ($message) use ($email) {
                 $message->to($email);
                 $message->subject('Password Reset OTP');
@@ -77,7 +77,7 @@ class ForgotPasswordController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully to your email address',
-                'expires_in_minutes' => 30
+                'expires_in_minutes' => 45
             ], 200);
 
         } catch (\Exception $e) {

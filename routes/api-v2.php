@@ -176,5 +176,10 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::post('/confirm/passcode', 'API\v2\MobileAuth@confirmPassCode');
 });
 
+// Route::get('blogs/featured', ['API\v2\GapProductController@featured']);
+Route::get('blog', 'API\v2\GapProductController@blog');
+Route::get('blog/search', 'API\v2\GapProductController@search');
+Route::get('blog/{slug}', 'API\v2\GapProductController@show');
+Route::get('blog/{post}/related', 'API\v2\GapProductController@related');
 // Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
 // Route::get('/product/finacial-hub', 'API\v2\GapProductController@market');

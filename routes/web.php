@@ -254,10 +254,26 @@ Route::group(['prefix' => 'gapadmin'], function () {
         Route::post('financial-hub/update-playlist-link', ['App\Http\Controllers\Admin\FinancialIntelligentHubController', 'updatePlaylistLink'])
             ->name('financial-hub.update-playlist-link');
         // Blog
-        Route::resource('blog', 'Admin\BlogPostController')
-            ->names(['gapadmin.blog']);
-        Route::resource('blog', 'Admin\BlogPostController')
-            ->names(['gapadmin.categories']);
+        Route::resource('post', 'Admin\BlogPostController')->names([
+            'index' => 'admin.post.index',
+            'create' => 'admin.post.create',
+            'store' => 'admin.post.store',
+            'show' => 'admin.post.show',
+            'edit' => 'admin.post.edit',
+            'update' => 'admin.post.update',
+            'destroy' => 'admin.post.destroy',
+        ]);
+
+        Route::resource('categories', 'Admin\BlogCategoryController')->names([
+            'index' => 'admin.categories.index',
+            'create' => 'admin.categories.create',
+            'store' => 'admin.categories.store',
+            'show' => 'admin.categories.show',
+            'edit' => 'admin.categories.edit',
+            'update' => 'admin.categories.update',
+            'destroy' => 'admin.categories.destroy',
+        ]);
+        // Route::resource('blog', 'Admin\BlogPostController');
     });
 });
 

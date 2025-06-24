@@ -54,7 +54,7 @@
 
                             <div class="mb-3">
                                 <label for="button_text" class="form-label">Button Text</label>
-                                <select class="form-select @error('button_text') is-invalid @enderror"
+                                <select class="form-control @error('button_text') is-invalid @enderror"
                                         id="button_text"
                                         name="button_text"
                                         required>

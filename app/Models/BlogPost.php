@@ -12,7 +12,7 @@ class BlogPost extends Model
 
     protected $fillable = [
         'title', 'slug', 'excerpt', 'content', 'featured_image',
-        'status', 'published_at', 'category_id',
+        'status', 'published_at', 'category_id', 'author',
         'meta_data', 'is_featured'
     ];
 
@@ -22,6 +22,13 @@ class BlogPost extends Model
         'is_featured' => 'boolean',
     ];
 
+    protected $appends = [
+        'featured_image_url'
+    ];
+
+    public function getFeaturedImageUrlAttribute(){
+        return asset('/assets/storage/'. str_replace('public', 'storage', $this->featured_image));
+    }
 
     public function setTitleAttribute($value)
     {

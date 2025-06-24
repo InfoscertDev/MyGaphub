@@ -30,7 +30,7 @@
 
                             <div class="mb-3">
                                 <label for="category" class="form-label">Video Category</label>
-                                <select class="form-control form-select @error('category') is-invalid @enderror"
+                                <select class="form-control  form-select @error('category') is-invalid @enderror"
                                         id="category"
                                         name="category"
                                         required>
