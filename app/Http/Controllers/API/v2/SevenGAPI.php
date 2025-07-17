@@ -606,6 +606,8 @@ class SevenGAPI extends Controller
         $calculate->investment = $request->investment;
         $calculate->save();
 
+        // IntegrationParties::create_contact_to_sendinblue($user->email);
+
         return response()->json(['status' => true, 'data' => $calculate]);
     }
 
@@ -721,7 +723,9 @@ class SevenGAPI extends Controller
         $question->step6 =  $request->step6;
         $question->step7 =  $request->step7;
         $question->save();
-        IntegrationParties::migrate_sendinblue_to_prospect($user);
+
+        IntegrationParties::send_user_to_brevo_prospect($user);
+
         return response()->json(['status' => true, 'data' => $question]);
     }
 

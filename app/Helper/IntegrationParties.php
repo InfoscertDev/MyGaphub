@@ -192,7 +192,9 @@ class IntegrationParties{
 
     public static function migrate_sendinblue_to_prospect($user){
         IntegrationParties::initializeKeys();
+
         $lead_curl = curl_init();
+
         curl_setopt_array($lead_curl, [
           CURLOPT_URL => "https://api.sendinblue.com/v3/contacts/$user->email",
           CURLOPT_RETURNTRANSFER => true,
@@ -206,6 +208,7 @@ class IntegrationParties{
             "api-key: ".IntegrationParties::$sendinblue_key
           ],
         ]);
+
         $response = curl_exec($lead_curl);
         $err = curl_error($lead_curl);
 
@@ -228,6 +231,7 @@ class IntegrationParties{
               "Content-Type: application/json",
               "api-key: ".IntegrationParties::$sendinblue_key
             ],
+
           ]);
 
           $prospect = curl_exec($prospect_curl);
@@ -235,6 +239,55 @@ class IntegrationParties{
         }
         return false;
     }
+
+    public static function send_user_to_brevo_prospect($user) {
+        IntegrationParties::initializeKeys();
+
+        // Initialize cURL session to add user to Brevo (Sendinblue)
+        $curl = curl_init();
+
+        // Prepare payload
+        $payload = json_encode([
+            "email" => $user->email,
+            "attributes" => [
+                "FIRSTNAME" => $user->firstname ?? '',
+                // Add other attributes here if needed, like LASTNAME, SMS, etc.
+            ],
+            "listIds" => [27],
+            "updateEnabled" => true // Set true to update if contact exists
+        ]);
+
+        // Set cURL options
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.brevo.com/v3/contacts",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json",
+                "Content-Type: application/json",
+                "api-key: " . IntegrationParties::$sendinblue_key
+            ],
+        ]);
+
+        // Execute cURL and capture response
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+
+        // Return result
+        if ($error) {
+            // Optionally log the error or handle it
+            return false;
+        }
+
+        return $response;
+    }
+
 
     public static function migrate_sendinblue_to_active_prospect($user){
         IntegrationParties::initializeKeys();

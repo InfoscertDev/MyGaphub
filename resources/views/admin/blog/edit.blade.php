@@ -4,9 +4,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Edit Post: {{ $post->title }}</h1>
     <div>
-        <a href="{{ route('admin.post.show', $post) }}" class="btn btn-outline-info me-2">
+        {{-- <a href="{{ route('admin.post.show', $post) }}" class="btn btn-outline-info me-2">
             <i class="fa fa-eye me-1"></i>Preview
-        </a>
+        </a> --}}
         <a href="{{ route('admin.post.index') }}" class="btn btn-outline-secondary">
             <i class="fa fa-arrow-left me-1"></i>Back to Posts
         </a>
@@ -265,20 +265,20 @@
             <div class="card mt-4">
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-pry mr-3 mb-4">
+                        <button type="submit" class="btn btn-pry mr-3 mb-3  ">
                             <i class="fa fa-save me-1"></i>Update Post
                         </button>
 
-                        <a href="{{ route('admin.post.index') }}" class="btn btn-outline-secondary mr-3 mb-4">
+                        <a href="{{ route('admin.post.index') }}" class="btn btn-outline-secondary mr-3 mb-3    ">
                             <i class="fa fa-times me-1"></i>Cancel
                         </a>
 
-                        <button type="submit" name="save_and_continue" value="1" class="btn btn-outline-primary mr-3 mb-4">
+                        <button type="submit" name="save_and_continue" value="1" class="btn btn-outline-primary mr-3 mb-3   ">
                             <i class="fa fa-save me-1"></i>Save & Continue Editing
                         </button>
 
                         <div class="dropdown-divider"></div>
-                        <button type="button" class="btn btn-outline-danger mr-3 mb-4" data-toggle="modal" data-target="#deleteModal">
+                        <button type="button" class="btn btn-outline-danger mr-3 mb-3   " data-toggle="modal" data-target="#deleteModal">
                             <i class="fa fa-trash me-1"></i>Delete Post
                         </button>
                     </div>

@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-7 row justify-content-end">
                     <div class="col-md-4">
-                        <label for="status" class="form-label">Status</label>
+                        {{-- <label for="status" class="form-label">Status</label> --}}
                         <select name="status" id="status" class="form-control">
                             <option value="">All Status</option>
                             <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -29,7 +29,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="category" class="form-label">Category</label>
+                        {{-- <label for="category" class="form-label">Category</label> --}}
                         <select name="category" id="category" class="form-control">
                             <option value="">All Categories</option>
                             @foreach($categories as $category)
@@ -114,10 +114,10 @@
                                 </td>
                                 <td>
                                     <div class="btn-group gap-4" role="group">
-                                        <a href="{{ route('admin.post.show', $post) }}"
+                                        {{-- <a href="{{ route('admin.post.show', $post) }}"
                                            class="btn btn-sm btn-outline-info mr-3" title="View">
                                             <i class="fa fa-eye"></i>
-                                        </a>
+                                        </a> --}}
                                         <a href="{{ route('admin.post.edit', $post) }}"
                                            class="btn btn-sm btn-outline-primary mr-3" title="Edit">
                                             <i class="fa fa-edit"></i>

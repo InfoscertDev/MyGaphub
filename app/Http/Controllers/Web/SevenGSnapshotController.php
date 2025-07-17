@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 use App\FinicialCalculator as Calculator;
 use App\FinicialQuestion as Question;
@@ -22,7 +23,6 @@ use App\Helper\AnalyticsClass;
 use App\SevenG\BespokeKPI;
 
 use App\Helper\WheelClass as Wheel;
-use App\Http\Controllers\Controller;
 use App\UserAudit;
 use App\Wheel\CashAccount;
 use App\Wheel\LiabilityAccount;

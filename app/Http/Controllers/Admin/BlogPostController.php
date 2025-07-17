@@ -90,8 +90,8 @@ class BlogPostController extends Controller
         //     $post->tags()->sync($tagIds);
         // }
 
-        return redirect()->route('admin.blog.index')
-                        ->with('success', 'Post created successfully.');
+        return redirect()->route('admin.post.index')
+                        ->with('success', 'Blog created successfully.');
     }
 
     public function show(Post $post)
@@ -114,13 +114,13 @@ class BlogPostController extends Controller
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published,archived',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string',
+            'category_id' => 'required|exists:blog_categories,id',
+            // 'tags' => 'nullable|array',
+            // 'tags.*' => 'string',
             'is_featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string',
+            // 'meta_title' => 'nullable|string|max:255',
+            // 'meta_description' => 'nullable|string|max:500',
+            // 'meta_keywords' => 'nullable|string',
         ]);
 
         $data = $request->all();
@@ -157,8 +157,8 @@ class BlogPostController extends Controller
         //     $post->tags()->detach();
         // }
 
-        return redirect()->route('admin.blog.index')
-                        ->with('success', 'Post updated successfully.');
+        return redirect()->route('admin.post.index')
+                        ->with('success', 'Blog updated successfully.');
     }
 
     public function destroy(Post $post)
@@ -169,7 +169,7 @@ class BlogPostController extends Controller
 
         $post->delete();
 
-        return redirect()->route('admin.blog.index')
-                        ->with('success', 'Post deleted successfully.');
+        return redirect()->route('admin.post.index')
+                        ->with('success', 'Blog deleted successfully.');
     }
 }
