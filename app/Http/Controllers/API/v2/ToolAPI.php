@@ -96,7 +96,7 @@ class ToolAPI extends Controller
         $request['user_id'] = $user->id;
         $feedback = UserFeedback::create($request->all());
         //  info($feedback); // admin@prismcheck.com dev.kabiruwahab@gmail.com
-        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $feedback));
+        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $feedback, 'feedback'));
         $msg = "Your Feedback has been submitted";
         return response()->json([
             'success', $msg, 'feedback' => $feedback
@@ -130,7 +130,7 @@ class ToolAPI extends Controller
 
         $enquiry = Enquiry::create($request->all());
 
-        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $enquiry));
+        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $enquiry, 'enquiry'));
 
         $msg = "Your enquiry has been submitted";
         return response()->json([
@@ -180,7 +180,7 @@ class ToolAPI extends Controller
             $ext = $request->file('photo')->getClientOriginalExtension();
             $fileNameStore = sha1(time()). rand(100000, 999999) . '.'.$ext;
             $photo = $request->file('photo')->storeAs('public/user', $fileNameStore);
-            
+
         }
 
         $user->image =  $photo;

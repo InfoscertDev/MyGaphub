@@ -51,6 +51,7 @@ return [
     | your application so that it is used when running Artisan tasks.
     |
     */
+    'api_secret' => env('API_SECRET'),
 
     'fixer_key' => env('FIXER_KEY', null),
     'brevo_key' => env('BREVO_KEY', null),

@@ -28,21 +28,25 @@ Route::any('/', function (Request $request) {
     ], 200);
 });
 
-Route::get('/acquisition/trigger/alert', 'API\v2\GaphubAlertController@triggerReapAlert');
-Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@triggerAuthorizeReap');
-Route::post('/gaphubers/non_member/sms', 'API\v2\GaphubAlertController@nonMemberSMS');
 
-// Release C
-Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability');
-Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration');
-Route::post('/mygap/login', 'Auth\GapAutAPI@login');
+// Apply API key middleware to all routes (create this middleware first)
+Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
+    // Release C
+    Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability')->middleware('throttle:10,1');
+    Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration')->middleware('throttle:5,1');
+    Route::post('/mygap/login', 'Auth\GapAutAPI@login')->middleware('throttle:5,1');
 
-// Password Reset Routes
-Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP');
-Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP');
-Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP');
+    // Password Reset Routes
+    Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP')->middleware('throttle:5,1');
+    Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP')->middleware('throttle:10,1');
+    Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP')->middleware('throttle:5,1');
 
-Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry');
+    Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry')->middleware('throttle:5,1');
+
+    Route::get('/acquisition/trigger/alert', 'API\v2\GaphubAlertController@triggerReapAlert');
+    Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@triggerAuthorizeReap');
+    Route::post('/gaphubers/non_member/sms', 'API\v2\GaphubAlertController@nonMemberSMS');
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -176,7 +180,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::post('/confirm/passcode', 'API\v2\MobileAuth@confirmPassCode');
 });
 
-Route::middleware(['cors'])->group(function () {
+Route::middleware(['cors', 'throttle:60,1'])->group(function () {
     // Route::get('blogs/featured', ['API\v2\GapProductController@featured']);
     Route::get('blog', 'API\v2\GapProductController@blog');
     Route::get('blog/search', 'API\v2\GapProductController@search');

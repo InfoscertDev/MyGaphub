@@ -21,7 +21,8 @@ Route::get('/fxt', function() {
 
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
-
+    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('config:clear');
     return '<h1>Cache facade value cleared</h1>';
 });
 

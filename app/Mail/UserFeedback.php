@@ -9,22 +9,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UserFeedback extends Mailable
 {
-    
+
 
     use Queueable, SerializesModels;
 
     protected $user;
     protected $feedback;
+    protected $type;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, $feedback)
+    public function __construct($user, $feedback, $type = 'enquiry')
     {
         $this->user = $user;
         $this->feedback = $feedback;
+        $this->type = $type;
     }
 
     /**
@@ -34,13 +36,13 @@ class UserFeedback extends Mailable
      */
     public function build()
     {
-        $subject = "User Feedback";
+        $subject = $this->type == 'enquiry' ? "Enquiry Message" : "User Feedback";
         return $this->subject($subject)
                     ->view('email.user_feedback')
                     // ->text('emails.user_feedback')
-                    ->with([ 
-                        'user' => $this->user, 
+                    ->with([
+                        'user' => $this->user,
                         'feedback' => $this->feedback
-                    ]); 
+                    ]);
     }
 }

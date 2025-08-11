@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http; 
+namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -54,7 +54,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [ 
+    protected $routeMiddleware = [
         'admin' => \App\Http\Middleware\RedirectIfNotAdmin::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
         'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
-           'cors' => \App\Http\Middleware\Cors::class, //
-    ]; 
+        'cors' => \App\Http\Middleware\Cors::class, //
+        'api.key' => \App\Http\Middleware\VerifyApiKey::class,
+    ];
 }

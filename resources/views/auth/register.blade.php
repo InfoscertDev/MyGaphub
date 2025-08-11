@@ -107,14 +107,14 @@
                                 <span class="mr-2">I accept the <a href="http://www.mygaphub.com/index.php/terms-conditions/" target="_blank" class="txt-primary">Terms & Conditions </a> and <a href="http://www.mygaphub.com/index.php/privacy-policy/" target="_blank" class="txt-primary">Privacy Policy</a></span>
                             </label>
                         </div>
-                        <div class="form-group  mb-0">
+                        {{-- <div class="form-group  mb-0">
                             <div class=" text-right mt-1">
                                 <button type="submit" class="btn px-2 btn-pry "> Create Account </button>
                                 <span class="ml-2 bold">
                                     Already have an account? <a href="{{ route('login') }}" class="txt-primary">Log in here </a>
                                 </span>
                             </div>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
             </div>

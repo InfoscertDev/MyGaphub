@@ -6,6 +6,7 @@
         <span style="font-size: 18px;font-weight: bold;">User:</span>
         <span>{{$user->firstname ?? ''}} {{$user->surname ?? ''}}</span>
         <span>{{$user->email ?? ''}}</span>
+        <span>{{$user->phone ?? ''}}</span>
         </p>
         <p>
         <span style="font-size: 18px;font-weight: bold;">Subject:</span>
