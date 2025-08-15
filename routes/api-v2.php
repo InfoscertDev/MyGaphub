@@ -32,16 +32,16 @@ Route::any('/', function (Request $request) {
 // Apply API key middleware to all routes (create this middleware first)
 Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
     // Release C
-    Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability')->middleware('throttle:10,1');
-    Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration')->middleware('throttle:5,1');
-    Route::post('/mygap/login', 'Auth\GapAutAPI@login')->middleware('throttle:5,1');
+    Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability')->middleware('throttle:30,1');
+    Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration')->middleware('throttle:15,1');
+    Route::post('/mygap/login', 'Auth\GapAutAPI@login')->middleware('throttle:15,1');
 
     // Password Reset Routes
-    Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP')->middleware('throttle:5,1');
-    Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP')->middleware('throttle:10,1');
-    Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP')->middleware('throttle:5,1');
+    Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP')->middleware('throttle:15,1');
+    Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP')->middleware('throttle:30,1');
+    Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP')->middleware('throttle:15,1');
 
-    Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry')->middleware('throttle:5,1');
+    Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry')->middleware('throttle:15,1');
 
     Route::get('/acquisition/trigger/alert', 'API\v2\GaphubAlertController@triggerReapAlert');
     Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@triggerAuthorizeReap');
@@ -96,6 +96,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/default/picture', 'API\v2\ToolAPI@defaultpicture');
         Route::post('/picture', 'API\v2\ToolAPI@picture');
         Route::post('/editprofile', 'API\v2\ToolAPI@editprofile');
+        Route::delete('/account', 'API\v2\ToolAPI@deleteAccount');
+
         // SEED
         Route::get('/seed', 'API\v2\SeedAPI@index');
         Route::get('/seed/target', 'API\v2\SeedAPI@target');
@@ -171,6 +173,19 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/feedback', 'API\v2\ToolAPI@sendFeedback');
         Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
         Route::get('/product/finacial-hub', 'API\v2\GapProductController@financialHub');
+
+        // Main settings endpoints
+        Route::get('/settings', 'API\v2\SettingsAPI@getSettings'); // Main endpoint
+        Route::get('/settings/{key}', 'API\v2\SettingsAPI@getSetting');
+        Route::put('/settings/{key}', 'API\v2\SettingsAPI@updateSetting');
+
+        // Specific setting endpoints (alternative direct routes)
+        Route::put('/settings/notifications', 'API\v2\SettingsAPI@updateNotifications');
+        Route::put('/settings/appearance', 'API\v2\SettingsAPI@updateAppearance');
+
+        // Additional endpoints for settings management
+        Route::post('/settings/reset', 'API\v2\SettingsAPI@resetSettings');
+        Route::post('/settings/{key}/reset', 'API\v2\SettingsAPI@resetSetting');
     });
     // Relesea B Security
     Route::post('/mygap/logout', 'Auth\GapAutAPI@logout');

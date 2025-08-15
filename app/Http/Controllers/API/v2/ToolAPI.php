@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\User;
 use App\UserProfile as Profile;
+use App\Models\AccountDeletion;
 use App\Helper\HelperClass;
 use App\Helper\AllocationHelpers;
 
@@ -82,112 +83,6 @@ class ToolAPI extends Controller
     }
 
 
-    public function sendFeedback(Request $request)
-    {
-        $user = $request->user();
-        $validator = Validator::make($request->all(),[
-            'subject' => 'required',
-            'message' => 'required|min:10|max:512'
-        ]);
-
-        if($validator->fails()){
-            return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
-        }
-        $request['user_id'] = $user->id;
-        $feedback = UserFeedback::create($request->all());
-        //  info($feedback); // admin@prismcheck.com dev.kabiruwahab@gmail.com
-        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $feedback, 'feedback'));
-        $msg = "Your Feedback has been submitted";
-        return response()->json([
-            'success', $msg, 'feedback' => $feedback
-        ], 201);
-    }
-
-    public function sendHelpEnquiry(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'phone'   => [
-                'required',
-                'regex:/^\+?[0-9]{7,15}$/'
-            ],
-            'subject' => 'nullable',
-            'message' => 'required|min:10|max:512'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->toJson()
-            ], 400);
-        }
-
-        $user = new \stdClass();
-        $user->firstname  = $request->name;
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-
-        $enquiry = Enquiry::create($request->all());
-
-        Mail::to('admin@prismcheck.com')->send(new MailUserFeedback($user, $enquiry, 'enquiry'));
-
-        $msg = "Your enquiry has been submitted";
-        return response()->json([
-            'status'  => 'success',
-            'message' => $msg,
-            'enquiry' => $enquiry
-        ], 201);
-    }
-
-    // Profile
-    public function profile(Request $request)
-    {
-        $id = $request->user()->id;
-        $user = User::find($id);
-        $profile = $user->profile;
-
-        if (!$profile) {
-           $profile = new Profile();
-           $profile->save();
-           $user->profile_id  = $profile->id;
-           $user->save();
-        }
-
-        return response()->json(compact('profile', 'user'));
-    }
-
-    public function picture(Request $request)
-    {
-        $id = $request->user()->id;
-        $user = User::find($id)->profile;
-         $validator = Validator::make($request->all(),['photo'=>'required']);
-         if($validator->fails()){
-          return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
-        }
-
-        if($request->hasFile('photo')){
-             $validator = Validator::make($request->all(),
-             [
-                'photo'=>'min: 5|max:5000|mimes:jfif,jpeg,jpg,png'
-            ]);
-
-            if($validator->fails()){
-                return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
-            }
-
-            $fileType = $request->file('photo')->getClientMimeType();
-            $ext = $request->file('photo')->getClientOriginalExtension();
-            $fileNameStore = sha1(time()). rand(100000, 999999) . '.'.$ext;
-            $photo = $request->file('photo')->storeAs('public/user', $fileNameStore);
-
-        }
-
-        $user->image =  $photo;
-        $user->save();
-        return response()->json($user);
-    }
-
     public function defaultpicture(Request $request){
         $id = $request->user()->id;
         $user = User::find($id);
@@ -216,40 +111,218 @@ class ToolAPI extends Controller
         return response()->json(['success', $msg]);
 
     }
-    public function editprofile(Request $request)
+
+
+    /**
+     * Handle user feedback submission.
+     * Sends email to admin and stores feedback in DB.
+     */
+    public function sendFeedback(Request $request)
     {
-        $max_year = date('Y-m-d', strtotime('-14 years'));
+        $user = $request->user();
+
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required|min:3',
-            'surname' => 'required|min:3',
-            'phone' => 'min:7|max:15',
-            'phone' => 'numeric',
-            'date' => 'date|before:'.$max_year
-        ],[
-            'date.before' => 'Input a correct Date of Birth',
-            'phone.numeric' => 'The phone number must be a valid number.'
+            'subject' => 'required|string',
+            'message' => 'required|string|min:10|max:512',
         ]);
-        if($validator->fails()){
-          return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'errors'    => $validator->errors()
+            ], 400);
         }
 
+        $feedback = UserFeedback::create([
+            'user_id' => $user->id,
+            'subject' => $request->subject,
+            'message' => $request->message
+        ]);
 
-        $id = $request->user()->id;
-        $user = User::find($id);
-        $profile = $user->profile;
-        $user->firstname = $request->firstname;
-        $user->surname = $request->surname;
-        $profile->dob_count = $profile->dob_count + 1;
-        $profile->phone = $request->phone;
-        $profile->date_of_birth = $request->date;
-        $profile->ancesry = $request->ancesry;
-        $profile->country = $request->residence;
-        $profile->address = $request->address;
-        $user->save();  $profile->save();
+        Mail::to('admin@prismcheck.com')
+            ->send(new MailUserFeedback($user, $feedback, 'feedback'));
 
-        $msg = "Profile has been updated";
-        return response()->json(['success', $msg]);
+        return response()->json([
+            'status'  => true,
+            'message' => 'Your feedback has been submitted',
+            'data'    => $feedback
+        ], 201);
     }
+
+    /**
+     * Handle public help/enquiry requests.
+     * Sends enquiry email to admin.
+     */
+    public function sendHelpEnquiry(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'    => 'required|string',
+            'email'   => 'required|email',
+            'phone'   => [
+                'required',
+                'regex:/^\+?[0-9]{7,15}$/'
+            ],
+            'subject' => 'nullable|string',
+            'message' => 'required|string|min:10|max:512',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'errors'    => $validator->errors()
+            ], 400);
+        }
+
+        $enquiry = Enquiry::create($request->only([
+            'name', 'email', 'phone', 'subject', 'message'
+        ]));
+
+        $userObj = (object) [
+            'firstname' => $request->name,
+            'email'     => $request->email,
+            'phone'     => $request->phone
+        ];
+
+        Mail::to('admin@prismcheck.com')
+            ->send(new MailUserFeedback($userObj, $enquiry, 'enquiry'));
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Your enquiry has been submitted',
+            'data'    => $enquiry
+        ], 201);
+    }
+
+
+    /**
+     * Get authenticated user profile.
+     * Creates profile if it does not exist.
+     */
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            $profile = Profile::create();
+            $user->profile_id = $profile->id;
+            $user->save();
+        }
+
+        return response()->json(compact('profile', 'user'));
+
+        // return response()->json([
+        //     'status'  => true,
+        //     'message' => 'Profile retrieved successfully',
+        //     'data'    => compact('user', 'profile')
+        // ], 200);
+    }
+
+    /**
+     * Upload or update profile picture.
+     */
+    public function picture(Request $request)
+    {
+        $profile = $request->user()->profile;
+
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|file|min:5|max:5000|mimes:jfif,jpeg,jpg,png'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'errors'    => $validator->errors()
+            ], 400);
+        }
+
+        $file = $request->file('photo');
+        $fileName = sha1(time()) . rand(100000, 999999) . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('public/user', $fileName);
+
+        $profile->image = $path;
+        $profile->save();
+        return response()->json($profile);
+
+        // return response()->json([
+        //     'status'  => true,
+        //     'message' => 'Profile picture updated successfully',
+        //     'data'    => $profile
+        // ], 200);
+    }
+
+    /**
+     * Update authenticated user profile.
+     * Allows updating only ONE field per request.
+     */
+    public function editProfile(Request $request)
+    {
+        $max_year = date('Y-m-d', strtotime('-14 years'));
+
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'nullable|min:3',
+            'surname'   => 'nullable|min:3',
+            'phone'     => ['nullable', 'regex:/^\+?[0-9]{7,15}$/'],
+            'date_of_birth'      => 'nullable|date|before:' . $max_year,
+            'ancesry'   => 'nullable|string',
+            'country' => 'nullable|string',
+            'address'   => 'nullable|string',
+            'residential_country' => 'nullable|string|max:100'
+        ], [
+            'date_of_birth.before' => 'Input a correct Date of Birth',
+            'phone.regex' => 'The phone number must be a valid Whatsapp number.'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'errors'    => $validator->errors()
+            ], 400);
+        }
+
+        $fields = array_filter($request->only([
+            'firstname', 'surname', 'phone', 'date_of_birth', 'ancesry', 'country', 'address', 'residential_country'
+        ]));
+
+        if (empty($fields)) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No valid fields provided for update',
+                'data'    => null
+            ], 400);
+        }
+
+        $user = $request->user();
+        $profile = $user->profile;
+
+        foreach ($fields as $key => $value) {
+            if (in_array($key, ['firstname', 'surname'])) {
+                $user->$key = $value;
+            } elseif ($key === 'date_of_birth') {
+                $profile->date_of_birth = $value;
+            } elseif ($key === 'phone') {
+                $profile->phone = $value;
+            } elseif ($key === 'residential_country') {
+                $profile->residential_country = $value;
+            } else {
+                $profile->$key = $value;
+            }
+        }
+
+        $user->save();
+        $profile->save();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Profile updated successfully',
+            'data'    => compact('user', 'profile')
+        ], 200);
+    }
+
 
     public function updateExchange(Request $request){
         $user = auth()->user();
@@ -257,9 +330,11 @@ class ToolAPI extends Controller
             'currency' => 'required',
             'rate' => 'required|numeric'
         ]);
+
         if($validator->fails()){
           return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
         }
+
         $manual_currencies = GapCurrency::where('user_id', $user->id)->first();
         $manual_rates = json_decode($manual_currencies->currencies);
 
@@ -324,6 +399,40 @@ class ToolAPI extends Controller
             'data' => $data,
             'message' => 'Support'
         ]);
+    }
+
+    /**
+     * Soft delete a user account with a given reason.
+     */
+    public function deleteAccount(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'reason' => 'required|string|max:512'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'data'    => $validator->errors()
+            ], 400);
+        }
+
+        $user = $request->user();
+
+        // Store reason in account_deletions table
+        AccountDeletion::create([
+            'user_id' => $user->id,
+            'reason'  => $request->reason
+        ]);
+
+        $user->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Your account has been deleted successfully',
+            'data'    => null
+        ], 200);
     }
 
 }

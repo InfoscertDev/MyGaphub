@@ -48,31 +48,61 @@ class GapAutAPI extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
+            'email'    => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
         ]);
-        if($validator->fails()){
-            return response()->json( [ 'status' => false,"errors" => $validator->errors()->toJson()], 400);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validation failed',
+                'data'    => $validator->errors()
+            ], 400);
         }
 
         $credentials = $request->only('email', 'password');
 
         try {
-            $token = JWTAuth::attempt($credentials);
-            if (!$token) {
-                return response()->json([ 'status' => false,'message' => 'Invalid login credentials'], 400);
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Invalid login credentials',
+                    'data'    => null
+                ], 400);
             }
         } catch (JWTException $e) {
-            return response()->json([ 'status' => false,'message' => 'Could not create token'], 500);
+            return response()->json([
+                'status'  => false,
+                'message' => 'Could not create token',
+                'data'    => null
+            ], 500);
         }
-        $user = Auth::user();
-        if($user->email_verified_at !== NULL){
-            return $this->respondWithToken($token);
-        }else{
-            return response()->json([ 'status' => false,'message' => 'Account has not been verified'], 400);
-        }
-    }
 
+        $user = Auth::user();
+
+        // Check if account is deleted
+        if ($user->deleted_at !== null) {
+            $hasEnquiry = \App\Models\Enquiry::where('email', $user->email)->exists();
+            if (!$hasEnquiry) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Account has been deleted. Please submit an enquiry to restore access.',
+                    'data'    => null
+                ], 403);
+            }
+        }
+
+        // Check if email is verified
+        if ($user->email_verified_at === null) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Account has not been verified',
+                'data'    => null
+            ], 400);
+        }
+
+        return $this->respondWithToken($token);
+    }
 
     public function getAuthenticatedUser()
     {
@@ -102,14 +132,16 @@ class GapAutAPI extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'status' => true,
-            'data' => [
+            'status'  => true,
+            'message' => 'Login successful',
+            'data'    => [
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 1000 * 60 * 60  * 24 * 60
+                'token_type'   => 'bearer',
+                'expires_in'   => auth('api')->factory()->getTTL() * 60 // in seconds
             ]
-        ]);
+        ], 200);
     }
+
 
     /**
      * Get the guard to be used during authentication.
