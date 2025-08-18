@@ -82,6 +82,18 @@ class UserSetting extends Model
     }
 
     /**
+     * Get default preferences settings
+     */
+    public static function getDefaultPreferencesSettings()
+    {
+        return [
+            'signin_preference' => 0, // 0=password, 1=fingerprint, 2=passcode
+            'preferred_currency' => 'USD', // Default currency
+            'currency_value' => 1.0, // Default currency value
+        ];
+    }
+
+    /**
      * Initialize default settings for a user if they don't exist
      * This can be called from profile endpoint or any common endpoint
      */
@@ -110,6 +122,19 @@ class UserSetting extends Model
                 'user_id' => $userId,
                 'setting_key' => 'appearance',
                 'setting_value' => static::getDefaultAppearanceSettings(),
+            ]);
+        }
+
+        // Check if user has preferences settings, create if not
+        $preferencesExists = static::where('user_id', $userId)
+            ->where('setting_key', 'preferences')
+            ->exists();
+
+        if (!$preferencesExists) {
+            static::create([
+                'user_id' => $userId,
+                'setting_key' => 'preferences',
+                'setting_value' => static::getDefaultPreferencesSettings(),
             ]);
         }
 

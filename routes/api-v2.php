@@ -177,22 +177,27 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         // Main settings endpoints
         Route::get('/settings', 'API\v2\SettingsAPI@getSettings'); // Main endpoint
         Route::get('/settings/{key}', 'API\v2\SettingsAPI@getSetting');
-        Route::put('/settings/{key}', 'API\v2\SettingsAPI@updateSetting');
 
         // Specific setting endpoints (alternative direct routes)
+        Route::put('/settings/{key}', 'API\v2\SettingsAPI@updateSetting');
         Route::put('/settings/notifications', 'API\v2\SettingsAPI@updateNotifications');
         Route::put('/settings/appearance', 'API\v2\SettingsAPI@updateAppearance');
+        Route::put('/settings/preferences', 'API\v2\SettingsAPI@updatePreferences');
 
         // Additional endpoints for settings management
-        Route::post('/settings/reset', 'API\v2\SettingsAPI@resetSettings');
+        // Route::post('/settings/reset', 'API\v2\SettingsAPI@resetSettings');
         Route::post('/settings/{key}/reset', 'API\v2\SettingsAPI@resetSetting');
     });
+
     // Relesea B Security
+    Route::get('/mygap/biometric', 'API\v2\MobileAuth@index');
+    Route::post('/mygap/biometric/fingerprint', 'API\v2\MobileAuth@setFingerprint');
+    Route::post('/mygap/biometric/passcode', 'API\v2\MobileAuth@setPasscode');
+    Route::post('/mygap/passcode/confirm', 'API\v2\MobileAuth@confirmPasscode');
+
     Route::post('/mygap/logout', 'Auth\GapAutAPI@logout');
-    Route::get('/mygap/security', 'API\v2\MobileAuth@index');
     Route::post('/mygap/update/password', 'API\v2\MobileAuth@updatePassword');
-    Route::post('/mygap/securemobile', 'API\v2\MobileAuth@store');
-    Route::post('/confirm/passcode', 'API\v2\MobileAuth@confirmPassCode');
+    Route::post('/mygap/securemobile', 'API\v2\MobileAuth@store'); //comment later
 });
 
 Route::middleware(['cors', 'throttle:60,1'])->group(function () {

@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Support\Facades\Validator;
 
 use App\UserProfile as Profile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class MobileAuth extends Controller
@@ -20,28 +21,142 @@ class MobileAuth extends Controller
     public function index(Request $request)
     {
         $id = $request->user()->id;
-        $user = User::find($id); 
-        $profile = Profile::where('id',$user->profile_id)->select(['preference', 'passcode', 'fingerprint'])->first();
-        return response()->json(compact('profile'));
+        $user = User::find($id);
+        $biometric = Profile::where('id',$user->profile_id)->select([ 'passcode', 'fingerprint'])->first();
+        // return response()->json(compact('profile'));
+        return response()->json([
+            'success' => true,
+            'message' => '',
+            'data' => [
+                'biometric' =>  $biometric
+            ]
+        ]);
     }
 
-    public function confirmPassCode(Request $request){
-        $id = $request->user()->id;
-        $user = User::find($id); 
-        $profile = $user->profile;
-        $success = false;
-        $validator = Validator::make($request->all(), [ 'pass' => 'required' ]);
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+    // public function confirmPassCode(Request $request){
+    //     $id = $request->user()->id;
+    //     $user = User::find($id);
+    //     $profile = $user->profile;
+    //     $success = false;
+
+    //     $validator = Validator::make($request->all(), [ 'pass' => 'required' ]);
+
+    //     if($validator->fails()){
+    //         return response()->json($validator->errors()->toJson(), 400);
+    //     }
+
+    //     $pass = Hash::check($request->pass, $profile->passcode);
+
+    //     if ($pass) {
+    //         $success = true;
+    //         return response()->json(compact('success', 'profile'));
+    //     } else {
+    //         return response()->json(compact('success'));
+    //     }
+    // }
+
+    public function confirmPasscode(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'passcode' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 400);
         }
 
-        $pass = Hash::check($request->pass, $profile->passcode);
-        if ($pass) {
-            $success = true; 
-            return response()->json(compact('success', 'profile'));
-        } else {
-            return response()->json(compact('success'));
+        $user = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile || empty($profile->passcode)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No passcode set for this user',
+            ], 400);
         }
+
+        $isValid = Hash::check($request->passcode, $profile->passcode);
+
+        return response()->json([
+            'success' => $isValid,
+            'message' => $isValid ? 'Passcode verified successfully' : 'Invalid passcode',
+        ]);
+    }
+
+    public function setFingerprint(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'fingerprint' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $user = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User profile not found',
+            ], 404);
+        }
+
+        $profile->fingerprint = $request->fingerprint;
+        $profile->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fingerprint setting updated successfully',
+            'data' => [
+                'fingerprint' => $profile->fingerprint
+            ]
+        ]);
+    }
+
+    public function setPasscode(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'passcode' => 'required|string|min:4|max:8'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $user = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User profile not found',
+            ], 404);
+        }
+
+        $profile->passcode = Hash::make($request->passcode);
+        $profile->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Passcode updated successfully',
+            'data' => [
+                'has_passcode' => !empty($profile->passcode)
+            ]
+        ]);
     }
 
 
@@ -52,14 +167,14 @@ class MobileAuth extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
+    {
         $id = $request->user()->id;
-        $user = User::find($id); 
-        $profile = $user->profile; 
+        $user = User::find($id);
+        $profile = $user->profile;
         $success = false;
         $validator = Validator::make($request->all(), [ 'security' => 'required' ]);
         // $validator = Validator::make($request->all(), [ 'security' => 'required' ]);
-        
+
         if($request->security == "ahgajhgsbjgbjhxbsjdhhsjjhd"){
             $validator = Validator::make($request->all(), [ 'fingerprint' => 'required' ]);
             if($validator->fails()){
@@ -67,7 +182,7 @@ class MobileAuth extends Controller
             }
             $profile->fingerprint = $request->fingerprint;
             $profile->save();
-            $success = true; 
+            $success = true;
             return response()->json(compact('success', 'profile'));
         }
 
@@ -78,7 +193,7 @@ class MobileAuth extends Controller
             }
             $profile->passcode = Hash::make($request->passcode);
             $profile->save();
-            $success = true; 
+            $success = true;
             return response()->json(compact('success', 'profile'));
         }
 
@@ -89,14 +204,15 @@ class MobileAuth extends Controller
             }
             $profile->preference = $request->preference;
             $profile->save();
-            $success = true; 
+            $success = true;
             return response()->json(compact('success', 'profile'));
-        } 
+        }
+
         return response()->json(['error' => 'No Security Information']);
-    }   
+    }
 
     public function updatePassword(Request $request){
-        
+
         $validator = Validator::make($request->all(), [
             'current_password' => 'required|string|min:8',
             'new_password' => 'required|string|min:8|confirmed'
@@ -109,16 +225,15 @@ class MobileAuth extends Controller
         }
 
         $id = $request->user()->id;
-        $user = User::find($id); 
+        $user = User::find($id);
         $isPass = Hash::check($request->current_password, $user->password);
         if ($isPass) {
             $password = Hash::make($request->new_password);
             $user->password = $password;
-            $user->save(); 
+            $user->save();
             return response()->json(['success' => 'Your password has been updated.']);
-        } else { 
+        } else {
             return  response()->json(['error' => 'Current Password  does not match']);
         }
     }
 }
- 

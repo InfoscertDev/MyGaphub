@@ -21,6 +21,7 @@ class UserProfile extends Model
      * @var array
      */
     protected $hidden = [
+        // 'passcode', 'fingerprint',
         'created_at', 'updated_at',
     ];
 }

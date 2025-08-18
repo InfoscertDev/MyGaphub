@@ -109,12 +109,46 @@ class SettingsAPI extends Controller
         ]);
     }
 
+    public function updatePreferences(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $userId = $user->id;
+        $validator = Validator::make($request->all(), [
+            'signin_preference' => 'integer|min:0|max:2', // 0=password, 1=fingerprint, 2=passcode
+            'preferred_currency' => 'string|max:10', // USD, EUR, NGN, etc.
+            'currency_value' => 'numeric|min:0', // Default value for currency
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $currentSettings = UserSetting::getUserSetting($userId, 'preferences',
+            UserSetting::getDefaultPreferencesSettings());
+
+        // Merge with existing settings
+        $newSettings = array_merge($currentSettings, $validator->validated());
+
+        UserSetting::setUserSetting($userId, 'preferences', $newSettings);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Preferences updated successfully',
+            'data' => $newSettings,
+        ]);
+    }
+
+
     /**
      * Update a specific setting (generic endpoint)
      */
     public function updateSetting(Request $request, string $settingKey): JsonResponse
     {
-        $allowedKeys = ['notifications', 'appearance'];
+        $allowedKeys = ['notifications', 'appearance', 'preferences'];
 
         if (!in_array($settingKey, $allowedKeys)) {
             return response()->json([
@@ -130,6 +164,10 @@ class SettingsAPI extends Controller
 
         if ($settingKey === 'appearance') {
             return $this->updateAppearance($request);
+        }
+
+        if ($settingKey === 'preferences') {
+            return $this->updatePreferences($request);
         }
 
         return response()->json([
@@ -166,7 +204,7 @@ class SettingsAPI extends Controller
      */
     public function resetSetting(string $settingKey): JsonResponse
     {
-        $allowedKeys = ['notifications', 'appearance'];
+        $allowedKeys = ['notifications', 'appearance', 'preferences'];
 
         if (!in_array($settingKey, $allowedKeys)) {
             return response()->json([
@@ -205,7 +243,7 @@ class SettingsAPI extends Controller
      */
     public function getSetting(string $settingKey): JsonResponse
     {
-        $allowedKeys = ['notifications', 'appearance'];
+        $allowedKeys = ['notifications', 'appearance', 'preferences'];
 
         if (!in_array($settingKey, $allowedKeys)) {
             return response()->json([

@@ -251,6 +251,7 @@ class IntegrationParties{
             "email" => $user->email,
             "attributes" => [
                 "FIRSTNAME" => $user->firstname ?? '',
+                "LASTNAME" => $user->surname ?? '',
                 // Add other attributes here if needed, like LASTNAME, SMS, etc.
             ],
             "listIds" => [27],
