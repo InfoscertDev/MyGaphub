@@ -197,19 +197,44 @@ class GapExchangeHelper
             $manual_currencies->currencies = json_encode($manual_rates);
             $manual_currencies->save();
         }
+
         if($system_currencies){
             $current = json_decode($system_currencies->currencies);
-            if($current->$bcurrency == $manual_currencies->base){
-                $base = 1;
-            }else{
-                $base = $current->EUR /  $current->$bcurrency;
-            }
+            $base = 1;
+            // if($current->$bcurrency == $manual_currencies->base){
+            // }else{
+            //     $base = $current->EUR /  $current->$bcurrency;
+            // }
             foreach ($current as $key => &$rate) {
                 $current->$key = round(($rate * $base), 4);
             }
             $system_currencies->currencies = json_encode($current);
         }
         return compact('user_currency','manual_currencies', 'system_currencies');
+    }
+
+    public static function gapSystemCurrencies($user){
+        $system_currencies = GapCurrency::where('user_id', 0)->first();
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $user_currency = $calculator->currency;
+
+        // Extract base currency code
+        $bcurrency = explode(" ", $user_currency)[1];
+
+        // Process system currencies only
+        if($system_currencies){
+            $current = json_decode($system_currencies->currencies);
+
+            $base = $current->EUR / $current->$bcurrency;
+
+            foreach ($current as $key => &$rate) {
+                $current->$key = round(($rate * $base), 4);
+            }
+
+            $system_currencies->currencies = json_encode($current);
+        }
+
+        return compact('user_currency', 'system_currencies');
     }
 
     public static function switchToCashAccount($account, $name, $currency){

@@ -374,6 +374,32 @@ class ToolAPI extends Controller
 
     }
 
+    public function getExchangeData(Request $request)
+    {
+        $user = $request->user();
+
+        $gap_currencies = GapExchangeHelper::gapSystemCurrencies($user); // false = skip manual
+
+        $calculator = Calculator::where('user_id', $user->id)->first();
+        $currency = $calculator ? $calculator->currency : null;
+
+        // Get popular currencies info
+        $currencies = HelperClass::popularCurrenciensInfo();
+        $system_currencies = $gap_currencies['system_currencies'];
+        $currency_rates = json_decode($system_currencies['currencies']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Exchange Rate retrieved successfully',
+            'data' => [
+                'base_currency' => $currency,
+                'last_update' => $system_currencies['last_update'],
+                'popular_currencies' => $currencies,
+                'system_currencies' => $currency_rates,
+            ]
+        ]);
+    }
+
     public function support(Request $request)
     {
         $user = $request->user();
@@ -434,5 +460,6 @@ class ToolAPI extends Controller
             'data'    => null
         ], 200);
     }
+
 
 }

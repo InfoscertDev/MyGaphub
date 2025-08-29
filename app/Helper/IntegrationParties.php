@@ -12,11 +12,15 @@ class IntegrationParties{
     private $sender = 'MyGaphub';
     private static $fixer_key;
     private static $sendinblue_key;
+    private static $exchange_rate_key;
+    private static $fx_currency_provider;
 
-    public static  function initializeKeys()
+    public static function initializeKeys()
     {
-        self::$fixer_key = config("app.fixer_key");
-        self::$sendinblue_key = config("app.brevo_key");
+        self::$fixer_key        = config("app.fixer_key");
+        self::$sendinblue_key   = config("app.brevo_key");
+        self::$exchange_rate_key= config("app.exchange_rate_key");
+        self::$fx_currency_provider= config("app.fx_currency_provider");
     }
 
 
@@ -183,7 +187,7 @@ class IntegrationParties{
             $err = curl_error($curl);
             curl_close($curl);
 
-            // info([  IntegrationParties::$sendinblue_key,' Sendiblue REsponse', $err, $contact ]);
+            info([  IntegrationParties::$sendinblue_key,' Sendiblue REsponse', $err, $contact ]);
             return $contact;
         }
 
@@ -387,9 +391,42 @@ class IntegrationParties{
     }
 
 
-    public function update_currency_converter($base='EUR'){
-        IntegrationParties::initializeKeys();
-        $url = "http://data.fixer.io/api/latest?base=$base&access_key=".IntegrationParties::$fixer_key;
+    public function update_currency_converter_fixer($base='EUR'){
+        $url = "http://data.fixer.io/api/latest?base=$base&access_key=" . self::$fixer_key;
+        return $this->makeRequest($url, 'Fixer');
+    }
+
+    // -------------------- Frankfurter --------------------
+    public function update_currency_converter_frankfurter($base='EUR'){
+        $url = "https://api.frankfurter.app/latest?from=$base";
+        return $this->makeRequest($url, 'Frankfurter');
+    }
+
+    // -------------------- ExchangeRate API --------------------
+    public function update_currency_converter_exchangerate($base='USD'){
+        $url = "https://api.exchangerate.host/live?base=$base&access_key=" . self::$exchange_rate_key;
+        $raw = $this->makeRequest($url, 'ExchangeRate');
+
+        // Normalize response to match others
+        if($raw && isset($raw->quotes)){
+            $normalized = new \stdClass();
+            $normalized->base = $raw->source ?? $base;
+            $normalized->date = isset($raw->timestamp) ? date('Y-m-d', $raw->timestamp) : now()->toDateString();
+            $normalized->rates = [];
+
+            foreach ($raw->quotes as $pair => $rate) {
+                // Example: "USDNGN" → extract "NGN"
+                $currency = substr($pair, 3);
+                $normalized->rates[$currency] = $rate;
+            }
+
+            return $normalized;
+        }
+        return null;
+    }
+
+    // -------------------- Request Helper --------------------
+    private function makeRequest($url, $label){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -398,16 +435,51 @@ class IntegrationParties{
         curl_close($ch);
         $result = json_decode($request, false);
 
+        // info([ 'GapCurrency', $url, "$label Converter", $result ]);
         if($err){
-          $configration = Configration::first();
-          Mail::to($configration->exchange_email)->send(new ExhangeRateFailure());
-        }else{
-          return $result;
+            $configration = Configration::first();
+            // Mail::to($configration->exchange_email)->send(new ExhangeRateFailure());
+            return null;
         }
+        return $result;
+    }
+
+    // -------------------- Loader --------------------
+    public function load_currency_converter($base='USD'){
+        self::initializeKeys();
+
+        // Pick provider from config
+        switch (self::$fx_currency_provider) {
+            case 'fixer':
+                $converter = $this->update_currency_converter_fixer($base);
+                break;
+            case 'frankfurter':
+                $converter = $this->update_currency_converter_frankfurter($base);
+                break;
+            case 'exchangerate':
+            default:
+                $converter = $this->update_currency_converter_exchangerate($base);
+                break;
+        }
+
+        $system_currencies = GapCurrency::where('user_id', 0)->first();
+
+        if($converter && isset($converter->rates)){
+            if(!$system_currencies){
+                $system_currencies = new GapCurrency();
+                $system_currencies->user_id = 0;
+                $system_currencies->save();
+            }
+            $system_currencies->base = $converter->base ?? $base;
+            $system_currencies->last_update = $converter->date ?? now()->toDateString();
+            $system_currencies->currencies = json_encode($converter->rates);
+            $system_currencies->save();
+        }
+
+        return $system_currencies;
     }
 
     public  function user_currency_converter($user){
-        IntegrationParties::initializeKeys();
         $system_currencies = GapCurrency::where('user_id', $user->id)->first();
         if($system_currencies && ($system_currencies->last_update) == date('Y-m-d')){
             // var_dump("Good");
@@ -415,32 +487,13 @@ class IntegrationParties{
         }
         $calculator = Calculator::where('user_id', $user->id)->first();
         $currency = explode(" ", $calculator->currency)[1];
-        $converter = $this->update_currency_converter();
+        $converter = $this->update_currency_converter_fixer();
 
         if($converter && $converter->success){
             if(!$system_currencies){
                 $system_currencies = new GapCurrency();
                 $system_currencies->user_id = $user->id;
                 // $system_currencies->save();
-            }
-            $system_currencies->base = $converter->base;
-            $system_currencies->last_update = $converter->date;
-            $system_currencies->currencies = json_encode($converter->rates);
-            $system_currencies->save();
-        }
-        return $system_currencies;
-    }
-
-    public  function load_currency_converter(){
-        IntegrationParties::initializeKeys();
-        $system_currencies = GapCurrency::where('user_id', 0)->first();
-        $converter = $this->update_currency_converter();
-
-        if($converter && $converter->success){
-            if(!$system_currencies){
-                $system_currencies = new GapCurrency();
-                $system_currencies->user_id = 0;
-                $system_currencies->save();
             }
             $system_currencies->base = $converter->base;
             $system_currencies->last_update = $converter->date;

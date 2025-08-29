@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/picture', 'API\v2\ToolAPI@picture');
         Route::post('/editprofile', 'API\v2\ToolAPI@editprofile');
         Route::delete('/account', 'API\v2\ToolAPI@deleteAccount');
+        Route::get('/exchange', 'API\v2\ToolAPI@getExchangeData');
 
         // SEED
         Route::get('/seed', 'API\v2\SeedAPI@index');

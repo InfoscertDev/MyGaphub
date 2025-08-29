@@ -53,7 +53,12 @@ return [
     */
     'api_secret' => env('API_SECRET'),
 
+    'fx_currency_provider' => env('FX_CURRENCY_PROVIDER', 'exchangerate'),
+
     'fixer_key' => env('FIXER_KEY', null),
+
+    'exchange_rate_key' => env('EXCHANGE_RATE_KEY', null),
+
     'brevo_key' => env('BREVO_KEY', null),
 
     'asset_url' => env('ASSET_URL', null),

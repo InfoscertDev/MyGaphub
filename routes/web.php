@@ -19,6 +19,8 @@ Route::get('/', function () { return  redirect('/login');  });
 
 Route::get('/fxt', function() {
 
+    $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
+    return $cfx_rates;
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('cache:clear');
