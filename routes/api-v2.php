@@ -41,11 +41,23 @@ Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
     Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP')->middleware('throttle:30,1');
     Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP')->middleware('throttle:15,1');
 
+    Route::post('password/send-reset-link', 'Auth\ForgotPasswordController@sendResetLink')->middleware('throttle:15,1');
+    Route::post('password/verify-token', 'Auth\ResetPasswordController@verifyResetToken')->middleware('throttle:30,1');
+    Route::post('password/reset-with-link', 'Auth\ResetPasswordController@resetPassword')->middleware('throttle:15,1');
+
     Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry')->middleware('throttle:15,1');
 
     Route::get('/acquisition/trigger/alert', 'API\v2\GaphubAlertController@triggerReapAlert');
     Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@triggerAuthorizeReap');
     Route::post('/gaphubers/non_member/sms', 'API\v2\GaphubAlertController@nonMemberSMS');
+
+    Route::prefix('whatsapp')->group(function () {
+        Route::post('/send-otp', 'API\v2\WhatsAppOTPController@sendOTP');
+        Route::post('/verify-otp', 'API\v2\WhatsAppOTPController@verifyOTP');
+        Route::post('/verification-status', 'API\v2\WhatsAppOTPController@getVerificationStatus');
+        Route::post('/resend-otp', 'API\v2\WhatsAppOTPController@resendOTP');
+    });
+
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -2,76 +2,222 @@
 
 namespace App\Helper;
 
+use stdClass;
+use App\Helper\IncomeHelper;
+use App\UserAudit as Audit;
 use App\FinicialCalculator as Calculator;
 use App\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
-use App\UserAudit as Audit;
-use App\Helper\IncomeHelper;
-use stdClass;
+use Illuminate\Support\Facades\Log;
+
+use App\Models\UserSetting;
 use App\Helper\AllocationHelpers;
 use App\Models\Asset\SeedBudgetAllocation;
 
 //
 class CalculatorClass{
 
-    public static function finicial($user){
-        // Initial Budget or Calculator Workflow
-        $calculator = Calculator::where('user_id', $user->id)->first();
-        // Current Budget or Average Seed
-        $allocated = AllocationHelpers::averageSeedDetail($user);
-        $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
-        $seed = $allocated['average_seed'];
-        $seed_type = ($calculator->extra == 'expenditure') ? 'expenditure' : 'seed';
-        $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
+    public static function finicial($user)
+    {
+        try {
+            // Initial Budget or Calculator Workflow
+            $calculator = Calculator::where('user_id', $user->id)->first();
 
-        // Use Budget if Average Income is available
-        if($isBudgetable){
-            $cost =  ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure']);
-            $calculator->periodic_savings = $seed['table']['savings'];
-            $expenditure = $seed['table']['expenditure'];
-            $calculator->charity = $seed['table']['discretionary'];
-            $calculator->education =  $seed['table']['education'];
+            if (!$calculator) {
+                throw new \Exception('Calculator not found for user');
+            }
 
-            $calculator->mortgage = $averageExpenditure['values'][0];
-            $calculator->mobility = $averageExpenditure['values'][1];
-            $calculator->expenses = $averageExpenditure['values'][2];
-            $calculator->utility = $averageExpenditure['values'][3];
-            $calculator->dept_repay = $averageExpenditure['values'][4];
-        }else{
-            // Primary Cost of Living
-            $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility +
-                     $calculator->expenses + $calculator->dept_repay;
+            // Get user preferences
+            $preference = UserSetting::where('user_id', $user->id)
+                                ->where('setting_key', 'preferences')
+                                ->first();
+            $preferred_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
 
-            $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
-        }
-        // Portfolio and Asset
-        $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
-        $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-        $funds = PortfolioHelper::investmentFunds($user);
+            // Current Budget or Average Seed
+            $allocated = AllocationHelpers::averageSeedDetail($user);
+            $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
+            $seed = $allocated['average_seed'];
+            $seed_type = ($calculator->extra == 'expenditure') ? 'expenditure' : 'seed';
+            $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
 
-        if(!$income_audit){
-            $tiles = HelperClass::dashboardTiles();
-            $audit = new Audit();
-            $audit->user_id = $user->id;
-            $audit->dashboard = json_encode($tiles);
-            $audit->save();
+            // Use Budget if Average Income is available
+            if ($isBudgetable) {
+                $cost = ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure'], 2);
+                $calculator->periodic_savings = $seed['table']['savings'];
+                $expenditure = $seed['table']['expenditure'];
+                $calculator->charity = $seed['table']['discretionary'];
+                $calculator->education = $seed['table']['education'];
+
+                $calculator->mortgage = $averageExpenditure['values'][0] ?? 0;
+                $calculator->mobility = $averageExpenditure['values'][1] ?? 0;
+                $calculator->expenses = $averageExpenditure['values'][2] ?? 0;
+                $calculator->utility = $averageExpenditure['values'][3] ?? 0;
+                $calculator->dept_repay = $averageExpenditure['values'][4] ?? 0;
+            } else {
+                // Primary Cost of Living
+                $expenditure = $calculator->mortgage + $calculator->mobility + $calculator->utility +
+                             $calculator->expenses + $calculator->dept_repay;
+
+                $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
+            }
+
+            // Portfolio and Asset
+            $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
             $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
+            $funds = PortfolioHelper::investmentFunds($user);
+
+            if (!$income_audit) {
+                $tiles = HelperClass::dashboardTiles();
+                $audit = new Audit();
+                $audit->user_id = $user->id;
+                $audit->dashboard = json_encode($tiles);
+                $audit->save();
+                $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
+            }
+
+            $portfolio = ($portfolios['isPortfolio'] || $income_audit->income_allocated)
+                        ? $portfolios['income_portfolio']
+                        : $calculator->other_income;
+            $portfolio = round($portfolio, 2);
+            $non_portfolio = round($portfolios['income_non_portfolio'], 2);
+
+            // Get current currency from calculator
+            $current_currency = GapExchangeHelper::extractCurrencyCode($calculator->currency);
+
+            // Adjust to preferred currency if different from current currency
+            if ($preferred_currency && $current_currency !== $preferred_currency) {
+                $original_portfolio = $portfolio;
+                $original_non_portfolio = $non_portfolio;
+
+                $portfolio = GapExchangeHelper::convert_currency($user, $preferred_currency, $portfolio);
+                $non_portfolio = GapExchangeHelper::convert_currency($user, $preferred_currency, $non_portfolio);
+
+                // Log::info("Currency conversion applied", [
+                //     'user_id' => $user->id,
+                //     'from_currency' => $current_currency,
+                //     'to_currency' => $preferred_currency,
+                //     'portfolio' => ['from' => $original_portfolio, 'to' => $portfolio],
+                //     'non_portfolio' => ['from' => $original_non_portfolio, 'to' => $non_portfolio]
+                // ]);
+            }
+
+            $target_currency = $preferred_currency ?? $current_currency;
+            $calculator->other_income = $portfolio;
+            $saving = $calculator->extra_save ?? 0;
+            $investment = $calculator->investment ?? 0;
+            $roce = $calculator->roce ?? 0;
+
+            return compact(
+                'cost',
+                'target_currency',
+                'saving',
+                'portfolio',
+                'non_portfolio',
+                'roce',
+                'seed_type',
+                'expenditure',
+                'investment',
+                'calculator',
+                'isBudgetable'
+            );
+
+        } catch (\Exception $e) {
+            \Log::error('Financial calculation failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Return safe defaults
+            return [
+                'cost' => 0,
+                'saving' => 0,
+                'portfolio' => 0,
+                'non_portfolio' => 0,
+                'roce' => 0,
+                'seed_type' => 'seed',
+                'expenditure' => 0,
+                'investment' => 0,
+                'calculator' => $calculator ?? new Calculator(),
+                'isBudgetable' => false
+            ];
         }
-
-        $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
-        $portfolio = round($portfolio,2);
-        $non_portfolio  = round($portfolios['income_non_portfolio'], 2);
-        $calculator->other_income = $portfolio;
-
-        $saving = $calculator->extra_save;
-        // $investment = $funds['investment'];
-        $investment = $calculator->investment;
-        $roce = $calculator->roce;
-
-
-        return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce', 'seed_type',
-                            'expenditure','investment', 'calculator', 'isBudgetable');
     }
+
+
+    // public static function finicial($user){
+    //     // Initial Budget or Calculator Workflow
+    //     $calculator = Calculator::where('user_id', $user->id)->first();
+    //     //
+    //     $preference = UserSetting::where('user_id', $user->id)
+    //                         ->where('setting_key', 'preferences')
+    //                         ->first();
+    //     $preferred_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null)  : null;
+
+    //     // Current Budget or Average Seed
+    //     $allocated = AllocationHelpers::averageSeedDetail($user);
+    //     $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
+    //     $seed = $allocated['average_seed'];
+    //     $seed_type = ($calculator->extra == 'expenditure') ? 'expenditure' : 'seed';
+    //     $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
+
+    //     // Use Budget if Average Income is available
+    //     if($isBudgetable){
+    //         $cost =  ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure']);
+    //         $calculator->periodic_savings = $seed['table']['savings'];
+    //         $expenditure = $seed['table']['expenditure'];
+    //         $calculator->charity = $seed['table']['discretionary'];
+    //         $calculator->education =  $seed['table']['education'];
+
+    //         $calculator->mortgage = $averageExpenditure['values'][0];
+    //         $calculator->mobility = $averageExpenditure['values'][1];
+    //         $calculator->expenses = $averageExpenditure['values'][2];
+    //         $calculator->utility = $averageExpenditure['values'][3];
+    //         $calculator->dept_repay = $averageExpenditure['values'][4];
+    //     }else{
+    //         // Primary Cost of Living
+    //         $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility +
+    //                  $calculator->expenses + $calculator->dept_repay;
+
+    //         $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
+    //     }
+
+    //     // Portfolio and Asset
+    //     $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
+    //     $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
+    //     $funds = PortfolioHelper::investmentFunds($user);
+
+    //     if(!$income_audit){
+    //         $tiles = HelperClass::dashboardTiles();
+    //         $audit = new Audit();
+    //         $audit->user_id = $user->id;
+    //         $audit->dashboard = json_encode($tiles);
+    //         $audit->save();
+    //         $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
+    //     }
+
+    //     $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
+    //     $portfolio = round($portfolio,2);
+    //     $non_portfolio  = round($portfolios['income_non_portfolio'], 2);
+    //     // Adjust to preferred currency if different from current currency
+    //     if($preferred_currency && explode(" ", $calculator->currency)[1] != $preferred_currency){
+    //        $portfolio = GapExchangeHelper::convert_currency($user,$preferred_currency, $portfolio);
+    //        $non_portfolio = GapExchangeHelper::convert_currency($user,$preferred_currency, $non_portfolio);
+
+    //        info("Convert to preferred currency $preferred_currency : $portfolio - $non_portfolio");
+    //     }
+
+    //     $calculator->other_income = $portfolio;
+    //     $saving = $calculator->extra_save;
+    //     // $investment = $funds['investment'];
+    //     $investment = $calculator->investment;
+    //     $roce = $calculator->roce;
+
+
+
+    //     return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce', 'seed_type',
+    //                         'expenditure','investment', 'calculator', 'isBudgetable');
+    // }
 
     public static function snapshot($calculator, $cost){
         // info([$calculator->other_income, $calculator->extra_save, $cost]);

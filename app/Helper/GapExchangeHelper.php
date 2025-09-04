@@ -8,6 +8,7 @@ use App\Wheel\LiabilityAccount as Liability;
 use App\Wheel\MortgageAccount as Mortgage;
 use App\SevenG\DeptFin as Debt;
 use App\Helper\IncomeHelper;
+use Illuminate\Support\Facades\Log;
 
 use App\SevenG\BespokeKPI;
 use App\Wheel\BespokeWheel;
@@ -17,31 +18,240 @@ use stdClass;
 
 class GapExchangeHelper
 {
-    public static function convert_currency($user, $target_currency, $money, $automated = 1){
-        // Log::info([$target_currency]);
-        $calculator = Calculator::where('user_id', $user->id)->first();
-        $system_currencies = GapCurrency::where('user_id', 0)->first();
-        $manual_currencies = GapCurrency::where('user_id', $user->id)->first();
-        $base_currency = ($calculator->currency) ? explode(" ", $calculator->currency)[1]: 'USD';
-        $target_currency = ($target_currency) ? explode(" ",$target_currency)[1] : 'USD';
+   /**
+     * Convert currency from base currency to target currency
+     *
+     * @param \App\Models\User $user
+     * @param string $target_currency
+     * @param float $money
+     * @param int $automated
+     * @return float
+     */
+    public static function convert_currency($user, $target_currency, $money, $automated = 1)
+    {
+        try {
+            // Get calculator and currency data
+            $calculator = Calculator::where('user_id', $user->id)->first();
+            $system_currencies = GapCurrency::where('user_id', 0)->first();
+            $manual_currencies = GapCurrency::where('user_id', $user->id)->first();
 
-        // CBase Currency and Target currency are the same
-        if ($base_currency == $target_currency) {
-            $diffrential = 1;
-        }else{
-            // check if account is automated or manuual
-            if($automated){
-                $current = json_decode($system_currencies->currencies);
-                $base = $current->EUR /  $current->$base_currency;
-            }else{
-                $current = json_decode($manual_currencies->currencies);
-                $base = 1;
+            // Determine base currency
+            $base_currency = $calculator && $calculator->currency
+                ? self::extractCurrencyCode($calculator->currency)
+                : 'USD';
+
+            // Normalize target currency
+            $target_currency = self::normalizeCurrencyCode($target_currency);
+
+            // If same currency, return original amount
+            if ($base_currency === $target_currency) {
+                return round($money, 2);
             }
-            $diffrential = ($current->$target_currency) ? $current->$target_currency * $base : 1;
+
+            // Get exchange rates
+            $exchange_rates = self::getExchangeRates($system_currencies, $manual_currencies, $automated);
+
+            if (!$exchange_rates) {
+                Log::warning('No exchange rates found, returning original amount', [
+                    'user_id' => $user->id,
+                    'base_currency' => $base_currency,
+                    'target_currency' => $target_currency
+                ]);
+                return round($money, 2);
+            }
+
+            // Convert currency
+            $converted_amount = self::performConversion(
+                $money,
+                $base_currency,
+                $target_currency,
+                $exchange_rates
+            );
+
+            Log::info('Currency conversion completed', [
+                'user_id' => $user->id,
+                'base_currency' => $base_currency,
+                'target_currency' => $target_currency,
+                'original_amount' => $money,
+                'converted_amount' => $converted_amount
+            ]);
+
+            return round($converted_amount, 2);
+
+        } catch (\Exception $e) {
+            Log::error('Currency conversion failed', [
+                'user_id' => $user->id,
+                'target_currency' => $target_currency,
+                'money' => $money,
+                'error' => $e->getMessage()
+            ]);
+
+            // Return original amount on error
+            return round($money, 2);
         }
-        // info(['Diffrencial', $money / $diffrential]);
-        $total = round(($money / $diffrential), 2);
-        return $total ;
+    }
+
+    /**
+     * Get user's preferred currency
+     *
+     * @param \App\Models\User $user
+     * @return string|null
+     */
+    private static function getUserPreferredCurrency($user)
+    {
+        $preference = \App\Models\UserSetting::where('user_id', $user->id)
+                            ->where('setting_key', 'preferences')
+                            ->first();
+
+        return $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
+    }
+
+    /**
+     * Extract currency code from currency string
+     *
+     * @param string $currency_string
+     * @return string
+     */
+    public static function extractCurrencyCode($currency_string)
+    {
+        if (strlen($currency_string) === 3) {
+            return strtoupper($currency_string);
+        }
+
+        $parts = explode(" ", $currency_string);
+        return strtoupper($parts[1] ?? 'USD');
+    }
+
+    /**
+     * Normalize currency code
+     *
+     * @param string|null $currency
+     * @return string
+     */
+    private static function normalizeCurrencyCode($currency)
+    {
+        if (!$currency) {
+            return 'USD';
+        }
+
+        if (strlen($currency) === 3) {
+            return strtoupper($currency);
+        }
+
+        $parts = explode(" ", $currency);
+        return strtoupper($parts[1] ?? 'USD');
+    }
+
+    /**
+     * Get exchange rates based on automation setting
+     *
+     * @param \App\Models\GapCurrency|null $system_currencies
+     * @param \App\Models\GapCurrency|null $manual_currencies
+     * @param int $automated
+     * @return array|null
+     */
+    private static function getExchangeRates($system_currencies, $manual_currencies, $automated)
+    {
+        if ($automated && $system_currencies && $system_currencies->currencies) {
+            return json_decode($system_currencies->currencies, true);
+        }
+
+        if (!$automated && $manual_currencies && $manual_currencies->currencies) {
+            return json_decode($manual_currencies->currencies, true);
+        }
+
+        // Fallback to system currencies if manual not available
+        if ($system_currencies && $system_currencies->currencies) {
+            return json_decode($system_currencies->currencies, true);
+        }
+
+        return null;
+    }
+
+    /**
+     * Perform the actual currency conversion
+     *
+     * @param float $amount
+     * @param string $from_currency
+     * @param string $to_currency
+     * @param array $rates
+     * @return float
+     */
+    private static function performConversion($amount, $from_currency, $to_currency, $rates)
+    {
+        // Check if currencies exist in rates
+        if (!isset($rates[$from_currency]) && $from_currency !== 'USD') {
+            throw new \Exception("Base currency {$from_currency} not found in exchange rates");
+        }
+
+        if (!isset($rates[$to_currency]) && $to_currency !== 'USD') {
+            throw new \Exception("Target currency {$to_currency} not found in exchange rates");
+        }
+
+        // If converting from USD
+        if ($from_currency === 'USD') {
+            return $amount * $rates[$to_currency];
+        }
+
+        // If converting to USD
+        if ($to_currency === 'USD') {
+            return $amount / $rates[$from_currency];
+        }
+
+        // Converting between two non-USD currencies
+        // First convert from source currency to USD, then USD to target currency
+        $usd_amount = $amount / $rates[$from_currency];
+        return $usd_amount * $rates[$to_currency];
+    }
+
+    /**
+     * Get available currencies from system
+     *
+     * @return array
+     */
+    public static function getAvailableCurrencies()
+    {
+        $system_currencies = GapCurrency::where('user_id', 0)->first();
+
+        if (!$system_currencies || !$system_currencies->currencies) {
+            return [];
+        }
+
+        $rates = json_decode($system_currencies->currencies, true);
+        return array_keys($rates);
+    }
+
+    /**
+     * Get exchange rate between two currencies
+     *
+     * @param string $from_currency
+     * @param string $to_currency
+     * @return float|null
+     */
+    public static function getExchangeRate($from_currency, $to_currency)
+    {
+        if ($from_currency === $to_currency) {
+            return 1.0;
+        }
+
+        $system_currencies = GapCurrency::where('user_id', 0)->first();
+
+        if (!$system_currencies || !$system_currencies->currencies) {
+            return null;
+        }
+
+        $rates = json_decode($system_currencies->currencies, true);
+
+        try {
+            return self::performConversion(1, $from_currency, $to_currency, $rates);
+        } catch (\Exception $e) {
+            Log::error('Failed to get exchange rate', [
+                'from' => $from_currency,
+                'to' => $to_currency,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 
     public static function reap_favourite($user){
@@ -110,7 +320,6 @@ class GapExchangeHelper
         }
         return (array)($audit->ganp_favourite);
     }
-
 
 
     public static function addGanpFavourite($user, $asset){

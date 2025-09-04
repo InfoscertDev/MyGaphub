@@ -135,9 +135,9 @@ class SevenGAPI extends Controller
         }
 
         $financial =  Fin::finicial($user);
-        $calculator = Calculator::where('user_id', $user->id)->first();
         $snapshot = Fin::snapshot($financial['calculator'], $financial['cost']);
-        $currency = explode(" ", $calculator->currency)[0];
+        $currencies = Helper::popularCurrenciens();
+        $currency = Helper::getCurrencySymbol($financial['target_currency']);
 
         return response()->json([
             'status' => true,

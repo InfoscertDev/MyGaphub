@@ -26,8 +26,8 @@ use App\Models\Enquiry;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Notification;
 use App\Models\GaphubGuide;
-
-
+use App\Models\UserSetting;
+use Illuminate\Support\Facades\Log;
 
 class ToolAPI extends Controller
 {
@@ -55,7 +55,11 @@ class ToolAPI extends Controller
         $gap_currencies = GapExchangeHelper::gapCurrencies($user);
         $personal = new PersonalAssistance($user);
         $assistance = $personal->assistance();
+
         $income =  Fin::finicial($user);
+
+        // Log::info(['User '.$user->id.' accessed dashboard data.']);
+
         return response()->json(compact('dashboard', 'residential','net_detail', 'average_detail',
                 'income','assistance','gap_currencies'));
     }
@@ -161,7 +165,7 @@ class ToolAPI extends Controller
             'email'   => 'required|email',
             'phone'   => [
                 'required',
-                'regex:/^\+?[0-9]{7,15}$/'
+                'regex:/^\+?[1-9]\d{1,14}$/',
             ],
             'subject' => 'nullable|string',
             'message' => 'required|string|min:10|max:512',

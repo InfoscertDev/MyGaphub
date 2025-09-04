@@ -19,15 +19,16 @@ Route::get('/', function () { return  redirect('/login');  });
 
 Route::get('/fxt', function() {
 
-    $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
-    return $cfx_rates;
+    // $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
+    // return json_encode($cfx_rates);
+    $exitCode2 = \Illuminate\Support\Facades\Artisan::call('migrate');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('cache:clear');
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('config:clear');
     return '<h1>Cache facade value cleared</h1>';
 });
-
+Route::get('/app/redirect/reset-password', [App\Http\Controllers\AppRedirectController::class, 'redirectToPasswordReset']);
 Route::get('/fincalculator', 'Web\FinicialCalculatorController@index');
 Route::post('/fincalculator', 'Web\FinicialCalculatorController@store')->name('store.calculator');
 Route::post('/fin/improve', 'Web\FinicialCalculatorController@improve')->name('finicial.improve');

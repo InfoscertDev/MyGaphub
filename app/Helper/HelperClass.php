@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Helper;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -8,58 +8,74 @@ class HelperClass {
 
     public static function popularCurrenciens(){
         return [
-            "$ USD",  "€ EUR",  
+            "$ USD",  "€ EUR",
             "£ GBP", "₦ NGN",
-            "A$ AUD","¥ JPY", 
+            "A$ AUD","¥ JPY",
             "¢ GHS","CF CHF",
             "C$ CAD","元 CNY",
             "$ MXN", "₹ INR",
             "₽ RUB", "R$ BRL",
             "R ZAR", "د.إ AED",
-            "﷼ SAR", "Rp IDR", 
-        ]; 
+            "﷼ SAR", "Rp IDR",
+        ];
+    }
+
+    public static function getCurrencySymbol(string $target_currency): ?string
+    {
+        $currencies = self::popularCurrenciens();
+
+        foreach ($currencies as $currency) {
+            // Split into symbol and code
+            [$symbol, $code] = explode(' ', $currency, 2);
+
+            if (strtoupper($code) === strtoupper($target_currency)) {
+                return $symbol;
+            }
+        }
+
+        return null; // if not found
     }
 
     public static function popularCurrenciensInfo(){
-        return [ 
-            ['currency' => "$ USD", 'flag'=>'united-states', 'country'=> 'US Dollar'],  
-            ['currency' => "€ EUR", 'flag'=>'european-union', 'country'=> 'Euro'],   
-            ['currency' => "£ GBP",  'flag'=>'united-kingdom', 'country'=> 'Pound Sterling'],  
-            ['currency' =>"₦ NGN", 'flag'=>'nigeria', 'country'=> 'Nigerian Naira'],  
-            ['currency' => "A$ AUD", 'flag'=>'australia', 'country'=> 'Australian  Dollar'],  
-            ['currency' => "¥ JPY",  'flag'=>'japan', 'country'=> 'Japan Yen'],  
-            ['currency' =>"¢ GHS", 'flag'=>'ghana', 'country'=> 'Ghana Cedis'],  
-            ['currency' =>"CF CHF", 'flag'=>'swizerland', 'country'=> 'Swiss Franc'],  
-            ['currency' =>"C$ CAD", 'flag'=>'canada', 'country'=> 'Canadian Dollar'],  
-            ['currency' =>"元 CNY", 'flag'=>'china', 'country'=> 'Renminbi'],  
-            ['currency' =>"$ MXN", 'flag'=>'mexico', 'country'=> 'Mexican Peso'],  
-            ['currency' => "₹ INR", 'flag'=>'india', 'country'=> 'Indian Rupee'],  
-            ['currency' =>"₽ RUB", 'flag'=>'russia', 'country'=> 'Russian ruble'],  
-            ['currency' =>"R ZAR", 'flag'=>'south-africa', 'country'=> 'South African Rand'],  
-            ['currency' =>"R$ BRL", 'flag'=>'brazil', 'country'=> 'Brazilian real'],  
-            ['currency' => "د.إ AED", 'flag'=>'united-arab-emirates', 'country'=> 'UAE Dirham'],  
-            ['currency' =>"﷼ SAR",  'flag'=>'saudi-arabia', 'country'=> 'Saudi Riyal'],  
-            ['currency' =>"Rp IDR", 'flag'=>'indonesia', 'country'=> 'Indonesian rupiah'],  
+        return [
+            ['currency' => "$ USD", 'flag'=>'united-states', 'country'=> 'US Dollar'],
+            ['currency' => "€ EUR", 'flag'=>'european-union', 'country'=> 'Euro'],
+            ['currency' => "£ GBP",  'flag'=>'united-kingdom', 'country'=> 'Pound Sterling'],
+            ['currency' =>"₦ NGN", 'flag'=>'nigeria', 'country'=> 'Nigerian Naira'],
+            ['currency' => "A$ AUD", 'flag'=>'australia', 'country'=> 'Australian  Dollar'],
+            ['currency' => "¥ JPY",  'flag'=>'japan', 'country'=> 'Japan Yen'],
+            ['currency' =>"¢ GHS", 'flag'=>'ghana', 'country'=> 'Ghana Cedis'],
+            ['currency' =>"CF CHF", 'flag'=>'swizerland', 'country'=> 'Swiss Franc'],
+            ['currency' =>"C$ CAD", 'flag'=>'canada', 'country'=> 'Canadian Dollar'],
+            ['currency' =>"元 CNY", 'flag'=>'china', 'country'=> 'Renminbi'],
+            ['currency' =>"$ MXN", 'flag'=>'mexico', 'country'=> 'Mexican Peso'],
+            ['currency' => "₹ INR", 'flag'=>'india', 'country'=> 'Indian Rupee'],
+            ['currency' =>"₽ RUB", 'flag'=>'russia', 'country'=> 'Russian ruble'],
+            ['currency' =>"R ZAR", 'flag'=>'south-africa', 'country'=> 'South African Rand'],
+            ['currency' =>"R$ BRL", 'flag'=>'brazil', 'country'=> 'Brazilian real'],
+            ['currency' => "د.إ AED", 'flag'=>'united-arab-emirates', 'country'=> 'UAE Dirham'],
+            ['currency' =>"﷼ SAR",  'flag'=>'saudi-arabia', 'country'=> 'Saudi Riyal'],
+            ['currency' =>"Rp IDR", 'flag'=>'indonesia', 'country'=> 'Indonesian rupiah'],
         ];
-    } 
-    
+    }
+
     public static function popularCurrenciensHtmlCode(){
         return [
-            "$ USD" => "&#36;",   "€ EUR" => "&#8364;", 
+            "$ USD" => "&#36;",   "€ EUR" => "&#8364;",
             "£ GBP" => "&#163;",
-            "₦ NGN" => "&#8358;", 
-            "A$ AUD" => "&#65;&#36;", "¥ JPY" => "&#165;", 
-            "¢ GHS" => "&#71;&#72;&#162;", 
-            "C$ CAD" => "&#67;&#36;", 
-            "CF CHF" =>"&#67;&#72;&#102;", 
-            "元 CNY" =>"&#165;", 
-            "$ MXN" =>"&#77;&#101;&#120;&#36;", 
-            "₹ INR" => "&#8377;", 
-            "₽ RUB" => "&#8381;",  
-            "R ZAR" =>  "&#82;&#36;", 
-            "R$ BRL" => "&#82;.&#36;", 
-            "د.إ AED" => "&#1583;.&#1573;", 
-            "﷼ SAR"=> '&#65020;', 
+            "₦ NGN" => "&#8358;",
+            "A$ AUD" => "&#65;&#36;", "¥ JPY" => "&#165;",
+            "¢ GHS" => "&#71;&#72;&#162;",
+            "C$ CAD" => "&#67;&#36;",
+            "CF CHF" =>"&#67;&#72;&#102;",
+            "元 CNY" =>"&#165;",
+            "$ MXN" =>"&#77;&#101;&#120;&#36;",
+            "₹ INR" => "&#8377;",
+            "₽ RUB" => "&#8381;",
+            "R ZAR" =>  "&#82;&#36;",
+            "R$ BRL" => "&#82;.&#36;",
+            "د.إ AED" => "&#1583;.&#1573;",
+            "﷼ SAR"=> '&#65020;',
             "Rp IDR" =>'&#82;&#112;'
         ];
     }
@@ -111,9 +127,9 @@ class HelperClass {
             "31" =>	"Financial independence is in view if you're yet to obtain it."
         ];
     }
-    
+
     public static function daysPercentageColor(int $day){
-        $color = ''; 
+        $color = '';
         if ($day <= 90) {
           $color = '#ff0000';
         }else if ($day > 90 && $day <= 180) {
@@ -121,14 +137,14 @@ class HelperClass {
         }else if ($day > 180 && $day <= 270) {
             $color = '#00ff00';
         }else if ($day > 270) {
-            $color = '#65B8E8'; 
+            $color = '#65B8E8';
         }
         return $color;
     }
 
     public static function numPercentageColor(int $num){
-         $color = ''; 
-        if ($num <= 25) {   
+         $color = '';
+        if ($num <= 25) {
           $color = '#ff0000';
         }else if ($num > 25 && $num <= 50) {
             $color = '#ffc200';
@@ -142,7 +158,7 @@ class HelperClass {
 
     public static function convertToSnapshot($steps){
         $step1 = 0; $step2 = 0; $step3 = 0;  $step4 = 0;
-        $step5 = 0; $step6 = 0; $step7 = 0;  
+        $step5 = 0; $step6 = 0; $step7 = 0;
         if(strtolower($steps->step1) == "yes"){
             $step1 = 100;
         }else if(strtolower($steps->step1) == "no"){
@@ -161,7 +177,7 @@ class HelperClass {
             $step3 = 100;
         }else if(strtolower($steps->step3) == "no"){
             $step3 = 25;
-        } 
+        }
 
         if(strtolower($steps->step4) == "yes"){
             $step4 = 100;
@@ -191,23 +207,23 @@ class HelperClass {
 
         if(strtolower($steps->step7) == "yes"){
             $step7 = 100;
-        }else if(strtolower($steps->step7) == "no"){ 
+        }else if(strtolower($steps->step7) == "no"){
             $step7 = 25;
         }
 
         return compact('step7', 'step6', 'step5', 'step4', 'step3','step2','step1');
-        
+
         // return [
         //     "step1" => (int)$step1, "step2" => (int)$step2, "step3" => (int)$step3,
         //     "step4" => (int)$step4, "step5" => (int)$step5, "step6" => (int)$step6,
         //     "step7" => (int)$step7
         // ];
-    } 
+    }
 
     public static function comments(){
         // Total 7G Analytics Credit Balance:
         // Your Total 7G Analytics Credit Balance:
- 
+
         return $comments = [
             // AnAlytics
             array('1' =>'Your marker is red meaning you are not in a good zone yet. Try reviewing your monthly expenses, you might be able to save money that could be put towards increasing your rainy day fund. You might also consider creating a new income channels.',
@@ -260,16 +276,16 @@ class HelperClass {
                 '26' =>"Your marker is amber.This means you care about giving to others, well done! Keep it up and you will certainly maintain true joy.",
                 '51' =>"Your marker is green! This is an amazing place to be in and you are surely amongst a very few people on the planet today who give away more than half of what they spend on their upkeep away to others and causes they believe in. Carry on and keep the world a better place. ",
                 '76' =>"Your marker is blue! This is simply awesome. You are indeed a rare gem. Look into spreading the effect of your benevolence. What you are giving away now can probably do a lot more if you review what is being done with all these money and look to spreading your reach.",
-                "100" => "Your marker is blue! 
+                "100" => "Your marker is blue!
                 People like you are the beacon of hope for the human race!!
                 It is no doubt an honour to have you on GAPhub!
                 You are celebrated immensely and our prayers are always with you." ),
         ];
     }
- 
+
 
     public static function dashboardTiles(){
-      
+
         return [
             'equity' => true,
             'net_worth' => true,

@@ -35,20 +35,29 @@ class PasswordReset extends Model
         ]);
     }
 
-    public static function generateWebToken($email)
+    public static function generateWebToken($email, $plainToken = null)
     {
         // Delete existing tokens for this email
-        self::where('email', $email)->delete();
+        self::where('email', $email)->where('is_otp', false)->delete();
 
-        // Generate standard web token
-        $token = Str::random(60);
+        // Use provided token or generate new one
+        if (!$plainToken) {
+            $plainToken = Str::random(64);
+        }
 
-        return self::create([
+        // Hash the token for storage
+        $hashedToken = hash('sha256', $plainToken);
+
+        $record = self::create([
             'email' => $email,
-            'token' => hash('sha256', $token),
+            'token' => $hashedToken,
             'is_otp' => false,
             'created_at' => Carbon::now(),
         ]);
+
+        // Return the record with plain token for reference
+        $record->plain_token = $plainToken;
+        return $record;
     }
 
     public static function verifyOTP($email, $otp, $expireMinutes = 45)
@@ -60,20 +69,25 @@ class PasswordReset extends Model
                   ->first();
     }
 
-    public static function verifyWebToken($email, $token)
+    public static function verifyWebToken($email, $plainToken)
     {
+        $hashedToken = hash('sha256', $plainToken);
+
         return self::where('email', $email)
-                  ->where('token', hash('sha256', $token))
+                  ->where('token', $hashedToken)
                   ->where('is_otp', false)
                   ->where('created_at', '>', Carbon::now()->subHour())
                   ->first();
     }
 
-    public function isExpired($expireMinutes = 15)
+    public function isExpired($expireMinutes = null)
     {
         if ($this->is_otp) {
-            return $this->created_at->addMinutes($expireMinutes)->isPast();
+            $minutes = $expireMinutes ?? 45; // Default 45 minutes for OTP
+            return $this->created_at->addMinutes($minutes)->isPast();
         }
+
+        // Default 60 minutes for web tokens
         return $this->created_at->addHour()->isPast();
     }
 }

@@ -91,10 +91,12 @@ class LiabilitiesController extends Controller
             $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::liabilityDetailChart($money);
         }
+
         foreach($liabilities as $key => $money){
             $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::liabilityDetailChart($money);
         }
+
         foreach($bespokes as $money){
             $money->currency = explode(' ',$money->account_currency)[0];
             $money->chart = GapAccount::liabilityDetailChart($money);
@@ -112,6 +114,7 @@ class LiabilitiesController extends Controller
     public function storeLiability(Request $request)
     {
         $user = auth()->user();
+
         $this->validate($request, [
             'lia_creditor' => 'required|max:20',
             'credit_type' => 'required',
@@ -121,10 +124,9 @@ class LiabilitiesController extends Controller
             'target_date' => 'nullable|date|after:today'
         ]);
 
-        // return $request;
-
         $calculator = Calculator::where('user_id', $user->id)->first();
         $liabilities_items = Liability::where('user_id', $user->id)->count();
+
         if ($liabilities_items <= 12) {
             $liability = new Liability();
             $liability->user_id = $user->id;
@@ -196,7 +198,7 @@ class LiabilitiesController extends Controller
             $credit->target_date = $request->target_date;
             $credit->save();
         }elseif($request->aksnjknsjnsjnsxjxn){
-            if($request->aksnjknsjnsjnsxjxn = "lapakoihangbshjbsxhgbxuhxbshxbxujahnzoazjmsozklnsz"){
+            if($request->aksnjknsjnsjnsxjxn == "lapakoihangbshjbsxhgbxuhxbshxbxujahnzoazjmsozklnsz"){
                 $bespoke = BespokeKPI::where('user_id', $user->id)->where('id', $request->sjnxjknsxkjnxijnsxknixncio)->first();
                 $wheel = BespokeWheel::where('bespoke_id', $bespoke->id)->first();
                 // return $wheel;
@@ -250,9 +252,11 @@ class LiabilitiesController extends Controller
         $access =  $request->get('access');
         $account =  $request->get('account');
         $archive =  $request->get('archive');
+
         if($header){
            return ArchiveAccount::mortgageArchiveAction($user, $header, $access, $account);
         }
+
         $fin = CalculatorClass::finicial($user);
         $income_detail = IncomeHelper::analyseIncome($user, $fin['portfolio']);
         $calculator = Calculator::where('user_id', $user->id)->first();
@@ -301,6 +305,7 @@ class LiabilitiesController extends Controller
     public function storeMortgage(Request $request)
     {
         $user = auth()->user();
+
         $this->validate($request, [
             // 'repay' => 'integer|min:0',
             'mor_creditor' => 'required|max:20',
@@ -310,6 +315,7 @@ class LiabilitiesController extends Controller
             'cur_bal' => 'required|integer|min:0',
             'month_pay' => 'required|integer|min:0'
         ]);
+
         $mortgages_items = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->count();
 
         if($mortgages_items <= 11){

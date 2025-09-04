@@ -66,13 +66,15 @@ class HomeController extends Controller
             $user->dashboard = json_encode($tiles);
             $audit->save();
         }
+
         if(!$audit->dashboard){
             $audit->dashboard = json_encode($tiles);
             $audit->save();
             return redirect('/home');
         }
 
-        $residential = null;  $dashboard = json_decode($audit->dashboard);
+        $residential = null;
+        $dashboard = json_decode($audit->dashboard);
         $net_detail = null; $average_detail = null;
         $backgrounds = Wheel::equityDetails($user)['backgrounds'];
         $seveng = [];
@@ -84,7 +86,7 @@ class HomeController extends Controller
         }else if (!$quest->step1 || !$quest->step2 || !$quest->step3 || !$quest->step4) {
             return view('auth.registerquest');
         } else{
-            GapExchangeHelper::gapCurrencies($user);
+            // GapExchangeHelper::gapCurrencies($user);
             $personal = new PersonalAssistance($user);
             $assistance = $personal->assistance();
 
