@@ -48,12 +48,19 @@ class WhatsAppOTPController extends Controller
                 'data' => $result['data']
             ]);
         } else {
+            if (isset($result['already_verified']) && $result['already_verified']) {
+                // $statusCode = 409; // Conflict
+                return response()->json([
+                    'status' => true,
+                    'message' => $result['message'],
+                    'data' => $result['data']
+                ]);
+
+            }
+
             // Handle different error types
             $statusCode = 400;
-
-            if (isset($result['already_verified']) && $result['already_verified']) {
-                $statusCode = 409; // Conflict
-            } elseif (isset($result['rate_limited']) && $result['rate_limited']) {
+            if (isset($result['rate_limited']) && $result['rate_limited']) {
                 $statusCode = 429; // Too Many Requests
             }
 

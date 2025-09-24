@@ -19,8 +19,8 @@ Route::get('/', function () { return  redirect('/login');  });
 
 Route::get('/fxt', function() {
 
-    // $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
-    // return json_encode($cfx_rates);
+    $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
+    return json_encode($cfx_rates);
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('migrate');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');
@@ -28,7 +28,30 @@ Route::get('/fxt', function() {
     $exitCode2 = \Illuminate\Support\Facades\Artisan::call('config:clear');
     return '<h1>Cache facade value cleared</h1>';
 });
-Route::get('/app/redirect/reset-password', [App\Http\Controllers\AppRedirectController::class, 'redirectToPasswordReset']);
+
+use Illuminate\Http\Request;
+
+Route::get('/app/password/reset', function(Request $request) {
+    $token = $request->get('token');
+    $email = $request->get('email');
+    $userAgent = $request->header('User-Agent');
+
+    // Check if request is from mobile and app is installed
+    // if (preg_match('/Mobile|Android|iPhone/', $userAgent)) {
+    // }
+    $deepLink = "mygaphub://app/reset-password?" . http_build_query([
+        'token' => $token,
+        'email' => $email
+    ]);
+
+    // Try to redirect to app, fallback to web form
+    return view('auth.app-redirect', compact('deepLink', 'token', 'email'));
+
+    // Standard web form for desktop users
+    return view('auth.app-redirect', compact('deepLink', 'token', 'email'));
+});
+
+// Route::get('/app/redirect/reset-password', [App\Http\Controllers\AppRedirectController::class, 'redirectToPasswordReset']);
 Route::get('/fincalculator', 'Web\FinicialCalculatorController@index');
 Route::post('/fincalculator', 'Web\FinicialCalculatorController@store')->name('store.calculator');
 Route::post('/fin/improve', 'Web\FinicialCalculatorController@improve')->name('finicial.improve');
@@ -204,11 +227,14 @@ Route::group(['prefix' => 'gapadmin'], function () {
 
     Route::group(['middleware' => ['admin']], function() {
 
+
+        Route::get('/users', 'Admin\UsersManagement@index')->name('gap.users');
+        Route::get('/users/{id}', function(){  return view('admin.coming-soon'); })->name('gap.single_user');
+        // Route::delete('/admin/users/{id}', 'Admin\UsersManagement@destroy')->name('admin.users.destroy');
+        Route::post('/users/{id}/restore', 'Admin\UsersManagement@restore')->name('admin.users.restore');
         Route::get('/dashboard', 'Admin\AdminManagement@dashboard');
         Route::get('/reports', 'Admin\AdminManagement@reportLogin')->name('gap.report');
         Route::get('/admins', 'Admin\AdminManagement@index')->name('admins');
-        Route::get('/users', 'Admin\UsersManagement@index')->name('gap.users');
-        Route::get('/users/{id}', function(){  return view('admin.coming-soon'); })->name('gap.single_user');
 
         Route::post('/preference/email', 'Admin\AdminManagement@preferenceEmail')->name('preference.email');
         Route::get('/preference/exchange', 'Admin\AdminManagement@exchange')->name('gap.exchange');

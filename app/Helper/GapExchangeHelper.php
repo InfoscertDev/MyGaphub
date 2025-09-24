@@ -68,13 +68,6 @@ class GapExchangeHelper
                 $exchange_rates
             );
 
-            Log::info('Currency conversion completed', [
-                'user_id' => $user->id,
-                'base_currency' => $base_currency,
-                'target_currency' => $target_currency,
-                'original_amount' => $money,
-                'converted_amount' => $converted_amount
-            ]);
 
             return round($converted_amount, 2);
 
@@ -91,20 +84,6 @@ class GapExchangeHelper
         }
     }
 
-    /**
-     * Get user's preferred currency
-     *
-     * @param \App\Models\User $user
-     * @return string|null
-     */
-    private static function getUserPreferredCurrency($user)
-    {
-        $preference = \App\Models\UserSetting::where('user_id', $user->id)
-                            ->where('setting_key', 'preferences')
-                            ->first();
-
-        return $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
-    }
 
     /**
      * Extract currency code from currency string
@@ -121,6 +100,64 @@ class GapExchangeHelper
         $parts = explode(" ", $currency_string);
         return strtoupper($parts[1] ?? 'USD');
     }
+
+    public static function convertRatesToBaseCurrency(array $rates, string $baseCurrencyCode, array $popularCurrencies): array
+    {
+        // Extract currency codes from popular currencies
+        $popularCurrencyCodes = [];
+        foreach ($popularCurrencies as $popular) {
+            $code = GapExchangeHelper::extractCurrencyCode($popular['currency']);
+            $popularCurrencyCodes[$code] = true;
+        }
+
+        // Always include USD as it's the reference currency
+        $popularCurrencyCodes['USD'] = true;
+
+        // If base currency is USD, no conversion needed
+        if ($baseCurrencyCode === 'USD') {
+            $result = array_filter($rates, function ($code) use ($popularCurrencyCodes) {
+                return isset($popularCurrencyCodes[$code]);
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Add USD = 1.0 when base is USD
+            $result['USD'] = 1.0;
+            return $result;
+        }
+
+        // Check if base currency exists in rates
+        if (!isset($rates[$baseCurrencyCode])) {
+            $result = array_filter($rates, function ($code) use ($popularCurrencyCodes) {
+                return isset($popularCurrencyCodes[$code]);
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Add USD = 1.0 as fallback
+            $result['USD'] = 1.0;
+            return $result;
+        }
+
+        $baseRate = $rates[$baseCurrencyCode];
+
+        // Convert all rates to base currency
+        $convertedRates = [];
+
+        // Add USD explicitly (1 USD = 1/baseRate in base currency)
+        $convertedRates['USD'] = 1 / $baseRate;
+
+        // Then add other popular currencies
+        foreach ($rates as $currencyCode => $rate) {
+            // Only include popular currencies (excluding USD since we already added it)
+            if (isset($popularCurrencyCodes[$currencyCode]) && $currencyCode !== 'USD') {
+                if ($currencyCode === $baseCurrencyCode) {
+                    $convertedRates[$currencyCode] = 1.0;
+                } else {
+                    $convertedRates[$currencyCode] = $rate / $baseRate;
+                }
+            }
+        }
+
+        return $convertedRates;
+    }
+
 
     /**
      * Normalize currency code
@@ -140,6 +177,22 @@ class GapExchangeHelper
 
         $parts = explode(" ", $currency);
         return strtoupper($parts[1] ?? 'USD');
+    }
+
+
+    /**
+     * Get user's preferred currency
+     *
+     * @param \App\Models\User $user
+     * @return string|null
+     */
+    private static function getUserPreferredCurrency($user)
+    {
+        $preference = \App\Models\UserSetting::where('user_id', $user->id)
+                            ->where('setting_key', 'preferences')
+                            ->first();
+
+        return $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
     }
 
     /**
@@ -431,17 +484,17 @@ class GapExchangeHelper
         $bcurrency = explode(" ", $user_currency)[1];
 
         // Process system currencies only
-        if($system_currencies){
-            $current = json_decode($system_currencies->currencies);
+        // if($system_currencies){
+        //     $current = json_decode($system_currencies->currencies);
 
-            $base = $current->EUR / $current->$bcurrency;
+        //     $base = $current->EUR / $current->$bcurrency;
 
-            foreach ($current as $key => &$rate) {
-                $current->$key = round(($rate * $base), 4);
-            }
+        //     foreach ($current as $key => &$rate) {
+        //         $current->$key = round(($rate * $base), 4);
+        //     }
 
-            $system_currencies->currencies = json_encode($current);
-        }
+        //     $system_currencies->currencies = json_encode($current);
+        // }
 
         return compact('user_currency', 'system_currencies');
     }

@@ -8,41 +8,39 @@
 
     <p>Click the button below to reset your password:</p>
 
-    <!-- Primary Reset Button -->
+    <!-- Primary Reset Button - Uses table for maximum email client compatibility -->
     <div style="text-align: center; margin: 30px 0;">
+        <!--[if mso]>
+        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ $resetLink }}" style="height:44px;v-text-anchor:middle;width:200px;" arcsize="23%" stroke="f" fillcolor="#ED3237">
+            <w:anchorlock/>
+            <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">Reset My Password</center>
+        </v:roundrect>
+        <![endif]-->
+        <!--[if !mso]><!-->
         <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
             <tr>
-                <td style="background-color: #ED3237; border-radius: 10px; text-align: center;">
+                <td style="background-color: #ED3237; border-radius: 10px;">
                     <a href="{{ $resetLink }}"
                        style="background-color: #ED3237;
-                              color: #ffffff;
-                              font-family: Arial, sans-serif;
+                              color: #ffffff !important;
+                              font-family: Arial, Helvetica, sans-serif;
                               font-size: 16px;
                               font-weight: bold;
-                              text-decoration: none;
+                              text-decoration: none !important;
                               padding: 12px 25px;
                               border-radius: 10px;
                               display: inline-block;
-                              border: none;"
+                              border: none;
+                              line-height: 1.4;
+                              mso-hide: all;"
                        target="_blank">
                         Reset My Password
                     </a>
                 </td>
             </tr>
         </table>
+        <!--<![endif]-->
     </div>
-
-    <!-- Mobile App Button (if applicable) -->
-    @if(isset($deepLink))
-    <div style="text-align: center; margin: 20px 0;">
-        <p style="margin: 10px 0; font-size: 14px; color: #666;">
-            Using our mobile app?
-            <a href="{{ $deepLink }}" style="color: #ED3237; text-decoration: none; font-weight: bold;">
-                Open in App
-            </a>
-        </p>
-    </div>
-    @endif
 
     <!-- Warning Box -->
     <div style="background-color: #fff3cd;
@@ -92,14 +90,18 @@
 </div>
 
 <style>
-    /* Fallback styles for email clients that support CSS */
-    .reset-button:hover {
-        background-color: #c82227 !important;
+    /* Email client fallback styles */
+    a[href] {
+        color: #ffffff !important;
+        text-decoration: none !important;
     }
 
     @media only screen and (max-width: 600px) {
         .content {
             padding: 20px 15px !important;
+        }
+        table {
+            width: 100% !important;
         }
     }
 </style>

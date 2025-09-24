@@ -72,6 +72,30 @@ class AnalyticsClass {
         return false;
     }
 
+    public function convertModelValues($model, $user, $current_currency, $preferred_currency) {
+        if (!$model) return null;
+
+        if ($preferred_currency && $current_currency !== $preferred_currency) {
+            $original_current = $model->current;
+            $original_target = $model->target;
+
+            $model->current = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->current);
+            $model->target = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->target);
+
+            // Optional logging
+            info("Currency conversion applied", [
+                'user_id' => $user->id,
+                'model' => class_basename($model),
+                'from_currency' => $current_currency,
+                'to_currency' => $preferred_currency,
+                'current' => ['from' => $original_current, 'to' => $model->current],
+                'target' => ['from' => $original_target, 'to' => $model->target],
+            ]);
+        }
+
+        return $model;
+    }
+
     public static function initBudgetValue($user, $credit, $debt,$freedom, $grand){
         $audit = UserAudit::where('user_id', $user->id)->select('is_allocated')->first();
         $fin =  Fin::finicial($user);

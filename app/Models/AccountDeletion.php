@@ -9,5 +9,12 @@ class AccountDeletion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'reason'];
+    protected $fillable = [
+        'user_id', 'reason',
+        // 'deleted_by_admin',
+        // 'restored_at',
+        // 'restored_by_admin_id'
+    ];
+
+
 }

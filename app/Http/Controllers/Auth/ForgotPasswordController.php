@@ -177,7 +177,13 @@ class ForgotPasswordController extends Controller
             $tokenRecord = PasswordReset::generateWebToken($email, $token);
 
             // Generate reset link with plain token (not hashed)
-            $resetLink = url('mygaphub://app/reset-password') . '?' . http_build_query([
+            $deepLinkRedirect = url('mygaphub://app/reset-password') . '?' . http_build_query([
+                'token' => $token, // Use plain token in URL
+                'email' => $email
+            ]);
+
+            info($deepLinkRedirect);
+            $resetLink = url('/app/password/reset') . '?' . http_build_query([
                 'token' => $token, // Use plain token in URL
                 'email' => $email
             ]);
@@ -186,7 +192,7 @@ class ForgotPasswordController extends Controller
             Mail::send('email.reset-password-link', [
                 'user' => $user,
                 'resetLink' => $resetLink,
-                'deepLink' => $resetLink, // Add deep link for mobile
+                // 'deepLinkRedirect' => $deepLinkRedirect,
                 'expiresAt' => now()->addMinutes(60),
                 'appName' => config('app.name')
             ], function ($message) use ($email) {

@@ -35,7 +35,11 @@ class WhatsAppOTPService
                 return [
                     'status' => false,
                     'message' => 'Phone number is already verified',
-                    'already_verified' => true
+                    'already_verified' => true,
+                    'data' => [
+                        'state' => 'ALREADY_VERIFIED',
+                        'phone_number' => $formattedPhone
+                    ],
                 ];
             }
 
@@ -45,7 +49,8 @@ class WhatsAppOTPService
                 ->first();
 
             if ($recentOTP) {
-                $waitTime = 1 - now()->diffInMinutes($recentOTP->created_at);
+                $waitTime = 2 - now()->diffInMinutes($recentOTP->created_at);
+
                 return [
                     'status' => false,
                     'message' => "Please wait {$waitTime} minute(s) before requesting another OTP",
@@ -72,18 +77,18 @@ class WhatsAppOTPService
                     'attempts' => 0
                 ]);
 
-                Log::info('WhatsApp OTP sent successfully', [
-                    'phone' => $formattedPhone,
-                    'verification_id' => $verification->id,
-                    'message_id' => $response['message_id']
-                ]);
+                // Log::info('WhatsApp OTP sent successfully', [
+                //     'phone' => $formattedPhone,
+                //     'verification_id' => $verification->id,
+                //     'message_id' => $response['message_id']
+                // ]);
 
                 return [
                     'status' => true,
                     'message' => 'OTP sent successfully',
                     'data' => [
+                        'state' => 'OTP_SENT',
                         'phone_number' => $formattedPhone,
-                        'otp' => $otp,
                         'expires_at' => $expiresAt->toISOString(),
                         'expires_in_minutes' => config('whatsapp.otp_expiry_minutes', 10),
                         'message_id' => $response['message_id']
@@ -165,10 +170,10 @@ class WhatsAppOTPService
                     ->where('is_verified', false)
                     ->delete();
 
-                Log::info('WhatsApp phone verified successfully', [
-                    'phone' => $formattedPhone,
-                    'verification_id' => $verification->id
-                ]);
+                // Log::info('WhatsApp phone verified successfully', [
+                //     'phone' => $formattedPhone,
+                //     'verification_id' => $verification->id
+                // ]);
 
                 return [
                     'status' => true,
@@ -249,45 +254,68 @@ class WhatsAppOTPService
     /**
      * Send WhatsApp message (refactored for better organization)
      */
-    private function sendWhatsAppMessage(string $phoneNumber, string $otp): array
-    {
-        try {
-            $message = "Your verification code is: *{$otp}*\n\nThis code will expire in " .
-                      config('whatsapp.otp_expiry_minutes', 10) .
-                      " minutes. Do not share this code with anyone.";
-
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->accessToken,
-                'Content-Type' => 'application/json',
-            ])->post("https://graph.facebook.com/v18.0/{$this->phoneNumberId}/messages", [
-                'messaging_product' => 'whatsapp',
-                'to' => $phoneNumber,
-                'type' => 'text',
-                'text' => [
-                    'body' => $message
+   private function sendWhatsAppMessage(string $phoneNumber, string $otp): array
+{
+    try {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->accessToken,
+            'Content-Type' => 'application/json',
+        ])->post("https://graph.facebook.com/v18.0/{$this->phoneNumberId}/messages", [
+            'messaging_product' => 'whatsapp',
+            'to' => $phoneNumber,
+            'type' => 'template',
+           'template' => [
+    'name' => 'mygaphub_otp',
+    'language' => [
+        'code' => 'en_US' // or whatever is shown in WhatsApp Manager
+    ],
+    'components' => [
+        [
+            'type' => 'body',
+            'parameters' => [
+                [
+                    'type' => 'text',
+                    'text' => $otp // fills {{1}} in body
                 ]
-            ]);
+            ]
+        ],
+        [
+            'type' => 'button',
+            'sub_type' => 'url',
+            'index' => '0',
+            'parameters' => [
+                [
+                    'type' => 'text',
+                    'text' => $otp // fills {{1}} in the button URL
+                ]
+            ]
+        ]
+    ]
+]
 
-            if ($response->successful()) {
-                return [
-                    'status' => true,
-                    'message_id' => $response->json('messages.0.id'),
-                    'response_data' => $response->json()
-                ];
-            } else {
-                return [
-                    'status' => false,
-                    'error' => $response->json(),
-                    'status_code' => $response->status()
-                ];
-            }
-        } catch (Exception $e) {
+        ]);
+
+        if ($response->successful()) {
+            return [
+                'status' => true,
+                'message_id' => $response->json('messages.0.id'),
+                'response_data' => $response->json()
+            ];
+        } else {
             return [
                 'status' => false,
-                'error' => $e->getMessage()
+                'error' => $response->json(),
+                'status_code' => $response->status()
             ];
         }
+    } catch (Exception $e) {
+        return [
+            'status' => false,
+            'error' => $e->getMessage()
+        ];
     }
+}
+
 
     /**
      * Format phone number for WhatsApp (remove + and ensure proper format)

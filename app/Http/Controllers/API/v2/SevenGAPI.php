@@ -20,6 +20,7 @@ use App\SevenG\DeptFin as Dept;
 use App\SevenG\EducationFin as Education;
 use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
+use App\Models\UserSetting;
 
 use App\Helper\AnalyticsClass;
 use App\Helper\WheelClass as Wheel;
@@ -48,8 +49,8 @@ class SevenGAPI extends Controller
         $questions = Question::where('user_id', $user->id)->first();
         $calculator = Calculator::where('user_id', $user->id)->first();
         $quest = Helper::convertToSnapshot($questions);
-
         $seveng = AnalyticsClass::valSevenG($user);
+
         $steps = []; $backgrounds = [];
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
@@ -58,6 +59,8 @@ class SevenGAPI extends Controller
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
+
+
 
         $mains = ['step7'=>$grand->main,'step6'=>$freedom->main, 'step5'=>$education->main, 'step4'=>$dept->main
                     ,'step3'=>$credit->main,'step2'=>$beta->main, 'step1'=> $alpha->main ];
@@ -149,8 +152,16 @@ class SevenGAPI extends Controller
     public function create(Request $request)
     {
         $user =  $request->user();
-        $currency = Calculator::where('user_id', $user->id )->first();
-        $symbol = explode(' ', $currency->currency)[0];
+        $calculator = Calculator::where('user_id', $user->id )->first();
+        $symbol = explode(' ', $calculator->currency)[0];
+        $preference = UserSetting::where('user_id', $user->id)
+                                ->where('setting_key', 'preferences')
+                                ->first();
+        $current_currency = GapExchangeHelper::extractCurrencyCode($calculator->currency);
+        $preferred_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
+        // info([ $preferred_currency , $current_currency ]);
+        $target_currency = $preferred_currency ?? $current_currency;
+
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
         $credit = Credit::where('user_id', $user->id)->first();
@@ -168,6 +179,17 @@ class SevenGAPI extends Controller
 
         $steps = $stepBack['steps'];
         $backgrounds = $stepBack['backgrounds'];
+
+
+        $alpha = app(AnalyticsClass::class)->convertModelValues($alpha, $user, $current_currency, $preferred_currency);
+        $beta = app(AnalyticsClass::class)->convertModelValues($beta, $user, $current_currency, $preferred_currency);
+        $credit = app(AnalyticsClass::class)->convertModelValues($credit, $user, $current_currency, $preferred_currency);
+        $dept = app(AnalyticsClass::class)->convertModelValues($dept, $user, $current_currency, $preferred_currency);
+        $education = app(AnalyticsClass::class)->convertModelValues($education, $user, $current_currency, $preferred_currency);
+        $freedom = app(AnalyticsClass::class)->convertModelValues($freedom, $user, $current_currency, $preferred_currency);
+        $grand = app(AnalyticsClass::class)->convertModelValues($grand, $user, $current_currency, $preferred_currency);
+
+
         $data = compact('alpha','beta','credit','dept','education', 'freedom',
                         'grand','symbol', 'steps', 'backgrounds');
 

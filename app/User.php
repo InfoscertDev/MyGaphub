@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\AccountDeletion;
 use App\Models\Notification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -51,6 +52,11 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
     public function profile(){
         return  $this->hasOne('App\UserProfile', 'id', 'profile_id');
+    }
+
+    public function accountDeletion()
+    {
+        return $this->hasOne(AccountDeletion::class);
     }
 
     public function getUserProfileAttribute(){

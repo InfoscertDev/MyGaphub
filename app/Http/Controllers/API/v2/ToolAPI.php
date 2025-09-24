@@ -382,27 +382,38 @@ class ToolAPI extends Controller
     {
         $user = $request->user();
 
-        $gap_currencies = GapExchangeHelper::gapSystemCurrencies($user); // false = skip manual
-
+        $gap_currencies = GapExchangeHelper::gapSystemCurrencies($user);
         $calculator = Calculator::where('user_id', $user->id)->first();
-        $currency = $calculator ? $calculator->currency : null;
+        $preference = UserSetting::where('user_id', $user->id)
+                                ->where('setting_key', 'preferences')
+                                ->first();
 
-        // Get popular currencies info
+        $current_currency = GapExchangeHelper::extractCurrencyCode($calculator->currency);
+        $preferred_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
+        // $currency = $calculator ? $calculator->currency : null;
+        $target_currency = $preferred_currency ?? $current_currency;
+
+        $base_currency_code = GapExchangeHelper::extractCurrencyCode($target_currency ?: 'USD');
         $currencies = HelperClass::popularCurrenciensInfo();
         $system_currencies = $gap_currencies['system_currencies'];
-        $currency_rates = json_decode($system_currencies['currencies']);
+        $currency_rates = json_decode($system_currencies['currencies'], true);
+        // Convert system currencies to user's base currency and filter popular currencies
+        // $converted_rates = $this->convertToBaseCurrency($currency_rates, $base_currency_code, $currencies);
+        $converted_rates = GapExchangeHelper::convertRatesToBaseCurrency($currency_rates, $base_currency_code, $currencies);
 
         return response()->json([
             'success' => true,
             'message' => 'Exchange Rate retrieved successfully',
             'data' => [
-                'base_currency' => $currency,
+                'base_currency' => $target_currency,
+                'base_currency_code' => $base_currency_code,
                 'last_update' => $system_currencies['last_update'],
                 'popular_currencies' => $currencies,
-                'system_currencies' => $currency_rates,
+                'system_currencies' => $converted_rates,
             ]
         ]);
     }
+
 
     public function support(Request $request)
     {
