@@ -43,8 +43,8 @@ class SeedAPI extends Controller
         $current_seed->save();
       }
       //
-      $historic_seed =AllocationHelpers::averageSeedDetail($user)['historic_seed'];
-      $periods =AllocationHelpers::averageSeedDetail($user)['periods'];
+      $historic_seed = AllocationHelpers::averageSeedDetail($user)['historic_seed'];
+      $periods = AllocationHelpers::averageSeedDetail($user)['periods'];
       $backgrounds = array_reverse(GapAccount::accountBackground());
 
       $current_detail = AllocationHelpers::getAllocatedSeedDetail($user);

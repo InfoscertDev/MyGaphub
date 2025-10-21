@@ -99,7 +99,7 @@ class IndependenceAPI extends Controller
         }
 
         $protection_items = Protection::where('user_id', $user->id)->count();
-        $protection_detail = GapAccount::calcProtectionAccount($protection);
+        $protection_detail = GapAccount::calcProtectionAccount($protection, $user);
 
         return response()->json(compact('protection','protection_detail'));
     }
@@ -223,7 +223,7 @@ class IndependenceAPI extends Controller
             $retirement = GapAccount::pensionPOT($retirement, $dob, $average_seed);
         }
         $retirement_items = Pension::where('user_id', $user->id)->count();
-        $retirement_detail = GapAccount::calcPensionAccount($retirement);
+        $retirement_detail = GapAccount::calcPensionAccount($retirement, $user);
         $backgrounds = GapAccount::accountBackground();
         return response()->json(compact('retirement','retirement_detail'));
     }

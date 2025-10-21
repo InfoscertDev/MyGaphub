@@ -87,9 +87,9 @@ class SeedAllocationAPI extends Controller
 
         $allocated = SeedBudgetAllocation::whereId($id)->whereIn('period', [$month, $next_period])->first();
 
-        if($allocation){
+        if($allocated){
             $record_spents = RecordBudgetSpent::whereAllocationId($allocation->id)->delete();
-            $allocation->delete();
+            $allocated->delete();
             return response()->json([
                 'status' => true,
                 'message' => 'Allocation has been deleted'

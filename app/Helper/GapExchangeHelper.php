@@ -18,16 +18,43 @@ use stdClass;
 
 class GapExchangeHelper
 {
-   /**
-     * Convert currency from base currency to target currency
+
+
+    /**
+     * Get user's preferred currency
      *
      * @param \App\Models\User $user
-     * @param string $target_currency
-     * @param float $money
-     * @param int $automated
+     * @return string|null
+     */
+    private static function getUserPreferredCurrency($user)
+    {
+        $preference = \App\Models\UserSetting::where('user_id', $user->id)
+                            ->where('setting_key', 'preferences')
+                            ->first();
+
+        return $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
+    }
+
+    /**
+     * Convert currency from base currency to target currency.
+     *
+     * If a preferred base currency is specified, the conversion will be reversed:
+     * the system will convert from $preferred_base_currency to the user's base currency
+     * (which becomes the new target currency).
+     *
+     * Example:
+     *   - Default: 100 USD → EUR
+     *   - Preferred: preferred_base_currency = GBP
+     *       => Converts 100 GBP → USD (user's base currency)
+     *
+     * @param \App\Models\User $user
+     * @param string $target_currency  The currency to convert to (ignored if preferred base is set)
+     * @param float $money             The amount to convert
+     * @param int $automated           Whether to use automated rates (1 = system, 0 = manual)
+     * @param string $preferred_base_currency (optional)  Override the base currency logic
      * @return float
      */
-    public static function convert_currency($user, $target_currency, $money, $automated = 1)
+    public static function convert_currency($user, $target_currency, $money, $automated = 1, $preferred_base_currency = '')
     {
         try {
             // Get calculator and currency data
@@ -35,13 +62,23 @@ class GapExchangeHelper
             $system_currencies = GapCurrency::where('user_id', 0)->first();
             $manual_currencies = GapCurrency::where('user_id', $user->id)->first();
 
-            // Determine base currency
+            // Determine base currency (user’s main currency)
             $base_currency = $calculator && $calculator->currency
                 ? self::extractCurrencyCode($calculator->currency)
                 : 'USD';
 
             // Normalize target currency
             $target_currency = self::normalizeCurrencyCode($target_currency);
+
+            // Handle preferred base currency override
+            if (!empty($preferred_base_currency)) {
+                $preferred_base_currency = self::normalizeCurrencyCode($preferred_base_currency);
+
+                // Swap logic: we are now converting from the asset (target_currency) to the preferred currency
+                $base_currency = $target_currency;        // asset currency (source)
+                $target_currency = $preferred_base_currency; // preferred display currency (destination)
+            }
+
 
             // If same currency, return original amount
             if ($base_currency === $target_currency) {
@@ -52,22 +89,16 @@ class GapExchangeHelper
             $exchange_rates = self::getExchangeRates($system_currencies, $manual_currencies, $automated);
 
             if (!$exchange_rates) {
-                Log::warning('No exchange rates found, returning original amount', [
-                    'user_id' => $user->id,
-                    'base_currency' => $base_currency,
-                    'target_currency' => $target_currency
-                ]);
                 return round($money, 2);
             }
 
-            // Convert currency
+            // Perform conversion
             $converted_amount = self::performConversion(
                 $money,
                 $base_currency,
                 $target_currency,
                 $exchange_rates
             );
-
 
             return round($converted_amount, 2);
 
@@ -79,10 +110,10 @@ class GapExchangeHelper
                 'error' => $e->getMessage()
             ]);
 
-            // Return original amount on error
             return round($money, 2);
         }
     }
+
 
 
     /**
@@ -179,21 +210,6 @@ class GapExchangeHelper
         return strtoupper($parts[1] ?? 'USD');
     }
 
-
-    /**
-     * Get user's preferred currency
-     *
-     * @param \App\Models\User $user
-     * @return string|null
-     */
-    private static function getUserPreferredCurrency($user)
-    {
-        $preference = \App\Models\UserSetting::where('user_id', $user->id)
-                            ->where('setting_key', 'preferences')
-                            ->first();
-
-        return $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
-    }
 
     /**
      * Get exchange rates based on automation setting

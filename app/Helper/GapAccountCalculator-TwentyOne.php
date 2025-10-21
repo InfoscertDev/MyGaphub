@@ -24,7 +24,7 @@ use App\Models\UserSetting;
 
 class GapAccountCalculator
 {
-   /**
+    /**
      * Calculate cash account with preferred currency conversion
      */
     public static function calcCashAccount($cash, $user, $archive = false, $convert = true)
@@ -103,8 +103,8 @@ class GapAccountCalculator
         $cash_detail = GapAccountCalculator::calcCashAccount($cash, $user);
 
         $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
-        $equ_detail = GapAccountCalculator::calcEquityAccount($equity, $user);
-        $pension_detail = GapAccountCalculator::calcPensionAccount($retirement, $user);
+        $equ_detail = GapAccountCalculator::calcEquityAccount($equity);
+        $pension_detail = GapAccountCalculator::calcPensionAccount($retirement);
         $pension = $pension_detail['sum'];
         $equity_sum = $equ_detail['sum'];
 
@@ -185,9 +185,9 @@ class GapAccountCalculator
         $user_current = [];
 
         if ($archive) {
-        $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 1)->latest()->limit(7)->get();
+           $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 1)->latest()->limit(7)->get();
         } else {
-        $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 0)->latest()->limit(7)->get();
+           $bespokes = BespokeKPI::where('user_id', $user->id)->where('isArchive', 0)->latest()->limit(7)->get();
         }
 
         foreach($seveng as $money){
@@ -235,10 +235,94 @@ class GapAccountCalculator
         return compact('sum', 'converted_sum', 'target_currency', 'labels', 'values', 'percentages', 'user_current', 'user_baseline');
     }
 
+
+    public static function netWorthVariable($user)
+    {
+        $mortgages = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $liability = Liability::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $cash = Cash::where('user_id', $user->id)->where('isArchive', 0)->get();
+        $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
+
+        $funds = PortfolioHelper::investmentFunds($user);
+
+        // ✅ These already return converted sums
+        $mort_act = GapAccountCalculator::calcMortgagesAccount($mortgages, $user);
+        $lia_act = GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
+        $equ_act = GapAccountCalculator::calcEquityAccount($equity);
+        $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
+        $pension_act = GapAccountCalculator::calcPensionAccount($retirement);
+        $pension_act['sum'] =
+
+        $current_asset = $cash_act['sum'] + $funds['investment'];
+
+        return [
+            'mortgage' => $mort_act['sum'],
+            'liability' => $lia_act['sum'],
+            'equity' => $equ_act['sum'],
+            'pension' => $pension_act['sum'],
+            'home' => $equ_act['home'],
+            'asset' => $current_asset
+        ];
+    }
+
+    /**
+     * Calculate net worth (values already converted in netWorthVariable)
+     */
+    public static function calcNetWorth($user)
+    {
+        $networth = GapAccountCalculator::netWorthVariable($user);
+        $target_currency = self::getTargetCurrency($user);
+
+        // ✅ Values are already converted - just cast to int
+        $liability = (int)$networth['liability'];
+        $mortgage = (int)$networth['mortgage'];
+        $home = (int)$networth['home'];
+        $pension = (int)$networth['pension'];
+        $asset = (int)$networth['asset'];
+
+        // ✅ Calculate equity (already converted values)
+        $equity = $home - $mortgage;
+
+        // ✅ Calculate net worth: (Assets + Pension + Equity) - (Liabilities + Mortgage)
+        $sum = ($asset + $pension + $equity) - ($liability + $mortgage);
+
+        // ✅ Calculate networth_asset (already converted values)
+        $networth_asset = $asset + $pension;
+
+        $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
+        $values = [$asset, $liability, $pension, $equity];
+
+        return compact('sum', 'target_currency', 'labels', 'values', 'equity', 'liability', 'pension', 'asset', 'networth_asset');
+    }
+
+    /**
+     * Calculate home net worth (values already converted in netWorthVariable)
+     */
+    public static function homeNetWorth($user)
+    {
+        $networth = GapAccountCalculator::netWorthVariable($user);
+        $target_currency = self::getTargetCurrency($user);
+
+        // ✅ Values are already converted - just cast to int
+        $liability = (int)$networth['liability'];
+        $pension = (int)$networth['pension'];
+        $equity = (int)$networth['equity'];
+
+        // ✅ Calculate asset (already converted values)
+        $asset = $networth['asset'] + $pension + $equity;
+        $sum = $asset - $liability;
+
+        $labels = ['Assets', 'Liabilities'];
+        $values = [$asset, $liability];
+
+        return compact('sum', 'target_currency', 'labels', 'values');
+    }
+
     /**
      * Calculate equity account with preferred currency conversion
      */
-    public static function calcEquityAccount($accounts, $user = null)
+    public static function calcEquityAccount($accounts)
     {
         $values = []; $labels = []; $homes = [];
 
@@ -255,17 +339,6 @@ class GapAccountCalculator
         }
 
         $sum = array_sum($values);
-        $home = array_sum($homes);
-
-        // Convert sum and home to preferred currency (if user context available)
-        if ($user) {
-            $target_currency = self::getTargetCurrency($user);
-            $converted_sum = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
-            $sum = $converted_sum;
-
-            $converted_home = GapExchangeHelper::convert_currency($user, $target_currency, $home);
-            $home = $converted_home;
-        }
 
         $percentages = [];
         foreach($accounts as $account){
@@ -273,13 +346,17 @@ class GapAccountCalculator
             array_push($percentages, round(($eq / ($sum ? $sum : 1)) * 100));
         }
 
+        $home = array_sum($homes);
+
+        // Note: Equity accounts don't need user context for conversion in this method
+        // The conversion will be handled at the calling level
         return compact('sum', 'labels', 'values', 'percentages', 'home');
     }
 
     /**
      * Calculate protection account with preferred currency conversion
      */
-    public static function calcProtectionAccount($accounts, $user = null)
+    public static function calcProtectionAccount($accounts)
     {
         $values = []; $labels = []; $premium = [];
 
@@ -290,14 +367,6 @@ class GapAccountCalculator
         }
 
         $sum = array_sum($premium);
-
-        // Convert sum to preferred currency (if user context available)
-        if ($user) {
-            $target_currency = self::getTargetCurrency($user);
-            $converted_sum = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
-            $sum = $converted_sum;
-        }
-
         $percentages = [];
         $total = array_sum($values);
 
@@ -311,7 +380,7 @@ class GapAccountCalculator
     /**
      * Calculate pension account with preferred currency conversion
      */
-    public static function calcPensionAccount($accounts, $user = null)
+    public static function calcPensionAccount($accounts)
     {
         $values = []; $labels = [];
 
@@ -325,12 +394,6 @@ class GapAccountCalculator
 
         $sum = array_sum($values);
 
-        // Convert sum to preferred currency (if user context available)
-        if ($user) {
-            $target_currency = self::getTargetCurrency($user);
-            $converted_sum = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
-            $sum = $converted_sum;
-        }
 
         $percentages = [];
         foreach($accounts as $account){
@@ -419,90 +482,6 @@ class GapAccountCalculator
 
         return compact('sum', 'converted_sum', 'target_currency', 'labels', 'values');
     }
-
-    public static function netWorthVariable($user)
-    {
-        $mortgages = Mortgage::where('user_id', $user->id)->where('isArchive', 0)->get();
-        $liability = Liability::where('user_id', $user->id)->where('isArchive', 0)->get();
-        $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->get();
-        $cash = Cash::where('user_id', $user->id)->where('isArchive', 0)->get();
-        $retirement = Pension::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
-
-        $funds = PortfolioHelper::investmentFunds($user);
-
-        // ✅ These already return converted sums (now passing $user to all methods)
-        $mort_act = GapAccountCalculator::calcMortgagesAccount($mortgages, $user);
-        $lia_act = GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
-        $equ_act = GapAccountCalculator::calcEquityAccount($equity, $user);
-        $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
-        $pension_act = GapAccountCalculator::calcPensionAccount($retirement, $user);
-
-        // ✅ Both values are now converted
-        $current_asset = $cash_act['sum'] + $funds['investment'];
-
-        return [
-            'mortgage' => $mort_act['sum'],
-            'liability' => $lia_act['sum'],
-            'equity' => $equ_act['sum'],
-            'pension' => $pension_act['sum'],
-            'home' => $equ_act['home'],
-            'asset' => $current_asset
-        ];
-    }
-
-    /**
-     * Calculate net worth (values already converted in netWorthVariable)
-     */
-    public static function calcNetWorth($user)
-    {
-        $networth = GapAccountCalculator::netWorthVariable($user);
-        $target_currency = self::getTargetCurrency($user);
-
-        // ✅ Values are already converted - just cast to int
-        $liability = (int)$networth['liability'];
-        $mortgage = (int)$networth['mortgage'];
-        $home = (int)$networth['home'];
-        $pension = (int)$networth['pension'];
-        $asset = (int)$networth['asset'];
-
-        // ✅ Calculate equity (already converted values)
-        $equity = $home - $mortgage;
-
-        // ✅ Calculate net worth: (Assets + Pension + Equity) - (Liabilities + Mortgage)
-        $sum = ($asset + $pension + $equity) - ($liability + $mortgage);
-
-        // ✅ Calculate networth_asset (already converted values)
-        $networth_asset = $asset + $pension;
-
-        $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
-        $values = [$asset, $liability, $pension, $equity];
-
-        return compact('sum', 'target_currency', 'labels', 'values', 'equity', 'liability', 'pension', 'asset', 'networth_asset');
-    }
-
-    /**
-     * Calculate home net worth (values already converted in netWorthVariable)
-     */
-    public static function homeNetWorth($user)
-    {
-        $networth = GapAccountCalculator::netWorthVariable($user);
-        $target_currency = self::getTargetCurrency($user);
-
-        // ✅ Values are already converted - just cast to int
-        $liability = (int)$networth['liability'];
-        $pension = (int)$networth['pension'];
-        $equity = (int)$networth['equity'];
-
-        // ✅ Calculate asset (already converted values)
-        $asset = $networth['asset'] + $pension + $equity;
-        $sum = $asset - $liability;
-
-        $labels = ['Assets', 'Liabilities'];
-        $values = [$asset, $liability];
-
-        return compact('sum', 'target_currency', 'labels', 'values');
-    }
-
 
     /**
      * Get target currency for display

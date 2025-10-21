@@ -33,19 +33,19 @@ Route::any('/', function (Request $request) {
 Route::middleware(['api.key', 'throttle:60,1'])->group(function () {
     // Release C
     Route::get('/mygap/check/email', 'API\v2\AuthenticationApi@checkEmailAvailability')->middleware('throttle:30,1');
-    Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration')->middleware('throttle:15,1');
-    Route::post('/mygap/login', 'Auth\GapAutAPI@login')->middleware('throttle:15,1');
+    Route::post('/mygap/newregister', 'API\v2\AuthenticationApi@registeration');
+    Route::post('/mygap/login', 'Auth\GapAutAPI@login');
 
     // Password Reset Routes
-    Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP')->middleware('throttle:15,1');
+    Route::post('password/send-otp', 'Auth\ForgotPasswordController@sendOTP');
     Route::post('password/verify-otp', 'Auth\ResetPasswordController@verifyOTP')->middleware('throttle:30,1');
-    Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP')->middleware('throttle:15,1');
+    Route::post('password/reset-with-otp', 'Auth\ResetPasswordController@resetWithOTP');
 
-    Route::post('password/send-reset-link', 'Auth\ForgotPasswordController@sendResetLink')->middleware('throttle:15,1');
+    Route::post('password/send-reset-link', 'Auth\ForgotPasswordController@sendResetLink');
     Route::post('password/verify-token', 'Auth\ResetPasswordController@verifyResetToken')->middleware('throttle:30,1');
-    Route::post('password/reset-with-link', 'Auth\ResetPasswordController@resetPassword')->middleware('throttle:15,1');
+    Route::post('password/reset-with-link', 'Auth\ResetPasswordController@resetPassword');
 
-    Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry')->middleware('throttle:15,1');
+    Route::post('/enquiry', 'API\v2\ToolAPI@sendHelpEnquiry');
 
     Route::get('/acquisition/trigger/alert', 'API\v2\GaphubAlertController@triggerReapAlert');
     Route::get('/acquisition/trigger/alert/{asset}', 'API\v2\GaphubAlertController@triggerAuthorizeReap');

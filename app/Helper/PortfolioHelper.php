@@ -5,6 +5,8 @@ namespace App\Helper;
 use App\Asset\PortfolioAsset;
 use App\Asset\PortfoloAssetRecord;
 use App\Wheel\IncomeAccount;
+use App\Models\UserSetting;
+use App\Helper\GapExchangeHelper;
 
 class PortfolioHelper {
 
@@ -49,10 +51,16 @@ class PortfolioHelper {
     }
 
     public static  function convertAssetValue($user, $assets){
+        $preference = UserSetting::where('user_id', $user->id)
+                ->where('setting_key', 'preferences')
+                ->first();
+
+        $preferred_base_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null) : null;
+
         foreach($assets as $asset){
-            $asset->converted_asset_value = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->asset_value, $asset->automated);
-            $asset->converted_monthly_roi = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->monthly_roi, $asset->automated);
-            $asset->converted_projected_market_value = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->projected_market_value, $asset->automated);
+            $asset->converted_asset_value = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->asset_value, $asset->automated, $preferred_base_currency);
+            $asset->converted_monthly_roi = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->monthly_roi, $asset->automated, $preferred_base_currency);
+            $asset->converted_projected_market_value = GapExchangeHelper::convert_currency($user, $asset->asset_currency, $asset->projected_market_value, $asset->automated, $preferred_base_currency);
         }
         return $assets;
     }
@@ -261,6 +269,7 @@ class PortfolioHelper {
             if($asset->asset_category == 'existing') array_push($existing, $asset);
             if($asset->asset_category == 'desired') array_push($desired, $asset);
         }
+
         return compact('existing', 'desired');
     }
 

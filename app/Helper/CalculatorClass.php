@@ -235,7 +235,8 @@ class CalculatorClass{
             'timeper' => round(($currenttime / 360 )* 100),
             'currenttime' => round($currenttime),
             'currentper' => round($currentper),
-            'timecolor' => $timecolor,  'percolor' => $percolor
+            'timecolor' => $timecolor,
+            'percolor' => $percolor
         ];
         return $data;
     }

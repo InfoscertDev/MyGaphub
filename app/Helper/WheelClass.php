@@ -73,7 +73,7 @@ class WheelClass extends Controller
     public static function equityDetails($user){
         $equity = HomeEquity::where('user_id', $user->id)->where('isArchive', 0)->latest()->get();
         $equity_items = HomeEquity::where('user_id', $user->id)->count();
-        $equity_detail = GapAccount::calcEquityAccount($equity);
+        $equity_detail = GapAccount::calcEquityAccount($equity, $user);
         foreach ($equity as $eq) {
            $eq->mortgage;
            $eq->equity =  $eq->market_value -  ($eq->mortgage ? $eq->mortgage->current_balance : 0);

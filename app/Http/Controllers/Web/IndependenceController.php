@@ -58,7 +58,7 @@ class IndependenceController extends Controller
         }
 
         $protection_items = Protection::where('user_id', $user->id)->count();
-        $protection_detail = GapAccount::calcProtectionAccount($protection);
+        $protection_detail = GapAccount::calcProtectionAccount($protection, $user);
         $backgrounds = GapAccount::accountBackground();
         $net = GapAccount::netWorthVariable($user);
         $net_detail = GapAccount::calcNetWorth($user);
