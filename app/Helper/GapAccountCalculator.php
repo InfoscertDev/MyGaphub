@@ -458,7 +458,6 @@ class GapAccountCalculator
         $networth = GapAccountCalculator::netWorthVariable($user);
         $target_currency = self::getTargetCurrency($user);
 
-        // ✅ Values are already converted - just cast to int
         $liability = (int)$networth['liability'];
         $mortgage = (int)$networth['mortgage'];
         $home = (int)$networth['home'];

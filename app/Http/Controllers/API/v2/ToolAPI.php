@@ -112,7 +112,7 @@ class ToolAPI extends Controller
 
         $profile->save();
         $msg = "Profile has been updated";
-        return response()->json(['success', $msg]);
+        return response()->json(['status', $msg]);
 
     }
 
@@ -357,7 +357,7 @@ class ToolAPI extends Controller
         $manual_currencies->currencies = json_encode($manual_rates);
         $manual_currencies->save();
         $msg = "Exchange Rates has been updated";
-        return response()->json(['success', $msg]);
+        return response()->json(['status', $msg]);
     }
 
     public function notifications(Request $request){
@@ -402,7 +402,7 @@ class ToolAPI extends Controller
         $converted_rates = GapExchangeHelper::convertRatesToBaseCurrency($currency_rates, $base_currency_code, $currencies);
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'message' => 'Exchange Rate retrieved successfully',
             'data' => [
                 'base_currency' => $target_currency,

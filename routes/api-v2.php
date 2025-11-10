@@ -90,7 +90,11 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::get('/actionplan', 'API\v2\AssetActionController@action');
         Route::get('/todayplan', 'API\v2\AssetActionController@today');
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
-        Route::resource('reminder','API\v2\ReminderAPI');
+
+        Route::resource('reminders','API\v2\ReminderAPI');
+        Route::post('reminders/{id}/archive', ['API\v2\ReminderAPI@archive']);
+        Route::post('reminders/{id}/restore', ['API\v2\ReminderAPI@restore']);
+
         // Acquisition
         Route::resource('property/favourite','API\v2\SavePropertyApi');
 

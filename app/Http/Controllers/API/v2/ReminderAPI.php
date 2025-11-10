@@ -8,157 +8,320 @@ use App\Reminder;
 use Illuminate\Support\Facades\Validator;
 use App\FinicialCalculator as Calculator;
 use DateTime;
+use Carbon\Carbon;
 
 class ReminderAPI extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         $user = $request->user();
-        $archive =  $request->get('archive');
+        $archive = $request->get('archive') === 'true'; // Boolean flag
+
         $calculate = Calculator::where('user_id', $user->id)->first();
-        $currency = explode(" ", $calculate->currency)[0];
+        $currency = $calculate ? explode(" ", $calculate->currency)[0] : '£';
 
-        if($archive){
-            $reminders = Reminder::where('user_id', $user->id)->where('complete', '1')
-                            ->latest()->paginate(20);
-        }else{
-            $reminders = Reminder::where('user_id', $user->id)->where('complete', '0')
-                                ->latest()->paginate(20);
+        $query = Reminder::where('user_id', $user->id);
+
+        if ($archive) {
+            $query->whereNotNull('archived_at');
+        } else {
+            $query->whereNull('archived_at');
         }
+
+        $reminders = $query->latest()->paginate(20);
+
+        // Add computed attributes
         foreach ($reminders as $reminder) {
-            $alert = new DateTime(date('Y-m-d'));
-            $reminder->dueday = $alert->diff(new DateTime($reminder->date)) ;
-            $reminder->dueday = $reminder->dueday->days; 
+            $reminder->due_days = $reminder->getDueDaysAttribute();
+            $reminder->is_overdue = $reminder->getIsOverdueAttribute();
+            $reminder->alert_date = $reminder->getAlertDateAttribute();
         }
-        $data = ['reminders' => $reminders, 'currency' => $currency, 'archive' => $archive];
 
-        return response()->json($data);
+        $data = [
+            'reminders' => $reminders,
+            'currency' => $currency,
+            'archive' => $archive,
+        ];
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminders fetched successfully.',
+            'data' => $data
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
         $user = $request->user();
-        Validator::extend('before_or_equal', function($attribute, $value, $parameters, $validator) {
-            return strtotime($validator->getData()[$parameters[0]]) >= strtotime($value);
-            }, 'Date entered is not correct.');
+
+        // Custom validator for alert timing
+        Validator::extend('valid_alert', function ($attribute, $value, $parameters, $validator) {
+            $date = $validator->getData()['date'];
+            $time = $validator->getData()['time'] ?? '00:00';
+            $alertDays = (int)$value;
+
+            if ($alertDays < 0) return false;
+
+            $reminderDateTime = Carbon::createFromFormat('Y-m-d H:i', "$date $time");
+            $alertDateTime = $reminderDateTime->copy()->subDays($alertDays);
+
+            return $alertDateTime->isFuture() || $alertDateTime->isToday();
+        }, 'Alert cannot be set for past dates.');
 
         $validator = Validator::make($request->all(), [
-            'date' => 'date|after:yesterday',
-            // 'alert' => 'date|after:yesterday|before_or_equal:date',
-            'reminder'  => 'required|max:50',
-            'amount' => 'numeric|min:0'
-        ],[ 
-            'date.after' => 'Date is not correct',
-            // 'alert.after' => 'Date is not correct',
-            // 'alert.before_or_equal' => 'Date is not correct'
+            'name' => 'required|string|max:50',
+            'amount' => 'numeric|min:0',
+            'date' => 'required|date|after:yesterday',
+            'time' => 'required|date_format:H:i',
+            'alert_days_before' => 'required|integer|min:0|valid_alert',
+            'note' => 'nullable|string',
+            'extra' => 'nullable|string',
+            'due' => 'nullable|string',
+            'email' => 'boolean',
+            'sms' => 'boolean',
+            'push' => 'boolean',
+        ], [
+            'date.after' => 'Reminder date must be after yesterday.',
+            'time.date_format' => 'Time must be in HH:MM format (e.g., 20:00).',
+            'alert_days_before.valid_alert' => 'Alert cannot be set for a past date.',
         ]);
-        
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'data' => $validator->errors()
+            ], 400);
         }
 
         $reminder = new Reminder();
         $reminder->user_id = $user->id;
-        $reminder->name = $request->reminder;
-        $reminder->date = $request->date;
-        $reminder->note = $request->note;
+        $reminder->name = $request->name;
         $reminder->amount = $request->amount;
-        $reminder->alert = $request->alert;
-        $reminder->extra = $request->mode;
+        $reminder->date = $request->date;
+        $reminder->time = $request->time;
+        $reminder->note = $request->note;
+        $reminder->extra = $request->extra;
         $reminder->due = $request->due;
-        $reminder->email = ($request->email) ? 1 : 0;
-        $reminder->sms = ($request->sms) ? 1 : 0;
-        $reminder->push = ($request->push) ? 1 : 0;
-        $reminder->save();  
+        $reminder->email = (bool)$request->email;
+        $reminder->sms = (bool)$request->sms;
+        $reminder->push = (bool)$request->push;
+        $reminder->alert_days_before = (int)$request->alert_days_before;
+        $reminder->save();
 
-        return response()->json($reminder);
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder created successfully.',
+            'data' => $reminder
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Request $request, $id)
     {
         $user = $request->user();
-        $reminder = Reminder::find($id); 
-        return response()->json($reminder);
+        $reminder = Reminder::where('user_id', $user->id)->findOrFail($id);
+
+        $reminder->due_days = $reminder->getDueDaysAttribute();
+        $reminder->is_overdue = $reminder->getIsOverdueAttribute();
+        $reminder->alert_date = $reminder->getAlertDateAttribute();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder retrieved successfully.',
+            'data' => $reminder
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
         $user = $request->user();
 
-        if ($request->mark == "sygzjsxgvcxbsbdvbvxgvxnbcncff") {
-            $reminder = Reminder::findorfail($id);
+        // Mark as completed/archived
+        if ($request->has('mark_as_completed') && $request->mark_as_completed === true) {
+            $reminder = Reminder::where('user_id', $user->id)->findOrFail($id);
             $reminder->complete = 1;
+            // $reminder->archived_at = now();
             $reminder->save();
-            return response()->json($reminder);
-        } else {
-            Validator::extend('before_or_equal', function($attribute, $value, $parameters, $validator) {
-                return strtotime($validator->getData()[$parameters[0]]) >= strtotime($value);
-                }, 'Date entered is not correct.');
 
-            $validator = Validator::make($request->all(), [
-                'date' => 'date|after:yesterday',
-                'alert' => 'date|after:yesterday|before_or_equal:date',
-                'reminder'  => 'required|max:50',
-                'amount' => 'numeric|min:0'
-            ],[
-                'date.after' => 'Date is not correct',
-                'alert.after' => 'Date is not correct',
-                'alert.before_or_equal' => 'Date is not correct'
+            return response()->json([
+                'status' => true,
+                'message' => 'Reminder marked as completed and archived.',
+                'data' => $reminder
             ]);
-            
-            if($validator->fails()){
-                return response()->json($validator->errors()->toJson(), 400);
-            }
-
-            $reminder = Reminder::find($id);
-            $reminder->user_id = $user->id;
-            $reminder->name = $request->reminder;
-            $reminder->date = $request->date;
-            $reminder->note = $request->note;
-            $reminder->amount = $request->amount;
-            $reminder->alert = $request->alert;
-            $reminder->due = $request->due;
-            $reminder->email = ($request->email) ? 1 : 0;
-            $reminder->sms = ($request->sms) ? 1 : 0;
-            $reminder->push = ($request->push) ? 1 : 0;
-            if($reminder->complete == 0) $reminder->save();   
-            
-            return response()->json($reminder);
         }
+
+        // Regular update
+        Validator::extend('valid_alert', function ($attribute, $value, $parameters, $validator) {
+            $date = $validator->getData()['date'];
+            $time = $validator->getData()['time'] ?? '00:00';
+            $alertDays = (int)$value;
+
+            if ($alertDays < 0) return false;
+
+            $reminderDateTime = Carbon::createFromFormat('Y-m-d H:i', "$date $time");
+            $alertDateTime = $reminderDateTime->copy()->subDays($alertDays);
+
+            return $alertDateTime->isFuture() || $alertDateTime->isToday();
+        }, 'Alert cannot be set for past dates.');
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:50',
+            'amount' => 'numeric|min:0',
+            'date' => 'required|date|after:yesterday',
+            'time' => 'required|date_format:H:i',
+            'alert_days_before' => 'required|integer|min:0|valid_alert',
+            'note' => 'nullable|string',
+            'extra' => 'nullable|string',
+            'due' => 'nullable|string',
+            'email' => 'boolean',
+            'sms' => 'boolean',
+            'push' => 'boolean',
+        ], [
+            'date.after' => 'Reminder date must be after yesterday.',
+            'time.date_format' => 'Time must be in HH:MM format.',
+            'alert_days_before.valid_alert' => 'Alert cannot be set for a past date.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed.',
+                'data' => $validator->errors()
+            ], 400);
+        }
+
+        $reminder = Reminder::where('user_id', $user->id)->findOrFail($id);
+
+        // Prevent editing if already archived
+        if ($reminder->archived_at) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cannot edit an archived reminder.',
+                'data' => null
+            ], 403);
+        }
+
+        $reminder->name = $request->name;
+        $reminder->amount = $request->amount;
+        $reminder->date = $request->date;
+        $reminder->time = $request->time;
+        $reminder->note = $request->note;
+        $reminder->extra = $request->extra;
+        $reminder->due = $request->due;
+        $reminder->email = (bool)$request->email;
+        $reminder->sms = (bool)$request->sms;
+        $reminder->push = (bool)$request->push;
+        $reminder->alert_days_before = (int)$request->alert_days_before;
+        $reminder->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder updated successfully.',
+            'data' => $reminder
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (Hard Delete).
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $reminder = Reminder::findOrFail($id);
+        $reminder->forceDelete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder permanently deleted.',
+            'data' => null
+        ]);
+    }
+
+    /**
+     * Archive (Soft Delete) a reminder.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function archive(Request $request, $id)
+    {
+        $user = $request->user();
+        $reminder = Reminder::where('user_id', $user->id)->findOrFail($id);
+
+        if ($reminder->archived_at) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Reminder is already archived.',
+                'data' => null
+            ], 400);
+        }
+
+        $reminder->archived_at = now();
+        $reminder->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder archived successfully.',
+            'data' => $reminder
+        ]);
+    }
+
+    /**
+     * Restore an archived reminder.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function restore(Request $request, $id)
+    {
+        $user = $request->user();
+        $reminder = Reminder::where('user_id', $user->id)->withTrashed()->findOrFail($id);
+
+        if (!$reminder->archived_at) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Reminder is not archived.',
+                'data' => null
+            ], 400);
+        }
+
+        $reminder->archived_at = null;
+        $reminder->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reminder restored successfully.',
+            'data' => $reminder
+        ]);
     }
 }

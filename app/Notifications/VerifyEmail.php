@@ -19,6 +19,7 @@ class VerifyEmail extends VerifyEmailBase
             return call_user_func(static::$toMailCallback, $notifiable);
         }
         $action =  $this->verificationUrl($notifiable);
+
         return (new MailMessage)
              ->subject('Thank you for registering to join the GAPhub! ')
              ->markdown('vendor.notifications.welcome_email', compact('notifiable', 'action'));
