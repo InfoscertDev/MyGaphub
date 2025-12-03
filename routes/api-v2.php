@@ -84,13 +84,26 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         // Dashboard
         Route::get('/dashboard', 'API\v2\ToolAPI@dashboard');
         Route::post('/dashboard/tiles', 'API\v2\ToolAPI@storeTiles');
-        Route::get('/notifications', 'API\v2\ToolAPI@notifications');
         Route::get('/snapshot', 'API\v2\SevenGAPI@snapshot');
+        // FCM Token and Notifcation
+        Route::get('/notifications', 'API\v2\NotificationController@index');
+        Route::post('/notifications/{id}/mark-as-read', 'API\v2\NotificationController@markAsRead');
+        Route::post('/notifications/{id}/mark-all-read', 'API\v2\NotificationController@markAllAsRead');
+        Route::delete('/notifications/{id}', 'API\v2\NotificationController@deleteNotification');
+
+        Route::post('/notifications/log', 'API\v2\NotificationController@logNotification');
+        Route::post('/notifications/log-batch', 'API\v2\NotificationController@logBatchNotifications');
+
+        Route::post('/fcm-token', 'API\v2\NotificationController@notificationToken');
+        Route::get('/fcm-token', 'API\v2\NotificationController@getTokens');
+        Route::get('/fcm-token/device', 'API\v2\NotificationController@getTokenByDevice');
+        Route::get('/fcm-token', 'API\v2\NotificationController@deleteToken');
+
         // Avtion Plan
         Route::get('/actionplan', 'API\v2\AssetActionController@action');
         Route::get('/todayplan', 'API\v2\AssetActionController@today');
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
-
+        // Reminders
         Route::resource('reminders','API\v2\ReminderAPI');
         Route::post('reminders/{id}/archive', ['API\v2\ReminderAPI@archive']);
         Route::post('reminders/{id}/restore', ['API\v2\ReminderAPI@restore']);

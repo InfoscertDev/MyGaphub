@@ -397,6 +397,7 @@ class SevenGAPI extends Controller
             if($validator->fails()){
                 return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
+
             $saveup = new BespokeKPI();
             $saveup->user_id = $user->id;
             $saveup->kpi_name = $request->kpi_name;
@@ -657,6 +658,7 @@ class SevenGAPI extends Controller
             $time_finiancial = number_format($time_finiancial, 2);
         } else{
              $time_finiancial = 'N/A';
+             $time_finiancial_chart =($time_finiancial);
         }
 
         $data = compact('calculator', 'income', 'seed_cost','expenditure','shortfall','average', 'suggested_investment', 'time_finiancial_chart', 'time_finiancial');

@@ -82,15 +82,14 @@ class AnalyticsClass {
             $model->current = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->current);
             $model->target = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->target);
 
-            // Optional logging
-            info("Currency conversion applied", [
-                'user_id' => $user->id,
-                'model' => class_basename($model),
-                'from_currency' => $current_currency,
-                'to_currency' => $preferred_currency,
-                'current' => ['from' => $original_current, 'to' => $model->current],
-                'target' => ['from' => $original_target, 'to' => $model->target],
-            ]);
+            // info("Currency conversion applied", [
+            //     'user_id' => $user->id,
+            //     'model' => class_basename($model),
+            //     'from_currency' => $current_currency,
+            //     'to_currency' => $preferred_currency,
+            //     'current' => ['from' => $original_current, 'to' => $model->current],
+            //     'target' => ['from' => $original_target, 'to' => $model->target],
+            // ]);
         }
 
         return $model;

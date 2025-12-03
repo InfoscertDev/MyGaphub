@@ -82,7 +82,7 @@ class ReminderAPI extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
-            'amount' => 'numeric|min:0',
+            'amount' => 'nullable|numeric|min:0',
             'date' => 'required|date|after:yesterday',
             'time' => 'required|date_format:H:i',
             'alert_days_before' => 'required|integer|min:0|valid_alert',
@@ -109,7 +109,7 @@ class ReminderAPI extends Controller
         $reminder = new Reminder();
         $reminder->user_id = $user->id;
         $reminder->name = $request->name;
-        $reminder->amount = $request->amount;
+        $reminder->amount = $request->amount ?? 0;
         $reminder->date = $request->date;
         $reminder->time = $request->time;
         $reminder->note = $request->note;

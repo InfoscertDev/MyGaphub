@@ -86,6 +86,9 @@ class ToolAPI extends Controller
         return response()->json(compact('status','dashboard'));
     }
 
+    public function notificationToken(Request $request){
+        $user = $request->user();
+    }
 
     public function defaultpicture(Request $request){
         $id = $request->user()->id;
@@ -358,24 +361,6 @@ class ToolAPI extends Controller
         $manual_currencies->save();
         $msg = "Exchange Rates has been updated";
         return response()->json(['status', $msg]);
-    }
-
-    public function notifications(Request $request){
-        $user = $request->user();
-
-        $notifications = Notification::where('user_id', $user->id)
-                        ->latest()->paginate(10);
-        foreach ($notifications as $note) {
-            // $note->created_at = Carbon::parse($note->created_at)->diffForHumans();
-            if(!$note->seen) $note->seen = 1; $note->save();
-        }
-
-        return response()->json([
-            'status' => true,
-            'data' => $notifications,
-            'message' => 'User notifications'
-        ]);
-
     }
 
     public function getExchangeData(Request $request)
