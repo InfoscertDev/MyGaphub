@@ -154,53 +154,46 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
         Route::get('/360/ilab', 'API\v2\SeedAPI@ilab');
         // Net Worth
         Route::get('/360/net', 'API\v2\NetWorthController@netWorth');
-        Route::post('/360/net', 'API\v2\NetWorthController@storeNet');
+        Route::get('/360/cash', 'API\v2\NetWorthController@cash');
         // Equity
-        Route::get('/360/equity', 'API\v2\EquityController@index');
+        Route::get('/360/equity', 'API\v2\EquityController@equity');
         Route::get('/360/equity/info', 'API\v2\EquityController@equityInfo');
-        Route::post('/360/equity', 'API\v2\EquityController@store');
-        Route::put('/360/equity/{id}', 'API\v2\EquityController@update');
-        // Protection
-        Route::get('/360/protection', 'API\v2\ProtectionController@index');
-        Route::post('/360/protection', 'API\v2\ProtectionController@store');
-        Route::post('/360/protection/{id}', 'API\v2\ProtectionController@update');
-        // Retirement
-        Route::get('/360/retirement', 'API\v2\RetirementController@index');
-        Route::post('/360/retirement', 'API\v2\RetirementController@stoe');
-        Route::put('/360/retirement/{id}', 'API\v2\RetirementController@update');
-        // ROI
-        Route::get('/360/retirement/roi', 'API\v2\RoiController@roiStatus');
-        Route::post('/360/improve/roi', 'API\v2\RoiController@improveRoi');
-        // Cash
-        Route::get('/360/cash', 'API\v2\CashController@index');
-        Route::post('/360/cash', 'API\v2\CashController@store');
-        Route::put('/360/cash/{id}', 'API\v2\CashController@update');
-        // Income
-        Route::get('/360/income', 'API\v2\IncomeController@index');
-        Route::post('/360/income', 'API\v2\IncomeController@store');
-        Route::post('/360/income/{id}', 'API\v2\IncomeController@update');
-        Route::post('/360/income/{id}/records', 'API\v2\IncomeController@updateRecord');
-
-
+        Route::post('/360/equity', 'API\v2\EquityController@storeEquity');
+        Route::post('/360/equity/{id}', 'API\v2\EquityController@updateEquity');
 
         // Liabilities
         Route::get('/360/liability', 'API\v2\LiabilitiesApi@liability');
         Route::get('/360/mortgage', 'API\v2\LiabilitiesApi@mortgage');
+        Route::get('/360/protection', 'API\v2\IndependenceAPI@protection');
         Route::get('/360/expenditure', 'API\v2\SeedAPI@expenditure');
         Route::get('/360/philantrophy', 'API\v2\SeedAPI@philantrophy');
+        Route::get('/360/income', 'API\v2\IndependenceAPI@income');
+        Route::get('/360/retirement', 'API\v2\IndependenceAPI@retirement');
+        Route::get('/360/retirement/roi', 'API\v2\IndependenceAPI@roi_status');
         Route::get('/360/investment', 'API\v2\PortfolioApi@investment');
         Route::get('/360/non_portfolio/{id}', 'API\v2\IndependenceAPI@nonPortfolioDetail');
         // 360 Add Account
         Route::post('/360/ilab', 'API\v2\SeedAPI@storeILab');
-
+        Route::post('/360/net', 'API\v2\WheelController@storeNet');
+        Route::post('/360/cash', 'API\v2\WheelController@storeCash');
         Route::post('/360/liability', 'API\v2\LiabilitiesApi@storeLiability');
         Route::post('/360/mortgage', 'API\v2\LiabilitiesApi@storeMortgage');
+
         Route::post('/360/philantrophy', 'API\v2\SeedAPI@savePhilantrophy');
+        Route::post('/360/income', 'API\v2\IndependenceAPI@storeIncome');
+        Route::post('/360/protection', 'API\v2\IndependenceAPI@storeProtection');
+        Route::post('/360/retirement', 'API\v2\IndependenceAPI@storeRetirement');
+        Route::post('/360/improve/roi', 'API\v2\IndependenceAPI@improveRoi');
 
         // 360 Update Account
         Route::post('/360/liability/{id}', 'API\v2\LiabilitiesApi@updateLiability');
         Route::post('/360/mortgage/{id}', 'API\v2\LiabilitiesApi@updateMortgage');
+        Route::post('/360/cash/{id}', 'API\v2\WheelController@updateCash');
+        Route::post('/360/retirement/{id}', 'API\v2\IndependenceAPI@updatRetirement');
 
+        Route::post('/360/protection/{id}', 'API\v2\IndependenceAPI@updateProtection');
+        Route::post('/360/income/{id}', 'API\v2\IndependenceAPI@updateIncome');
+        Route::post('/360/income/records/{id}', 'API\v2\IndependenceAPI@updateIncomeRecord');
 
         // Portfolio
         Route::get('/portfolio', 'API\v2\PortfolioApi@index');
