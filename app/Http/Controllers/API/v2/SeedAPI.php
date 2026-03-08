@@ -13,7 +13,6 @@ use App\DiscretionaryBudget as Philantrophy;
 use App\Helper\CalculatorClass;
 use App\Helper\AllocationHelpers;
 use App\Wheel\CashAccount as Cash;
-use App\Helper\HelperClass;
 use App\Helper\GapAccountCalculator as GapAccount;
 use App\Helper\WheelClass as Wheel;
 

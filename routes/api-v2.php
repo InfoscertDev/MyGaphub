@@ -151,10 +151,15 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
 
         // 360
         Route::get('/360/tiles', 'API\v2\WheelController@tiles');
-        Route::get('/360/ilab', 'API\v2\SeedAPI@ilab');
+        Route::get('/360/ilab', 'API\v2\WheelController@ilab');
+        Route::post('/360/ilab', 'API\v2\WheelController@storeILab');
+        Route::get('/360/expenditure', 'API\v2\WheelController@expenditure');
+        //Philantropy
+        Route::get('/360/philantrophy', 'API\v2\WheelController@philantrophy');
+        Route::post('/360/philantrophy', 'API\v2\WheelController@savePhilantrophy');
         // Net Worth
-        Route::get('/360/net', 'API\v2\NetWorthController@netWorth');
-        Route::post('/360/net', 'API\v2\NetWorthController@storeNet');
+        Route::get('/360/net-worth', 'API\v2\NetWorthController@netWorth');
+        Route::post('/360/net-worth', 'API\v2\NetWorthController@storeNet');
         // Equity
         Route::get('/360/equity', 'API\v2\EquityController@index');
         Route::get('/360/equity/info', 'API\v2\EquityController@equityInfo');
@@ -186,16 +191,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
         // Liabilities
         Route::get('/360/liability', 'API\v2\LiabilitiesApi@liability');
         Route::get('/360/mortgage', 'API\v2\LiabilitiesApi@mortgage');
-        Route::get('/360/expenditure', 'API\v2\SeedAPI@expenditure');
-        Route::get('/360/philantrophy', 'API\v2\SeedAPI@philantrophy');
         Route::get('/360/investment', 'API\v2\PortfolioApi@investment');
         Route::get('/360/non_portfolio/{id}', 'API\v2\IndependenceAPI@nonPortfolioDetail');
-        // 360 Add Account
-        Route::post('/360/ilab', 'API\v2\SeedAPI@storeILab');
+
 
         Route::post('/360/liability', 'API\v2\LiabilitiesApi@storeLiability');
         Route::post('/360/mortgage', 'API\v2\LiabilitiesApi@storeMortgage');
-        Route::post('/360/philantrophy', 'API\v2\SeedAPI@savePhilantrophy');
 
         // 360 Update Account
         Route::post('/360/liability/{id}', 'API\v2\LiabilitiesApi@updateLiability');

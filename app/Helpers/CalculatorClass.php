@@ -144,85 +144,10 @@ class CalculatorClass{
         }
     }
 
-
-    // public static function finicial($user){
-    //     // Initial Budget or Calculator Workflow
-    //     $calculator = Calculator::where('user_id', $user->id)->first();
-    //     //
-    //     $preference = UserSetting::where('user_id', $user->id)
-    //                         ->where('setting_key', 'preferences')
-    //                         ->first();
-    //     $preferred_currency = $preference ? ($preference->setting_value['preferred_currency'] ?? null)  : null;
-
-    //     // Current Budget or Average Seed
-    //     $allocated = AllocationHelpers::averageSeedDetail($user);
-    //     $averageExpenditure = AllocationHelpers::averageSeedExpenditure($user);
-    //     $seed = $allocated['average_seed'];
-    //     $seed_type = ($calculator->extra == 'expenditure') ? 'expenditure' : 'seed';
-    //     $isBudgetable = ($allocated['total_seeds'] > 1) ? true : false;
-
-    //     // Use Budget if Average Income is available
-    //     if($isBudgetable){
-    //         $cost =  ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure']);
-    //         $calculator->periodic_savings = $seed['table']['savings'];
-    //         $expenditure = $seed['table']['expenditure'];
-    //         $calculator->charity = $seed['table']['discretionary'];
-    //         $calculator->education =  $seed['table']['education'];
-
-    //         $calculator->mortgage = $averageExpenditure['values'][0];
-    //         $calculator->mobility = $averageExpenditure['values'][1];
-    //         $calculator->expenses = $averageExpenditure['values'][2];
-    //         $calculator->utility = $averageExpenditure['values'][3];
-    //         $calculator->dept_repay = $averageExpenditure['values'][4];
-    //     }else{
-    //         // Primary Cost of Living
-    //         $expenditure =  $calculator->mortgage + $calculator->mobility + $calculator->utility +
-    //                  $calculator->expenses + $calculator->dept_repay;
-
-    //         $cost = $expenditure + $calculator->charity + $calculator->education + $calculator->periodic_savings;
-    //     }
-
-    //     // Portfolio and Asset
-    //     $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
-    //     $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-    //     $funds = PortfolioHelper::investmentFunds($user);
-
-    //     if(!$income_audit){
-    //         $tiles = HelperClass::dashboardTiles();
-    //         $audit = new Audit();
-    //         $audit->user_id = $user->id;
-    //         $audit->dashboard = json_encode($tiles);
-    //         $audit->save();
-    //         $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-    //     }
-
-    //     $portfolio  = ($portfolios['isPortfolio'] || $income_audit->income_allocated) ? $portfolios['income_portfolio'] : $calculator->other_income;
-    //     $portfolio = round($portfolio,2);
-    //     $non_portfolio  = round($portfolios['income_non_portfolio'], 2);
-    //     // Adjust to preferred currency if different from current currency
-    //     if($preferred_currency && explode(" ", $calculator->currency)[1] != $preferred_currency){
-    //        $portfolio = GapExchangeHelper::convert_currency($user,$preferred_currency, $portfolio);
-    //        $non_portfolio = GapExchangeHelper::convert_currency($user,$preferred_currency, $non_portfolio);
-
-    //        info("Convert to preferred currency $preferred_currency : $portfolio - $non_portfolio");
-    //     }
-
-    //     $calculator->other_income = $portfolio;
-    //     $saving = $calculator->extra_save;
-    //     // $investment = $funds['investment'];
-    //     $investment = $calculator->investment;
-    //     $roce = $calculator->roce;
-
-
-
-    //     return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce', 'seed_type',
-    //                         'expenditure','investment', 'calculator', 'isBudgetable');
-    // }
-
     public static function snapshot($calculator, $cost){
         // info([$calculator->other_income, $calculator->extra_save, $cost]);
         if($cost){
-            $currenttime = (30 * $calculator->extra_save)  / $cost;
+            $currenttime = (30 * intval($calculator->extra_save))  / $cost;
             $currentper = ($calculator->other_income * 100) / $cost;
         }else{
             $currenttime = 0;  $currentper = 0;
@@ -238,6 +163,7 @@ class CalculatorClass{
             'timecolor' => $timecolor,
             'percolor' => $percolor
         ];
+
         return $data;
     }
 

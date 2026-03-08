@@ -82,6 +82,7 @@ class CalculatorClass{
             'currentper' => round($currentper),
             'timecolor' => $timecolor,  'percolor' => $percolor
         ];
+
         return $data;
     }
 

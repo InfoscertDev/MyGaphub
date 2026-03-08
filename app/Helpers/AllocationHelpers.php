@@ -149,7 +149,6 @@ class AllocationHelpers{
         return compact('average_seed', 'historic_seed', 'periods', 'total_seeds');
     }
 
-
     public static function averageSeedExpenditure($user){
         $calculator = Calculator::where('user_id', $user->id)->first();
         $year = (int)date('Y') + 1;
