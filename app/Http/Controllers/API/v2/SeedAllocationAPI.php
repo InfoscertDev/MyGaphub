@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API\v2;
 
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
 use Illuminate\Support\Facades\Validator;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\CalculatorClass;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\CalculatorClass;
 
 
 class SeedAllocationAPI extends Controller

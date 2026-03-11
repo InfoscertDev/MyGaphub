@@ -19,7 +19,7 @@ Route::get('/', function () { return  redirect('/login');  });
 
 Route::get('/fxt', function() {
 
-    $cfx_rates =app(App\Helper\IntegrationParties::class)->load_currency_converter();
+    $cfx_rates =app(App\Helpers\IntegrationParties::class)->load_currency_converter();
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('migrate');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('gaphub:reminder');
     // $exitCode2 = \Illuminate\Support\Facades\Artisan::call('storage:link');

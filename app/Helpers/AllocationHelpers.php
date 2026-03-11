@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 use App\Models\UserSetting;
 use App\FinicialCalculator as Calculator;
 
@@ -8,7 +8,7 @@ use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
 use App\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
-use App\Helper\GapExchangeHelper;
+use App\Helpers\GapExchangeHelper;
 
 class AllocationHelpers{
     public static function monthlyRecurssionChecker($user){

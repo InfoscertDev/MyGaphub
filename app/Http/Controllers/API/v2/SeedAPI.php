@@ -10,11 +10,11 @@ use App\Wheel\IncomeAccount as Income;
 use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
-use App\Helper\CalculatorClass;
-use App\Helper\AllocationHelpers;
+use App\Helpers\CalculatorClass;
+use App\Helpers\AllocationHelpers;
 use App\Wheel\CashAccount as Cash;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\WheelClass as Wheel;
 
 use App\ILab;
 use Carbon\Carbon;

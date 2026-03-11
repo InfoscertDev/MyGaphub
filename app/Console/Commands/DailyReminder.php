@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Helper\IntegrationParties;
+use App\Helpers\IntegrationParties;
 use App\Mail\SevegValidate;
 use App\User;
 use Illuminate\Console\Command;
-use App\Helper\AnalyticsClass;
+use App\Helpers\AnalyticsClass;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerifyEmailReminder;
 use App\Models\Notification;

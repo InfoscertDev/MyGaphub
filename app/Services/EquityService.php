@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\GapExchangeHelper as Exchange;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\GapExchangeHelper as Exchange;
 use App\SevenG\DeptFin as Debt;
 use App\Wheel\HomeEquity;
 use App\Wheel\MortgageAccount as Mortgage;

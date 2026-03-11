@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 use App\SevenG\AlphaFin as Alpha;
 use App\SevenG\BetaFin as Beta;
 use App\SevenG\CreditFin as Credit;
@@ -13,13 +13,13 @@ use App\Asset\SeedBudget as Budget;
 
 use App\Wheel\MortgageAccount as Mortgage;
 use App\Wheel\LiabilityAccount as Liability;
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\GapAccountCalculator as GapAccount;
 
 use App\UserAudit;
-use App\Helper\IntegrationParties;
-use App\Helper\HelperClass as Helper;
-use App\Helper\AllocationHelpers;
+use App\Helpers\IntegrationParties;
+use App\Helpers\HelperClass as Helper;
+use App\Helpers\AllocationHelpers;
 use App\Models\Asset\SeedBudgetAllocation;
 
 class AnalyticsClass {

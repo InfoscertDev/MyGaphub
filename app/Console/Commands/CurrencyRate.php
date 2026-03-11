@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Helper\IntegrationParties as Integrations;
+use App\Helpers\IntegrationParties as Integrations;
 use Illuminate\Support\Facades\Log;
 
 class CurrencyRate extends Command

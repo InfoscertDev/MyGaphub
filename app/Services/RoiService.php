@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\FinicialCalculator as Calculator;
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\GapAccountCalculator as GapAccount;
 
 class RoiService
 {

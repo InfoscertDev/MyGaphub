@@ -16,13 +16,13 @@ use App\SevenG\EducationFin as Education;
 use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
 
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\GapExchangeHelper;
-use App\Helper\HelperClass;
-use App\Helper\AnalyticsClass;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\HelperClass;
+use App\Helpers\AnalyticsClass;
 use App\SevenG\BespokeKPI;
 
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\WheelClass as Wheel;
 use App\UserAudit;
 use App\Wheel\CashAccount;
 use App\Wheel\LiabilityAccount;

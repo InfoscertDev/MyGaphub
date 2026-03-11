@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Services\SeedService;
 use App\Traits\ApiResponse;
 use App\Http\Requests\SavePhilantrophyRequest;

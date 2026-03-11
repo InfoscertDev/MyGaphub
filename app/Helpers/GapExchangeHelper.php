@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 
 use App\Asset\GapCurrency;
 use App\UserAudit as Audit;
 use App\Wheel\LiabilityAccount as Liability;
 use App\Wheel\MortgageAccount as Mortgage;
 use App\SevenG\DeptFin as Debt;
-use App\Helper\IncomeHelper;
+use App\Helpers\IncomeHelper;
 use Illuminate\Support\Facades\Log;
 
 use App\SevenG\BespokeKPI;

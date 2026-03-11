@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Helper\IntegrationParties;
+use App\Helpers\IntegrationParties;
 use App\Models\Notification;
 use Illuminate\Console\Command;
 

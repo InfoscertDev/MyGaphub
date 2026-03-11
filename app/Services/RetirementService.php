@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Helper\AllocationHelpers;
-use App\Helper\ArchiveAccount;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\AllocationHelpers;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
 use App\User;
 use App\Wheel\PensionAccount as Pension;
 

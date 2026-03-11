@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\UserAudit as Audit;
 use App\Http\Controllers\Controller;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\AnalyticsClass as SevenG;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\AnalyticsClass as SevenG;
 use App\FinicialCalculator as Calculator;
-use App\Helper\CalculatorClass;
+use App\Helpers\CalculatorClass;
 
-use App\Helper\ArchiveAccount;
-use App\Helper\GapExchangeHelper;
-use App\Helper\GapExchangeHelper as Exchange;
-use App\Helper\HelperClass;
-use App\Helper\IncomeHelper;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\GapExchangeHelper as Exchange;
+use App\Helpers\HelperClass;
+use App\Helpers\IncomeHelper;
 
 use App\SevenG\BespokeKPI;
 use App\Wheel\BespokeWheel;

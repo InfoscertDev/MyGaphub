@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 
 use App\Wheel\HomeEquity;
 use App\UserAudit as Audit;
@@ -15,10 +15,10 @@ use App\SevenG\BetaFin as Beta;
 use App\SevenG\CreditFin as Credit;
 use App\SevenG\DeptFin as Dept;
 use App\SevenG\EducationFin as Education;
-use App\Helper\CalculatorClass as Fin;
+use App\Helpers\CalculatorClass as Fin;
 use App\SevenG\BespokeKPI;
 use App\Wheel\CashAccount as Cash;
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 
 class GapAccountCalculatorOld
 {

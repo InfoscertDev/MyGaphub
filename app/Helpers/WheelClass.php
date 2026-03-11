@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 
 use App\FinicialCalculator as Calculator;
-use App\Helper\CalculatorClass;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\IncomeHelper;
+use App\Helpers\CalculatorClass;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\IncomeHelper;
 use App\SevenG\CreditFin as Credit;
 use App\SevenG\DeptFin as Debt;
 use App\DiscretionaryBudget as Philantrophy;

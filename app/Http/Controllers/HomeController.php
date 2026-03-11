@@ -7,19 +7,19 @@ use App\FinicialCalculator as Calculator;
 use App\FinicialQuestion as Question;
 
 use App\User;
-use App\Helper\HelperClass;
-use App\Helper\WheelClass as Wheel;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\GapExchangeHelper;
-use App\Helper\IntegrationParties;
-use App\Helper\PersonalAssistance;
+use App\Helpers\HelperClass;
+use App\Helpers\WheelClass as Wheel;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\IntegrationParties;
+use App\Helpers\PersonalAssistance;
 use App\UserProfile as Profile;
 use App\UserAudit as Audit;
-use App\Helper\AnalyticsClass as SevenG;
+use App\Helpers\AnalyticsClass as SevenG;
 use App\Models\Notification;
 use Carbon\Carbon;
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 
 class HomeController extends Controller
 {

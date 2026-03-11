@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Helper\HelperClass;
+use App\Helpers\HelperClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\AnalyticsClass as SevenG;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\AnalyticsClass as SevenG;
 use App\FinicialCalculator as Calculator;
-use App\Helper\CalculatorClass;
+use App\Helpers\CalculatorClass;
 use App\UserAudit as Audit;
-use App\Helper\GapExchangeHelper as Exchange;
-use App\Helper\GapExchangeHelper;
-use App\Helper\ArchiveAccount;
-use App\Helper\IncomeHelper;
+use App\Helpers\GapExchangeHelper as Exchange;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\IncomeHelper;
 use App\Wheel\HomeEquity;
 use App\Wheel\CashAccount as Cash;
 
@@ -23,7 +23,7 @@ use App\SevenG\DeptFin as Debt;
 use App\SevenG\CreditFin as Credit;
 use App\SevenG\EducationFin as Education;
 use App\Wheel\MortgageAccount as Mortgage;
-use App\Helper\CalculatorClass as Fin;
+use App\Helpers\CalculatorClass as Fin;
 use App\SevenG\BespokeKPI;
 use App\Wheel\BespokeWheel;
 use Illuminate\Support\Facades\Input;

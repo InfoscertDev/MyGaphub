@@ -6,7 +6,7 @@ use App\User;
 use App\FinicialCalculator;
 use App\Models\UserActivityTracking;
 use App\Models\NotificationTemplate;
-use App\Helper\AnalyticsClass;
+use App\Helpers\AnalyticsClass;
 use Illuminate\Support\Facades\Log;
 
 class NotificationRuleService

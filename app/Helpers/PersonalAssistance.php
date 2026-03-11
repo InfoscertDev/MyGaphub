@@ -1,5 +1,5 @@
 <?php
-namespace App\Helper;
+namespace App\Helpers;
 
 use App\Reminder;
 use App\UserAudit;

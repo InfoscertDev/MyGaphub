@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 
 use stdClass;
-use App\Helper\IncomeHelper;
+use App\Helpers\IncomeHelper;
 use App\UserAudit as Audit;
 use App\FinicialCalculator as Calculator;
 use App\Asset\SeedBudget as Budget;
@@ -11,7 +11,7 @@ use App\DiscretionaryBudget as Philantrophy;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\UserSetting;
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 use App\Models\Asset\SeedBudgetAllocation;
 
 //

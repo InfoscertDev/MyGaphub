@@ -4,12 +4,12 @@ namespace App\Http\Controllers\API\v2;
 
 use Illuminate\Http\Request;
 
-use App\Helper\CalculatorClass as Fin;
+use App\Helpers\CalculatorClass as Fin;
 use App\FinicialCalculator as Calculator;
 use App\FinicialQuestion as Question;
-use App\Helper\GapExchangeHelper;
-use App\Helper\HelperClass as Helper;
-use App\Helper\IntegrationParties;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\HelperClass as Helper;
+use App\Helpers\IntegrationParties;
 use Illuminate\Support\Facades\Validator;
 
 use App\SevenG\AlphaFin as Alpha;
@@ -22,8 +22,8 @@ use App\SevenG\FreedomFin as Freedom;
 use App\SevenG\GrandFin as Grand;
 use App\Models\UserSetting;
 
-use App\Helper\AnalyticsClass;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\AnalyticsClass;
+use App\Helpers\WheelClass as Wheel;
 use App\Http\Controllers\Controller;
 use App\UserProfile as Profile;
 use App\Wheel\CashAccount;

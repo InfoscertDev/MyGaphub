@@ -7,23 +7,23 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-use App\Helper\AllocationHelpers;
-use App\Helper\HelperClass;
-use App\Helper\CalculatorClass as Fin;
+use App\Helpers\AllocationHelpers;
+use App\Helpers\HelperClass;
+use App\Helpers\CalculatorClass as Fin;
 use App\FinicialCalculator as Calculator;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\AnalyticsClass as SevenG;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\AnalyticsClass as SevenG;
 
 use App\Wheel\ProtectionAccount as Protection;
 use App\Wheel\PensionAccount as Pension;
-use App\Helper\GapExchangeHelper;
-use App\Helper\IncomeHelper;
-use App\Helper\WheelClass;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\IncomeHelper;
+use App\Helpers\WheelClass;
 use App\Wheel\IncomeAccount as Income;
 use App\Models\Asset\NonPortfolioRecord;
 
-use App\Helper\ArchiveAccount;
-use App\Helper\CalculatorClass;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\CalculatorClass;
 use App\User;
 use App\UserAudit as Audit;
 use Symfony\Component\HttpKernel\Profiler\Profile;

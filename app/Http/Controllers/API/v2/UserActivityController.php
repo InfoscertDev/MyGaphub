@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\UserActivityTracking;
 use App\FinicialCalculator;
-use App\Helper\AnalyticsClass;
+use App\Helpers\AnalyticsClass;
 
 class UserActivityController extends Controller
 {

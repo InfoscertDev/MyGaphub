@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
 
 use App\FinicialCalculator as Calculator;
 use App\FinicialQuestion as Question;
-use App\Helper\GapExchangeHelper;
-use App\Helper\HelperClass;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\HelperClass;
 use App\UserAudit as Audit;
-use App\Helper\IntegrationParties;
+use App\Helpers\IntegrationParties;
 use App\UserProfile as Profile;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Http;

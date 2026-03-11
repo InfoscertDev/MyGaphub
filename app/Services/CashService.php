@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Enums\SevenGType;
 use App\FinicialCalculator as Calculator;
-use App\Helper\ArchiveAccount;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\GapExchangeHelper as Exchange;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\GapExchangeHelper as Exchange;
 use App\SevenG\AlphaFin as Alpha;
 use App\SevenG\BetaFin as Beta;
 use App\SevenG\BespokeKPI;

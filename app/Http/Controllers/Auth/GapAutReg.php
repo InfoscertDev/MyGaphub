@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Helper\GapAccountCalculator;
-use App\Helper\IntegrationParties;
+use App\Helpers\GapAccountCalculator;
+use App\Helpers\IntegrationParties;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Validator;
 
 use App\User;
-use App\Helper\HelperClass;
+use App\Helpers\HelperClass;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\UserProfile as Profile;

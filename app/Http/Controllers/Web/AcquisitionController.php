@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Asset\AssetAction as Action;
-use App\Helper\GapExchangeHelper as Exchanger;
+use App\Helpers\GapExchangeHelper as Exchanger;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
 use App\Models\AcquisitionCms;
 use App\Models\AcquisitionOpportunityCms;
 use App\UserProfile as Profile;
 use Illuminate\Support\Facades\Http;
-use App\Helper\GaphubTracker;
+use App\Helpers\GaphubTracker;
 
 class AcquisitionController extends Controller
 {

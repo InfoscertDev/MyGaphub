@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ArchiveToken;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\WheelClass as Wheel;
 use App\Asset\PortfolioAsset;
 use App\SevenG\BespokeKPI;
 use App\Wheel\CashAccount;

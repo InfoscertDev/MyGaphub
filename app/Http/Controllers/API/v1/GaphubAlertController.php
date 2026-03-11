@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Helper\IntegrationParties;
+use App\Helpers\IntegrationParties;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;

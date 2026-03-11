@@ -4,12 +4,12 @@ namespace App\Http\Controllers\API\v1;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Helper\PortfolioHelper;
+use App\Helpers\PortfolioHelper;
 use Illuminate\Support\Facades\Validator;
 use App\Asset\PortfolioAsset as Portfolio;
 use App\Asset\PortfolioAsset;
 use App\Asset\PortfoloAssetRecord;
-use App\Helper\ArchiveAccount;
+use App\Helpers\ArchiveAccount;
 use App\Models\AcquisitionCms;
 use App\Models\AcquisitionOpportunityCms;
 use App\Models\GapAssetType;

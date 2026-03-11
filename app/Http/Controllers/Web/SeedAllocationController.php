@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Helper\HelperClass;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\AnalyticsClass as SevenG;
+use App\Helpers\HelperClass;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\AnalyticsClass as SevenG;
 
 use App\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator;
 use App\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
-use App\Helper\AllocationHelpers;
-use App\Helper\CalculatorClass;
-use App\Helper\GapExchangeHelper;
-use App\Helper\IncomeHelper;
+use App\Helpers\AllocationHelpers;
+use App\Helpers\CalculatorClass;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\IncomeHelper;
 use App\ILab;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
 

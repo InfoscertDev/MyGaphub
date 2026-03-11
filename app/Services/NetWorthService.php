@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\UserAudit as Audit;
 use App\FinicialCalculator as Calculator;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
 
 class NetWorthService
 {

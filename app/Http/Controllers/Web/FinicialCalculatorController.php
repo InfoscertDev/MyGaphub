@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Helper\HelperClass;
+use App\Helpers\HelperClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use \Validator;
@@ -11,8 +11,8 @@ use App\FinicialCalculator as Calculator;
 use stdClass;
 // use Barryvdh\DomPDF\PDF;
 use Barryvdh\DomPDF\Facade as PDF;
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\IntegrationParties;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\IntegrationParties;
 use App\Http\Controllers\Controller;
 
 class FinicialCalculatorController extends Controller

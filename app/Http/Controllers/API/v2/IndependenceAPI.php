@@ -6,25 +6,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-use App\Helper\IncomeHelper;
-use App\Helper\CalculatorClass as Fin;
+use App\Helpers\IncomeHelper;
+use App\Helpers\CalculatorClass as Fin;
 use App\FinicialCalculator as Calculator;
 
-use App\Helper\GapExchangeHelper;
-use App\Helper\ArchiveAccount;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\ArchiveAccount;
 use App\Wheel\IncomeAccount as Income;
 use App\Models\Asset\NonPortfolioRecord;
 use App\Asset\PortfolioAsset;
-use App\Helper\CalculatorClass;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\CalculatorClass;
+use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Wheel\ProtectionAccount as Protection;
 use App\Wheel\PensionAccount as Pension;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\WheelClass as Wheel;
 use App\User;
 use App\UserAudit as Audit;
 
 
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 
 
 class IndependenceAPI extends Controller

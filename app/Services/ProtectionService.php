@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Helper\ArchiveAccount;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\WheelClass as Wheel;
 use App\Wheel\ProtectionAccount as Protection;
 
 class ProtectionService

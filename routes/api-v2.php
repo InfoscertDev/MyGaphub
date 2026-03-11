@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,96 +128,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
         Route::delete('/account', 'API\v2\ToolAPI@deleteAccount');
         Route::get('/exchange', 'API\v2\ToolAPI@getExchangeData');
 
-        // SEED
-        Route::get('/seed', 'API\v2\SeedAPI@index');
-        Route::get('/seed/target', 'API\v2\SeedAPI@target');
-        Route::post('/seed/store/budget', 'API\v2\SeedAPI@storeSetBudget');
-        Route::post('/seed/store', 'API\v2\SeedAPI@storeSeed');
-        Route::post('/seed/assign/income', 'API\v2\SeedAPI@assignSeedIncome');
-
-        Route::get('/seed/history/{period}', 'API\v2\SeedAPI@periodHistory');
-        Route::get('/seed/monthly/{period}', 'API\v2\SeedAPI@monthlySeedReport');
-        Route::get('/seed/history/{period}/diffrences', 'API\v2\SeedAPI@periodHistoryDiffrences');
-        Route::get('/seed/history/{period}/{seed}', 'API\v2\SeedAPI@periodHistoryReport');
-        Route::get('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@listAllocation');
-
-        // SEED Allocations
-        Route::post('/seed/allocate/budget', 'API\v2\SeedAllocationAPI@storeCategoryAllocation');
-        Route::put('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@updateCategoryAllocation');
-        Route::delete('/seed/allocate/budget/{id}', 'API\v2\SeedAllocationAPI@deleteAllocation');
-        Route::get('/seed/allocate/{id}', 'API\v2\SeedAllocationAPI@showAlloction');
-        Route::post('/seed/record/spent', 'API\v2\SeedAllocationAPI@storeRecordSpent');
-        Route::put('/seed/record/spent/{id}', 'API\v2\SeedAllocationAPI@updateRecordSpend');
-        Route::delete('/seed/record/spent/{id}', 'API\v2\SeedAllocationAPI@deleteRecordSpend');
-
-        // 360
-        Route::get('/360/tiles', 'API\v2\WheelController@tiles');
-        Route::get('/360/ilab', 'API\v2\WheelController@ilab');
-        Route::post('/360/ilab', 'API\v2\WheelController@storeILab');
-        Route::get('/360/expenditure', 'API\v2\WheelController@expenditure');
-        //Philantropy
-        Route::get('/360/philantrophy', 'API\v2\WheelController@philantrophy');
-        Route::post('/360/philantrophy', 'API\v2\WheelController@savePhilantrophy');
-        // Net Worth
-        Route::get('/360/net-worth', 'API\v2\NetWorthController@netWorth');
-        Route::post('/360/net-worth', 'API\v2\NetWorthController@storeNet');
-        // Equity
-        Route::get('/360/equity', 'API\v2\EquityController@index');
-        Route::get('/360/equity/info', 'API\v2\EquityController@equityInfo');
-        Route::post('/360/equity', 'API\v2\EquityController@store');
-        Route::put('/360/equity/{id}', 'API\v2\EquityController@update');
-        // Protection
-        Route::get('/360/protection', 'API\v2\ProtectionController@index');
-        Route::post('/360/protection', 'API\v2\ProtectionController@store');
-        Route::post('/360/protection/{id}', 'API\v2\ProtectionController@update');
-        // Retirement
-        Route::get('/360/retirement', 'API\v2\RetirementController@index');
-        Route::post('/360/retirement', 'API\v2\RetirementController@stoe');
-        Route::put('/360/retirement/{id}', 'API\v2\RetirementController@update');
-        // ROI
-        Route::get('/360/retirement/roi', 'API\v2\RoiController@roiStatus');
-        Route::post('/360/improve/roi', 'API\v2\RoiController@improveRoi');
-        // Cash
-        Route::get('/360/cash', 'API\v2\CashController@index');
-        Route::post('/360/cash', 'API\v2\CashController@store');
-        Route::put('/360/cash/{id}', 'API\v2\CashController@update');
-        // Income
-        Route::get('/360/income', 'API\v2\IncomeController@index');
-        Route::post('/360/income', 'API\v2\IncomeController@store');
-        Route::post('/360/income/{id}', 'API\v2\IncomeController@update');
-        Route::post('/360/income/{id}/records', 'API\v2\IncomeController@updateRecord');
-
-
-
-        // Liabilities
-        Route::get('/360/liability', 'API\v2\LiabilitiesApi@liability');
-        Route::get('/360/mortgage', 'API\v2\LiabilitiesApi@mortgage');
-        Route::get('/360/investment', 'API\v2\PortfolioApi@investment');
-        Route::get('/360/non_portfolio/{id}', 'API\v2\IndependenceAPI@nonPortfolioDetail');
-
-
-        Route::post('/360/liability', 'API\v2\LiabilitiesApi@storeLiability');
-        Route::post('/360/mortgage', 'API\v2\LiabilitiesApi@storeMortgage');
-
-        // 360 Update Account
-        Route::post('/360/liability/{id}', 'API\v2\LiabilitiesApi@updateLiability');
-        Route::post('/360/mortgage/{id}', 'API\v2\LiabilitiesApi@updateMortgage');
-
-
-        // Portfolio
-        Route::get('/portfolio', 'API\v2\PortfolioApi@index');
-        Route::get('/portfolio/asset/types', 'API\v2\PortfolioApi@portfolioAssetTypes');
-        Route::get('/portfolio/information', 'API\v2\PortfolioApi@information');
-        Route::post('/portfolio/asset', 'API\v2\PortfolioApi@store');
-        Route::get('/portfolio/{braid}', 'API\v2\PortfolioApi@braid');
-        Route::get('/portfolio/{braid}/{id}', 'API\v2\PortfolioApi@braidInformation');
-        Route::delete('/portfolio/{id}', 'API\v2\PortfolioApi@destroy');
-
-        Route::post('/portfolio/update/note/{id}', 'API\v2\PortfolioApi@updateAssetNote');
-        Route::post('/portfolio/update/photo/{id}', 'API\v2\PortfolioApi@updateAssetPhoto');
-        Route::post('/portfolio/update/details/{id}', 'API\v2\PortfolioApi@updateAssetDetails');
-        Route::post('/portfolio/update/records/{id}', 'API\v2\PortfolioApi@updateAssetRecords');
-
         Route::post('/feedback', 'API\v2\ToolAPI@sendFeedback');
         Route::get('/product/market-opportunities', 'API\v2\GapProductController@market');
         Route::get('/product/finacial-hub', 'API\v2\GapProductController@financialHub');
@@ -250,6 +161,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
     Route::post('/mygap/securemobile', 'API\v2\MobileAuth@store'); //comment later
 });
 
+require __DIR__.'/v2/360.php';
+
+require __DIR__.'/v2/portfolio.php';
+
+require __DIR__.'/v2/seed.php';
+
 Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::group(['prefix' => 'app/options'], function () {
         // Reminders - with custom names to avoid conflicts
@@ -265,6 +182,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/reminders/{id}/restore', 'API\v2\ReminderAPI@restore')->name('api.reminders.restore');
     });
 });
+
 Route::middleware(['cors', 'throttle:60,1'])->group(function () {
     // Route::get('blogs/featured', ['API\v2\GapProductController@featured']);
     Route::get('blog', 'API\v2\GapProductController@blog');

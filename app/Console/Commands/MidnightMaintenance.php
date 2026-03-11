@@ -127,7 +127,7 @@ class MidnightMaintenance extends Command
     protected function refreshFXRates()
     {
         try {
-            $cfx_rates = app(\App\Helper\IntegrationParties::class)->load_currency_converter();
+            $cfx_rates = app(\App\Helpers\IntegrationParties::class)->load_currency_converter();
             Log::info('FX rates refreshed successfully.');
             $this->info('FX rates refreshed successfully.');
         } catch (\Exception $e) {

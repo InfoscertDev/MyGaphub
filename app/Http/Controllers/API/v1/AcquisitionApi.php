@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helper\GapExchangeHelper as Exchanger;
+use App\Helpers\GapExchangeHelper as Exchanger;
 use App\Mail\GanpAssetInvestment;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;

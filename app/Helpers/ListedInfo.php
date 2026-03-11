@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 use App\UserAudit as Audit;
 
-class ListedInfo 
+class ListedInfo
 {
     public static function addToReapAlert($user, $reap){
         $audit = Audit::where('user_id', $user->id)->first();
@@ -18,8 +18,8 @@ class ListedInfo
             array_push($wheel,$reap);
         }
         $audit->reap_alert = json_encode(array_unique($wheel));
-        $audit->save(); 
+        $audit->save();
         return $audit;
-    } 
+    }
 
 }

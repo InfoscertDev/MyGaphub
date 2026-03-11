@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Asset\PortfolioAsset;
 use App\Asset\PortfoloAssetRecord;
-use App\Helper\HelperClass;
-use App\Helper\PortfolioHelper;
+use App\Helpers\HelperClass;
+use App\Helpers\PortfolioHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\FinicialCalculator as Calculator;
-use App\Helper\GapExchangeHelper;
-use App\Helper\ArchiveAccount;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\ArchiveAccount;
 use App\Models\GapAssetType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;

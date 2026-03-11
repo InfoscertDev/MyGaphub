@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Helper\AllocationHelpers;
-use App\Helper\ArchiveAccount;
-use App\Helper\CalculatorClass as Fin;
-use App\Helper\GapAccountCalculator as GapAccount;
-use App\Helper\GapExchangeHelper;
-use App\Helper\IncomeHelper;
-use App\Helper\WheelClass as Wheel;
+use App\Helpers\AllocationHelpers;
+use App\Helpers\ArchiveAccount;
+use App\Helpers\CalculatorClass as Fin;
+use App\Helpers\GapAccountCalculator as GapAccount;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\IncomeHelper;
+use App\Helpers\WheelClass as Wheel;
 use App\Models\Asset\NonPortfolioRecord;
 use App\Asset\PortfolioAsset;
 use App\UserAudit as Audit;

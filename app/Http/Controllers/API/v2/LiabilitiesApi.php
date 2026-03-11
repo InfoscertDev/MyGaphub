@@ -9,16 +9,16 @@ use Illuminate\Support\Facades\Validator;
 use App\Wheel\LiabilityAccount as Liability;
 use App\Wheel\MortgageAccount as Mortgage;
 use App\Wheel\HomeEquity;
-use App\Helper\GapAccountCalculator as GapAccount;
+use App\Helpers\GapAccountCalculator as GapAccount;
 use App\FinicialCalculator as Calculator;
 
 use App\SevenG\CreditFin as Credit;
 use App\SevenG\DeptFin as Debt;
-use App\Helper\GapExchangeHelper;
-use App\Helper\ArchiveAccount;
+use App\Helpers\GapExchangeHelper;
+use App\Helpers\ArchiveAccount;
 use App\SevenG\BespokeKPI;
 use App\UserAudit as Audit;
-use App\Helper\GapExchangeHelper as Exchange;
+use App\Helpers\GapExchangeHelper as Exchange;
 use App\Wheel\BespokeWheel;
 
 class LiabilitiesApi extends Controller

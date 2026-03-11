@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
-use App\Helper\GapExchangeHelper as Exchanger;
-use App\Helper\ListedInfo;
+use App\Helpers\GapExchangeHelper as Exchanger;
+use App\Helpers\ListedInfo;
 use App\Http\Controllers\Controller;
 use App\Mail\GanpAssetInvestment;
 use App\Mail\ReapAssetInterest;

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 
-use App\Helper\AllocationHelpers;
+use App\Helpers\AllocationHelpers;
 use App\FinicialCalculator as Calculator;
 use App\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
 use App\UserAudit as Audit;
-use App\Helper\IncomeHelper;
+use App\Helpers\IncomeHelper;
 use stdClass;
 
 
