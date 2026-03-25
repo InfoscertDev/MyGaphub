@@ -338,9 +338,10 @@ class AcquisitionController extends Controller
         $depreciating = Action::where('user_id', $user->id)->where('action', 'depreciating')->latest()->paginate($lim);
 
         $todaynote = $this::todaynote();
+        $data =  compact('profile','business', 'risk','intellectual',
+                         'appreciating', 'depreciating', 'todaynote') ;
 
-        return view('user.actionplan.index', compact('profile','business', 'risk','intellectual',
-            'appreciating', 'depreciating', 'todaynote') );
+        return view('user.actionplan.index', $data);
     }
 
     public static function todaynote(){

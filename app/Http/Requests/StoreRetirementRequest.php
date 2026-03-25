@@ -15,7 +15,7 @@ class StoreRetirementRequest extends FormRequest
 
     public function rules(): array
     {
-        $max_year = date('Y-m-d', strtotime('-18 years'));
+        // $max_year = date('Y-m-d', strtotime('-18 years'));
 
         return [
             'pension_name'     => 'required',
@@ -24,8 +24,8 @@ class StoreRetirementRequest extends FormRequest
             'assured_income'   => 'required|numeric|min:0',
             'monthly_cont'     => 'required|numeric|min:0',
             'pension_provider' => 'required',
-            'retire_age'       => 'required',
-            'dob'              => 'nullable|date|before:' . $max_year,
+            'retire_age'       => 'required|integer',
+            // 'dob'              => 'nullable|date|before:' . $max_year,
         ];
     }
 

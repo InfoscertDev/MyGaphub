@@ -26,6 +26,7 @@ class RetirementController extends Controller
 
     public function store(StoreRetirementRequest $request): JsonResponse
     {
+        // $user
         $result = $this->retirementService->storeRetirement($request->user(), $request);
 
         if (!$result['success']) {

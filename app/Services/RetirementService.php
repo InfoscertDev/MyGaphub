@@ -20,7 +20,7 @@ class RetirementService
             return ArchiveAccount::pensionArchiveAction($user, $header, $access, $account);
         }
 
-        $retirement = Pension::where('user_id', $user->id)
+        $retirements = Pension::where('user_id', $user->id)
             ->where('isArchive', $archive ? 1 : 0)
             ->latest()
             ->get();
@@ -30,10 +30,10 @@ class RetirementService
 
         if ($dob) {
             $average_seed = AllocationHelpers::averageSeedDetail($user)['average_seed'];
-            $retirement   = GapAccount::pensionPOT($retirement, $dob, $average_seed);
+            $retirement   = GapAccount::pensionPOT($retirements, $dob, $average_seed);
         }
 
-        $retirement_detail = GapAccount::calcPensionAccount($retirement, $user);
+        $retirement_detail = GapAccount::calcPensionAccount($retirements, $user);
         $backgrounds       = GapAccount::accountBackground();
 
         return compact('retirement', 'retirement_detail', 'backgrounds');

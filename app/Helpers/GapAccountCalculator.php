@@ -430,14 +430,14 @@ class GapAccountCalculator
 
         $funds = PortfolioHelper::investmentFunds($user);
 
-        // ✅ These already return converted sums (now passing $user to all methods)
+        // These already return converted sums (now passing $user to all methods)
         $mort_act = GapAccountCalculator::calcMortgagesAccount($mortgages, $user);
         $lia_act = GapAccountCalculator::calcLiabilitiesAccount($liability, $user);
         $equ_act = GapAccountCalculator::calcEquityAccount($equity, $user);
         $cash_act = GapAccountCalculator::calcCashAccount($cash, $user);
         $pension_act = GapAccountCalculator::calcPensionAccount($retirement, $user);
 
-        // ✅ Both values are now converted
+        // Both values are now converted
         $current_asset = $cash_act['sum'] + $funds['investment'];
 
         return [
@@ -464,13 +464,13 @@ class GapAccountCalculator
         $pension = (int)$networth['pension'];
         $asset = (int)$networth['asset'];
 
-        // ✅ Calculate equity (already converted values)
+        // Calculate equity (already converted values)
         $equity = $home - $mortgage;
 
-        // ✅ Calculate net worth: (Assets + Pension + Equity) - (Liabilities + Mortgage)
+        // Calculate net worth: (Assets + Pension + Equity) - (Liabilities + Mortgage)
         $sum = ($asset + $pension + $equity) - ($liability + $mortgage);
 
-        // ✅ Calculate networth_asset (already converted values)
+        // Calculate networth_asset (already converted values)
         $networth_asset = $asset + $pension;
 
         $labels = ['Assets', 'Liabilities', 'Pensions', 'Home Equity'];
@@ -487,12 +487,12 @@ class GapAccountCalculator
         $networth = GapAccountCalculator::netWorthVariable($user);
         $target_currency = self::getTargetCurrency($user);
 
-        // ✅ Values are already converted - just cast to int
+        // Values are already converted - just cast to int
         $liability = (int)$networth['liability'];
         $pension = (int)$networth['pension'];
         $equity = (int)$networth['equity'];
 
-        // ✅ Calculate asset (already converted values)
+        // Calculate asset (already converted values)
         $asset = $networth['asset'] + $pension + $equity;
         $sum = $asset - $liability;
 

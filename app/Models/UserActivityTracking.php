@@ -87,7 +87,7 @@ class UserActivityTracking extends Model
             return false; // Never opened app, handled differently
         }
 
-        return $this->last_app_open->lt(Carbon::now()->subDays(1));
+        return $this->last_app_open->lt(Carbon::now()->subDays(7));
     }
 
     /**
@@ -98,9 +98,9 @@ class UserActivityTracking extends Model
         $today = Carbon::now();
 
         // Check if it's the 1st of the month
-        // if ($today->day !== 1) {
-        //     return false;
-        // }
+        if ($today->day !== 1) {
+            return false;
+        }
 
         // Check if we already sent this month
         if ($this->last_monthly_review_sent &&
@@ -123,13 +123,13 @@ class UserActivityTracking extends Model
 
         // Check if 3 days have passed since user creation
         $user = $this->user;
-        // if (!$user || $user->created_at->gt(Carbon::now()->subDays(3))) {
-        //     return false;
-        // }
+        if (!$user || $user->created_at->gt(Carbon::now()->subDays(3))) {
+            return false;
+        }
 
         // Check if we already sent reminder in last 3 days
         if ($this->financial_calculation_reminder_sent &&
-            $this->financial_calculation_reminder_sent->gt(Carbon::now()->subDays(1))) {
+            $this->financial_calculation_reminder_sent->gt(Carbon::now()->subDays(3))) {
             return false;
         }
 
@@ -147,14 +147,14 @@ class UserActivityTracking extends Model
         }
 
         // Check if 3 days have passed since user creation
-        // $user = $this->user;
-        // if (!$user || $user->created_at->gt(Carbon::now()->subDays(3))) {
-        //     return false;
-        // }
+        $user = $this->user;
+        if (!$user || $user->created_at->gt(Carbon::now()->subDays(3))) {
+            return false;
+        }
 
         // Check if we already sent reminder in last 3 days
         if ($this->seven_g_reminder_sent &&
-            $this->seven_g_reminder_sent->gt(Carbon::now()->subDays(1))) {
+            $this->seven_g_reminder_sent->gt(Carbon::now()->subDays(3))) {
             return false;
         }
 
@@ -174,14 +174,14 @@ class UserActivityTracking extends Model
         }
 
         // Check if last validation was done
-        // if ($this->seven_g_last_validated_at &&
-        //     $this->seven_g_last_validated_at->gt(Carbon::now()->subDays(3))) {
-        //     return false;
-        // }
+        if ($this->seven_g_last_validated_at &&
+            $this->seven_g_last_validated_at->gt(Carbon::now()->subDays(3))) {
+            return false;
+        }
 
         // Check if we already sent reminder in last 3 days
         if ($this->seven_g_validation_reminder_sent &&
-            $this->seven_g_validation_reminder_sent->gt(Carbon::now()->subDays(1))) {
+            $this->seven_g_validation_reminder_sent->gt(Carbon::now()->subDays(3))) {
             return false;
         }
 

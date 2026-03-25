@@ -267,19 +267,20 @@ class ToolAPI extends Controller
      */
     public function editProfile(Request $request)
     {
-        $max_year = date('Y-m-d', strtotime('-14 years'));
+        $min_year = date('Y-m-d', strtotime('-14 years'));
 
         $validator = Validator::make($request->all(), [
             'firstname' => 'nullable|min:3',
             'surname'   => 'nullable|min:3',
             'phone'     => ['nullable', 'regex:/^\+?[0-9]{7,15}$/'],
-            'date_of_birth'      => 'nullable|date|before:' . $max_year,
+            'date_of_birth'      => 'nullable|date|before:' . $min_year,
             'ancesry'   => 'nullable|string',
             'country' => 'nullable|string',
             'address'   => 'nullable|string',
             'residential_country' => 'nullable|string|max:100'
         ], [
-            'date_of_birth.before' => 'Input a correct Date of Birth',
+            'date_of_birth.date' => 'Input a correct Date of Birth',
+            'date_of_birth.before' => 'You must be avove 14 years of age.',
             'phone.regex' => 'The phone number must be a valid Whatsapp number.'
         ]);
 
@@ -292,7 +293,14 @@ class ToolAPI extends Controller
         }
 
         $fields = array_filter($request->only([
-            'firstname', 'surname', 'phone', 'date_of_birth', 'ancesry', 'country', 'address', 'residential_country'
+            'firstname',
+            'surname',
+            'phone',
+            'date_of_birth',
+            'ancesry',
+            'country',
+            'address',
+            'residential_country'
         ]));
 
         if (empty($fields)) {
