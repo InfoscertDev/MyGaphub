@@ -1,12 +1,12 @@
 <?php
 
-namespace App\SevenG;
+namespace App\Models\SevenG;
 
 use Illuminate\Database\Eloquent\Model;
 
 use App\Helpers\GapAccountCalculator;
 use App\UserAudit;
-use App\WHeel\LiabilityAccount;
+use App\Models\Wheel\LiabilityAccount;
 use stdClass;
 
 class CreditFin extends Model

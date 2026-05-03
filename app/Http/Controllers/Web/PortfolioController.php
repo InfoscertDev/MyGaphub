@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Helpers\HelperClass;
 use App\Helpers\PortfolioHelper;
 use Illuminate\Http\Request;

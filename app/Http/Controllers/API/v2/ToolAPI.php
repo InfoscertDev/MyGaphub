@@ -18,7 +18,7 @@ use App\UserAudit as Audit;
 use App\Helpers\WheelClass as Wheel;
 use App\Helpers\GapExchangeHelper;
 use App\FinicialCalculator as Calculator;
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\Helpers\PersonalAssistance;
 use App\Models\UserFeedback;
 use App\Mail\UserFeedback as MailUserFeedback;
@@ -389,10 +389,21 @@ class ToolAPI extends Controller
         $base_currency_code = GapExchangeHelper::extractCurrencyCode($target_currency ?: 'USD');
         $currencies = HelperClass::popularCurrenciensInfo();
         $system_currencies = $gap_currencies['system_currencies'];
+
+        $previous_currencies = $gap_currencies['previous_currencies'];
+        $previous_rates = $previous_currencies
+            ? json_decode($previous_currencies->currencies, true)
+            : [];
+
         $currency_rates = json_decode($system_currencies['currencies'], true);
         // Convert system currencies to user's base currency and filter popular currencies
         // $converted_rates = $this->convertToBaseCurrency($currency_rates, $base_currency_code, $currencies);
-        $converted_rates = GapExchangeHelper::convertRatesToBaseCurrency($currency_rates, $base_currency_code, $currencies);
+        $converted_rates = GapExchangeHelper::convertRatesToBaseCurrency(
+            $currency_rates,
+            $base_currency_code,
+            $currencies,
+            $previous_rates
+        );
 
         return response()->json([
             'status' => true,

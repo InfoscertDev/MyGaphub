@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 use App\Admin as Admin;
 use App\AdminConfiguration as Configration;
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\Helpers\HelperClass;
 use App\Models\LoginAttemptLog;
 

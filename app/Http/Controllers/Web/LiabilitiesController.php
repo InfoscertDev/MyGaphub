@@ -16,12 +16,12 @@ use App\Helpers\GapExchangeHelper as Exchange;
 use App\Helpers\HelperClass;
 use App\Helpers\IncomeHelper;
 
-use App\SevenG\BespokeKPI;
-use App\Wheel\BespokeWheel;
-use App\Wheel\LiabilityAccount as Liability;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\DeptFin as Debt;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\BespokeWheel;
+use App\Models\Wheel\LiabilityAccount as Liability;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\DeptFin as Debt;
 
 class LiabilitiesController extends Controller
 {

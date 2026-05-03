@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Asset;
+namespace App\Models\Asset;
 
 use Illuminate\Database\Eloquent\Model;
 
 class PortfoloAssetRecord extends Model
 {
+    protected $fillable = [
+        'user_id',
+    ];
+
     public $appends = [
         'expenditure'
     ];

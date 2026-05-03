@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Asset\PortfoloAssetRecord;
-use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\PortfoloAssetRecord;
+use App\Models\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Enums\SeedToken;
 use App\FinicialCalculator as Calculator;
@@ -11,13 +11,14 @@ use App\Helpers\AllocationHelpers;
 use App\Helpers\CalculatorClass;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\WheelClass as Wheel;
-use App\ILab;
+use App\Http\Requests\StoreILabRequest;
+use App\Models\ILab;
 use App\Models\Asset\NonPortfolioRecord;
 use App\Models\Asset\RecordBudgetSpent;
 use App\Models\Asset\SeedBudgetAllocation;
-use App\SevenG\GrandFin as Grand;
-use App\Wheel\CashAccount as Cash;
-use App\Wheel\IncomeAccount as Income;
+use App\Models\SevenG\GrandFin as Grand;
+use App\Models\Wheel\CashAccount as Cash;
+use App\Models\Wheel\IncomeAccount as Income;
 use Carbon\Carbon;
 
 class SeedService
@@ -404,40 +405,64 @@ class SeedService
 
     public function getILab($user): array
     {
-        $calculator  = Calculator::where('user_id', $user->id)->first();
-        $currency    = explode(' ', $calculator->currency)[0];
-        $year        = (int) date('Y') + 1;
+        $year = (int) date('Y') + 1;
 
-        $ilab = ILab::firstOrCreate(['user_id' => $user->id, 'other' => $year]);
+        // Assumes ILab is always seeded for next year on user creation
+        $ilab = ILab::where('user_id', $user->id)
+                    ->where('other', $year)
+                    ->firstOrFail();
 
-        $cash         = Cash::where('user_id', $user->id)->latest()->get();
-        $ilab_data    = GapAccount::currentILab($user, $cash);
-        $current_ilab = $ilab_data['current_ilab'];
-        $current_info = $ilab_data['ilabs'];
-        $target_info  = GapAccount::targetedILab($ilab)['ilabs'];
-
-        return compact('ilab', 'current_info', 'target_info', 'current_ilab', 'currency');
+        return $ilab->toGroupedArray();
     }
-
-    public function storeILab($user, $request): ILab
+    public function storeILab($user, StoreILabRequest $request): array
     {
         $year = (int) date('Y') + 1;
-        $ilab = ILab::where('user_id', $user->id)->where('other', $year)->firstOrFail();
 
-        $ilab->investment       = $request->investment;
-        $ilab->equity           = $request->equity;
-        $ilab->savings          = $request->savings;
-        $ilab->credit           = $request->credit;
-        $ilab->mortgage         = $request->mortgage;
-        $ilab->non_portfolio    = $request->non_portfolio;
-        $ilab->asset_portfolio  = $request->portfolio;
+        $ilab = ILab::where('user_id', $user->id)
+                    ->where('other', $year)
+                    ->firstOrFail();
+
+        match ($request->category) {
+
+            'income' => $this->saveIncome($ilab, $request),
+
+            'liabilities' => $this->saveLiabilities($ilab, $request),
+
+            'asset' => $this->saveAsset($ilab, $request),
+
+            'budget' => $this->saveBudget($ilab, $request),
+        };
+
+        $ilab->save();
+
+        return $ilab->toGroupedArray();
+    }
+
+    private function saveIncome(ILab $ilab, $request): void
+    {
+        $ilab->asset_portfolio = $request->portfolio;
+        $ilab->non_portfolio   = $request->non_portfolio;
+    }
+
+    private function saveLiabilities(ILab $ilab, $request): void
+    {
+        $ilab->credit   = $request->credit;
+        $ilab->mortgage = $request->mortgage;
+    }
+
+    private function saveAsset(ILab $ilab, $request): void
+    {
+        $ilab->investment = $request->investment;
+        $ilab->equity     = $request->equity;
+        $ilab->savings    = $request->cash; // cash → savings column
+    }
+
+    private function saveBudget(ILab $ilab, $request): void
+    {
         $ilab->periodic_savings = $request->periodic_savings;
         $ilab->education        = $request->education;
         $ilab->expenditure      = $request->expenditure;
         $ilab->discretionary    = $request->discretionary;
-        $ilab->save();
-
-        return $ilab;
     }
 
     // -------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Enums\PortfolioToken;
 use App\Helpers\PortfolioHelper;
 use App\Helpers\ArchiveAccount;

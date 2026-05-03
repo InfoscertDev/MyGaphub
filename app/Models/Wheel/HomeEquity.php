@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Wheel;
+namespace App\Models\Wheel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-use App\SevenG\DeptFin as Debt;
+use App\Models\SevenG\DeptFin as Debt;
 use App\Helpers\GapExchangeHelper as Exchange;
-use App\Wheel\MortgageAccount as Mortgage;
+use App\Models\Wheel\MortgageAccount as Mortgage;
 
 class HomeEquity extends Model
 {

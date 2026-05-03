@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\FinicialCalculator as Calculator;
 use Illuminate\Support\Facades\Log;
 

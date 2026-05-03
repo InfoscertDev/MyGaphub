@@ -14,18 +14,18 @@ use App\Helpers\GapExchangeHelper as Exchange;
 use App\Helpers\GapExchangeHelper;
 use App\Helpers\ArchiveAccount;
 use App\Helpers\IncomeHelper;
-use App\Wheel\HomeEquity;
-use App\Wheel\CashAccount as Cash;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\CashAccount as Cash;
 
-use App\SevenG\AlphaFin as Alpha;
-use App\SevenG\BetaFin as Beta;
-use App\SevenG\DeptFin as Debt;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\EducationFin as Education;
-use App\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\AlphaFin as Alpha;
+use App\Models\SevenG\BetaFin as Beta;
+use App\Models\SevenG\DeptFin as Debt;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\EducationFin as Education;
+use App\Models\Wheel\MortgageAccount as Mortgage;
 use App\Helpers\CalculatorClass as Fin;
-use App\SevenG\BespokeKPI;
-use App\Wheel\BespokeWheel;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\BespokeWheel;
 use Illuminate\Support\Facades\Input;
 
 

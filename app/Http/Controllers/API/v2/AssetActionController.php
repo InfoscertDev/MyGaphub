@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API\v2;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Asset\AssetAction as Action;
-use Illuminate\Support\Facades\Validator; 
+use App\Models\Asset\AssetAction as Action;
+use Illuminate\Support\Facades\Validator;
 
 
 class AssetActionController extends Controller
@@ -29,12 +29,12 @@ class AssetActionController extends Controller
         $data =  compact('business', 'risk','intellectual', 'appreciating', 'depreciating');
 
         return response()->json($data);
-    } 
+    }
 
     public function today(Request $request)
     {
         $user =  $request->user();
-        $today = date('Y-m-d'); 
+        $today = date('Y-m-d');
         $business = Action::where('user_id', $user->id)->where('date', $today)->where('action', 'business')->first();
         $risk = Action::where('user_id', $user->id)->where('date', $today)->where('action', 'risk')->first();
         $intellectual = Action::where('user_id', $user->id)->where('date', $today)->where('action', 'intellectual')->first();
@@ -43,9 +43,9 @@ class AssetActionController extends Controller
 
         $data =  compact('business', 'risk', 'intellectual', 'appreciating', 'depreciating');
 
-        return response()->json($data); 
-    } 
-    
+        return response()->json($data);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -54,19 +54,19 @@ class AssetActionController extends Controller
      */
 
     public function store(Request $request)
-    { 
+    {
         $user =  $request->user();
 
-        $validator = Validator::make($request->all(), [ 
-            'action' => 'required', 
+        $validator = Validator::make($request->all(), [
+            'action' => 'required',
             'note' => 'required|min:10'
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
-        } 
+        }
 
-        $today = date('Y-m-d'); 
+        $today = date('Y-m-d');
 
         if($request->action == "vafgskgkzhskdfgzkgzkfgx"){
             $bus_asset = Action::where('user_id', $user->id)->where('action', 'business')
@@ -78,12 +78,12 @@ class AssetActionController extends Controller
                 $business->action = 'business';
                 $business->user_id = $user->id;
                 $business->date = $today;
-            } 
+            }
             $business->note = $request->note;
             $business->save();
-            return response()->json($business); 
+            return response()->json($business);
         }
-        
+
         if($request->action == "apwgdhsvjxgsdgkgdxbgdcg"){
             $asset = Action::where('user_id', $user->id)->where('action', 'risk')
                         ->where('date', $today)->first();
@@ -94,10 +94,10 @@ class AssetActionController extends Controller
                 $risk->action = 'risk';
                 $risk->user_id = $user->id;
                 $risk->date = $today;
-            } 
+            }
             $risk->note = $request->note;
             $risk->save();
-            return response()->json($risk); 
+            return response()->json($risk);
         }
 
         if($request->action == "ingtfsjvfejafdkshcvsxgcfsd"){
@@ -110,10 +110,10 @@ class AssetActionController extends Controller
                 $appreciating->action = 'appreciating';
                 $appreciating->user_id = $user->id;
                 $appreciating->date = $today;
-            } 
+            }
             $appreciating->note = $request->note;
             $appreciating->save();
-            return response()->json($appreciating); 
+            return response()->json($appreciating);
         }
 
         if($request->action == "dehnspeabwrtindgozid"){
@@ -126,10 +126,10 @@ class AssetActionController extends Controller
                 $intellectual->action = 'intellectual';
                 $intellectual->user_id = $user->id;
                 $intellectual->date = $today;
-            } 
+            }
             $intellectual->note = $request->note;
             $intellectual->save();
-            return response()->json($intellectual); 
+            return response()->json($intellectual);
         }
 
         if($request->action == "asfshjsgvnbxsgbbsnndepljn"){
@@ -142,13 +142,13 @@ class AssetActionController extends Controller
                 $depreciating->action = 'depreciating';
                 $depreciating->user_id = $user->id;
                 $depreciating->date = $today;
-            } 
+            }
             $depreciating->note = $request->note;
             $depreciating->save();
-            return response()->json($depreciating); 
+            return response()->json($depreciating);
         }
 
-        return response()->json(['Error' => 'Not Valid']); 
+        return response()->json(['Error' => 'Not Valid']);
     }
 
 }

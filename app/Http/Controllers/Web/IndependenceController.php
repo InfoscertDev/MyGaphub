@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Asset\PortfolioAsset;
+use App\Models\Asset\PortfolioAsset;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -14,12 +14,12 @@ use App\FinicialCalculator as Calculator;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\AnalyticsClass as SevenG;
 
-use App\Wheel\ProtectionAccount as Protection;
-use App\Wheel\PensionAccount as Pension;
+use App\Models\Wheel\ProtectionAccount as Protection;
+use App\Models\Wheel\PensionAccount as Pension;
 use App\Helpers\GapExchangeHelper;
 use App\Helpers\IncomeHelper;
 use App\Helpers\WheelClass;
-use App\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\IncomeAccount as Income;
 use App\Models\Asset\NonPortfolioRecord;
 
 use App\Helpers\ArchiveAccount;

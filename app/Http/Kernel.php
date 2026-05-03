@@ -35,15 +35,17 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-
-                    // ...
             \App\Http\Middleware\HandleInertiaRequests::class,
         ],
 
         'api' => [
-            'throttle:60,1',
+            // CHANGED: was 'throttle:60,1' — replaced with named limiter
+            // that keys on user ID when authenticated, IP only for guests.
+            // This prevents carrier-NAT shared IPs from exhausting one bucket
+            // across all mobile users on the same tower.
+            'throttle:api',
             'bindings',
-              \App\Http\Middleware\Cors::class,
+            \App\Http\Middleware\Cors::class,
         ],
     ];
 
@@ -55,20 +57,20 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'admin' => \App\Http\Middleware\RedirectIfNotAdmin::class,
-        'auth' => \App\Http\Middleware\Authenticate::class,
+        'admin'      => \App\Http\Middleware\RedirectIfNotAdmin::class,
+        'auth'       => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'can'        => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'signed'     => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified'   => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
-        'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-        'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
-        'cors' => \App\Http\Middleware\Cors::class, //
-        'api.key' => \App\Http\Middleware\VerifyApiKey::class,
+        'jwt.auth'   => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh'=> Tymon\JWTAuth\Middleware\RefreshToken::class,
+        'cors'       => \App\Http\Middleware\Cors::class,
+        'api.key'    => \App\Http\Middleware\VerifyApiKey::class,
     ];
 }

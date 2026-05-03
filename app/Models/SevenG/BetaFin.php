@@ -1,10 +1,10 @@
 <?php
 
-namespace App\SevenG;
+namespace App\Models\SevenG;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GrandFin extends Model
+class BetaFin extends Model
 {
     protected $fillable = ['user_id'];
 }

@@ -7,9 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\GapExchangeHelper as Exchange;
-use App\Wheel\HomeEquity;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\SevenG\DeptFin as Debt;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\DeptFin as Debt;
 use App\Helpers\GapAccountCalculator as GapAccount;
 
 class EquityController extends Controller

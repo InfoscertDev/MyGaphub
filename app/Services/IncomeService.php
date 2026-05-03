@@ -10,9 +10,9 @@ use App\Helpers\GapExchangeHelper;
 use App\Helpers\IncomeHelper;
 use App\Helpers\WheelClass as Wheel;
 use App\Models\Asset\NonPortfolioRecord;
-use App\Asset\PortfolioAsset;
+use App\Models\Asset\PortfolioAsset;
 use App\UserAudit as Audit;
-use App\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\IncomeAccount as Income;
 
 class IncomeService
 {
@@ -20,16 +20,14 @@ class IncomeService
 
     public function getIncomeList($user, array $filters): array
     {
-        [
-            'header'  => $header,
-            'access'  => $access,
-            'account' => $account,
-            'archive' => $archive,
-            'period'  => $period,
-            'income'  => $income,
-            'crd'     => $crd,
-            'alo'     => $alo,
-        ] = $filters;
+        $header  = $filters['header']  ?? null;
+        $access  = $filters['access']  ?? null;
+        $account = $filters['account'] ?? null;
+        $archive = $filters['archive'] ?? null;
+        $period  = $filters['period']  ?? null;
+        $income  = $filters['income']  ?? null;
+        $crd     = $filters['crd']     ?? null;
+        $alo     = $filters['alo']     ?? null;
 
         if ($header) {
             if ($period) {

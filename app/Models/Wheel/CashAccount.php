@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Wheel;
+namespace App\Models\Wheel;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BespokeWheel extends Model
+class CashAccount extends Model
 {
     //
 }

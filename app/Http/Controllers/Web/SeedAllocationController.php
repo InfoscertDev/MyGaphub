@@ -9,15 +9,15 @@ use App\Helpers\HelperClass;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\AnalyticsClass as SevenG;
 
-use App\Wheel\CashAccount as Cash;
+use App\Models\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator;
-use App\SevenG\GrandFin as Grand;
+use App\Models\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helpers\AllocationHelpers;
 use App\Helpers\CalculatorClass;
 use App\Helpers\GapExchangeHelper;
 use App\Helpers\IncomeHelper;
-use App\ILab;
+use App\Models\ILab;
 use App\Helpers\WheelClass as Wheel;
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;

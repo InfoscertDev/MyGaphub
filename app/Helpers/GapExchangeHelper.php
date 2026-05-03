@@ -2,17 +2,17 @@
 
 namespace App\Helpers;
 
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\UserAudit as Audit;
-use App\Wheel\LiabilityAccount as Liability;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\SevenG\DeptFin as Debt;
+use App\Models\Wheel\LiabilityAccount as Liability;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\DeptFin as Debt;
 use App\Helpers\IncomeHelper;
 use Illuminate\Support\Facades\Log;
 
-use App\SevenG\BespokeKPI;
-use App\Wheel\BespokeWheel;
-use App\Wheel\CashAccount;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\BespokeWheel;
+use App\Models\Wheel\CashAccount;
 use App\FinicialCalculator as Calculator;
 use stdClass;
 
@@ -504,26 +504,13 @@ class GapExchangeHelper
 
     public static function gapSystemCurrencies($user){
         $system_currencies = GapCurrency::where('user_id', 0)->first();
+        $previous_currencies = GapCurrency::where('user_id', 1)->first(); // old snapshot
         $calculator = Calculator::where('user_id', $user->id)->first();
         $user_currency = $calculator->currency;
 
-        // Extract base currency code
         $bcurrency = explode(" ", $user_currency)[1];
 
-        // Process system currencies only
-        // if($system_currencies){
-        //     $current = json_decode($system_currencies->currencies);
-
-        //     $base = $current->EUR / $current->$bcurrency;
-
-        //     foreach ($current as $key => &$rate) {
-        //         $current->$key = round(($rate * $base), 4);
-        //     }
-
-        //     $system_currencies->currencies = json_encode($current);
-        // }
-
-        return compact('user_currency', 'system_currencies');
+        return compact('user_currency', 'system_currencies', 'previous_currencies');
     }
 
     public static function switchToCashAccount($account, $name, $currency){

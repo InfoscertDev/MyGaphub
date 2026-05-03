@@ -6,7 +6,7 @@ use App\FinicialCalculator as Calculator;
 
 use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\Asset\RecordBudgetSpent;
-use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helpers\GapExchangeHelper;
 

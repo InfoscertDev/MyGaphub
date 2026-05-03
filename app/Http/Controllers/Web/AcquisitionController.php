@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
-use App\Asset\AssetAction as Action;
+use App\Models\Asset\AssetAction as Action;
 use App\Helpers\GapExchangeHelper as Exchanger;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;

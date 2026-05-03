@@ -1,10 +1,8 @@
 <?php
 namespace App\Helpers;
 
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\FinicialCalculator as Calculator;
-use App\Mail\ExhangeRateFailure;
-use Illuminate\Support\Facades\Mail;
 use App\AdminConfiguration as Configration;
 
 class IntegrationParties{
@@ -243,7 +241,6 @@ class IntegrationParties{
         }
         return false;
     }
-
     public static function send_user_to_brevo_prospect($user) {
         IntegrationParties::initializeKeys();
 
@@ -448,7 +445,6 @@ class IntegrationParties{
     public function load_currency_converter($base='USD'){
         self::initializeKeys();
 
-        // Pick provider from config
         switch (self::$fx_currency_provider) {
             case 'fixer':
                 $converter = $this->update_currency_converter_fixer($base);
@@ -465,14 +461,27 @@ class IntegrationParties{
         $system_currencies = GapCurrency::where('user_id', 0)->first();
 
         if($converter && isset($converter->rates)){
+            //  Snapshot current (soon-to-be-old) rates into user_id = 1
+            if($system_currencies){
+                $previous = GapCurrency::where('user_id', 1)->first();
+                if(!$previous){
+                    $previous = new GapCurrency();
+                    $previous->user_id = 1;
+                }
+                $previous->base        = $system_currencies->base;
+                $previous->last_update = $system_currencies->last_update;
+                $previous->currencies  = $system_currencies->currencies;
+                $previous->save();
+            }
+
+            //  Now update the live rates as usual
             if(!$system_currencies){
                 $system_currencies = new GapCurrency();
                 $system_currencies->user_id = 0;
-                $system_currencies->save();
             }
-            $system_currencies->base = $converter->base ?? $base;
+            $system_currencies->base        = $converter->base ?? $base;
             $system_currencies->last_update = $converter->date ?? now()->toDateString();
-            $system_currencies->currencies = json_encode($converter->rates);
+            $system_currencies->currencies  = json_encode($converter->rates);
             $system_currencies->save();
         }
 

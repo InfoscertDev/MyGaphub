@@ -2,22 +2,22 @@
 
 namespace App\Helpers;
 
-use App\Wheel\HomeEquity;
+use App\Models\Wheel\HomeEquity;
 use App\UserAudit as Audit;
 use App\UserAudit;
-use App\Wheel\LiabilityAccount as Liability;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\Wheel\PensionAccount as Pension;
+use App\Models\Wheel\LiabilityAccount as Liability;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\Wheel\PensionAccount as Pension;
 use Carbon\Carbon;
 use App\DiscretionaryBudget as Philantrophy;
-use App\SevenG\AlphaFin as Alpha;
-use App\SevenG\BetaFin as Beta;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\DeptFin as Dept;
-use App\SevenG\EducationFin as Education;
+use App\Models\SevenG\AlphaFin as Alpha;
+use App\Models\SevenG\BetaFin as Beta;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\DeptFin as Dept;
+use App\Models\SevenG\EducationFin as Education;
 use App\Helpers\CalculatorClass as Fin;
-use App\SevenG\BespokeKPI;
-use App\Wheel\CashAccount as Cash;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\CashAccount as Cash;
 use App\Helpers\AllocationHelpers;
 
 class GapAccountCalculatorOld

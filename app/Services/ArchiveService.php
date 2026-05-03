@@ -4,16 +4,16 @@ namespace App\Services;
 
 use App\Enums\ArchiveToken;
 use App\Helpers\WheelClass as Wheel;
-use App\Asset\PortfolioAsset;
-use App\SevenG\BespokeKPI;
-use App\Wheel\CashAccount;
-use App\Wheel\HomeEquity;
-use App\Wheel\IncomeAccount;
-use App\Wheel\LiabilityAccount as Liability;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\Wheel\PensionAccount;
-use App\Wheel\ProtectionAccount;
-use App\SevenG\DeptFin as Debt;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\CashAccount;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\IncomeAccount;
+use App\Models\Wheel\LiabilityAccount as Liability;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\Wheel\PensionAccount;
+use App\Models\Wheel\ProtectionAccount;
+use App\Models\SevenG\DeptFin as Debt;
 
 class ArchiveService
 {

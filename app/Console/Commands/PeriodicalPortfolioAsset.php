@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use Illuminate\Console\Command;
 
 class PeriodicalPortfolioAsset extends Command

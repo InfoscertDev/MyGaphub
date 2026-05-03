@@ -7,7 +7,7 @@ use App\User;
 use App\UserProfile as Profile;
 use App\Helpers\HelperClass as Helper;
 use App\FinicialCalculator as Calculator;
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\Helpers\GapExchangeHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\UserFeedback as MailUserFeedback;

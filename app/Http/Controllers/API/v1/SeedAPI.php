@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Helpers\AllocationHelpers;
 use App\FinicialCalculator as Calculator;
-use App\SevenG\GrandFin as Grand;
+use App\Models\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helpers\CalculatorClass;
-use App\Wheel\CashAccount as Cash;
+use App\Models\Wheel\CashAccount as Cash;
 use App\Helpers\HelperClass;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\WheelClass as Wheel;
-use App\ILab;
+use App\Models\ILab;
 
 class SeedAPI extends Controller
 {

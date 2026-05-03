@@ -68,7 +68,13 @@ class AuthenticationApi extends Controller
             'firstname' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone'   => [
+                'nullable',
+                'regex:/^\+?[1-9]\d{1,14}$/',
+            ],
             'password' => 'required|string|min:8|confirmed',
+        ],[
+            'phone.regex' => 'The phone number must be a valid Whatsapp number.'
         ]);
 
         if($validator->fails()){
@@ -82,6 +88,10 @@ class AuthenticationApi extends Controller
             'firstname' => $request->get('firstname'),
             'surname' => $request->get('surname'),
             'email' => strtolower($request->get('email')),
+            'phone'   => [
+                'nullable',
+                'regex:/^\+?[1-9]\d{1,14}$/',
+            ],
             'password' => Hash::make($request->get('password')),
         ]);
 
@@ -92,7 +102,9 @@ class AuthenticationApi extends Controller
         // GapExchangeHelper::gapCurrencies($user);
 
         $profile = new Profile();
+        $profile->phone = $request->get('phone');
         $profile->save();
+
         $user->profile_id  = $profile->id;
         $user->save();
 

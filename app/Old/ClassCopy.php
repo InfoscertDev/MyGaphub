@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use App\Helpers\AllocationHelpers;
 use App\FinicialCalculator as Calculator;
-use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
 use App\UserAudit as Audit;
 use App\Helpers\IncomeHelper;

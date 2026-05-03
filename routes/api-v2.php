@@ -101,10 +101,18 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
         Route::get('/fcm-token/device', 'API\v2\NotificationController@getTokenByDevice');
         Route::get('/fcm-token', 'API\v2\NotificationController@deleteToken');
 
-        // Avtion Plan
+        // Action Plan
         Route::get('/actionplan', 'API\v2\AssetActionController@action');
         Route::get('/todayplan', 'API\v2\AssetActionController@today');
         Route::post('/actionplan', 'API\v2\AssetActionController@store');
+        // Strategies
+        Route::get   ('action-strategies',                   'API\v2\ActionStrategyController@index');
+        Route::post  ('action-strategies',                   'API\v2\ActionStrategyController@store');
+        Route::get   ('action-strategies/{id}',              'API\v2\ActionStrategyController@show');
+        Route::delete('action-strategies/{id}',              'API\v2\ActionStrategyController@destroy');
+        Route::post  ('action-strategies/{id}/items',        'API\v2\ActionStrategyController@storeItems');
+        Route::post  ('action-strategies/{id}/investigation','API\v2\ActionStrategyController@storeInvestigation');
+        Route::post  ('action-strategies/{id}/allocation',   'API\v2\ActionStrategyController@storeAllocation');
 
 
 
@@ -161,12 +169,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
     Route::post('/mygap/securemobile', 'API\v2\MobileAuth@store'); //comment later
 });
 
-require __DIR__.'/v2/360.php';
-
-require __DIR__.'/v2/portfolio.php';
-
-require __DIR__.'/v2/seed.php';
-
 Route::group(['middleware' => ['auth:api', 'verified']], function() {
     Route::group(['prefix' => 'app/options'], function () {
         // Reminders - with custom names to avoid conflicts
@@ -182,6 +184,13 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
         Route::post('/reminders/{id}/restore', 'API\v2\ReminderAPI@restore')->name('api.reminders.restore');
     });
 });
+
+require __DIR__.'/v2/360.php';
+
+require __DIR__.'/v2/portfolio.php';
+
+require __DIR__.'/v2/seed.php';
+
 
 Route::middleware(['cors', 'throttle:60,1'])->group(function () {
     // Route::get('blogs/featured', ['API\v2\GapProductController@featured']);

@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\API\v2;
 use Illuminate\Support\Facades\Validator;
 
-use App\Wheel\CashAccount as Cash;
+use App\Models\Wheel\CashAccount as Cash;
 use App\FinicialCalculator as Calculator;
 use App\Helpers\ArchiveAccount;
 use App\UserAudit as Audit;
 use App\Helpers\GapExchangeHelper as Exchange;
-use App\SevenG\BespokeKPI;
-use App\SevenG\AlphaFin as Alpha;
-use App\SevenG\BetaFin as Beta;
-use App\SevenG\EducationFin as Education;
-use App\Wheel\BespokeWheel;
-use App\Wheel\HomeEquity;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\SevenG\DeptFin as Debt;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\SevenG\AlphaFin as Alpha;
+use App\Models\SevenG\BetaFin as Beta;
+use App\Models\SevenG\EducationFin as Education;
+use App\Models\Wheel\BespokeWheel;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\DeptFin as Debt;
 
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Request;

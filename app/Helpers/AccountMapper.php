@@ -3,10 +3,10 @@
 namespace App\Helpers;
 
 use App\Enums\SevenGType;
-use App\SevenG\BespokeKPI;
-use App\Wheel\BespokeWheel;
-use App\Wheel\CashAccount;
-use App\Wheel\LiabilityAccount as Liability;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\Wheel\BespokeWheel;
+use App\Models\Wheel\CashAccount;
+use App\Models\Wheel\LiabilityAccount as Liability;
 use stdClass;
 
 /**

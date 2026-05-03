@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Wheel;
+namespace App\Models\Wheel;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Models\Asset\NonPortfolioRecord;
 
 class IncomeAccount extends Model

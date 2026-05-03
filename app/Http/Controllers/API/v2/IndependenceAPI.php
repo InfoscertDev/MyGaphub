@@ -12,13 +12,13 @@ use App\FinicialCalculator as Calculator;
 
 use App\Helpers\GapExchangeHelper;
 use App\Helpers\ArchiveAccount;
-use App\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\IncomeAccount as Income;
 use App\Models\Asset\NonPortfolioRecord;
-use App\Asset\PortfolioAsset;
+use App\Models\Asset\PortfolioAsset;
 use App\Helpers\CalculatorClass;
 use App\Helpers\GapAccountCalculator as GapAccount;
-use App\Wheel\ProtectionAccount as Protection;
-use App\Wheel\PensionAccount as Pension;
+use App\Models\Wheel\ProtectionAccount as Protection;
+use App\Models\Wheel\PensionAccount as Pension;
 use App\Helpers\WheelClass as Wheel;
 use App\User;
 use App\UserAudit as Audit;

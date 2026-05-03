@@ -8,24 +8,24 @@ use App\Http\Controllers\Controller;
 use App\FinicialCalculator as Calculator;
 use App\FinicialQuestion as Question;
 
-use App\SevenG\AlphaFin as Alpha;
-use App\SevenG\BetaFin as Beta;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\DeptFin as Dept;
-use App\SevenG\EducationFin as Education;
-use App\SevenG\FreedomFin as Freedom;
-use App\SevenG\GrandFin as Grand;
+use App\Models\SevenG\AlphaFin as Alpha;
+use App\Models\SevenG\BetaFin as Beta;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\DeptFin as Dept;
+use App\Models\SevenG\EducationFin as Education;
+use App\Models\SevenG\FreedomFin as Freedom;
+use App\Models\SevenG\GrandFin as Grand;
 
 use App\Helpers\CalculatorClass as Fin;
 use App\Helpers\GapExchangeHelper;
 use App\Helpers\HelperClass;
 use App\Helpers\AnalyticsClass;
-use App\SevenG\BespokeKPI;
+use App\Models\SevenG\BespokeKPI;
 
 use App\Helpers\WheelClass as Wheel;
 use App\UserAudit;
-use App\Wheel\CashAccount;
-use App\Wheel\LiabilityAccount;
+use App\Models\Wheel\CashAccount;
+use App\Models\Wheel\LiabilityAccount;
 use App\Mail\SevegValidate;
 use Illuminate\Support\Facades\Mail;
 

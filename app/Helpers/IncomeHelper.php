@@ -2,14 +2,14 @@
 
 namespace App\Helpers;
 
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Enums\PortfolioToken;
 use App\Helpers\CurrencyHelper;       // replaces GapExchangeHelper::convert_currency
 use App\Models\Asset\NonPortfolioRecord;
 use App\User;
-use App\Wheel\IncomeAccount as Income;
-use App\Wheel\IncomeAccount;
+use App\Models\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\IncomeAccount;
 use Carbon\Carbon;
 
 /**

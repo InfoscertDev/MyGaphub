@@ -2,13 +2,13 @@
 
 namespace App\Helpers;
 
-use App\Asset\PortfolioAsset;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfolioAsset;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Enums\PortfolioToken;
 use App\Helpers\CurrencyHelper;      // replaces GapExchangeHelper::convert_currency
 use App\Helpers\AccountMapper;       // replaces GapExchangeHelper::switchTo* / wheelKPIAccount
 use App\Models\UserSetting;
-use App\Wheel\IncomeAccount;
+use App\Models\Wheel\IncomeAccount;
 
 /**
  * PortfolioHelper

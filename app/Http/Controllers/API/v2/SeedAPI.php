@@ -6,22 +6,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
-use App\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\IncomeAccount as Income;
 use App\FinicialCalculator as Calculator;
-use App\SevenG\GrandFin as Grand;
+use App\Models\SevenG\GrandFin as Grand;
 use App\DiscretionaryBudget as Philantrophy;
 use App\Helpers\CalculatorClass;
 use App\Helpers\AllocationHelpers;
-use App\Wheel\CashAccount as Cash;
+use App\Models\Wheel\CashAccount as Cash;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\WheelClass as Wheel;
 
-use App\ILab;
+use App\Models\ILab;
 use Carbon\Carbon;
 use App\Models\Asset\SeedBudgetAllocation;
-use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\SeedBudget as Budget;
 use App\Models\Asset\RecordBudgetSpent;
-use App\Asset\PortfoloAssetRecord;
+use App\Models\Asset\PortfoloAssetRecord;
 use App\Models\Asset\NonPortfolioRecord;
 
 

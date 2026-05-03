@@ -12,22 +12,22 @@ use App\Helpers\HelperClass as Helper;
 use App\Helpers\IntegrationParties;
 use Illuminate\Support\Facades\Validator;
 
-use App\SevenG\AlphaFin as Alpha;
-use App\SevenG\BespokeKPI;
-use App\SevenG\BetaFin as Beta;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\DeptFin as Dept;
-use App\SevenG\EducationFin as Education;
-use App\SevenG\FreedomFin as Freedom;
-use App\SevenG\GrandFin as Grand;
+use App\Models\SevenG\AlphaFin as Alpha;
+use App\Models\SevenG\BespokeKPI;
+use App\Models\SevenG\BetaFin as Beta;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\DeptFin as Debt;
+use App\Models\SevenG\EducationFin as Education;
+use App\Models\SevenG\FreedomFin as Freedom;
+use App\Models\SevenG\GrandFin as Grand;
 use App\Models\UserSetting;
 
 use App\Helpers\AnalyticsClass;
 use App\Helpers\WheelClass as Wheel;
 use App\Http\Controllers\Controller;
 use App\UserProfile as Profile;
-use App\Wheel\CashAccount;
-use App\Wheel\LiabilityAccount;
+use App\Models\Wheel\CashAccount;
+use App\Models\Wheel\LiabilityAccount;
 
 class SevenGAPI extends Controller
 {
@@ -55,7 +55,7 @@ class SevenGAPI extends Controller
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
         $credit = Credit::where('user_id', $user->id)->first();
-        $dept = Dept::where('user_id', $user->id)->first();
+        $dept = Debt::where('user_id', $user->id)->first();
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
@@ -140,7 +140,7 @@ class SevenGAPI extends Controller
         $financial =  Fin::finicial($user);
         $snapshot = Fin::snapshot($financial['calculator'], $financial['cost']);
         $currencies = Helper::popularCurrenciens();
-        $currency = Helper::getCurrencySymbol($financial['target_currency']);
+        $currency = Helper::getCurrencySymbol($financial['target_currency'] ?? 'USD');
 
         return response()->json([
             'status' => true,
@@ -165,7 +165,7 @@ class SevenGAPI extends Controller
         $alpha = Alpha::where('user_id', $user->id)->first();
         $beta = Beta::where('user_id', $user->id)->first();
         $credit = Credit::where('user_id', $user->id)->first();
-        $dept = Dept::where('user_id', $user->id)->first();
+        $dept = Debt::where('user_id', $user->id)->first();
         $education = Education::where('user_id', $user->id)->first();
         $freedom = Freedom::where('user_id', $user->id)->first();
         $grand = Grand::where('user_id', $user->id)->first();
@@ -318,7 +318,7 @@ class SevenGAPI extends Controller
             if($validator->fails()){
                 return response()->json(['status' => false, 'errors' => $validator->errors()->toJson()], 400);
             }
-            $dept = Dept::where('user_id', $user->id)->first();
+            $dept = Debt::where('user_id', $user->id)->first();
             $dept->current = $request->current;
             $dept->strategy = $request->strategy;
             $dept->baseline = $request->baseline;
@@ -727,6 +727,17 @@ class SevenGAPI extends Controller
         $calculate->roce = $request->roce;
         $calculate->investment = $request->investment;
         $calculate->save();
+
+        $currencyCode = explode(" ", $request->currency)[1] ?? $request->currency;
+        $currentPreferences = UserSetting::getUserSetting(
+            $user->id,
+            'preferences',
+            UserSetting::getDefaultPreferencesSettings()
+        );
+
+        $currentPreferences['preferred_currency'] = $currencyCode;
+
+        UserSetting::setUserSetting($user->id, 'preferences', $currentPreferences);
 
         return response()->json(['status' => true, 'data' => $calculate]);
     }

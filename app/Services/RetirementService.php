@@ -6,7 +6,7 @@ use App\Helpers\AllocationHelpers;
 use App\Helpers\ArchiveAccount;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\User;
-use App\Wheel\PensionAccount as Pension;
+use App\Models\Wheel\PensionAccount as Pension;
 
 class RetirementService
 {

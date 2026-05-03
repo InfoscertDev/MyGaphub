@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\Asset\Emails;
+use App\Models\Asset\Emails;
 use App\Models\AcquisitionCms;
 use App\Models\AcquisitionOpportunityCms;
 use App\Models\GapAssetType;
 use Illuminate\Support\Facades\Storage;
 
 class SevenGComment extends Controller
-{   
-    
+{
+
     public function emails()
     {
         $mail = Emails::where('section', 'improve_status')->first();
@@ -24,7 +24,7 @@ class SevenGComment extends Controller
     {
         $mail = Emails::where('section', 'welcome')->first();
         return view('admin.front.welocme_email', compact('mail'));
-    } 
+    }
 
     public function recommendation()
     {
@@ -44,12 +44,12 @@ class SevenGComment extends Controller
 
     public function storeAcquisitionCms(Request $request, $braid)
     {
-        
+
         $this->validate($request, [
             'description' => 'required|between:20,512',
             'fullname' => 'required|between:4,52',
         ]);
-        
+
         $acquisition = AcquisitionCms::where('name', $braid)->first();
 
         $acquisition->fullname = $request->fullname;
@@ -61,10 +61,10 @@ class SevenGComment extends Controller
             $ref_path  = "public/admin/$year";
             $upload_path = $request->file('photo')->storeAs($ref_path, $filename);
 
-            if($acquisition->photo){ 
+            if($acquisition->photo){
                 Storage::delete($acquisition->photo);
             }
-            $acquisition->photo  = $upload_path;  
+            $acquisition->photo  = $upload_path;
         }
         $acquisition->update();
 
@@ -83,7 +83,7 @@ class SevenGComment extends Controller
             'subject' => 'required|string|min:5|max:50',
             'message' => 'required|string|min:10',
         ]);
-        
+
         if($request->section == "zikmhsjiknsi883wibszjxm93jwihknsjhdsddx"){
             $mail = Emails::where('section', 'improve_status')->first();
             $mail->subject = $request->subject;
@@ -108,13 +108,13 @@ class SevenGComment extends Controller
         return redirect()->back();
     }
 
-    
+
     public function products()
     {
         $acquisition = AcquisitionOpportunityCms::all();
         return view('admin.front.products', compact('acquisition'));
     }
-    
+
     public function storeProducts(Request $request, $asset)
     {
         $this->validate($request, [
@@ -123,7 +123,7 @@ class SevenGComment extends Controller
             'capital' => 'required|between:4,52',
             'roi' => 'required|between:4,52',
         ]);
-        
+
         $acquisition = AcquisitionOpportunityCms::where('category', $asset)->first();
 
         $acquisition->fullname = $request->fullname;
@@ -137,10 +137,10 @@ class SevenGComment extends Controller
             $ref_path  = "public/admin/$year";
             $upload_path = $request->file('photo')->storeAs($ref_path, $filename);
 
-            if($acquisition->photo){ 
+            if($acquisition->photo){
                 Storage::delete($acquisition->photo);
             }
-            $acquisition->photo  = $upload_path;  
+            $acquisition->photo  = $upload_path;
         }
         $acquisition->update();
 

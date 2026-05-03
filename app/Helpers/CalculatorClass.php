@@ -6,7 +6,7 @@ use stdClass;
 use App\Helpers\IncomeHelper;
 use App\UserAudit as Audit;
 use App\FinicialCalculator as Calculator;
-use App\Asset\SeedBudget as Budget;
+use App\Models\Asset\SeedBudget as Budget;
 use App\DiscretionaryBudget as Philantrophy;
 use Illuminate\Support\Facades\Log;
 
@@ -102,7 +102,7 @@ class CalculatorClass{
             }
 
             $target_currency = $preferred_currency ?? $current_currency;
-            $calculator->other_income = $portfolio;
+            // $calculator->other_income = $portfolio;
             $saving = $calculator->extra_save ?? 0;
             $investment = $calculator->investment ?? 0;
             $roce = $calculator->roce ?? 0;

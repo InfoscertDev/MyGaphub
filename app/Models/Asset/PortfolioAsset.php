@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Asset;
+namespace App\Models\Asset;
 
 use App\Models\GapAssetType;
 use Illuminate\Database\Eloquent\Model;

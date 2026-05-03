@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Asset;
+namespace App\Models\Asset;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GapCurrency extends Model
+class Analytics extends Model
 {
     //
 }

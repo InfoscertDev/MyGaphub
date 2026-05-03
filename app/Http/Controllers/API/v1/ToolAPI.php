@@ -15,7 +15,7 @@ use App\UserAudit as Audit;
 use App\Helpers\WheelClass as Wheel;
 use App\Helpers\GapExchangeHelper;
 use App\FinicialCalculator as Calculator;
-use App\Asset\GapCurrency;
+use App\Models\Asset\GapCurrency;
 use App\Helpers\PersonalAssistance;
 use App\Models\UserFeedback;
 use App\Mail\UserFeedback as MailUserFeedback;

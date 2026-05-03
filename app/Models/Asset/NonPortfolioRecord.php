@@ -2,7 +2,7 @@
 
 namespace App\Models\Asset;
 
-use App\Wheel\IncomeAccount;
+use App\Models\Wheel\IncomeAccount;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

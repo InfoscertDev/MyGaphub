@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Helpers\ArchiveAccount;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\WheelClass as Wheel;
-use App\Wheel\ProtectionAccount as Protection;
+use App\Models\Wheel\ProtectionAccount as Protection;
 
 class ProtectionService
 {

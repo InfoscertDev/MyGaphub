@@ -6,17 +6,17 @@ use App\FinicialCalculator as Calculator;
 use App\Helpers\CalculatorClass;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\IncomeHelper;
-use App\SevenG\CreditFin as Credit;
-use App\SevenG\DeptFin as Debt;
+use App\Models\SevenG\CreditFin as Credit;
+use App\Models\SevenG\DeptFin as Debt;
 use App\DiscretionaryBudget as Philantrophy;
-use App\SevenG\GrandFin as Grand;
-use App\Wheel\CashAccount as Cash;
-use App\Wheel\HomeEquity;
-use App\Wheel\IncomeAccount as Income;
-use App\Wheel\LiabilityAccount as Liability;
-use App\Wheel\MortgageAccount as Mortgage;
-use App\Wheel\PensionAccount as Pension;
-use App\Wheel\ProtectionAccount as Protection;
+use App\Models\SevenG\GrandFin as Grand;
+use App\Models\Wheel\CashAccount as Cash;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\IncomeAccount as Income;
+use App\Models\Wheel\LiabilityAccount as Liability;
+use App\Models\Wheel\MortgageAccount as Mortgage;
+use App\Models\Wheel\PensionAccount as Pension;
+use App\Models\Wheel\ProtectionAccount as Protection;
 
 /**
  * WheelClass

@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\GapExchangeHelper as Exchange;
-use App\SevenG\DeptFin as Debt;
-use App\Wheel\HomeEquity;
-use App\Wheel\MortgageAccount as Mortgage;
+use App\Models\SevenG\DeptFin as Debt;
+use App\Models\Wheel\HomeEquity;
+use App\Models\Wheel\MortgageAccount as Mortgage;
 
 class EquityService
 {

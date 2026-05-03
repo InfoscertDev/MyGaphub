@@ -1,10 +1,10 @@
 <?php
 
-namespace App\WHeel;
+namespace App\Models\Asset;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LiabilityAccount extends Model
+class Emails extends Model
 {
     //
 }
