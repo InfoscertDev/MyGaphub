@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Assumes users table exists from your existing auth setup
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

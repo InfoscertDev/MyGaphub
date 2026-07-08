@@ -64,7 +64,7 @@ class CalculatorClass{
             // Portfolio and Asset
             $portfolios = IncomeHelper::analyseIncome($user, $calculator->other_income);
             $income_audit = Audit::where('user_id', $user->id)->select('income_allocated')->first();
-            $funds = PortfolioHelper::investmentFunds($user);
+            // $funds = PortfolioHelper::investmentFunds($user);
 
             if (!$income_audit) {
                 $tiles = HelperClass::dashboardTiles();
@@ -91,14 +91,6 @@ class CalculatorClass{
 
                 $portfolio = GapExchangeHelper::convert_currency($user, $preferred_currency, $portfolio);
                 $non_portfolio = GapExchangeHelper::convert_currency($user, $preferred_currency, $non_portfolio);
-
-                // Log::info("Currency conversion applied", [
-                //     'user_id' => $user->id,
-                //     'from_currency' => $current_currency,
-                //     'to_currency' => $preferred_currency,
-                //     'portfolio' => ['from' => $original_portfolio, 'to' => $portfolio],
-                //     'non_portfolio' => ['from' => $original_non_portfolio, 'to' => $non_portfolio]
-                // ]);
             }
 
             $target_currency = $preferred_currency ?? $current_currency;
@@ -118,7 +110,9 @@ class CalculatorClass{
                 'expenditure',
                 'investment',
                 'calculator',
-                'isBudgetable'
+                'isBudgetable',
+                'averageExpenditure',
+                'seed',
             );
 
         } catch (\Exception $e) {
@@ -139,13 +133,12 @@ class CalculatorClass{
                 'expenditure' => 0,
                 'investment' => 0,
                 'calculator' => $calculator ?? new Calculator(),
-                'isBudgetable' => false
+                'isBudgetable' => false,
             ];
         }
     }
 
     public static function snapshot($calculator, $cost){
-        // info([$calculator->other_income, $calculator->extra_save, $cost]);
         if($cost){
             $currenttime = (30 * intval($calculator->extra_save))  / $cost;
             $currentper = ($calculator->other_income * 100) / $cost;

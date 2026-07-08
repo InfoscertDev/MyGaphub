@@ -23,7 +23,7 @@ class CurrencyHelper
      *
      * Falls back to the original amount on any failure to avoid breaking UI.
      */
-    public static function convert($user, string $target_currency, float $money, int $automated = 1, string $preferred_base_currency = ''): float
+    public static function convert($user, string $target_currency, float $money, int $automated = 1,$preferred_base_currency = ''): float
     {
         try {
             $calculator        = Calculator::where('user_id', $user->id)->first();

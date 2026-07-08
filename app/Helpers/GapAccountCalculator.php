@@ -281,31 +281,52 @@ class GapAccountCalculator
      */
     public static function calcProtectionAccount($accounts, $user = null)
     {
-        $values = []; $labels = []; $premium = [];
+        $values      = array();
+        $labels      = array();
+        $premium     = array();
+        $percentages = array();
 
-        foreach($accounts as $account){
-            array_push($values, $account->premium_pay);
-            array_push($premium, $account->sum_assured);
-            array_push($labels, $account->protection_category);
+        $target_currency = self::getTargetCurrency($user);
+
+        foreach ($accounts as $account) {
+            // Convert each account's premium FROM its stored currency TO user's target
+            // Mirrors calcCashAccount pattern — convert per item, not on the total
+            $converted_premium = GapExchangeHelper::convert_currency(
+                $user,
+                $account->currency ?? $target_currency, // source: account's own currency
+                $account->premium_pay,                   // amount to convert
+                1,
+                $target_currency
+            );
+
+            // info(['Converted Premium' => $converted_premium, 'Account Currency' => $account->currency, 'Target Currency' => $target_currency, 'premium_pay' => $account->premium_pay]);
+
+            $converted_assured = GapExchangeHelper::convert_currency(
+                $user,
+                $account->currency ?? $target_currency,
+                $account->sum_assured ?? 0,
+                1,
+                $target_currency
+            );
+
+            // info(['Converted Premium' => $converted_premium, 'Converted Assured' => $converted_assured]);
+            array_push($values,  $converted_premium);
+            array_push($premium, $converted_assured);
+            array_push($labels,  $account->protection_category);
         }
 
-        $sum = array_sum($premium);
+        // Sum the already-converted values — no second conversion needed
+        $sum         = round(array_sum($values),  2);
+        $assured_sum = round(array_sum($premium), 2);
+        $converted_sum = $sum;
 
-        // Convert sum to preferred currency (if user context available)
-        if ($user) {
-            $target_currency = self::getTargetCurrency($user);
-            $converted_sum = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
-            $sum = $converted_sum;
-        }
-
-        $percentages = [];
+        // Percentages use converted values so they stay consistent with $sum
         $total = array_sum($values);
-
-        foreach($accounts as $account){
-            array_push($percentages, round(($account->premium_pay / ($total ? $total : 1)) * 100));
+        foreach ($values as $value) {
+            array_push($percentages, round(($value / ($total ? $total : 1)) * 100));
         }
 
-        return compact('sum', 'labels', 'values', 'percentages');
+        return compact('sum', 'converted_sum', 'target_currency', 'labels', 'values', 'percentages', 'assured_sum');
     }
 
     /**
@@ -320,7 +341,7 @@ class GapAccountCalculator
         }
 
         foreach($accounts as $account){
-            array_push($labels, $account->name);
+            array_push($labels, $account->pension_type);
         }
 
         $sum = array_sum($values);
@@ -540,13 +561,16 @@ class GapAccountCalculator
 
     public static function calcRoiInvestment($improve)
     {
-        $exp = ($improve['monthly_asset'] * 12) * 100;
+        $expenditure = ($improve['monthly_asset'] * 12) * 100;
         $shortfall = $improve['monthly_asset'] - $improve['portfolio'];
+
         $asset_require = (($shortfall * 12) * 100) / ($improve['roce'] ? $improve['roce'] : 1);
         $time_finiancial = ($asset_require / ($improve['investment'] ? $improve['investment'] : 1)) / 12;
-        $invest = $exp / ($improve['roce'] ? $improve['roce'] : 1);
 
-        return compact('shortfall', 'asset_require', 'time_finiancial', 'invest');
+        $invest = $expenditure / ($improve['roce'] ? $improve['roce'] : 1);
+        $time_finiancial_chart = min(max(ceil((int)$time_finiancial), 0), 150);
+
+        return compact('shortfall', 'asset_require', 'time_finiancial', 'invest', 'time_finiancial_chart');
     }
 
     public static function pensionPOT($pensions, $dob, $average_seed)

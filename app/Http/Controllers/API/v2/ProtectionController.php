@@ -16,10 +16,46 @@ class ProtectionController extends Controller
 
     public function __construct(private ProtectionService $protectionService) {}
 
+    /**
+     * Returns all categories with their types.
+     * Frontend calls this once on load to populate
+     * the category picker and dynamically switch type options.
+     */
+    public function config(): JsonResponse
+    {
+        $data = array();
+
+        foreach (StoreProtectionRequest::CATEGORIES as $category) {
+            $data[] = array(
+                'category' => $category,
+                'types'    => StoreProtectionRequest::PROTECTION_TYPES[$category],
+            );
+        }
+
+        return $this->success(
+            array(
+                'categories'    => StoreProtectionRequest::CATEGORIES,
+                'types_by_category' => $data,
+                'pay_frequencies'   => StoreProtectionRequest::PAY_FREQUENCIES,
+                'payment_types'     => StoreProtectionRequest::PAYMENT_TYPES,
+            ),
+            'Protection configuration loaded successfully.'
+        );
+    }
+
     public function index(Request $request): JsonResponse
     {
         $filters = $request->only(['header', 'access', 'account', 'archive']);
-        $data    = $this->protectionService->getProtectionList($request->user(), $filters);
+
+        // ?period=monthly → Monthly records only
+        // ?period=yearly  → all records (default)
+        $period  = $request->query('period', 'yearly');
+
+        $data = $this->protectionService->getProtectionList(
+            $request->user(),
+            $filters,
+            $period
+        );
 
         return $this->success($data, 'Protection records retrieved successfully.');
     }

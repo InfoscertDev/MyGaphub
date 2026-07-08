@@ -24,8 +24,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'throttle:80,1']], functi
         Route::put('/equity/{id}', 'API\v2\EquityController@update');
         // Protection
         Route::get('/protection', 'API\v2\ProtectionController@index');
+        Route::get('/protection/config', 'API\v2\ProtectionController@config');
         Route::post('/protection', 'API\v2\ProtectionController@store');
-        Route::post('/protection/{id}', 'API\v2\ProtectionController@update');
+        Route::put('/protection/{id}', 'API\v2\ProtectionController@update');
         // Retirement
         Route::get('/retirement', 'API\v2\RetirementController@index');
         Route::post('/retirement', 'API\v2\RetirementController@store');

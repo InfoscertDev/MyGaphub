@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v2;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRetirementRequest;
+use App\Http\Requests\UpdateRetirementRequest;
 use App\Services\RetirementService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -36,18 +37,8 @@ class RetirementController extends Controller
         return $this->created(['pension' => $result['pension']], 'Pension account created successfully.');
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateRetirementRequest $request, int $id): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'monthly'    => 'required|min:0|integer',
-            'retirement' => 'required|min:18|integer',
-            'provider'   => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors()->first());
-        }
-
         $pension = $this->retirementService->updateRetirement($request->user(), $request, $id);
 
         return $this->success(['pension' => $pension], 'Retirement record updated successfully.');

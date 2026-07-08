@@ -41,3 +41,7 @@ class ActionStrategy extends Model
         return $this->belongsTo(User::class);
     }
 }
+
+// ALTER TABLE `action_strategies`
+// ADD COLUMN `monthly_amount` DECIMAL(15,2) NULL AFTER `monthly_percent`,
+// ADD COLUMN `lumpsum_amount` DECIMAL(15,2) NULL AFTER `lumpsum_percent`;

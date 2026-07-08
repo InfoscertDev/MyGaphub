@@ -22,7 +22,7 @@ use App\FinicialCalculator as Calculator;
 use App\Helpers\AllocationHelpers;
 use App\Models\UserSetting;
 
-class GapAccountCalculator
+class GapAccountCalculatorTwentyOne
 {
     /**
      * Calculate cash account with preferred currency conversion

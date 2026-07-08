@@ -27,6 +27,7 @@ class RetirementService
 
         $profile = $user->user_profile;
         $dob     = $profile->date_of_birth ?? null;
+        $retirement = null;
 
         if ($dob) {
             $average_seed = AllocationHelpers::averageSeedDetail($user)['average_seed'];
@@ -75,11 +76,16 @@ class RetirementService
 
     public function updateRetirement($user, $request, int $id): Pension
     {
-        $pension = Pension::where('user_id', $user->id)->where('id', $id)->firstOrFail();
+        $pension = Pension::where('user_id', $user->id)
+                          ->where('id', $id)
+                          ->firstOrFail();
 
-        $pension->retirement_age       = $request->retirement;
+        $pension->name                 = $request->pension_name;  // added
         $pension->provider             = $request->provider;
+        $pension->current              = $request->current;       // added
         $pension->monthly_contribution = $request->monthly;
+        $pension->retirement_age       = $request->retirement;
+        $pension->assured_income       = $request->assured_income;
         $pension->save();
 
         $this->refreshTiles($user);

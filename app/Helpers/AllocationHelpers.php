@@ -214,7 +214,8 @@ class AllocationHelpers{
 
         // After computing $values:
         $values = array_map(fn($val) => GapExchangeHelper::convert_currency($user, $calculator->currency, $val), $values);
-        return compact('labels', 'values');
+        $total = array_sum($values);
+        return compact('labels', 'values', 'total');
     }
 
     public static function averageSeedPhilantrophy($user){

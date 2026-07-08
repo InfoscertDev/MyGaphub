@@ -29,26 +29,26 @@ class StoreILabRequest extends FormRequest
         return match ($this->input('category')) {
 
             'income' => [
-                'portfolio'     => 'required|integer|min:0',
-                'non_portfolio' => 'required|integer|min:0',
+                'portfolio'     => 'required|numeric|min:0',
+                'non_portfolio' => 'required|numeric|min:0',
             ],
 
             'liabilities' => [
-                'credit'   => 'required|integer|min:0',
-                'mortgage' => 'required|integer|min:0',
+                'credit'   => 'required|numeric|min:0',
+                'mortgage' => 'required|numeric|min:0',
             ],
 
             'asset' => [
-                'investment' => 'required|integer|min:0',
-                'equity'     => 'required|integer|min:0',
-                'cash'       => 'required|integer|min:0', // stored as savings in DB
+                'investment' => 'required|numeric|min:0',
+                'equity'     => 'required|numeric|min:0',
+                'cash'       => 'required|numeric|min:0', // stored as savings in DB
             ],
 
             'budget' => [
-                'periodic_savings' => 'required|integer|min:0',
-                'education'        => 'required|integer|min:0',
-                'expenditure'      => 'required|integer|min:0',
-                'discretionary'    => 'required|integer|min:0',
+                'periodic_savings' => 'required|numeric|min:0',
+                'education'        => 'required|numeric|min:0',
+                'expenditure'      => 'required|numeric|min:0',
+                'discretionary'    => 'required|numeric|min:0',
             ],
 
             default => [], // category validator above will catch invalid values

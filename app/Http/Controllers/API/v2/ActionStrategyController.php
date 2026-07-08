@@ -3,189 +3,70 @@
 namespace App\Http\Controllers\API\v2;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Models\Asset\ActionStrategy;
-use App\Models\Asset\ActionStrategyItem;
-use App\Models\Asset\ActionStrategyInvestigation;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreActionStrategyRequest;
+use App\Http\Requests\StoreActionStrategyItemsRequest;
+use App\Http\Requests\StoreActionStrategyInvestigationRequest;
+use App\Http\Requests\StoreActionStrategyAllocationRequest;
+use App\Services\ActionStrategyService;
+use App\Traits\ApiResponse;
 
 class ActionStrategyController extends Controller
 {
     /**
      * List all strategies for the authenticated user.
      */
-    public function index(Request $request)
-    {
-        $strategies = ActionStrategy::where('user_id', $request->user()->id)
-            ->with(['items', 'investigation'])
-            ->latest()
-            ->get();
+    use ApiResponse;
 
-        return response()->json($strategies);
+    public function __construct(private ActionStrategyService $strategyService) {}
+
+    public function index(Request $request): JsonResponse
+    {
+        $strategies = $this->strategyService->getStrategies($request->user());
+
+        return $this->success(['strategies' => $strategies], 'Strategies retrieved successfully.');
     }
 
-    /**
-     * Show a single strategy with its items and investigation.
-     */
-    public function show(Request $request, $id)
+    public function show(Request $request, $id): JsonResponse
     {
-        $strategy = ActionStrategy::where('user_id', $request->user()->id)
-            ->with(['items', 'investigation'])
-            ->findOrFail($id);
+        $strategy = $this->strategyService->getStrategy($request->user(), $id);
 
-        return response()->json($strategy);
+        return $this->success(['strategy' => $strategy], 'Strategy retrieved successfully.');
     }
 
-    /**
-     * Step 1 + 2: Create the strategy shell (name, reason, category).
-     * Called when the user taps Continue after screen 1 & 2.
-     */
-    public function store(Request $request)
+    public function store(StoreActionStrategyRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'name'     => 'required|string|max:255',
-            'reason'   => 'required|string|min:10',
-            'category' => 'required|in:' . implode(',', ActionStrategy::CATEGORIES),
-        ]);
+        $strategy = $this->strategyService->storeStrategy($request->user(), $request);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        $strategy = ActionStrategy::create([
-            'user_id'  => $request->user()->id,
-            'name'     => $request->name,
-            'reason'   => $request->reason,
-            'category' => $request->category,
-        ]);
-
-        return response()->json($strategy, 201);
+        return $this->created(['strategy' => $strategy], 'Strategy created successfully.');
     }
 
-    /**
-     * Step 3: Save/update checklist items for a strategy.
-     * Payload: { items: [ { sub_category, note }, ... ] }
-     * Each sub_category must belong to the strategy's category.
-     */
-    public function storeItems(Request $request, $strategyId)
+    public function storeItems(StoreActionStrategyItemsRequest $request, $strategyId): JsonResponse
     {
-        $strategy = ActionStrategy::where('user_id', $request->user()->id)
-            ->findOrFail($strategyId);
+        $strategy = $this->strategyService->storeItems($request->user(), $request, $strategyId);
 
-        $allowedSubs = ActionStrategy::SUB_CATEGORIES[$strategy->category];
-
-        $validator = Validator::make($request->all(), [
-            'items'                  => 'required|array|min:1',
-            'items.*.sub_category'   => 'required|in:' . implode(',', $allowedSubs),
-            'items.*.note'           => 'nullable|string|min:5',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        DB::transaction(function () use ($request, $strategy) {
-            foreach ($request->items as $item) {
-                ActionStrategyItem::updateOrCreate(
-                    [
-                        'strategy_id'  => $strategy->id,
-                        'sub_category' => $item['sub_category'],
-                    ],
-                    [
-                        'note' => $item['note'] ?? null,
-                    ]
-                );
-            }
-        });
-
-        return response()->json($strategy->load('items'));
+        return $this->success(['strategy' => $strategy], 'Checklist items saved successfully.');
     }
 
-    /**
-     * Step 4: Save/update investigation answers for a strategy.
-     */
-    public function storeInvestigation(Request $request, $strategyId)
+    public function storeInvestigation(StoreActionStrategyInvestigationRequest $request, $strategyId): JsonResponse
     {
-        $strategy = ActionStrategy::where('user_id', $request->user()->id)
-            ->findOrFail($strategyId);
+        $investigation = $this->strategyService->storeInvestigation($request->user(), $request, $strategyId);
 
-        $validator = Validator::make($request->all(), [
-            'opportunity_age'    => 'nullable|string|min:5',
-            'investors_last_5yr' => 'nullable|string|min:5',
-            'team_experience'    => 'nullable|string|min:5',
-            'customer_value'     => 'nullable|string|min:5',
-            'other_details'      => 'nullable|string',
-            // At least one investigation field must be filled
-            '_any'               => [
-                function ($attr, $value, $fail) use ($request) {
-                    $fields = ['opportunity_age', 'investors_last_5yr', 'team_experience', 'customer_value', 'other_details'];
-                    $filled = collect($fields)->filter(fn($f) => filled($request->$f));
-                    if ($filled->isEmpty()) {
-                        $fail('At least one investigation field is required.');
-                    }
-                }
-            ],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        $investigation = ActionStrategyInvestigation::updateOrCreate(
-            ['strategy_id' => $strategy->id],
-            $request->only([
-                'opportunity_age',
-                'investors_last_5yr',
-                'team_experience',
-                'customer_value',
-                'other_details',
-            ])
-        );
-
-        return response()->json($investigation);
+        return $this->success(['investigation' => $investigation], 'Investigation saved successfully.');
     }
 
-   /**
-     * Step 5: Save allocation percentages on the strategy itself.
-     *
-     * monthly_percent applies to: user->monthly_asset_growth_savings (existing model field)
-     * lumpsum_percent applies to:  user->alpha_balance (existing model field)
-     *
-     * Actual £ amounts are computed on the frontend:
-     *   monthly_amount = (monthly_percent / 100) * user.monthly_asset_growth_savings
-     *   lumpsum_amount = (lumpsum_percent  / 100) * user.alpha_balance
-     */
-    public function storeAllocation(Request $request, $strategyId)
+    public function storeAllocation(StoreActionStrategyAllocationRequest $request, $strategyId): JsonResponse
     {
-        $strategy = ActionStrategy::where('user_id', $request->user()->id)
-            ->findOrFail($strategyId);
+        $strategy = $this->strategyService->storeAllocation($request->user(), $request, $strategyId);
 
-        $validator = Validator::make($request->all(), [
-            'monthly_percent' => 'required|in:10,25,50,100',
-            'lumpsum_percent' => 'required|in:10,25,50,100',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        $strategy->update([
-            'monthly_percent' => $request->monthly_percent,
-            'lumpsum_percent' => $request->lumpsum_percent,
-        ]);
-
-        return response()->json($strategy->load(['items', 'investigation']));
+        return $this->success(['strategy' => $strategy], 'Allocation saved successfully.');
     }
 
-    /**
-     * Delete a strategy and all its related data (cascade handles DB cleanup).
-     */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $id): JsonResponse
     {
-        $strategy = ActionStrategy::where('user_id', $request->user()->id)->findOrFail($id);
-        $strategy->delete();
+        $this->strategyService->deleteStrategy($request->user(), $id);
 
-        return response()->json(['message' => 'Strategy deleted successfully.']);
+        return $this->success([], 'Strategy deleted successfully.');
     }
 }

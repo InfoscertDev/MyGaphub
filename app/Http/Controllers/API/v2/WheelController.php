@@ -75,14 +75,18 @@ class WheelController extends Controller
 
     public function ilab(Request $request): JsonResponse
     {
-        $data = $this->seedService->getILab($request->user());
+        $user  = $request->user();
+        // ?period=current or ?period=next (defaults to next)
+        $data = $this->seedService->getILab($user);
 
         return $this->success($data, 'ILab information retrieved successfully.');
     }
 
     public function storeILab(StoreILabRequest $request): JsonResponse
     {
-        $ilab = $this->seedService->storeILab($request->user(), $request);
+        $user  = $request->user();
+
+        $ilab = $this->seedService->storeILab($user, $request);
 
         return $this->success(['ilab' => $ilab], 'ILab target has been set.');
     }

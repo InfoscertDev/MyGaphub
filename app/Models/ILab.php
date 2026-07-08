@@ -19,6 +19,7 @@ class ILab extends Model
         'education',
         'expenditure',
         'discretionary',
+        'other'
     ];
 
     /**

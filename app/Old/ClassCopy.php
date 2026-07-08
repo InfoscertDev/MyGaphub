@@ -12,7 +12,7 @@ use stdClass;
 
 
 //
-class CalculatorClass{
+class CalculatorClassCopy{
 
     public static function finicial($user){
         // Initial Budget or Calculator Workflow
@@ -20,6 +20,7 @@ class CalculatorClass{
         // Current Budget or Average Seed
         $seed =  AllocationHelpers::averageSeedDetail($user)['average_seed'];
         $averageSeed = CalculatorClass::getAverageSeed($user);
+
         $isBudgetable = ($seed['total_seed'] > 1) ? true : false;
         // Use Seed if Average Income is available
         if($seed['total_seed'] > 1){
@@ -60,8 +61,11 @@ class CalculatorClass{
         $saving = $calculator->extra_save;
         // $investment = $calculator->investment;
         $roce = $calculator->roce;
+
         return compact('cost', 'saving', 'portfolio', 'non_portfolio', 'roce',
-                            'expenditure','investment', 'calculator', 'isBudgetable');
+                        'expenditure','investment', 'calculator', 'isBudgetable',
+                        'averageSeed', 'seed'
+                );
     }
 
     public static function snapshot($calculator, $cost){

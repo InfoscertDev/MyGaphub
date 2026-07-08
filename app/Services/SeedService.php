@@ -19,6 +19,7 @@ use App\Models\Asset\SeedBudgetAllocation;
 use App\Models\SevenG\GrandFin as Grand;
 use App\Models\Wheel\CashAccount as Cash;
 use App\Models\Wheel\IncomeAccount as Income;
+use App\User;
 use Carbon\Carbon;
 
 class SeedService
@@ -403,66 +404,224 @@ class SeedService
     // ILab
     // -------------------------------------------------------------------------
 
-    public function getILab($user): array
+    public function getILab(User $user): array
     {
         $year = (int) date('Y') + 1;
 
-        // Assumes ILab is always seeded for next year on user creation
+        // Get or create the target ILab record for next year
         $ilab = ILab::where('user_id', $user->id)
                     ->where('other', $year)
-                    ->firstOrFail();
+                    ->firstOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'other'   => $year,
+                        ],
+                        [
+                            'asset_portfolio'  => 0,
+                            'non_portfolio'    => 0,
+                            'credit'           => 0,
+                            'mortgage'         => 0,
+                            'investment'       => 0,
+                            'equity'           => 0,
+                            'savings'          => 0,
+                            'periodic_savings' => 0,
+                            'education'        => 0,
+                            'expenditure'      => 0,
+                            'discretionary'    => 0,
+                        ]
+                    );
 
-        return $ilab->toGroupedArray();
+        // info('Fetching ILab for user_id: ' . $user->id . ', year: ' . $year);
+        // info('ILab record: ' . json_encode($ilab->toArray()));
+        // Fetch live cash accounts for current ILab calculation
+        $cash_accounts = Cash::where('user_id', $user->id)
+                                        ->where('isArchive', 0)
+                                        ->latest()
+                                        ->get();
+
+        // Build current values from live accounts using the legacy calculator
+        $current_data = GapAccount::currentILab($user, $cash_accounts);
+        $current_ilab = $current_data['current_ilab']; // individual field values
+        $current_totals = $current_data['ilabs'];       // asset, liabilities, income, budget totals
+
+        // info($ilab);
+        // Build target values from the ILab record
+        $target_data = GapAccount::targetedILab($ilab);
+        $target_ilab = $target_data['target_ilab'];     // individual field values
+        $target_totals = $target_data['ilabs'];         // asset, liabilities, income, budget totals
+
+        // info($target_ilab);
+        // Return grouped by the 4 UI categories, each item has current + target
+        return [
+            'summary' => [
+                'current' => $current_totals, // asset, liabilities, income, budget totals
+                'target'  => $target_totals,  // same shape for target
+            ],
+            'income' => [
+                [
+                    'key'     => 'portfolio',
+                    'label'   => 'Portfolio',
+                    'current' => $current_ilab['portfolio']      ?? 0,
+                    'target'  => $target_ilab['portfolio']       ?? 0,
+                ],
+                [
+                    'key'     => 'non_portfolio',
+                    'label'   => 'Non-Portfolio',
+                    'current' => $current_ilab['non_portfolio']  ?? 0,
+                    'target'  => $target_ilab['non_portfolio']   ?? 0,
+                ],
+            ],
+            'liabilities' => [
+                [
+                    'key'     => 'credit',
+                    'label'   => 'Credit',
+                    'current' => $current_ilab['credit']         ?? 0,
+                    'target'  => $target_ilab['credit']          ?? 0,
+                ],
+                [
+                    'key'     => 'mortgage',
+                    'label'   => 'Mortgage',
+                    'current' => $current_ilab['mortgage']       ?? 0,
+                    'target'  => $target_ilab['mortgage']        ?? 0,
+                ],
+            ],
+            'asset' => [
+                [
+                    'key'     => 'investment',
+                    'label'   => 'Investments',
+                    'current' => $current_ilab['investment']     ?? 0,
+                    'target'  => $target_ilab['investment']      ?? 0,
+                ],
+                [
+                    'key'     => 'equity',
+                    'label'   => 'Home Equity',
+                    'current' => $current_ilab['equity']         ?? 0,
+                    'target'  => $target_ilab['equity']          ?? 0,
+                ],
+                [
+                    'key'     => 'cash',
+                    'label'   => 'Cash',
+                    // legacy uses 'savings' key in current_ilab
+                    'current' => $current_ilab['savings']        ?? 0,
+                    // legacy uses 'savings' key in target_ilab; stored as savings in DB
+                    'target'  => $target_ilab['savings']         ?? 0,
+                ],
+            ],
+            'budget' => [
+                [
+                    'key'     => 'periodic_savings',
+                    'label'   => 'Savings Periodic',
+                    // legacy current uses 'periodic_saving' (no trailing s)
+                    'current' => $current_ilab['periodic_saving'] ?? 0,
+                    'target'  => $target_ilab['periodic_savings'] ?? 0,
+                ],
+                [
+                    'key'     => 'education',
+                    'label'   => 'Education',
+                    'current' => $current_ilab['education']       ?? 0,
+                    'target'  => $target_ilab['education']        ?? 0,
+                ],
+                [
+                    'key'     => 'expenditure',
+                    'label'   => 'Expenditure',
+                    'current' => $current_ilab['expenditure']     ?? 0,
+                    'target'  => $target_ilab['expenditure']      ?? 0,
+                ],
+                [
+                    'key'     => 'discretionary',
+                    'label'   => 'Discretionary',
+                    // legacy maps 'charity' → 'discretionary' in currentILab
+                    'current' => $current_ilab['discretionary']   ?? 0,
+                    'target'  => $target_ilab['discretionary']    ?? 0,
+                ],
+            ],
+        ];
     }
+
+    /**
+     * Resolves the year from the period parameter.
+     * "current" → this year
+     * "next"    → next year (default)
+     * Anything else falls back to next year safely.
+     */
+    private function resolveYear(string $period): int
+    {
+        return match ($period) {
+            'current' => (int) date('Y'),
+            default   => (int) date('Y') + 1,
+        };
+    }
+
     public function storeILab($user, StoreILabRequest $request): array
     {
         $year = (int) date('Y') + 1;
 
         $ilab = ILab::where('user_id', $user->id)
                     ->where('other', $year)
-                    ->firstOrFail();
+                    ->firstOrCreate(
+                        [
+                            'user_id' => $user->id,
+                            'other'   => $year,
+                        ],
+                        [
+                            'asset_portfolio'  => 0,
+                            'non_portfolio'    => 0,
+                            'credit'           => 0,
+                            'mortgage'         => 0,
+                            'investment'       => 0,
+                            'equity'           => 0,
+                            'savings'          => 0,
+                            'periodic_savings' => 0,
+                            'education'        => 0,
+                            'expenditure'      => 0,
+                            'discretionary'    => 0,
+                        ]
+                    );
 
-        match ($request->category) {
+        $category = $request->input('category');
 
-            'income' => $this->saveIncome($ilab, $request),
+        if ($category === 'income') {
+            $this->saveIncome($ilab, $request);
+        } elseif ($category === 'liabilities') {
+            $this->saveLiabilities($ilab, $request);
+        } elseif ($category === 'asset') {
+            $this->saveAsset($ilab, $request);
+        } elseif ($category === 'budget') {
+            $this->saveBudget($ilab, $request);
+        }
 
-            'liabilities' => $this->saveLiabilities($ilab, $request),
-
-            'asset' => $this->saveAsset($ilab, $request),
-
-            'budget' => $this->saveBudget($ilab, $request),
-        };
-
+        // info('Saving ILab for user_id: ' . $user->id . ', year: ' . $year . ', category: ' . $category);
+        // info('ILab data: ' . json_encode($ilab->toArray()));
         $ilab->save();
 
-        return $ilab->toGroupedArray();
+        return $this->getILab($user);
     }
 
     private function saveIncome(ILab $ilab, $request): void
     {
-        $ilab->asset_portfolio = $request->portfolio;
-        $ilab->non_portfolio   = $request->non_portfolio;
+        $ilab->asset_portfolio = $request->input('portfolio');
+        $ilab->non_portfolio   = $request->input('non_portfolio');
     }
 
     private function saveLiabilities(ILab $ilab, $request): void
     {
-        $ilab->credit   = $request->credit;
-        $ilab->mortgage = $request->mortgage;
+        $ilab->credit   = $request->input('credit');
+        $ilab->mortgage = $request->input('mortgage');
     }
 
     private function saveAsset(ILab $ilab, $request): void
     {
-        $ilab->investment = $request->investment;
-        $ilab->equity     = $request->equity;
-        $ilab->savings    = $request->cash; // cash → savings column
+        $ilab->investment = $request->input('investment');
+        $ilab->equity     = $request->input('equity');
+        $ilab->savings    = $request->input('cash'); // cash → savings column
     }
 
     private function saveBudget(ILab $ilab, $request): void
     {
-        $ilab->periodic_savings = $request->periodic_savings;
-        $ilab->education        = $request->education;
-        $ilab->expenditure      = $request->expenditure;
-        $ilab->discretionary    = $request->discretionary;
+        $ilab->periodic_savings = $request->input('periodic_savings');
+        $ilab->education        = $request->input('education');
+        $ilab->expenditure      = $request->input('expenditure');
+        $ilab->discretionary    = $request->input('discretionary');
     }
 
     // -------------------------------------------------------------------------

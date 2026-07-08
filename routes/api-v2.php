@@ -187,9 +187,10 @@ Route::group(['middleware' => ['auth:api', 'verified']], function() {
 
 require __DIR__.'/v2/360.php';
 
+require __DIR__.'/v2/seed.php';
+
 require __DIR__.'/v2/portfolio.php';
 
-require __DIR__.'/v2/seed.php';
 
 
 Route::middleware(['cors', 'throttle:60,1'])->group(function () {
