@@ -18,6 +18,14 @@ class CashService
 {
     public function getCashList($user, array $filters): array
     {
+        $filters = array_merge([
+            'header'  => null,
+            'access'  => null,
+            'account' => null,
+            'archive' => null,
+            'kpi'     => null,
+        ], $filters);
+
         ['header' => $header, 'access' => $access, 'account' => $account, 'archive' => $archive, 'kpi' => $kpi] = $filters;
 
         if ($header) {

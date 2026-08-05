@@ -181,27 +181,31 @@ class SevenGAPI extends Controller
             'step1'=> $alpha->main ?? 0
         ];
 
-        AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
+        info(['GReach Phase 1 Conversion', $user->id]);
+
+        // AnalyticsClass::initBudgetValue($user,$credit, $dept,$freedom, $grand);
         $stepBack = $this->stepBack($user, $mains);
 
         $steps = $stepBack['steps'];
         $backgrounds = $stepBack['backgrounds'];
 
+        info(['SevenG Currency Conversion', $current_currency, $preferred_currency]);
 
-        $alpha = app(AnalyticsClass::class)->convertModelValues($alpha, $user, $current_currency, $preferred_currency);
-        $beta = app(AnalyticsClass::class)->convertModelValues($beta, $user, $current_currency, $preferred_currency);
-        $credit = app(AnalyticsClass::class)->convertModelValues($credit, $user, $current_currency, $preferred_currency);
-        $dept = app(AnalyticsClass::class)->convertModelValues($dept, $user, $current_currency, $preferred_currency);
-        $education = app(AnalyticsClass::class)->convertModelValues($education, $user, $current_currency, $preferred_currency);
-        $freedom = app(AnalyticsClass::class)->convertModelValues($freedom, $user, $current_currency, $preferred_currency);
-        $grand = app(AnalyticsClass::class)->convertModelValues($grand, $user, $current_currency, $preferred_currency);
+        $alpha = AnalyticsClass::convertModelValues($alpha, $user, $current_currency, $preferred_currency);
+        $beta = AnalyticsClass::convertModelValues($beta, $user, $current_currency, $preferred_currency);
+        $credit = AnalyticsClass::convertModelValues($credit, $user, $current_currency, $preferred_currency);
+        $dept = AnalyticsClass::convertModelValues($dept, $user, $current_currency, $preferred_currency);
+        $education = AnalyticsClass::convertModelValues($education, $user, $current_currency, $preferred_currency);
+        $freedom = AnalyticsClass::convertModelValues($freedom, $user, $current_currency, $preferred_currency);
+        $grand = AnalyticsClass::convertModelValues($grand, $user, $current_currency, $preferred_currency);
 
 
         $data = compact('alpha','beta','credit','dept','education', 'freedom',
                         'grand','symbol', 'steps', 'backgrounds');
 
         return response()->json([
-            'status' => true,'data' => $data,
+            'status' => true,
+            'data' => $data,
             'message' => ''
         ]);
     }

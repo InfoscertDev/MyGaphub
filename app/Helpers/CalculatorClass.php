@@ -43,8 +43,9 @@ class CalculatorClass{
             // Use Budget if Average Income is available
             if ($isBudgetable) {
                 $cost = ($seed_type == 'seed') ? round($seed['total'], 2) : round($seed['table']['expenditure'], 2);
-                $calculator->periodic_savings = $seed['table']['savings'];
+                $seed_savings = $seed['table']['savings'];
                 $expenditure = $seed['table']['expenditure'];
+                $calculator->periodic_savings = $seed_savings;
                 $calculator->charity = $seed['table']['discretionary'];
                 $calculator->education = $seed['table']['education'];
 
@@ -96,6 +97,7 @@ class CalculatorClass{
             $target_currency = $preferred_currency ?? $current_currency;
             // $calculator->other_income = $portfolio;
             $saving = $calculator->extra_save ?? 0;
+            $seed_savings = $calculator->seed_savings ?? 0;
             $investment = $calculator->investment ?? 0;
             $roce = $calculator->roce ?? 0;
 
@@ -113,6 +115,7 @@ class CalculatorClass{
                 'isBudgetable',
                 'averageExpenditure',
                 'seed',
+                'seed_savings'
             );
 
         } catch (\Exception $e) {

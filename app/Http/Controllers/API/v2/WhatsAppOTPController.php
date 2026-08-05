@@ -48,6 +48,7 @@ class WhatsAppOTPController extends Controller
                 'data' => $result['data']
             ]);
         } else {
+            info(['WhatsApp OTP Error ', $result]);
             if (isset($result['already_verified']) && $result['already_verified']) {
                 // $statusCode = 409; // Conflict
                 return response()->json([

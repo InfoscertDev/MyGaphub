@@ -332,33 +332,60 @@ class GapAccountCalculator
     /**
      * Calculate pension account with preferred currency conversion
      */
-    public static function calcPensionAccount($accounts, $user = null)
+   public static function calcPensionAccount($accounts, $user = null)
     {
-        $values = []; $labels = [];
+        $values        = array();
+        $labels        = array();
+        $retire_values = array();
+        $income_values = array();
+        $percentages   = array();
 
-        foreach($accounts as $account){
+        foreach ($accounts as $account) {
+            // Current balance for chart values
             array_push($values, $account->current);
-        }
-
-        foreach($accounts as $account){
             array_push($labels, $account->pension_type);
+
+            // Fix 2: Read retire_balance and accured_current_income computed by pensionPOT
+            // These are dynamically attached to the pension object in pensionPOT()
+            // Previously calcPensionAccount ignored them entirely — now we collect them
+            $retire_balance = isset($account->retire_balance)
+                ? (float) str_replace(',', '', $account->retire_balance)
+                : $account->current;
+
+            $accrued_income = isset($account->accured_current_income)
+                ? (float) str_replace(',', '', $account->accured_current_income)
+                : 0;
+
+            array_push($retire_values, $retire_balance);
+            array_push($income_values, $accrued_income);
         }
 
-        $sum = array_sum($values);
+        $sum                = array_sum($values);
+        $total_retire_bal   = array_sum($retire_values);
+        $total_yearly_income = round(array_sum($income_values) * 12, 2); // monthly → yearly
 
-        // Convert sum to preferred currency (if user context available)
+        // Convert to preferred currency
         if ($user) {
-            $target_currency = self::getTargetCurrency($user);
-            $converted_sum = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
-            $sum = $converted_sum;
+            $target_currency     = self::getTargetCurrency($user);
+            $sum                 = GapExchangeHelper::convert_currency($user, $target_currency, $sum);
+            $total_retire_bal    = GapExchangeHelper::convert_currency($user, $target_currency, $total_retire_bal);
+            $total_yearly_income = GapExchangeHelper::convert_currency($user, $target_currency, $total_yearly_income);
         }
 
-        $percentages = [];
-        foreach($accounts as $account){
-            array_push($percentages, round(($account->current / ($sum ? $sum : 1)) * 100));
+        // Percentages based on current balance
+        $total = array_sum($values);
+        foreach ($values as $value) {
+            array_push($percentages, round(($value / ($total ? $total : 1)) * 100));
         }
 
-        return compact('sum', 'labels', 'values', 'percentages');
+        return compact(
+            'sum',
+            'labels',
+            'values',
+            'percentages',
+            'total_retire_bal',    // Fix 2: Retirement Yearly Balance now returned
+            'total_yearly_income'  // Fix 2: Projected Yearly Income now returned
+        );
     }
 
     /**
@@ -615,6 +642,7 @@ class GapAccountCalculator
             $pension->retire_income = number_format($accured_retire_income, 2);
             $pension->percentage_cos = number_format($percentage_cos, 2);
         }
+
         return $pensions;
     }
 

@@ -19,6 +19,12 @@ class RetirementController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $profile = $request->user()->user_profile;
+
+        if (!$profile || !$profile->date_of_birth) {
+            return $this->error('Date of birth is required to view retirement information.', [], 422);
+        }
+
         $filters = $request->only(['header', 'access', 'account', 'archive']);
         $data    = $this->retirementService->getRetirementList($request->user(), $filters);
 
@@ -27,6 +33,12 @@ class RetirementController extends Controller
 
     public function store(StoreRetirementRequest $request): JsonResponse
     {
+        $profile = $request->user()->user_profile;
+
+        if (!$profile || !$profile->date_of_birth) {
+            return $this->error('Date of birth is required to view retirement information.', [], 422);
+        }
+
         // $user
         $result = $this->retirementService->storeRetirement($request->user(), $request);
 
@@ -39,6 +51,12 @@ class RetirementController extends Controller
 
     public function update(UpdateRetirementRequest $request, int $id): JsonResponse
     {
+        $profile = $request->user()->user_profile;
+
+        if (!$profile || !$profile->date_of_birth) {
+            return $this->error('Date of birth is required to view retirement information.', [], 422);
+        }
+
         $pension = $this->retirementService->updateRetirement($request->user(), $request, $id);
 
         return $this->success(['pension' => $pension], 'Retirement record updated successfully.');

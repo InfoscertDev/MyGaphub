@@ -204,9 +204,9 @@ class OtherToolController extends Controller
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
         $user->save();
-        $profile->dob_count = $profile->dob_count + 1;
         $profile->phone = $request->phone;
         $profile->date_of_birth = $request->date;
+        $profile->dob_count = $profile->dob_count + 1;
         $profile->ancesry = $request->ancesry;
         $profile->country = $request->residence;
         $profile->address = $request->address;

@@ -21,7 +21,7 @@ class UpdateRetirementRequest extends FormRequest
             'current'      => 'required|integer|min:0',
             'monthly'      => 'required|integer|min:0',
             'retirement'   => 'required|integer|min:18',
-            'assured_income'   => 'required|numeric|min:0',
+            // 'assured_income'   => 'required|numeric|min:0',
         ];
     }
 

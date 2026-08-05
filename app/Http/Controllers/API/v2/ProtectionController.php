@@ -47,9 +47,9 @@ class ProtectionController extends Controller
     {
         $filters = $request->only(['header', 'access', 'account', 'archive']);
 
-        // ?period=monthly → Monthly records only
-        // ?period=yearly  → all records (default)
-        $period  = $request->query('period', 'yearly');
+        // monthly   → Monthly records only
+        // annually  → Annually records only
+        $period  = $request->query('period', '');
 
         $data = $this->protectionService->getProtectionList(
             $request->user(),

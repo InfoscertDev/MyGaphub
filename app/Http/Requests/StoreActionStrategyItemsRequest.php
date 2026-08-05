@@ -18,13 +18,15 @@ class StoreActionStrategyItemsRequest extends FormRequest
     {
         // Strategy is resolved in the service — we validate allowed subs dynamically
         $strategy = ActionStrategy::where('user_id', $this->user()->id)
-            ->find($this->route('strategyId'));
+            ->find($this->route('id'));
 
         $allowedSubs = array();
 
         if ($strategy && isset(ActionStrategy::SUB_CATEGORIES[$strategy->category])) {
             $allowedSubs = ActionStrategy::SUB_CATEGORIES[$strategy->category];
         }
+
+        // info('Allowed sub-categories for strategy category ' . $strategy->category . ': ' . implode(', ', $allowedSubs));
 
         return [
             'items'                => 'required|array|min:1',

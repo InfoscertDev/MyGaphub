@@ -6,6 +6,7 @@ use App\Helpers\ArchiveAccount;
 use App\Helpers\GapAccountCalculator as GapAccount;
 use App\Helpers\WheelClass as Wheel;
 use App\Models\Wheel\ProtectionAccount as Protection;
+use Illuminate\Support\Str;
 
 class ProtectionService
 {
@@ -42,7 +43,7 @@ class ProtectionService
         $protection                      = new Protection();
         $protection->user_id             = $user->id;
         $protection->protection_category = $request->category;
-        $protection->protection_type     = $request->type;
+        $protection->protection_type     = $request->type ?? 'Others'; 
         $protection->provider_policy     = $request->provider_policy;
         $protection->bank     = $request->bank;
         $protection->currency     = $request->currency;
@@ -51,7 +52,7 @@ class ProtectionService
         $protection->provider_contact    = $request->contact;
         $protection->sum_assured         = $request->sum_assured;
         $protection->premium_pay         = $request->premium_pay;
-        $protection->pay_frequency       = $request->pay_freq;
+        $protection->pay_frequency       = Str::lower($request->pay_freq);
         $protection->payment_type        = $request->pay_type;
         $protection->cover_start         = $request->cover_start;
         $protection->cover_end           = $request->cover_end;

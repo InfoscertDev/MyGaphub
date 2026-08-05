@@ -21,10 +21,10 @@ class StoreRetirementRequest extends FormRequest
             'pension_name'     => 'required',
             'pension_type'     => 'required',
             'current'          => 'required|numeric|min:0',
-            'assured_income'   => 'required|numeric|min:0',
+            // 'assured_income'   => 'required|numeric|min:0',
             'monthly_cont'     => 'required|numeric|min:0',
             'pension_provider' => 'required',
-            'retire_age'       => 'required|integer',
+            'retire_age'       => 'required|integer|min:50|max:75',
             // 'dob'              => 'nullable|date|before:' . $max_year,
         ];
     }

@@ -46,10 +46,14 @@ class ProtectionAccount extends Model
     public function scopePeriod($query, $period)
     {
         if ($period === 'monthly') {
-            return $query->where('pay_frequency', 'Monthly');
+            return $query->whereRaw('LOWER(pay_frequency) = ?', ['monthly']);
         }
 
-        // yearly = all records, no filter
+        if ($period === 'annually') {
+            return $query->whereRaw('LOWER(pay_frequency) = ?', ['annually']);
+        }
+
+        // null or anything else → return all records, no filter
         return $query;
     }
     /**

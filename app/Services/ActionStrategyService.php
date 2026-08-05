@@ -88,7 +88,7 @@ class ActionStrategyService
             ->findOrFail($strategyId);
 
         // Source fields assumed on user or linked profile model
-        $monthly_base = $financial['saving'] ?? 0;
+        $monthly_base = $financial['seed_savings'] ?? 0;
         $lumpsum_base = $alpha->current ?? 0;
 
         $strategy->update([

@@ -76,8 +76,15 @@ class AnalyticsClass {
         return false;
     }
 
-    public function convertModelValues($model, $user, $current_currency, $preferred_currency) {
+    public static function convertModelValues($model, $user, $current_currency, $preferred_currency) {
         if (!$model) return null;
+
+        info("Currency conversion check for Ananalytics", [
+            'user_id' => $user->id,
+            'model' => class_basename($model),
+            'current_currency' => $current_currency,
+            'preferred_currency' => $preferred_currency,
+        ]);
 
         if ($preferred_currency && $current_currency !== $preferred_currency) {
             $original_current = $model->current;
@@ -86,14 +93,14 @@ class AnalyticsClass {
             $model->current = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->current);
             $model->target = GapExchangeHelper::convert_currency($user, $preferred_currency, $model->target);
 
-            // info("Currency conversion applied", [
-            //     'user_id' => $user->id,
-            //     'model' => class_basename($model),
-            //     'from_currency' => $current_currency,
-            //     'to_currency' => $preferred_currency,
-            //     'current' => ['from' => $original_current, 'to' => $model->current],
-            //     'target' => ['from' => $original_target, 'to' => $model->target],
-            // ]);
+            info("Currency conversion for Ananalytics applied", [
+                'user_id' => $user->id,
+                'model' => class_basename($model),
+                'from_currency' => $current_currency,
+                'to_currency' => $preferred_currency,
+                'current' => ['from' => $original_current, 'to' => $model->current],
+                'target' => ['from' => $original_target, 'to' => $model->target],
+            ]);
         }
 
         return $model;
